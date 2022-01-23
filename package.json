@@ -8,13 +8,26 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@cennznet/api": "^1.5.0",
+    "@cennznet/types": "^1.5.0",
+    "@emotion/react": "^11.7.1",
+    "@emotion/styled": "^11.6.0",
+    "@mui/material": "^5.3.0",
+    "@polkadot/extension-dapp": "^0.42.7",
+    "@polkadot/keyring": "^8.3.3",
+    "axios": "^0.25.0",
+    "ethers": "^5.5.3",
     "next": "12.0.8",
     "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "react-device-detect": "^2.1.2",
+    "react-dom": "17.0.2",
+    "store": "^2.0.12"
   },
   "devDependencies": {
     "@types/node": "17.0.10",
     "@types/react": "17.0.38",
+    "@types/store": "^2.0.2",
+    "autoprefixer": "^10.4.2",
     "eslint": "8.7.0",
     "eslint-config-next": "12.0.8",
     "typescript": "4.5.5"
