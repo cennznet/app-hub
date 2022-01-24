@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Box, CircularProgress, Button, TextField } from "@mui/material";
+import { Box, Button, TextField } from "@mui/material";
 import TokenPicker from "../../components/bridge/TokenPicker";
 
 const Exchange: React.FC<{}> = () => {
     const [token, setToken] = useState("");
-
     return (
         <>
         <Box
             sx={{
                 position: "absolute",
                 top: "30%",
-                // width: "20%",
                 left: "30%",
                 display: "flex",
                 justifyContent: "center",
