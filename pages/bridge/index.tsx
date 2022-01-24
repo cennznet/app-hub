@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Connect from "./connect";
 import Emery from "./emery";
-import CENNZApiProvider from "../../providers/CENNZApiProvider";
-import SupportedWalletProvider from "../../providers/SupportedWalletProvider";
-import DappModuleProvider from "../../providers/DappModuleProvider";
-import Web3AccountsProvider from "../../providers/Web3AccountsProvider";
 import BlockchainProvider from "../../providers/BlockchainProvider";
 
 const Home: React.FC<{}> = () => {
@@ -16,20 +12,10 @@ const Home: React.FC<{}> = () => {
   }, []);
 
   return (
-    <CENNZApiProvider>
-      <DappModuleProvider>
-        <Web3AccountsProvider>
-          <BlockchainProvider>
-            <SupportedWalletProvider>
-              {bridgeState === "emery" && <Emery />}
-              {bridgeState === "connect" && (
-                <Connect setBridgeState={setBridgeState} />
-              )}
-            </SupportedWalletProvider>
-          </BlockchainProvider>
-        </Web3AccountsProvider>
-      </DappModuleProvider>
-    </CENNZApiProvider>
+    <BlockchainProvider>
+      {bridgeState === "emery" && <Emery />}
+      {bridgeState === "connect" && <Connect setBridgeState={setBridgeState} />}
+    </BlockchainProvider>
   );
 };
 
