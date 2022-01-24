@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { Box, Button, CircularProgress, TextField } from "@mui/material";
+import { Heading, SmallText } from "../../theme/StyledComponents";
+import { defineTxModal } from "../../utils/bridge/modal";
+import { useBlockchain } from "../../providers/BlockchainProvider";
+import { useCENNZApi } from "../../providers/CENNZApiProvider";
+import { useWallet } from "../../providers/SupportedWalletProvider";
 import TxModal from "./TxModal";
 import TokenPicker from "./TokenPicker";
-import { defineTxModal } from "../../utils/bridge/modal";
-import { useBlockchain } from "../../context/bridge/BlockchainContext";
-import { useWeb3 } from "../../context/bridge/Web3Context";
-import { Heading, SmallText } from "./StyledComponents";
 
 const Withdraw: React.FC<{}> = () => {
   const [token, setToken] = useState("");
@@ -20,7 +21,8 @@ const Withdraw: React.FC<{}> = () => {
   });
   const [estimatedFee, setEstimatedFee] = useState(0);
   const { Contracts, Account, Signer }: any = useBlockchain();
-  const { signer, selectedAccount, api, balances }: any = useWeb3();
+  const { api }: any = useCENNZApi();
+  const { signer, selectedAccount, bridgeBalances } = useWallet();
 
   //Estimate fee
   useEffect(() => {
@@ -42,20 +44,20 @@ const Withdraw: React.FC<{}> = () => {
 
   //Check CENNZnet account has enough tokens to withdraw
   useEffect(() => {
-    if (token !== "" && balances)
+    if (token !== "" && bridgeBalances)
       (async () => {
         const tokenExist = await api.query.erc20Peg.erc20ToAssetId(token);
         const tokenId = tokenExist.isSome
           ? tokenExist.unwrap()
           : await api.query.genericAsset.nextAssetId();
 
-        Object.values(balances).map((token: any) => {
+        Object.values(bridgeBalances).map((token: any) => {
           if (token.tokenId === tokenId.toString()) {
             setTokenBalance(token.balance);
           }
         });
       })();
-  }, [token, balances]);
+  }, [token, bridgeBalances]);
 
   const resetModal = () => {
     setModal({ state: "", text: "", hash: "" });

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import store from "store";
 import {
   FormControl,
   InputLabel,
@@ -7,7 +8,6 @@ import {
   Select,
 } from "@mui/material";
 import ERC20Tokens from "../../artifacts/erc20tokens.json";
-import store from "store";
 import { ETH } from "../../utils/bridge/helpers";
 
 const ITEM_HEIGHT = 48;

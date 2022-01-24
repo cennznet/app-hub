@@ -5,11 +5,9 @@ import {
   Heading,
   SmallText,
   Option,
-} from "../../components/bridge/StyledComponents";
-import { updateNetworks } from "../../utils/bridge/networks";
-import { useWeb3 } from "../../context/bridge/Web3Context";
-
-const networks = ["Mainnet/Mainnet", "Ropsten/Rata", "Kovan/Nikau"];
+} from "../../theme/StyledComponents";
+import { networks, updateNetworks } from "../../utils/bridge/networks";
+import { useCENNZApi } from "../../providers/CENNZApiProvider";
 
 const NetworkModal: React.FC<{
   setModalOpen: Function;
@@ -17,7 +15,7 @@ const NetworkModal: React.FC<{
   currentNetwork: string;
 }> = ({ setModalOpen, setModalState, currentNetwork }) => {
   const [open] = useState(true);
-  const { api } = useWeb3();
+  const { api } = useCENNZApi();
 
   const changeNetwork = async (selectedNetwork) => {
     if (api && api.isConnected) await api.disconnect();

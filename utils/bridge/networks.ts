@@ -1,4 +1,4 @@
-const networks = ["Mainnet/Mainnet", "Ropsten/Rata", "Kovan/Nikau"];
+export const networks = ["Mainnet/Mainnet", "Ropsten/Rata", "Kovan/Nikau"];
 
 export const updateNetworks = async (selectedNetwork) => {
   const { ethereum }: any = window;

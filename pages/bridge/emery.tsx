@@ -1,29 +1,25 @@
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import { isBrowser, isTablet } from "react-device-detect";
+import { Box, CircularProgress, Typography } from "@mui/material";
+import { Frame, Heading, SmallText } from "../../theme/StyledComponents";
+import { useBlockchain } from "../../providers/BlockchainProvider";
+import { useWallet } from "../../providers/SupportedWalletProvider";
 import Switch from "../../components/bridge/Switch";
 import Deposit from "../../components/bridge/Deposit";
 import Withdraw from "../../components/bridge/Withdraw";
 import NetworkModal from "../../components/bridge/NetworkModal";
-import {
-  Frame,
-  Heading,
-  SmallText,
-} from "../../components/bridge/StyledComponents";
 import WalletModal from "../../components/bridge/WalletModal";
-import { useWeb3 } from "../../context/bridge/Web3Context";
-import { useBlockchain } from "../../context/bridge/BlockchainContext";
-import { useRouter } from "next/router";
-import { Box, CircularProgress, Typography } from "@mui/material";
 
-const Bridge: React.FC<{}> = () => {
+const Emery: React.FC<{}> = () => {
   const router = useRouter();
   const [isDeposit, toggleIsDeposit] = useState<boolean>(true);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [currentNetwork, setCurrentNetwork] = useState<string>("");
   const [modalState, setModalState] = useState<string>("");
   const [isWalletConnected, setIsWalletConnected] = useState<boolean>(false);
-  const { selectedAccount, connectWallet }: any = useWeb3();
-  const { updateNetwork }: any = useBlockchain();
+  const { selectedAccount, connectWallet } = useWallet();
+  const { updateNetwork } = useBlockchain();
 
   useEffect(() => {
     const { ethereum }: any = window;
@@ -45,7 +41,7 @@ const Bridge: React.FC<{}> = () => {
         break;
     }
 
-    if (ethereumNetwork && network) {
+    if (ethereumNetwork) {
       updateNetwork(ethereum, ethereumNetwork);
       setCurrentNetwork(network);
       if (!isWalletConnected) connectWallet();
@@ -53,13 +49,9 @@ const Bridge: React.FC<{}> = () => {
     //eslint-disable-next-line
   }, []);
 
-  useEffect(
-    () =>
-      selectedAccount
-        ? setIsWalletConnected(true)
-        : setIsWalletConnected(false),
-    [selectedAccount]
-  );
+  useEffect(() => {
+    selectedAccount ? setIsWalletConnected(true) : setIsWalletConnected(false);
+  }, [selectedAccount]);
 
   const walletClickHandler: React.EventHandler<React.SyntheticEvent> = (
     event: React.SyntheticEvent
@@ -177,7 +169,7 @@ const Bridge: React.FC<{}> = () => {
                   : "black",
             }}
           >
-            {selectedAccount.name}
+            {selectedAccount.meta.name}
           </SmallText>
         )}
       </Frame>
@@ -202,4 +194,4 @@ const Bridge: React.FC<{}> = () => {
   );
 };
 
-export default Bridge;
+export default Emery;

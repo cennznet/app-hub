@@ -1,10 +1,12 @@
 import React, { useState } from "react";
-import { Button, Link, Modal } from "@mui/material";
-import { StyledModal, Heading, SmallText, Option } from "./StyledComponents";
-import { Box } from "@mui/material";
-import { updateNetworks } from "../../utils/bridge/networks";
-
-const networks = ["Mainnet/Mainnet", "Ropsten/Rata", "Kovan/Nikau"];
+import { Box, Button, Link, Modal } from "@mui/material";
+import {
+  StyledModal,
+  Heading,
+  SmallText,
+  Option,
+} from "../../theme/StyledComponents";
+import { networks, updateNetworks } from "../../utils/bridge/networks";
 
 const ErrorModal: React.FC<{
   setModalOpen: Function;
