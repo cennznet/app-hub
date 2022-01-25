@@ -2,7 +2,6 @@ import {
 	InjectedExtension,
 	InjectedAccountWithMeta,
 } from "@polkadot/extension-inject/types";
-import { Signer } from "@cennznet/types";
 import {
 	createContext,
 	PropsWithChildren,
@@ -55,7 +54,6 @@ export default function SupportedWalletProvider({
 	const { api } = useCENNZApi();
 	const accounts = useWeb3Accounts();
 	const { web3Enable, web3FromSource } = useDappModule();
-	const [signer, setSigner] = useState<Signer>(null);
 	const [wallet, setWallet] = useState<InjectedExtension>(null);
 	const [selectedAccount, setAccount] = useState<InjectedAccountWithMeta>(null);
 
