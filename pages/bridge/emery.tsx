@@ -19,7 +19,7 @@ const Emery: React.FC<{}> = () => {
   const [modalState, setModalState] = useState<string>("");
   const [isWalletConnected, setIsWalletConnected] = useState<boolean>(false);
   const { selectedAccount, connectWallet } = useWallet();
-  const { updateNetwork } = useBlockchain();
+  const { updateNetwork, Account } = useBlockchain();
 
   useEffect(() => {
     const { ethereum }: any = window;
@@ -104,7 +104,7 @@ const Emery: React.FC<{}> = () => {
         sx={{
           cursor: "pointer",
           top: "4%",
-          right: "30%",
+          right: "5%",
           backgroundColor: modalState === "networks" ? "#1130FF" : "#FFFFFF",
         }}
         onClick={() => {
@@ -131,7 +131,7 @@ const Emery: React.FC<{}> = () => {
       </Frame>
       <Frame
         sx={{
-          top: "4%",
+          top: "12%",
           right: "5%",
           backgroundColor:
             modalState === "showWallet" || modalState === "changeAccount"
@@ -141,11 +141,12 @@ const Emery: React.FC<{}> = () => {
         }}
         onClick={walletClickHandler}
       >
+        <img src="wallet.svg" />
         <Heading
           sx={{
-            ml: "10px",
+            ml: "5px",
             mt: "3px",
-            fontSize: "17px",
+            fontSize: "20px",
             color:
               modalState === "showWallet" || modalState === "changeAccount"
                 ? "#FFFFFF"
@@ -154,7 +155,7 @@ const Emery: React.FC<{}> = () => {
             whiteSpace: "nowrap",
           }}
         >
-          CENNZnet WALLET
+          CENNZnet
         </Heading>
         {selectedAccount && (
           <SmallText
@@ -171,6 +172,37 @@ const Emery: React.FC<{}> = () => {
           >
             {selectedAccount.meta.name}
           </SmallText>
+        )}
+      </Frame>
+      <Frame
+        sx={{
+          top: "20%",
+          right: "5%",
+          backgroundColor: "#FFFFFF",
+          cursor: "copy",
+        }}
+        onClick={() => navigator.clipboard.writeText(Account)}
+      >
+        {Account && (
+          <>
+            <Heading
+              sx={{
+                color: "primary.main",
+                ml: "10px",
+                mt: "3px",
+                fontSize: "20px",
+                flexGrow: 1,
+              }}
+            >
+              METAMASK
+            </Heading>
+            <SmallText sx={{ color: "black", fontSize: "16px" }}>
+              {Account.substring(0, 6).concat(
+                "...",
+                Account.substring(Account.length - 4, Account.length)
+              )}
+            </SmallText>
+          </>
         )}
       </Frame>
       {currentNetwork === "" ? (
