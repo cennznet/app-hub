@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
-import { useWeb3 } from "../../context/bridge/Web3Context";
+import { decodeAddress } from "@polkadot/keyring";
 import { Box, Button, TextField } from "@mui/material";
-import TxModal from "./TxModal";
-import TokenPicker from "./TokenPicker";
+import GenericERC20TokenAbi from "../../artifacts/GenericERC20Token.json";
 import { defineTxModal } from "../../utils/bridge/modal";
 import { getMetamaskBalance, ETH } from "../../utils/bridge/helpers";
-import { useBlockchain } from "../../context/bridge/BlockchainContext";
-import GenericERC20TokenAbi from "../../artifacts/GenericERC20Token.json";
+import { useBlockchain } from "../../providers/BlockchainProvider";
+import { useCENNZApi } from "../../providers/CENNZApiProvider";
+import TxModal from "./TxModal";
+import TokenPicker from "./TokenPicker";
 import CENNZnetAccountPicker from "./CENNZnetAccountPicker";
 
 const Deposit: React.FC<{}> = () => {
@@ -26,7 +27,7 @@ const Deposit: React.FC<{}> = () => {
   });
   const [tokenBalance, setTokenBalance] = useState<Number>();
   const { Contracts, Signer, Account }: any = useBlockchain();
-  const { decodeAddress, api }: any = useWeb3();
+  const { api }: any = useCENNZApi();
 
   //Check MetaMask account has enough tokens to deposit
   useEffect(() => {

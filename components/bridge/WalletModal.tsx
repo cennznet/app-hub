@@ -1,9 +1,14 @@
 import React, { useState } from "react";
-import { Button, Modal } from "@mui/material";
-import { StyledModal, Heading, SmallText, Option } from "./StyledComponents";
-import { useWeb3 } from "../../context/bridge/Web3Context";
-import { Box, CircularProgress } from "@mui/material";
 import store from "store";
+import { Box, Button, CircularProgress, Modal } from "@mui/material";
+import {
+  StyledModal,
+  Heading,
+  SmallText,
+  Option,
+} from "../../theme/StyledComponents";
+import { useWeb3Accounts } from "../../providers/Web3AccountsProvider";
+import { useWallet } from "../../providers/SupportedWalletProvider";
 
 const WalletModal: React.FC<{
   setModalOpen: Function;
@@ -11,18 +16,14 @@ const WalletModal: React.FC<{
   modalState: string;
 }> = ({ setModalOpen, setModalState, modalState }) => {
   const [open] = useState(true);
-  const {
-    balances,
-    accounts,
-    selectedAccount,
-    updateSelectedAccount,
-    setBalances,
-  }: any = useWeb3();
+  const { bridgeBalances, selectedAccount, selectAccount, setBalances } =
+    useWallet();
+  const accounts = useWeb3Accounts();
 
   const updateAccount = (account) => {
     if (account !== selectedAccount) {
       setBalances(null);
-      updateSelectedAccount(account);
+      selectAccount(account);
       store.set("selected-CENNZnet-account", account);
     }
     setModalState("showWallet");
@@ -39,7 +40,7 @@ const WalletModal: React.FC<{
             textTransform: "uppercase",
           }}
         >
-          {selectedAccount.name}&nbsp;
+          {selectedAccount.meta.name}&nbsp;
         </Heading>
         <Heading
           sx={{
@@ -54,9 +55,9 @@ const WalletModal: React.FC<{
       <SmallText sx={{ pl: "5%", opacity: "70%" }}>
         {selectedAccount.address}
       </SmallText>
-      {balances ? (
+      {bridgeBalances ? (
         <Box sx={{ mt: "3%", pl: "5%", display: "block" }}>
-          {Object.values(balances).map((token: any, i) => (
+          {Object.values(bridgeBalances).map((token: any, i) => (
             <Box key={i}>
               <SmallText
                 sx={{
@@ -178,9 +179,9 @@ const WalletModal: React.FC<{
                           ? "#FFFFFF"
                           : "primary.main",
                     }}
-                    key={account.name}
+                    key={account.meta.name}
                   >
-                    {account.name}
+                    {account.meta.name}
                   </Heading>
                 </Option>
               ))

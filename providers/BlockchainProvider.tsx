@@ -1,9 +1,9 @@
 import React, { createContext, useContext, ReactNode, useState } from "react";
 import { ethers } from "ethers";
-import CENNZnetBridge from "../../artifacts/CENNZnetBridge.json";
-import ERC20Peg from "../../artifacts/ERC20Peg.json";
+import CENNZnetBridge from "../artifacts/CENNZnetBridge.json";
+import ERC20Peg from "../artifacts/ERC20Peg.json";
 import store from "store";
-import { useWeb3 } from "./Web3Context";
+import { useCENNZApi } from "./CENNZApiProvider";
 
 type blockchainContextType = {
   Contracts: object;
@@ -32,7 +32,7 @@ type Props = {
 const BlockchainProvider: React.FC<React.PropsWithChildren<{}>> = ({
   children,
 }: Props) => {
-  const { updateApi } = useWeb3();
+  const { updateApi } = useCENNZApi();
   const [value, setValue] = useState({
     Contracts: {
       bridge: {} as ethers.Contract,

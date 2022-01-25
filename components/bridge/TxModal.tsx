@@ -8,8 +8,8 @@ import {
   Link,
   Modal,
 } from "@mui/material";
-import { Heading, SmallText, StyledModal } from "./StyledComponents";
-import { useWeb3 } from "../../context/bridge/Web3Context";
+import { Heading, SmallText, StyledModal } from "../../theme/StyledComponents";
+import { useCENNZApi } from "../../providers/CENNZApiProvider";
 interface Props {
   modalState: string;
   modalText: string;
@@ -26,9 +26,10 @@ const TxModal: React.FC<Props> = ({
   const [open] = useState(true);
   const [etherscanLink, setEtherscanLink] = useState("");
   const [relayerStatus, updateRelayerStatus] = useState("");
+  const [intervalId, setIntervalId] = useState<NodeJS.Timer>(null);
   const [eventConfirmations, setEventConfirmations] = useState(0);
   const [confirms, updateConfirms] = useState(0);
-  const { api } = useWeb3();
+  const { api }: any = useCENNZApi();
 
   useEffect(() => {
     (async () => {
@@ -72,10 +73,11 @@ const TxModal: React.FC<Props> = ({
     if (modalState === "relayer") {
       switch (relayerStatus) {
         default:
-          const intervalId = setInterval(
+          const interval = setInterval(
             () => checkRelayerStatus(relayerLink),
             10000
           );
+          setIntervalId(interval);
           break;
         case "EthereumConfirming":
           updateConfirms(Math.round(0.33 * eventConfirmations));

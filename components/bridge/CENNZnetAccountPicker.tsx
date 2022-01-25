@@ -1,25 +1,30 @@
 import React, { useState, useEffect } from "react";
 import { Autocomplete, TextField } from "@mui/material";
-import { useWeb3 } from "../../context/bridge/Web3Context";
+import { useWeb3Accounts } from "../../providers/Web3AccountsProvider";
 
 const CENNZnetAccountPicker: React.FC<{
   updateSelectedAccount: Function;
 }> = ({ updateSelectedAccount }) => {
-  const { accounts }: any = useWeb3();
+  const accounts = useWeb3Accounts();
   const [accountNames, setAccountNames] = useState<string[]>([]);
 
   useEffect(() => {
     let names: string[] = [];
-    accounts.map((account: { name: string; address: string }) => {
-      names.push(account.name);
-    });
-    setAccountNames(names);
+    if (accounts) {
+      accounts.map((account) => {
+        names.push(account.meta.name);
+      });
+      setAccountNames(names);
+    }
   }, [accounts]);
 
   const updateAccount = (accountName: string) => {
-    accounts.forEach((account: { name: string; address: string }) => {
-      if (account.name === accountName) {
-        updateSelectedAccount(account);
+    accounts.forEach((account) => {
+      if (account.meta.name === accountName) {
+        updateSelectedAccount({
+          name: account.meta.name,
+          address: account.address,
+        });
       }
     });
   };
