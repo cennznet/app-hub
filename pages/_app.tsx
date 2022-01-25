@@ -13,43 +13,43 @@ import DappModuleProvider from "../providers/DappModuleProvider";
 import Web3AccountsProvider from "../providers/Web3AccountsProvider";
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const router = useRouter();
-  return (
-    <>
-      <Head>
-        <title>CENNZnet App Hub</title>
-        <meta name="description" content="App Hub powered by CENNZnet" />
-        <link rel="icon" href="/favicon.svg" />
-      </Head>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <CENNZApiProvider>
-          <DappModuleProvider>
-            <Web3AccountsProvider>
-              <SupportedWalletProvider>
-                <Box
-                  onClick={() => router.push("/")}
-                  sx={{ cursor: "pointer" }}
-                >
-                  <img
-                    src="/cennznet-header.png"
-                    alt="CENNZnet header"
-                    style={{
-                      width: isBrowser || isTablet ? "90px" : "45px",
-                      position: "absolute",
-                      top: "5%",
-                      left: "6%",
-                    }}
-                  />
-                </Box>
-                <Component {...pageProps} />
-              </SupportedWalletProvider>
-            </Web3AccountsProvider>
-          </DappModuleProvider>
-        </CENNZApiProvider>
-      </ThemeProvider>
-    </>
-  );
+	const router = useRouter();
+	return (
+		<>
+			<Head>
+				<title>CENNZnet App Hub</title>
+				<meta name="description" content="App Hub powered by CENNZnet" />
+				<link rel="icon" href="/favicon.svg" />
+			</Head>
+			<ThemeProvider theme={theme}>
+				<CssBaseline />
+				<CENNZApiProvider>
+					<DappModuleProvider>
+						<Web3AccountsProvider>
+							<SupportedWalletProvider>
+								<Box
+									onClick={() => router.push("/")}
+									sx={{ cursor: "pointer" }}
+								>
+									<img
+										src="/cennznet-header.png"
+										alt="CENNZnet header"
+										style={{
+											width: isBrowser || isTablet ? "90px" : "45px",
+											position: "absolute",
+											top: "5%",
+											left: "6%",
+										}}
+									/>
+								</Box>
+								<Component {...pageProps} />
+							</SupportedWalletProvider>
+						</Web3AccountsProvider>
+					</DappModuleProvider>
+				</CENNZApiProvider>
+			</ThemeProvider>
+		</>
+	);
 }
 
 export default MyApp;
