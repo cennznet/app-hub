@@ -5,7 +5,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "prettier-format": "prettier --config .prettierrc.json ./ --write"
   },
   "dependencies": {
     "@cennznet/api": "^1.5.0",
@@ -31,6 +32,7 @@
     "eslint": "8.7.0",
     "eslint-config-next": "12.0.8",
     "eslint-config-prettier": "^8.3.0",
+    "prettier": "^2.5.1",
     "typescript": "4.5.5"
   }
 }

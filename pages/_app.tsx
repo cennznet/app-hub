@@ -15,50 +15,50 @@ import Web3AccountsProvider from "../providers/Web3AccountsProvider";
 import Switch from "../components/AppSwitch";
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const router = useRouter();
-  const [location, setLocation] = useState<string>();
+	const router = useRouter();
+	const [location, setLocation] = useState<string>();
 
-  useEffect(() => {
-    if (location !== undefined) router.push(`/${location}`);
-  }, [location]);
+	useEffect(() => {
+		if (location !== undefined) router.push(`/${location}`);
+	}, [location]);
 
-  return (
-    <>
-      <Head>
-        <title>CENNZnet App Hub</title>
-        <meta name="description" content="App Hub powered by CENNZnet" />
-        <link rel="icon" href="/favicon.svg" />
-      </Head>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <CENNZApiProvider>
-          <DappModuleProvider>
-            <Web3AccountsProvider>
-              <SupportedWalletProvider>
-                <Box
-                  onClick={() => setLocation("index")}
-                  sx={{ cursor: "pointer" }}
-                >
-                  <img
-                    src="/cennznet-header.png"
-                    alt="CENNZnet header"
-                    style={{
-                      width: isBrowser || isTablet ? "90px" : "45px",
-                      position: "absolute",
-                      top: "5%",
-                      left: "6%",
-                    }}
-                  />
-                </Box>
-                <Switch location={location} setLocation={setLocation} />
-                <Component {...pageProps} />
-              </SupportedWalletProvider>
-            </Web3AccountsProvider>
-          </DappModuleProvider>
-        </CENNZApiProvider>
-      </ThemeProvider>
-    </>
-  );
+	return (
+		<>
+			<Head>
+				<title>CENNZnet App Hub</title>
+				<meta name="description" content="App Hub powered by CENNZnet" />
+				<link rel="icon" href="/favicon.svg" />
+			</Head>
+			<ThemeProvider theme={theme}>
+				<CssBaseline />
+				<CENNZApiProvider>
+					<DappModuleProvider>
+						<Web3AccountsProvider>
+							<SupportedWalletProvider>
+								<Box
+									onClick={() => setLocation("index")}
+									sx={{ cursor: "pointer" }}
+								>
+									<img
+										src="/cennznet-header.png"
+										alt="CENNZnet header"
+										style={{
+											width: isBrowser || isTablet ? "90px" : "45px",
+											position: "absolute",
+											top: "5%",
+											left: "6%",
+										}}
+									/>
+								</Box>
+								<Switch location={location} setLocation={setLocation} />
+								<Component {...pageProps} />
+							</SupportedWalletProvider>
+						</Web3AccountsProvider>
+					</DappModuleProvider>
+				</CENNZApiProvider>
+			</ThemeProvider>
+		</>
+	);
 }
 
 export default MyApp;
