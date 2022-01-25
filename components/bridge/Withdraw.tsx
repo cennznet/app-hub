@@ -22,7 +22,8 @@ const Withdraw: React.FC<{}> = () => {
   const [estimatedFee, setEstimatedFee] = useState(0);
   const { Contracts, Account, Signer }: any = useBlockchain();
   const { api }: any = useCENNZApi();
-  const { signer, selectedAccount, bridgeBalances } = useWallet();
+  const { wallet, selectedAccount, bridgeBalances } = useWallet();
+  const { signer } = wallet;
 
   //Estimate fee
   useEffect(() => {

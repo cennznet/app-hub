@@ -33,7 +33,6 @@ type WalletContext = {
   selectAccount: (account: InjectedAccountWithMeta) => void;
   setBalances: Function;
   bridgeBalances: Object;
-  signer: Signer;
 };
 
 const SupportedWalletContext = createContext<WalletContext>({
@@ -45,7 +44,6 @@ const SupportedWalletContext = createContext<WalletContext>({
   selectAccount: null,
   setBalances: null,
   bridgeBalances: null,
-  signer: null,
 });
 
 type ProviderProps = {};
@@ -65,12 +63,9 @@ export default function SupportedWalletProvider({
     async (callback) => {
       if (!web3Enable || !api) return;
 
-      const extension = (await web3Enable("Litho")).find(
-        (extension) => extension.name === "cennznet-extension"
-      );
+      await web3Enable("CENNZnet Hub");
 
-      const injector = await web3FromSource("cennznet-extension");
-      setSigner(injector.signer);
+      const extension = await web3FromSource("cennznet-extension");
 
       if (!extension) {
         const confirmed = confirm(
@@ -93,14 +88,13 @@ export default function SupportedWalletProvider({
       setWallet(extension);
       store.set("CENNZNET-EXTENSION", extension);
     },
-    [web3Enable, browser, api]
+    [web3Enable, web3FromSource, browser, api]
   );
 
   const disconnectWallet = useCallback(() => {
     if (!confirm("Are you sure?")) return;
     store.remove("CENNZNET-EXTENSION");
     store.remove("CENNZNET-ACCOUNT");
-    store.remove("EXTENSION_META_UPDATED");
     setWallet(null);
     setAccount(null);
     setBalances(null);
@@ -113,9 +107,18 @@ export default function SupportedWalletProvider({
 
   // 1. Restore the wallet from the store if it exists
   useEffect(() => {
-    const storedWallet = store.get("CENNZNET-EXTENSION");
-    if (storedWallet) setWallet(storedWallet);
-  }, []);
+    if (!web3Enable && !web3FromSource) return;
+
+    async function restoreWallet() {
+      const storedWallet = store.get("CENNZNET-EXTENSION");
+      if (!storedWallet) return;
+      await web3Enable("CENNZnet Hub");
+      const extension = await web3FromSource(storedWallet.name);
+      setWallet(extension);
+    }
+
+    restoreWallet();
+  }, [web3Enable, web3FromSource]);
 
   // 2. pick the right account once a `wallet` as been set
   useEffect(() => {
@@ -248,7 +251,6 @@ export default function SupportedWalletProvider({
         selectAccount,
         setBalances,
         bridgeBalances,
-        signer,
       }}
     >
       {children}
