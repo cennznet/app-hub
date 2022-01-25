@@ -1,5 +1,11 @@
 import { Api } from "@cennznet/api";
-import { createContext, useState, PropsWithChildren, useContext } from "react";
+import {
+  createContext,
+  useState,
+  PropsWithChildren,
+  useContext,
+  useCallback,
+} from "react";
 
 type CENNZApiContextType = {
   api: Api;
@@ -11,10 +17,10 @@ const CENNZApiContext = createContext<CENNZApiContextType>(null);
 export default function CENNZApiProvider({ children }: PropsWithChildren<{}>) {
   const [api, setApi] = useState<Api>(null);
 
-  const updateApi = (endpoint) => {
+  const updateApi = useCallback((endpoint) => {
     const instance = new Api({ provider: endpoint });
     instance.isReady.then(() => setApi(instance));
-  };
+  }, []);
 
   return (
     <CENNZApiContext.Provider value={{ api, updateApi }}>
