@@ -8,8 +8,8 @@ import {
   Select,
 } from "@mui/material";
 import ERC20Tokens from "../../artifacts/erc20tokens.json";
-import { ETH } from "../../utils/bridge/helpers";
-import {useAssets} from "../../providers/SupportedAssetsProvider";
+import { ETH, ETH_LOGO } from "../../utils/helpers";
+import { useAssets } from "../../providers/SupportedAssetsProvider";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -22,46 +22,67 @@ const MenuProps = {
   },
 };
 
-const TokenPicker: React.FC<{ setToken: Function, cennznet?: boolean }> = ({ setToken, cennznet= false }) => {
+const TokenPicker: React.FC<{ setToken: Function; cennznet?: boolean }> = ({
+  setToken,
+  cennznet = true,
+}) => {
   const [tokens, setTokens] = useState<Object[]>([{}]);
   const [selectedToken, setSelectedToken] = useState("");
   const assets = useAssets();
 
   useEffect(() => {
-    let tokes: Object[] = [
-      {
-        symbol: "ETH",
-        logo: "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
-      },
-    ];
-    const chainId = store.get("token-chain-id");
+    if (cennznet && assets) {
+      let tokes: Object[] = [];
 
-    ERC20Tokens.tokens.map((token) => {
-      if (token.chainId === chainId) {
-        tokes.push({ symbol: token.symbol, logo: token.logoURI });
-      }
-    });
-    setTokens(tokes);
-  }, []);
+      assets.map((asset) => {
+        asset.symbol === "ETH"
+          ? tokes.push({
+              symbol: asset.symbol,
+              logo: ETH_LOGO,
+            })
+          : tokes.push({
+              symbol: asset.symbol,
+              logo: `/images/${asset.symbol.toLowerCase()}.svg`,
+            });
+      });
+
+      setTokens(tokes);
+    } else {
+      let tokes: Object[] = [
+        {
+          symbol: "ETH",
+          logo: ETH_LOGO,
+        },
+      ];
+      const chainId = store.get("token-chain-id");
+
+      ERC20Tokens.tokens.map((token) => {
+        if (token.chainId === chainId) {
+          tokes.push({ symbol: token.symbol, logo: token.logoURI });
+        }
+      });
+      setTokens(tokes);
+    }
+  }, [cennznet, assets]);
 
   useEffect(() => {
-    if(cennznet){
-      //TODO get assets here
-
-    }
-    else{
+    if (cennznet && assets) {
+      assets.map(
+        (asset) => selectedToken === asset.symbol && setToken(String(asset.id))
+      );
+    } else {
       const chainId = store.get("token-chain-id");
 
       ERC20Tokens.tokens.map((token) => {
         if (
-            (token.symbol === selectedToken && token.chainId === chainId) ||
-            selectedToken === "ETH"
+          (token.symbol === selectedToken && token.chainId === chainId) ||
+          selectedToken === "ETH"
         ) {
           selectedToken === "ETH" ? setToken(ETH) : setToken(token.address);
         }
       });
     }
-  }, [selectedToken, setToken]);
+  }, [cennznet, assets, selectedToken, setToken]);
 
   return (
     <FormControl sx={{ width: "80%", mt: "50px" }} required>

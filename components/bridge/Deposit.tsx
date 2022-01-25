@@ -4,7 +4,7 @@ import { decodeAddress } from "@polkadot/keyring";
 import { Box, Button, TextField } from "@mui/material";
 import GenericERC20TokenAbi from "../../artifacts/GenericERC20Token.json";
 import { defineTxModal } from "../../utils/bridge/modal";
-import { getMetamaskBalance, ETH } from "../../utils/bridge/helpers";
+import { getMetamaskBalance, ETH } from "../../utils/helpers";
 import { useBlockchain } from "../../providers/BlockchainProvider";
 import { useCENNZApi } from "../../providers/CENNZApiProvider";
 import TxModal from "./TxModal";
