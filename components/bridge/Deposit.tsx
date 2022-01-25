@@ -37,7 +37,7 @@ const Deposit: React.FC<{}> = () => {
         let balance = await getMetamaskBalance(ethereum, token, Account);
         setTokenBalance(balance);
       })();
-  }, [token]);
+  }, [token, Account]);
 
   const resetModal = () => {
     setModal({ state: "", text: "", hash: "" });
