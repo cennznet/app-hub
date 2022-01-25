@@ -1,9 +1,9 @@
 import {
-  createContext,
-  PropsWithChildren,
-  useContext,
-  useEffect,
-  useState,
+	createContext,
+	PropsWithChildren,
+	useContext,
+	useEffect,
+	useState,
 } from "react";
 import type * as Extension from "@polkadot/extension-dapp";
 
@@ -13,24 +13,24 @@ const DappModuleContext = createContext<ModuleContext>({} as ModuleContext);
 type ProviderProps = {};
 
 export default function DappModuleProvider({
-  children,
+	children,
 }: PropsWithChildren<ProviderProps>) {
-  const [extension, setExtension] = useState<ModuleContext>(
-    {} as ModuleContext
-  );
-  useEffect(() => {
-    import("@polkadot/extension-dapp").then((module) => {
-      setExtension(module);
-    });
-  }, []);
+	const [extension, setExtension] = useState<ModuleContext>(
+		{} as ModuleContext
+	);
+	useEffect(() => {
+		import("@polkadot/extension-dapp").then((module) => {
+			setExtension(module);
+		});
+	}, []);
 
-  return (
-    <DappModuleContext.Provider value={extension}>
-      {children}
-    </DappModuleContext.Provider>
-  );
+	return (
+		<DappModuleContext.Provider value={extension}>
+			{children}
+		</DappModuleContext.Provider>
+	);
 }
 
 export function useDappModule(): ModuleContext {
-  return useContext(DappModuleContext);
+	return useContext(DappModuleContext);
 }
