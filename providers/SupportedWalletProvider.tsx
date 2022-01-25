@@ -105,66 +105,6 @@ export default function SupportedWalletProvider({
     store.set("CENNZNET-ACCOUNT", account);
   }, []);
 
-  // 1. Restore the wallet from the store if it exists
-  useEffect(() => {
-    if (!web3Enable && !web3FromSource) return;
-
-    async function restoreWallet() {
-      const storedWallet = store.get("CENNZNET-EXTENSION");
-      if (!storedWallet) return;
-      await web3Enable("CENNZnet Hub");
-      const extension = await web3FromSource(storedWallet.name);
-      setWallet(extension);
-    }
-
-    restoreWallet();
-  }, [web3Enable, web3FromSource]);
-
-  // 2. pick the right account once a `wallet` as been set
-  useEffect(() => {
-    if (!wallet || !accounts) return;
-
-    if (!accounts.length)
-      return alert("Please create an account in the CENNZnet extension.");
-
-    const storedAccount = store.get("CENNZNET-ACCOUNT");
-    if (!storedAccount) return selectAccount(accounts[0]);
-
-    const matchedAccount = accounts.find(
-      (account) => account.address === storedAccount.address
-    );
-    if (!matchedAccount) return selectAccount(accounts[0]);
-
-    selectAccount(matchedAccount);
-  }, [wallet, web3Enable, accounts, selectAccount]);
-
-  // 3. Fetch `account` balance
-  const assets = useAssets();
-  const [balances, setBalances] = useState<Array<BalanceInfo>>();
-  useEffect(() => {
-    if (!assets || !selectedAccount || !api) return;
-
-    async function fetchAssetBalances() {
-      const balances = (
-        await api.query.genericAsset.freeBalance.multi(
-          assets.map(({ id }) => [id, selectedAccount.address])
-        )
-      ).map((balance, index) => {
-        const asset = assets[index];
-        return {
-          ...asset,
-          value: (balance as any) / Math.pow(10, asset.decimals),
-        };
-      });
-
-      setBalances(balances);
-    }
-
-    fetchAssetBalances();
-    getBridgeBalances(selectedAccount.address);
-  }, [assets, selectedAccount, api]);
-
-  const [bridgeBalances, setBridgeBalances] = useState(null);
   const getBridgeBalances = useCallback(
     async (address: string) => {
       await api.isReady;
@@ -239,6 +179,68 @@ export default function SupportedWalletProvider({
     },
     [api]
   );
+
+  // 1. Restore the wallet from the store if it exists
+  useEffect(() => {
+    if (!web3Enable && !web3FromSource) return;
+
+    async function restoreWallet() {
+      const storedWallet = store.get("CENNZNET-EXTENSION");
+      if (!storedWallet) return;
+      await web3Enable("CENNZnet Hub");
+      const extension = await web3FromSource(storedWallet.name);
+      setWallet(extension);
+    }
+
+    restoreWallet();
+  }, [web3Enable, web3FromSource]);
+
+  // 2. pick the right account once a `wallet` as been set
+  useEffect(() => {
+    if (!wallet || !accounts) return;
+
+    if (!accounts.length)
+      return alert("Please create an account in the CENNZnet extension.");
+
+    const storedAccount = store.get("CENNZNET-ACCOUNT");
+    if (!storedAccount) return selectAccount(accounts[0]);
+
+    const matchedAccount = accounts.find(
+      (account) => account.address === storedAccount.address
+    );
+    if (!matchedAccount) return selectAccount(accounts[0]);
+
+    selectAccount(matchedAccount);
+  }, [wallet, web3Enable, accounts, selectAccount]);
+
+  // 3. Fetch `account` balance
+  const assets = useAssets();
+  const [balances, setBalances] = useState<Array<BalanceInfo>>();
+  const [bridgeBalances, setBridgeBalances] = useState<Object>();
+  useEffect(() => {
+    if (!assets || !selectedAccount || !api) return;
+
+    async function fetchAssetBalances() {
+      const balances = (
+        await api.query.genericAsset.freeBalance.multi(
+          assets.map(({ id }) => [id, selectedAccount.address])
+        )
+      ).map((balance, index) => {
+        const asset = assets[index];
+        return {
+          ...asset,
+          value: (balance as any) / Math.pow(10, asset.decimals),
+        };
+      });
+
+      setBalances(balances);
+    }
+
+    fetchAssetBalances();
+    getBridgeBalances(selectedAccount.address);
+  }, [assets, selectedAccount, api, getBridgeBalances]);
+
+
 
   return (
     <SupportedWalletContext.Provider
