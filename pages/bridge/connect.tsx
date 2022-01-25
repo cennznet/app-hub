@@ -128,9 +128,9 @@ const Connect: React.FC<{ setBridgeState: Function }> = ({
             METAMASK
           </Heading>
           <SmallText sx={{ color: "black", fontSize: "16px" }}>
-            {Account.substr(0, 6).concat(
+            {Account.substring(0, 6).concat(
               "...",
-              Account.substr(Account.length - 4, 4)
+              Account.substring(Account.length - 4, Account.length)
             )}
           </SmallText>
         </>

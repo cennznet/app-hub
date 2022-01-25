@@ -20,6 +20,11 @@ module.exports = {
         destination: "/bridge",
         permanent: true,
       },
+      {
+        source: "/index",
+        destination: "/",
+        permanent: true,
+      },
     ];
   },
   eslint: {

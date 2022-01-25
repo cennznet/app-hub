@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import type { AppProps } from "next/app";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -11,9 +12,16 @@ import CENNZApiProvider from "../providers/CENNZApiProvider";
 import SupportedWalletProvider from "../providers/SupportedWalletProvider";
 import DappModuleProvider from "../providers/DappModuleProvider";
 import Web3AccountsProvider from "../providers/Web3AccountsProvider";
+import Switch from "../components/AppSwitch";
 
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
+  const [location, setLocation] = useState<string>();
+
+  useEffect(() => {
+    if (location !== undefined) router.push(`/${location}`);
+  }, [location]);
+
   return (
     <>
       <Head>
@@ -28,7 +36,7 @@ function MyApp({ Component, pageProps }: AppProps) {
             <Web3AccountsProvider>
               <SupportedWalletProvider>
                 <Box
-                  onClick={() => router.push("/")}
+                  onClick={() => setLocation("index")}
                   sx={{ cursor: "pointer" }}
                 >
                   <img
@@ -42,6 +50,7 @@ function MyApp({ Component, pageProps }: AppProps) {
                     }}
                   />
                 </Box>
+                <Switch location={location} setLocation={setLocation} />
                 <Component {...pageProps} />
               </SupportedWalletProvider>
             </Web3AccountsProvider>
