@@ -5,13 +5,12 @@ import {
   useContext,
   useCallback,
 } from "react";
-import { Api, ApiRx, } from "@cennznet/api";
-import { Observable } from "@cennznet/types";
+import { Api, ApiRx } from "@cennznet/api";
 
 type CENNZApiContextType = {
   api: Api;
   updateApi: Function;
-  apiRx: Observable<ApiRx>;
+  apiRx: Promise<ApiRx>;
   updateApiRx: Function;
 };
 
@@ -19,7 +18,7 @@ const CENNZApiContext = createContext<CENNZApiContextType>(null);
 
 export default function CENNZApiProvider({ children }: PropsWithChildren<{}>) {
   const [api, setApi] = useState<Api>(null);
-  const [apiRx, setApiRx] = useState<Observable<ApiRx>>(null);
+  const [apiRx, setApiRx] = useState<Promise<ApiRx>>(null);
 
   const updateApi = useCallback((endpoint) => {
     const instance = new Api({ provider: endpoint });
@@ -27,7 +26,7 @@ export default function CENNZApiProvider({ children }: PropsWithChildren<{}>) {
   }, []);
 
   const updateApiRx = useCallback((endpoint) => {
-    const instance = ApiRx.create({ provider: endpoint })
+    const instance = ApiRx.create({ provider: endpoint }).toPromise()
     setApiRx(instance)
   }, [])
 
