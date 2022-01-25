@@ -1,9 +1,58 @@
 import React, { useEffect, useState } from "react";
 import { Box, Button, TextField } from "@mui/material";
 import TokenPicker from "../../components/bridge/TokenPicker";
+import {Api, ApiRx} from '@cennznet/api';
+import {AssetId} from '@cennznet/types';
 
 const Exchange: React.FC<{}> = () => {
     const [token, setToken] = useState("");
+    const [receivedTokenValue, setReceivedTokenValue] = React.useState<string>("0");
+    const [exchangeTokenValue, setExchangeTokenValue] = React.useState<string>("0");
+
+    const [api, setApi] = useState<Api>();
+    const [apiRx, setApiRx] = useState<ApiRx>();
+
+
+    const mainnetEndpoint = 'wss://cennznet.unfrastructure.io/public/ws';
+
+    useEffect( () => {
+        const createAPI = async () => {
+            const api = await Api.create({provider: mainnetEndpoint});
+            setApi(api)
+        };
+        const createAPIRx = async () => {
+            const apiRx = await ApiRx.create({  provider: mainnetEndpoint});
+            const apiRxProm = await apiRx.toPromise()
+            setApiRx(apiRxProm)
+        };
+        createAPI();
+        createAPIRx();
+    },[]);
+
+    useEffect( () => {
+        const getCoreAssets = async () => {
+            if(api){
+                await api.query.cennzx.coreAssetId((coreAssetId: AssetId) => {
+                    console.info(coreAssetId.toNumber());
+                });
+            }
+        };
+        getCoreAssets();
+    },[api])
+
+
+    useEffect( () => {
+        const CENNZ = '1';
+        const CENTRAPAY = '2';
+        const setRecievedTokenAmount = async () => {
+            if(parseInt(exchangeTokenValue) > 0){
+                const sellPrice = await(api.rpc as any).cennzx.sellPrice(CENNZ, exchangeTokenValue, CENTRAPAY);
+                setReceivedTokenValue(sellPrice.price.toString())
+            }
+        };
+        setRecievedTokenAmount();
+    },[exchangeTokenValue]);
+
     return (
         <>
         <Box
@@ -65,6 +114,8 @@ const Exchange: React.FC<{}> = () => {
                         width: "80%",
                         m: "30px 0 30px",
                     }}
+                    value={exchangeTokenValue}
+                    onChange={(event) => setExchangeTokenValue(event.target.value)}
                 />
                 <TokenPicker setToken={setToken} />
                 <TextField
@@ -75,6 +126,8 @@ const Exchange: React.FC<{}> = () => {
                         width: "80%",
                         m: "30px 0 30px",
                     }}
+                    value={receivedTokenValue}
+                    onChange={(event) => setReceivedTokenValue(event.target.value)}
                 />
                 <Button
                     sx={{
