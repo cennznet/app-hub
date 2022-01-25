@@ -37,4 +37,5 @@ jobs:
     - name: lint
       run: |
         yarn install --frozen-lockfile
+        yarn prettier-format
         yarn lint
