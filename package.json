@@ -6,7 +6,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "prettier-format": "prettier --config .prettierrc.json '**/*.tsx' --write"
+    "prettier-format": "prettier --config .prettierrc.json ./ --write"
   },
   "dependencies": {
     "@cennznet/api": "^1.5.0",
