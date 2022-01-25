@@ -9,6 +9,7 @@ import {
 } from "@mui/material";
 import ERC20Tokens from "../../artifacts/erc20tokens.json";
 import { ETH } from "../../utils/bridge/helpers";
+import {useAssets} from "../../providers/SupportedAssetsProvider";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -21,9 +22,10 @@ const MenuProps = {
   },
 };
 
-const TokenPicker: React.FC<{ setToken: Function }> = ({ setToken }) => {
+const TokenPicker: React.FC<{ setToken: Function, cennznet?: boolean }> = ({ setToken, cennznet= false }) => {
   const [tokens, setTokens] = useState<Object[]>([{}]);
   const [selectedToken, setSelectedToken] = useState("");
+  const assets = useAssets();
 
   useEffect(() => {
     let tokes: Object[] = [
@@ -43,16 +45,22 @@ const TokenPicker: React.FC<{ setToken: Function }> = ({ setToken }) => {
   }, []);
 
   useEffect(() => {
-    const chainId = store.get("token-chain-id");
+    if(cennznet){
+      //TODO get assets here
 
-    ERC20Tokens.tokens.map((token) => {
-      if (
-        (token.symbol === selectedToken && token.chainId === chainId) ||
-        selectedToken === "ETH"
-      ) {
-        selectedToken === "ETH" ? setToken(ETH) : setToken(token.address);
-      }
-    });
+    }
+    else{
+      const chainId = store.get("token-chain-id");
+
+      ERC20Tokens.tokens.map((token) => {
+        if (
+            (token.symbol === selectedToken && token.chainId === chainId) ||
+            selectedToken === "ETH"
+        ) {
+          selectedToken === "ETH" ? setToken(ETH) : setToken(token.address);
+        }
+      });
+    }
   }, [selectedToken, setToken]);
 
   return (
