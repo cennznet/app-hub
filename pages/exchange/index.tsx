@@ -5,10 +5,13 @@ import { useCENNZApi } from "../../providers/CENNZApiProvider";
 import SupportedAssetsProvider, {
 	useAssets,
 } from "../../providers/SupportedAssetsProvider";
+import { Amount, AmountUnit } from "../../utils/exchange/Amount";
+import { Asset } from "../../types/exchange";
+import BigNumber from "bignumber.js";
 
 const Exchange: React.FC<{}> = () => {
-	const [exchangeToken, setExchangeToken] = useState("");
-	const [receivedToken, setReceivedToken] = useState("");
+	const [exchangeToken, setExchangeToken] = useState<Asset>();
+	const [receivedToken, setReceivedToken] = useState<Asset>();
 	const [receivedTokenValue, setReceivedTokenValue] =
 		React.useState<string>("0");
 	const [exchangeTokenValue, setExchangeTokenValue] =
@@ -21,16 +24,28 @@ const Exchange: React.FC<{}> = () => {
 	}, [updateApi]);
 
 	useEffect(() => {
-		const CENNZ = "1";
-		const CENTRAPAY = "2";
 		const setReceivedTokenAmount = async () => {
-			if (parseInt(exchangeTokenValue) > 0 && api) {
+			if (
+				parseInt(exchangeTokenValue) > 0 &&
+				api &&
+				exchangeToken &&
+				receivedToken
+			) {
+				let exchangeAmount: any = new BigNumber(exchangeTokenValue.toString());
+				exchangeAmount = exchangeAmount
+					.multipliedBy(Math.pow(10, parseInt(exchangeToken.decimals)))
+					.toString(10);
 				const sellPrice = await (api.rpc as any).cennzx.sellPrice(
-					CENNZ,
-					exchangeTokenValue,
-					CENTRAPAY
+					exchangeToken.id,
+					exchangeAmount,
+					receivedToken.id
 				);
-				setReceivedTokenValue(sellPrice.price.toString());
+				let receivedAmount: any = new Amount(
+					sellPrice.price.toString(),
+					AmountUnit.UN
+				);
+				receivedAmount = receivedAmount.toAmount(receivedToken.decimals);
+				setReceivedTokenValue(receivedAmount);
 			}
 		};
 		setReceivedTokenAmount();
@@ -93,7 +108,7 @@ const Exchange: React.FC<{}> = () => {
 						padding: "0px",
 					}}
 				>
-					<TokenPicker setToken={setExchangeToken} />
+					<TokenPicker setToken={setExchangeToken} cennznet={true} />
 					<TextField
 						label="Amount"
 						variant="outlined"
@@ -105,7 +120,7 @@ const Exchange: React.FC<{}> = () => {
 						value={exchangeTokenValue}
 						onChange={(event) => setExchangeTokenValue(event.target.value)}
 					/>
-					<TokenPicker setToken={setReceivedToken} />
+					<TokenPicker setToken={setReceivedToken} cennznet={true} />
 					<TextField
 						label="Amount"
 						variant="outlined"
