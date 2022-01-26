@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import store from "store";
 import {
 	FormControl,
 	InputLabel,
@@ -23,30 +22,39 @@ const MenuProps = {
 	},
 };
 
-const TokenPicker: React.FC<{ setToken: Function }> = ({ setToken }) => {
+const TokenPicker: React.FC<{ setToken: Function; cennznet?: boolean }> = ({
+	setToken,
+	cennznet = false,
+}) => {
 	const [tokens, setTokens] = useState<Object[]>([{}]);
 	const [selectedToken, setSelectedToken] = useState("");
 	const assets = useAssets();
 
 	useEffect(() => {
-		const location = store.get("location");
-		if (location === "exchange" && assets) {
+		if (cennznet && assets) {
 			let tokes: Object[] = [];
 
 			assets.map((asset) => {
 				asset.symbol === "ETH"
 					? tokes.push({
+							id: asset.id,
 							symbol: asset.symbol,
 							logo: ETH_LOGO,
+							decimals: asset.decimals,
 					  })
 					: tokes.push({
+							id: asset.id,
 							symbol: asset.symbol,
 							logo: `/images/${asset.symbol.toLowerCase()}.svg`,
+							decimals: asset.decimals,
 					  });
 			});
 
 			setTokens(tokes);
-		} else {
+		}
+		//TODO potentially add spinner here while assets are being retrieved
+		else if (cennznet && !assets) setTokens([]);
+		else {
 			let tokes: Object[] = [
 				{
 					symbol: "ETH",
@@ -67,11 +75,8 @@ const TokenPicker: React.FC<{ setToken: Function }> = ({ setToken }) => {
 	}, [assets]);
 
 	useEffect(() => {
-		const location = store.get("location");
-		if (location === "exchange" && assets) {
-			assets.map(
-				(asset) => selectedToken === asset.symbol && setToken(String(asset.id))
-			);
+		if (cennznet && assets) {
+			assets.map((asset) => selectedToken === asset.symbol && setToken(asset));
 		} else {
 			const CENNZnetNetwork = window.localStorage.getItem("CENNZnet-network")
 				? window.localStorage.getItem("CENNZnet-network")
