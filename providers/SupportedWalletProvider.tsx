@@ -216,7 +216,8 @@ export default function SupportedWalletProvider({
 	const [balances, setBalances] = useState<Array<BalanceInfo>>();
 	const [bridgeBalances, setBridgeBalances] = useState<Object>();
 	useEffect(() => {
-		if (!assets || !selectedAccount || !api) return;
+		const location = store.get("location");
+		if (!assets || !selectedAccount || !api || location !== "exchange") return;
 
 		async function fetchAssetBalances() {
 			const balances = (

@@ -1,14 +1,23 @@
 import React, { useEffect, useState } from "react";
 import Connect from "./connect";
 import Emery from "./emery";
+import { chainIds } from "../../utils/network";
 import BlockchainProvider from "../../providers/BlockchainProvider";
 
 const Home: React.FC<{}> = () => {
 	const [bridgeState, setBridgeState] = useState("");
-
 	useEffect(() => {
-		const ethereumNetwork = window.localStorage.getItem("ethereum-network");
-		ethereumNetwork ? setBridgeState("emery") : setBridgeState("connect");
+		(async () => {
+			const CENNZnetNetwork = window.localStorage.getItem("CENNZnet-network")
+				? window.localStorage.getItem("CENNZnet-network")
+				: "Azalea";
+			const { ethereum }: any = window;
+			const ethereumNetwork = window.localStorage.getItem("ethereum-network");
+			const ethChainId = await ethereum.request({ method: "eth_chainId" });
+			ethereumNetwork && ethChainId === chainIds[CENNZnetNetwork]
+				? setBridgeState("emery")
+				: setBridgeState("connect");
+		})();
 	}, []);
 
 	return (

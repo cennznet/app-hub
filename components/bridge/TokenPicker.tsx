@@ -10,6 +10,7 @@ import {
 import ERC20Tokens from "../../artifacts/erc20tokens.json";
 import { ETH, ETH_LOGO } from "../../utils/helpers";
 import { useAssets } from "../../providers/SupportedAssetsProvider";
+import { tokenChainIds } from "../../utils/network";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -22,16 +23,14 @@ const MenuProps = {
 	},
 };
 
-const TokenPicker: React.FC<{ setToken: Function; cennznet?: boolean }> = ({
-	setToken,
-	cennznet = true,
-}) => {
+const TokenPicker: React.FC<{ setToken: Function }> = ({ setToken }) => {
 	const [tokens, setTokens] = useState<Object[]>([{}]);
 	const [selectedToken, setSelectedToken] = useState("");
 	const assets = useAssets();
 
 	useEffect(() => {
-		if (cennznet && assets) {
+		const location = store.get("location");
+		if (location === "exchange" && assets) {
 			let tokes: Object[] = [];
 
 			assets.map((asset) => {
@@ -54,35 +53,41 @@ const TokenPicker: React.FC<{ setToken: Function; cennznet?: boolean }> = ({
 					logo: ETH_LOGO,
 				},
 			];
-			const chainId = store.get("token-chain-id");
+			const CENNZnetNetwork = window.localStorage.getItem("CENNZnet-network")
+				? window.localStorage.getItem("CENNZnet-network")
+				: "Azalea";
 
 			ERC20Tokens.tokens.map((token) => {
-				if (token.chainId === chainId) {
+				if (token.chainId === tokenChainIds[CENNZnetNetwork]) {
 					tokes.push({ symbol: token.symbol, logo: token.logoURI });
 				}
 			});
 			setTokens(tokes);
 		}
-	}, [cennznet, assets]);
+	}, [assets]);
 
 	useEffect(() => {
-		if (cennznet && assets) {
+		const location = store.get("location");
+		if (location === "exchange" && assets) {
 			assets.map(
 				(asset) => selectedToken === asset.symbol && setToken(String(asset.id))
 			);
 		} else {
-			const chainId = store.get("token-chain-id");
+			const CENNZnetNetwork = window.localStorage.getItem("CENNZnet-network")
+				? window.localStorage.getItem("CENNZnet-network")
+				: "Azalea";
 
 			ERC20Tokens.tokens.map((token) => {
 				if (
-					(token.symbol === selectedToken && token.chainId === chainId) ||
+					(token.symbol === selectedToken &&
+						token.chainId === tokenChainIds[CENNZnetNetwork]) ||
 					selectedToken === "ETH"
 				) {
 					selectedToken === "ETH" ? setToken(ETH) : setToken(token.address);
 				}
 			});
 		}
-	}, [cennznet, assets, selectedToken, setToken]);
+	}, [assets, selectedToken, setToken]);
 
 	return (
 		<FormControl sx={{ width: "80%", mt: "50px" }} required>

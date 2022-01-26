@@ -8,14 +8,12 @@ import { useWallet } from "../../providers/SupportedWalletProvider";
 import Switch from "../../components/bridge/Switch";
 import Deposit from "../../components/bridge/Deposit";
 import Withdraw from "../../components/bridge/Withdraw";
-import NetworkModal from "../../components/bridge/NetworkModal";
 import WalletModal from "../../components/bridge/WalletModal";
 
 const Emery: React.FC<{}> = () => {
 	const router = useRouter();
 	const [isDeposit, toggleIsDeposit] = useState<boolean>(true);
 	const [modalOpen, setModalOpen] = useState<boolean>(false);
-	const [currentNetwork, setCurrentNetwork] = useState<string>("");
 	const [modalState, setModalState] = useState<string>("");
 	const [isWalletConnected, setIsWalletConnected] = useState<boolean>(false);
 	const { selectedAccount, connectWallet } = useWallet();
@@ -43,7 +41,6 @@ const Emery: React.FC<{}> = () => {
 
 		if (ethereumNetwork) {
 			updateNetwork(ethereum, ethereumNetwork);
-			setCurrentNetwork(network);
 			if (!isWalletConnected) connectWallet();
 		}
 		//eslint-disable-next-line
@@ -68,13 +65,6 @@ const Emery: React.FC<{}> = () => {
 
 	return (
 		<>
-			{modalOpen && modalState === "networks" && (
-				<NetworkModal
-					setModalOpen={setModalOpen}
-					setModalState={setModalState}
-					currentNetwork={currentNetwork}
-				/>
-			)}
 			{modalOpen &&
 				(modalState === "showWallet" || modalState === "changeAccount") && (
 					<WalletModal
@@ -102,35 +92,6 @@ const Emery: React.FC<{}> = () => {
 			<Switch isDeposit={isDeposit} toggleIsDeposit={toggleIsDeposit} />
 			<Frame
 				sx={{
-					cursor: "pointer",
-					top: "4%",
-					right: "5%",
-					backgroundColor: modalState === "networks" ? "#1130FF" : "#FFFFFF",
-				}}
-				onClick={() => {
-					setModalOpen(true);
-					setModalState("networks");
-				}}
-			>
-				<Heading
-					sx={{
-						ml: "10px",
-						mt: "3px",
-						fontSize: "20px",
-						flexGrow: 1,
-						color: modalState === "networks" ? "#FFFFFF" : "#1130FF",
-					}}
-				>
-					NETWORK
-				</Heading>
-				<SmallText
-					sx={{ color: modalState === "networks" ? "#FFFFFF" : "black" }}
-				>
-					{currentNetwork}
-				</SmallText>
-			</Frame>
-			<Frame
-				sx={{
 					top: "12%",
 					right: "5%",
 					backgroundColor:
@@ -141,7 +102,7 @@ const Emery: React.FC<{}> = () => {
 				}}
 				onClick={walletClickHandler}
 			>
-				<img src="wallet.svg" />
+				<img src="wallet.svg" alt="CENNZnet-wallet" />
 				<Heading
 					sx={{
 						ml: "5px",
@@ -205,23 +166,7 @@ const Emery: React.FC<{}> = () => {
 					</>
 				)}
 			</Frame>
-			{currentNetwork === "" ? (
-				<Box
-					sx={{
-						position: "absolute",
-						top: "30%",
-						width: "20%",
-						left: "40%",
-						display: "flex",
-					}}
-				>
-					<CircularProgress size="5rem" sx={{ margin: "0 auto" }} />
-				</Box>
-			) : isDeposit ? (
-				<Deposit />
-			) : (
-				<Withdraw />
-			)}
+			{isDeposit ? <Deposit /> : <Withdraw />}
 		</>
 	);
 };

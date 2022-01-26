@@ -6,6 +6,7 @@ import { useBlockchain } from "../../providers/BlockchainProvider";
 import { useWallet } from "../../providers/SupportedWalletProvider";
 import ErrorModal from "../../components/bridge/ErrorModal";
 import WalletModal from "../../components/bridge/WalletModal";
+import { chainIds, chains } from "../../utils/network";
 
 const Connect: React.FC<{ setBridgeState: Function }> = ({
 	setBridgeState,
@@ -21,25 +22,22 @@ const Connect: React.FC<{ setBridgeState: Function }> = ({
 		try {
 			await ethereum.request({ method: "eth_requestAccounts" });
 			const ethChainId = await ethereum.request({ method: "eth_chainId" });
-			let ethereumNetwork;
-			switch (ethChainId) {
-				case "0x1":
-					ethereumNetwork = "Mainnet";
-					break;
-				case "0x3":
-					ethereumNetwork = "Ropsten";
-					break;
-				case "0x2a":
-					ethereumNetwork = "Kovan";
-					break;
-				default:
-					setModalState("wrongNetwork");
-					setModalOpen(true);
-					break;
+
+			const CENNZnetNetwork = window.localStorage.getItem("CENNZnet-network")
+				? window.localStorage.getItem("CENNZnet-network")
+				: "Azalea";
+
+			if (ethChainId !== chainIds[CENNZnetNetwork]) {
+				await ethereum.request({
+					method: "wallet_switchEthereumChain",
+					params: [{ chainId: chainIds[CENNZnetNetwork] }],
+				});
+				updateNetwork(ethereum, chains[CENNZnetNetwork]);
+				window.location.reload();
 			}
 
-			window.localStorage.setItem("ethereum-network", ethereumNetwork);
-			updateNetwork(ethereum, ethereumNetwork);
+			window.localStorage.setItem("ethereum-network", chains[CENNZnetNetwork]);
+			updateNetwork(ethereum, chains[CENNZnetNetwork]);
 		} catch (err) {
 			setModalState("noMetamask");
 			setModalOpen(true);

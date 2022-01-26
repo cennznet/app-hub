@@ -1,4 +1,5 @@
 import React from "react";
+import store from "store";
 import { Box } from "@mui/material";
 import { SwitchButton } from "../theme/StyledComponents";
 import { useCENNZApi } from "../providers/CENNZApiProvider";
@@ -12,6 +13,7 @@ const Switch: React.FC<{ location: string; setLocation: Function }> = ({
 
 	async function switchLocation(location: string) {
 		if (api && api.isConnected) await api.disconnect();
+		store.set("location", location);
 		setLocation(location);
 	}
 
