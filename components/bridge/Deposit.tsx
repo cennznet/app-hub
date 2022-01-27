@@ -8,7 +8,7 @@ import { getMetamaskBalance, ETH } from "../../utils/helpers";
 import { useBlockchain } from "../../providers/BlockchainProvider";
 import { useCENNZApi } from "../../providers/CENNZApiProvider";
 import TxModal from "./TxModal";
-import TokenPicker from "./TokenPicker";
+import TokenPicker from "../shared/TokenPicker";
 import CENNZnetAccountPicker from "./CENNZnetAccountPicker";
 
 const Deposit: React.FC<{}> = () => {
