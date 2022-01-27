@@ -21,7 +21,8 @@ function MyApp({ Component, pageProps }: AppProps) {
 
 	useEffect(() => {
 		if (location !== undefined) router.push(`/${location}`);
-	}, [location, router]);
+		//eslint-disable-next-line
+	}, [location]);
 
 	return (
 		<>
