@@ -31,7 +31,7 @@ const Switch: React.FC<{ location: string; setLocation: Function }> = ({
 			}
 		}
 
-		if (newLocation === "exchange" || newLocation === "liquidity") {
+		if (newLocation === "swap" || newLocation === "pool") {
 			updateApi(apiUrls["Azalea"]);
 			window.localStorage.setItem("CENNZnet-network", "Azalea");
 		}
@@ -54,6 +54,17 @@ const Switch: React.FC<{ location: string; setLocation: Function }> = ({
 			{indexColours && (
 				<>
 					<SwitchButton
+						onClick={() => switchLocation("swap")}
+						style={{
+							backgroundColor: "#FFFFFF",
+							color: "#1130FF",
+							borderLeft: "2px solid #1130FF",
+							borderRight: "2px solid #1130FF",
+						}}
+					>
+						swap
+					</SwitchButton>
+					<SwitchButton
 						onClick={() => switchLocation("bridge")}
 						style={{
 							backgroundColor: "#FFFFFF",
@@ -64,31 +75,29 @@ const Switch: React.FC<{ location: string; setLocation: Function }> = ({
 						bridge
 					</SwitchButton>
 					<SwitchButton
-						onClick={() => switchLocation("exchange")}
-						style={{
-							backgroundColor: "#FFFFFF",
-							color: "#1130FF",
-							borderLeft: "2px solid #1130FF",
-							borderRight: "2px solid #1130FF",
-						}}
-					>
-						exchange
-					</SwitchButton>
-					<SwitchButton
-						onClick={() => switchLocation("liquidity")}
+						onClick={() => switchLocation("pool")}
 						style={{
 							backgroundColor: "#FFFFFF",
 							color: "#1130FF",
 							borderLeft: "2px solid #1130FF",
 						}}
 					>
-						liquidity
+						pool
 					</SwitchButton>
 				</>
 			)}
 			{location === "bridge" && (
 				<>
 					<SwitchButton
+						onClick={() => switchLocation("swap")}
+						style={{
+							backgroundColor: "#FFFFFF",
+							color: "#1130FF",
+						}}
+					>
+						swap
+					</SwitchButton>
+					<SwitchButton
 						style={{
 							backgroundColor: "#1130FF",
 							color: "#FFFFFF",
@@ -97,28 +106,59 @@ const Switch: React.FC<{ location: string; setLocation: Function }> = ({
 						bridge
 					</SwitchButton>
 					<SwitchButton
-						onClick={() => switchLocation("exchange")}
-						style={{
-							backgroundColor: "#FFFFFF",
-							color: "#1130FF",
-						}}
-					>
-						exchange
-					</SwitchButton>
-					<SwitchButton
-						onClick={() => switchLocation("liquidity")}
+						onClick={() => switchLocation("pool")}
 						style={{
 							backgroundColor: "#FFFFFF",
 							color: "#1130FF",
 							borderLeft: "2px solid #1130FF",
 						}}
 					>
-						liquidity
+						pool
 					</SwitchButton>
 				</>
 			)}
-			{location === "exchange" && (
+			{location === "swap" && (
 				<>
+					<SwitchButton
+						style={{
+							backgroundColor: "#1130FF",
+							color: "#FFFFFF",
+						}}
+					>
+						swap
+					</SwitchButton>
+					<SwitchButton
+						onClick={() => switchLocation("bridge")}
+						style={{
+							backgroundColor: "#FFFFFF",
+							color: "#1130FF",
+						}}
+					>
+						bridge
+					</SwitchButton>
+					<SwitchButton
+						onClick={() => switchLocation("pool")}
+						style={{
+							backgroundColor: "#FFFFFF",
+							color: "#1130FF",
+							borderLeft: "2px solid #1130FF",
+						}}
+					>
+						pool
+					</SwitchButton>
+				</>
+			)}
+			{location === "pool" && (
+				<>
+					<SwitchButton
+						onClick={() => switchLocation("swap")}
+						style={{
+							backgroundColor: "#FFFFFF",
+							color: "#1130FF",
+						}}
+					>
+						swap
+					</SwitchButton>
 					<SwitchButton
 						onClick={() => switchLocation("bridge")}
 						style={{
@@ -132,50 +172,10 @@ const Switch: React.FC<{ location: string; setLocation: Function }> = ({
 						style={{
 							backgroundColor: "#1130FF",
 							color: "#FFFFFF",
-						}}
-					>
-						exchange
-					</SwitchButton>
-					<SwitchButton
-						onClick={() => switchLocation("liquidity")}
-						style={{
-							backgroundColor: "#FFFFFF",
-							color: "#1130FF",
 							borderLeft: "2px solid #1130FF",
 						}}
 					>
-						liquidity
-					</SwitchButton>
-				</>
-			)}
-			{location === "liquidity" && (
-				<>
-					<SwitchButton
-						onClick={() => switchLocation("bridge")}
-						style={{
-							backgroundColor: "#FFFFFF",
-							color: "#1130FF",
-						}}
-					>
-						bridge
-					</SwitchButton>
-					<SwitchButton
-						onClick={() => switchLocation("exchange")}
-						style={{
-							backgroundColor: "#FFFFFF",
-							color: "#1130FF",
-						}}
-					>
-						exchange
-					</SwitchButton>
-					<SwitchButton
-						style={{
-							backgroundColor: "#1130FF",
-							color: "#FFFFFF",
-							borderLeft: "2px solid #1130FF",
-						}}
-					>
-						liquidity
+						pool
 					</SwitchButton>
 				</>
 			)}

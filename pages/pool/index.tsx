@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
 import { Box, Button, TextField } from "@mui/material";
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
 import TokenPicker from "../../components/shared/TokenPicker";
@@ -9,8 +10,12 @@ import SupportedAssetsProvider, {
 import CENNZnetAccountPicker from "../../components/shared/CENNZnetAccountPicker";
 import { Heading } from "../../theme/StyledComponents";
 
-const Liquidity: React.FC<{}> = () => {
+const CPAY = { id: 2, symbol: "CPAY", logo: "/images/cpay.svg", decimals: 4 };
+
+const Pool: React.FC<{}> = () => {
 	const [token, setToken] = useState<string>();
+	const [tokenAmount, setTokenAmount] = useState<number>();
+	const [cpayAmount, setCpayAmount] = useState<number>();
 	const [isWithdraw, setIsWithdraw] = useState<boolean>(false);
 	const [selectedAccount, updateSelectedAccount] = useState({
 		address: "",
@@ -18,6 +23,16 @@ const Liquidity: React.FC<{}> = () => {
 	});
 	const { api, apiRx } = useCENNZApi();
 	const assets = useAssets();
+
+	async function confirm() {
+		console.log({
+			selectedAccount,
+			isWithdraw,
+			token,
+			tokenAmount,
+			cpayAmount,
+		});
+	}
 
 	return (
 		<SupportedAssetsProvider>
@@ -89,22 +104,36 @@ const Liquidity: React.FC<{}> = () => {
 					<TextField
 						label="Amount"
 						variant="outlined"
+						type="number"
 						required
 						sx={{
 							width: "80%",
 							m: "30px 0 30px",
 						}}
+						onChange={(e) => setTokenAmount(Number(e.target.value))}
 					/>
-					<TokenPicker setToken={setToken} cennznet={true} />
-					<TextField
-						label="Amount"
-						variant="outlined"
-						required
-						sx={{
-							width: "80%",
-							m: "30px 0 30px",
+					{/* <TokenPicker setToken={setCpay} cpay={true} /> */}
+					<span
+						style={{
+							display: "flex",
+							flexDirection: "row",
+							width: "90%",
+							marginLeft: "10%",
 						}}
-					/>
+					>
+						<TextField
+							label="Amount"
+							type="number"
+							variant="outlined"
+							required
+							sx={{
+								width: "80%",
+								m: "30px 0 30px",
+							}}
+							onChange={(e) => setCpayAmount(Number(e.target.value))}
+						/>
+						<Image src={CPAY.logo} height={50} width={50} />
+					</span>
 					<Button
 						sx={{
 							fontFamily: "Teko",
@@ -117,8 +146,9 @@ const Liquidity: React.FC<{}> = () => {
 						}}
 						size="large"
 						variant="outlined"
+						onClick={confirm}
 					>
-						Exchange
+						Confirm
 					</Button>
 				</Box>
 			</Box>
@@ -126,4 +156,4 @@ const Liquidity: React.FC<{}> = () => {
 	);
 };
 
-export default Liquidity;
+export default Pool;
