@@ -27,7 +27,8 @@ const TokenPicker: React.FC<{
 	setToken: Function;
 	cennznet?: boolean;
 	forceSelection?: Asset;
-}> = ({ setToken, cennznet = false, forceSelection }) => {
+	removeToken?: Asset;
+}> = ({ setToken, cennznet = false, forceSelection, removeToken }) => {
 	const [tokens, setTokens] = useState<Object[]>([{}]);
 	const [selectedToken, setSelectedToken] = useState("");
 	const assets = useAssets();
@@ -38,7 +39,7 @@ const TokenPicker: React.FC<{
 
 	useEffect(() => {
 		if (cennznet && assets) {
-			let tokes: Object[] = [];
+			let tokes: Asset[] = [];
 
 			assets.map((asset) => {
 				asset.symbol === "ETH"
@@ -55,7 +56,8 @@ const TokenPicker: React.FC<{
 							decimals: asset.decimals,
 					  });
 			});
-
+			if (removeToken)
+				tokes = tokes.filter((toke) => toke.id !== removeToken.id);
 			setTokens(tokes);
 		}
 		//TODO potentially add spinner here while assets are being retrieved
@@ -78,7 +80,7 @@ const TokenPicker: React.FC<{
 			});
 			setTokens(tokes);
 		}
-	}, [cennznet, assets]);
+	}, [cennznet, assets, removeToken]);
 
 	useEffect(() => {
 		if (cennznet && assets) {

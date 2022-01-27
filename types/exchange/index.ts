@@ -34,7 +34,7 @@ export interface IAppConfig {
 export interface Asset {
 	symbol: string;
 	id: number;
-	decimals?: string;
+	decimals?: number;
 	logo?: string;
 	amount?: number;
 }

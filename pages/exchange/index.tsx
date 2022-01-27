@@ -30,7 +30,7 @@ const Exchange: React.FC<{}> = () => {
 			) {
 				let exchangeAmount: any = new BigNumber(exchangeTokenValue.toString());
 				exchangeAmount = exchangeAmount
-					.multipliedBy(Math.pow(10, parseInt(exchangeToken.decimals)))
+					.multipliedBy(Math.pow(10, exchangeToken.decimals))
 					.toString(10);
 				const sellPrice = await (api.rpc as any).cennzx.sellPrice(
 					exchangeToken.id,
@@ -128,6 +128,7 @@ const Exchange: React.FC<{}> = () => {
 						setToken={setReceivedToken}
 						cennznet={true}
 						forceSelection={receivedToken}
+						removeToken={exchangeToken}
 					/>
 					<TextField
 						label="Amount"
