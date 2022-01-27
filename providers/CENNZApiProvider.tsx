@@ -22,10 +22,7 @@ export default function CENNZApiProvider({ children }: PropsWithChildren<{}>) {
 
 	const updateApi = useCallback((endpoint) => {
 		const instance = new Api({ provider: endpoint });
-		instance.isReady.then(() => {
-			console.log("api", instance);
-			setApi(instance);
-		});
+		instance.isReady.then(() => setApi(instance));
 	}, []);
 
 	const updateApiRx = useCallback((endpoint) => {

@@ -16,12 +16,8 @@ const Exchange: React.FC<{}> = () => {
 		React.useState<string>("0");
 	const [exchangeTokenValue, setExchangeTokenValue] =
 		React.useState<string>("0");
-	const { api, apiRx, updateApi }: any = useCENNZApi();
+	const { api, apiRx }: any = useCENNZApi();
 	const assets = useAssets();
-
-	useEffect(() => {
-		updateApi("wss://cennznet.unfrastructure.io/public/ws");
-	}, [updateApi]);
 
 	useEffect(() => {
 		const setReceivedTokenAmount = async () => {
@@ -49,12 +45,7 @@ const Exchange: React.FC<{}> = () => {
 			}
 		};
 		setReceivedTokenAmount();
-	}, [api, exchangeTokenValue, assets]);
-
-	useEffect(() => {
-		console.log("exchangeToken", exchangeToken);
-		console.log("receivedToken", receivedToken);
-	}, [exchangeToken, receivedToken]);
+	}, [api, exchangeTokenValue, assets, exchangeToken, receivedToken]);
 
 	return (
 		<SupportedAssetsProvider>

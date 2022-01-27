@@ -72,7 +72,7 @@ const TokenPicker: React.FC<{ setToken: Function; cennznet?: boolean }> = ({
 			});
 			setTokens(tokes);
 		}
-	}, [assets]);
+	}, [cennznet, assets]);
 
 	useEffect(() => {
 		if (cennznet && assets) {
@@ -92,7 +92,7 @@ const TokenPicker: React.FC<{ setToken: Function; cennznet?: boolean }> = ({
 				}
 			});
 		}
-	}, [assets, selectedToken, setToken]);
+	}, [cennznet, assets, selectedToken, setToken]);
 
 	return (
 		<FormControl sx={{ width: "80%", mt: "50px" }} required>

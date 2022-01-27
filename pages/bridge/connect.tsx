@@ -22,7 +22,6 @@ const Connect: React.FC<{ setBridgeState: Function }> = ({
 		try {
 			await ethereum.request({ method: "eth_requestAccounts" });
 			const ethChainId = await ethereum.request({ method: "eth_chainId" });
-
 			const CENNZnetNetwork = window.localStorage.getItem("CENNZnet-network")
 				? window.localStorage.getItem("CENNZnet-network")
 				: "Azalea";
@@ -32,11 +31,9 @@ const Connect: React.FC<{ setBridgeState: Function }> = ({
 					method: "wallet_switchEthereumChain",
 					params: [{ chainId: chainIds[CENNZnetNetwork] }],
 				});
-				updateNetwork(ethereum, chains[CENNZnetNetwork]);
 				window.location.reload();
 			}
 
-			window.localStorage.setItem("ethereum-network", chains[CENNZnetNetwork]);
 			updateNetwork(ethereum, chains[CENNZnetNetwork]);
 		} catch (err) {
 			setModalState("noMetamask");
