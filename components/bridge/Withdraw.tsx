@@ -7,7 +7,7 @@ import { useBlockchain } from "../../providers/BlockchainProvider";
 import { useCENNZApi } from "../../providers/CENNZApiProvider";
 import { useWallet } from "../../providers/SupportedWalletProvider";
 import TxModal from "./TxModal";
-import TokenPicker from "./TokenPicker";
+import TokenPicker from "../shared/TokenPicker";
 
 const Withdraw: React.FC<{}> = () => {
 	const [token, setToken] = useState("");

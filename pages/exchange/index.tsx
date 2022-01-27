@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Box, Button, TextField } from "@mui/material";
-import TokenPicker from "../../components/bridge/TokenPicker";
+import TokenPicker from "../../components/shared/TokenPicker";
+import ExchangeIcon from "../../components/exchange/ExchangeIcon";
 import { useCENNZApi } from "../../providers/CENNZApiProvider";
 import SupportedAssetsProvider, {
 	useAssets,
@@ -111,6 +112,7 @@ const Exchange: React.FC<{}> = () => {
 						value={exchangeTokenValue}
 						onChange={(event) => setExchangeTokenValue(event.target.value)}
 					/>
+					<ExchangeIcon onClick={() => {}} />
 					<TokenPicker setToken={setReceivedToken} cennznet={true} />
 					<TextField
 						label="Amount"
