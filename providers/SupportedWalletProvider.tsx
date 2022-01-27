@@ -30,8 +30,8 @@ type WalletContext = {
 	connectWallet: (callback?: () => void) => Promise<void>;
 	disconnectWallet: () => void;
 	selectAccount: (account: InjectedAccountWithMeta) => void;
-	setBalances: Function;
 	bridgeBalances: Object;
+	getBridgeBalances: Function;
 };
 
 const SupportedWalletContext = createContext<WalletContext>({
@@ -41,8 +41,8 @@ const SupportedWalletContext = createContext<WalletContext>({
 	connectWallet: null,
 	disconnectWallet: null,
 	selectAccount: null,
-	setBalances: null,
 	bridgeBalances: null,
+	getBridgeBalances: null,
 });
 
 type ProviderProps = {};
@@ -56,6 +56,7 @@ export default function SupportedWalletProvider({
 	const { web3Enable, web3FromSource } = useDappModule();
 	const [wallet, setWallet] = useState<InjectedExtension>(null);
 	const [selectedAccount, setAccount] = useState<InjectedAccountWithMeta>(null);
+	const [bridgeBalances, setBridgeBalances] = useState<Object>();
 
 	const connectWallet = useCallback(
 		async (callback) => {
@@ -214,10 +215,8 @@ export default function SupportedWalletProvider({
 	// 3. Fetch `account` balance
 	const assets = useAssets();
 	const [balances, setBalances] = useState<Array<BalanceInfo>>();
-	const [bridgeBalances, setBridgeBalances] = useState<Object>();
 	useEffect(() => {
-		const location = store.get("location");
-		if (!assets || !selectedAccount || !api || location !== "exchange") return;
+		if (!assets || !selectedAccount || !api) return;
 
 		async function fetchAssetBalances() {
 			const balances = (
@@ -236,8 +235,7 @@ export default function SupportedWalletProvider({
 		}
 
 		fetchAssetBalances();
-		getBridgeBalances(selectedAccount.address);
-	}, [assets, selectedAccount, api, getBridgeBalances]);
+	}, [assets, selectedAccount, api]);
 
 	return (
 		<SupportedWalletContext.Provider
@@ -248,8 +246,8 @@ export default function SupportedWalletProvider({
 				connectWallet,
 				disconnectWallet,
 				selectAccount,
-				setBalances,
 				bridgeBalances,
+				getBridgeBalances,
 			}}
 		>
 			{children}

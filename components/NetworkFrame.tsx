@@ -1,22 +1,32 @@
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import { Frame, Heading, SmallText } from "../theme/StyledComponents";
 import { useCENNZApi } from "../providers/CENNZApiProvider";
 import NetworkModal from "./bridge/NetworkModal";
-import { networks, apiUrls } from "../utils/network";
+import { apiUrls, bridgeNetworks } from "../utils/network";
 
 const NetworkFrame: React.FC<{}> = () => {
+	const router = useRouter();
 	const [modalOpen, setModalOpen] = useState<boolean>(false);
 	const [currentNetwork, setCurrentNetwork] = useState<string>("");
 	const [modalState, setModalState] = useState<string>("");
 	const { api, updateApi }: any = useCENNZApi();
 
 	useEffect(() => {
+		if (router.asPath === "/exchange") {
+			setCurrentNetwork("Azalea");
+			window.localStorage.setItem("CENNZnet-network", "Azalea");
+			return;
+		}
 		const CENNZnetNetwork = window.localStorage.getItem("CENNZnet-network")
 			? window.localStorage.getItem("CENNZnet-network")
 			: "Azalea";
-		if (!api || (api && !api.isConnected)) updateApi(apiUrls[CENNZnetNetwork]);
-		setCurrentNetwork(CENNZnetNetwork);
-	}, [api, updateApi]);
+		if (!api) updateApi(apiUrls[CENNZnetNetwork]);
+
+		router.asPath === "/bridge"
+			? setCurrentNetwork(bridgeNetworks[CENNZnetNetwork])
+			: setCurrentNetwork(CENNZnetNetwork);
+	}, [api, updateApi, router.asPath]);
 
 	return (
 		<>
@@ -30,14 +40,16 @@ const NetworkFrame: React.FC<{}> = () => {
 			<Frame
 				sx={{
 					position: "absolute",
-					cursor: "pointer",
+					cursor: router.asPath !== "/exchange" && "pointer",
 					top: "4%",
 					right: "5%",
 					backgroundColor: modalState === "networks" ? "#1130FF" : "#FFFFFF",
 				}}
 				onClick={() => {
-					setModalOpen(true);
-					setModalState("networks");
+					if (router.asPath !== "/exchange") {
+						setModalOpen(true);
+						setModalState("networks");
+					}
 				}}
 			>
 				<Heading

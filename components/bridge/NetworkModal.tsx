@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import store from "store";
+import { useRouter } from "next/router";
 import { Button, Modal } from "@mui/material";
 import {
 	StyledModal,
@@ -9,23 +9,26 @@ import {
 } from "../../theme/StyledComponents";
 import { useCENNZApi } from "../../providers/CENNZApiProvider";
 import { useBlockchain } from "../../providers/BlockchainProvider";
-import { chainIds, chains } from "../../utils/network";
-
-const networks = ["Azalea", "Nikau", "Rata"];
+import {
+	networks,
+	chainIds,
+	chains,
+	bridgeNetworks,
+} from "../../utils/network";
 
 const NetworkModal: React.FC<{
 	setModalOpen: Function;
 	setModalState: Function;
 	currentNetwork: string;
 }> = ({ setModalOpen, setModalState, currentNetwork }) => {
+	const router = useRouter();
 	const [open] = useState(true);
 	const { api } = useCENNZApi();
 	const { updateNetwork } = useBlockchain();
 
 	const changeNetwork = async (selectedNetwork) => {
 		if (api && api.isConnected) await api.disconnect();
-		const location = store.get("location");
-		if (location === "bridge") {
+		if (router.asPath === "/bridge") {
 			const { ethereum }: any = window;
 			const ethChainId = await ethereum.request({ method: "eth_chainId" });
 
@@ -98,7 +101,7 @@ const NetworkModal: React.FC<{
 								textTransform: "none",
 							}}
 						>
-							{network}
+							{router.asPath === "/bridge" ? bridgeNetworks[network] : network}
 						</SmallText>
 					</Option>
 				))}

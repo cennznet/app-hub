@@ -3,18 +3,40 @@ import store from "store";
 import { Box } from "@mui/material";
 import { SwitchButton } from "../theme/StyledComponents";
 import { useCENNZApi } from "../providers/CENNZApiProvider";
+import { useBlockchain } from "../providers/BlockchainProvider";
+import { chainIds, chains, apiUrls } from "../utils/network";
 
 const Switch: React.FC<{ location: string; setLocation: Function }> = ({
 	location,
 	setLocation,
 }) => {
-	const { api } = useCENNZApi();
+	const { api, updateApi } = useCENNZApi();
 	const indexColours = location === undefined || location === "index";
+	const { updateNetwork, Account } = useBlockchain();
 
-	async function switchLocation(location: string) {
+	async function switchLocation(newLocation: string) {
 		if (api && api.isConnected) await api.disconnect();
-		store.set("location", location);
-		setLocation(location);
+		if (newLocation === "bridge") {
+			const { ethereum }: any = window;
+			const ethChainId = await ethereum.request({ method: "eth_chainId" });
+			const CENNZnetNetwork = window.localStorage.getItem("CENNZnet-network")
+				? window.localStorage.getItem("CENNZnet-network")
+				: "Azalea";
+
+			if (ethChainId !== chainIds[CENNZnetNetwork] && Account) {
+				await ethereum.request({
+					method: "wallet_switchEthereumChain",
+					params: [{ chainId: chainIds[CENNZnetNetwork] }],
+				});
+				updateNetwork(ethereum, chains[CENNZnetNetwork]);
+			}
+		}
+
+		if (newLocation === "exchange") {
+			updateApi(apiUrls["Azalea"]);
+			window.localStorage.setItem("CENNZnet-network", "Azalea");
+		}
+		setLocation(newLocation);
 	}
 
 	return (

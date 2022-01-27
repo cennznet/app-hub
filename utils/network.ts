@@ -23,3 +23,9 @@ export const tokenChainIds = {
 	Nikau: 42,
 	Rata: 3,
 };
+
+export const bridgeNetworks = {
+	Azalea: "Mainnet/Azalea",
+	Nikau: "Kovan/Nikau",
+	Rata: "Ropsten/Rata",
+};

@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/router";
-import { isBrowser, isTablet } from "react-device-detect";
-import { Box, CircularProgress, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import { Frame, Heading, SmallText } from "../../theme/StyledComponents";
 import { useBlockchain } from "../../providers/BlockchainProvider";
 import { useWallet } from "../../providers/SupportedWalletProvider";
@@ -11,7 +9,6 @@ import Withdraw from "../../components/bridge/Withdraw";
 import WalletModal from "../../components/bridge/WalletModal";
 
 const Emery: React.FC<{}> = () => {
-	const router = useRouter();
 	const [isDeposit, toggleIsDeposit] = useState<boolean>(true);
 	const [modalOpen, setModalOpen] = useState<boolean>(false);
 	const [modalState, setModalState] = useState<string>("");
@@ -23,28 +20,9 @@ const Emery: React.FC<{}> = () => {
 		const { ethereum }: any = window;
 		const ethereumNetwork = window.localStorage.getItem("ethereum-network");
 
-		let network: string;
-		switch (ethereumNetwork) {
-			case "Mainnet":
-				network = "Mainnet/Mainnet";
-				break;
-			case "Ropsten":
-				network = "Ropsten/Rata";
-				break;
-			case "Kovan":
-				network = "Kovan/Nikau";
-				break;
-			default:
-				router.push("/bridge");
-				break;
-		}
-
-		if (ethereumNetwork) {
-			updateNetwork(ethereum, ethereumNetwork);
-			if (!isWalletConnected) connectWallet();
-		}
-		//eslint-disable-next-line
-	}, []);
+		if (!Account) updateNetwork(ethereum, ethereumNetwork);
+		if (!isWalletConnected) connectWallet();
+	}, [Account, updateNetwork, connectWallet, isWalletConnected]);
 
 	useEffect(() => {
 		selectedAccount ? setIsWalletConnected(true) : setIsWalletConnected(false);
@@ -77,11 +55,11 @@ const Emery: React.FC<{}> = () => {
 				sx={{
 					position: "absolute",
 					top: "4.5%",
-					left: isBrowser ? "16%" : "25%",
+					left: "16%",
 					fontFamily: "Teko",
 					fontStyle: "normal",
 					fontWeight: "bold",
-					fontSize: isBrowser || isTablet ? "24px" : "16px",
+					fontSize: "24px",
 					lineHeight: "124%",
 					color: "black",
 					letterSpacing: "1px",
