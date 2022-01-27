@@ -14,7 +14,7 @@ import {
 	chainIds,
 	chains,
 	bridgeNetworks,
-} from "../../utils/network";
+} from "../../utils/networks";
 
 const NetworkModal: React.FC<{
 	setModalOpen: Function;

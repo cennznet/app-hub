@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { Frame, Heading, SmallText } from "../theme/StyledComponents";
 import { useCENNZApi } from "../providers/CENNZApiProvider";
 import NetworkModal from "./bridge/NetworkModal";
-import { apiUrls, bridgeNetworks } from "../utils/network";
+import { apiUrls, bridgeNetworks } from "../utils/networks";
 
 const NetworkFrame: React.FC<{}> = () => {
 	const router = useRouter();

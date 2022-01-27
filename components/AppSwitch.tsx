@@ -1,10 +1,9 @@
 import React from "react";
-import store from "store";
 import { Box } from "@mui/material";
 import { SwitchButton } from "../theme/StyledComponents";
 import { useCENNZApi } from "../providers/CENNZApiProvider";
 import { useBlockchain } from "../providers/BlockchainProvider";
-import { chainIds, chains, apiUrls } from "../utils/network";
+import { chainIds, chains, apiUrls } from "../utils/networks";
 
 const Switch: React.FC<{ location: string; setLocation: Function }> = ({
 	location,

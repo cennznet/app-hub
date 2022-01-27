@@ -6,7 +6,7 @@ import { useBlockchain } from "../../providers/BlockchainProvider";
 import { useWallet } from "../../providers/SupportedWalletProvider";
 import ErrorModal from "../../components/bridge/ErrorModal";
 import WalletModal from "../../components/bridge/WalletModal";
-import { chainIds, chains } from "../../utils/network";
+import { chainIds, chains } from "../../utils/networks";
 
 const Connect: React.FC<{ setBridgeState: Function }> = ({
 	setBridgeState,

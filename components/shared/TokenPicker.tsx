@@ -9,7 +9,7 @@ import {
 import ERC20Tokens from "../../artifacts/erc20tokens.json";
 import { ETH, ETH_LOGO } from "../../utils/helpers";
 import { useAssets } from "../../providers/SupportedAssetsProvider";
-import { tokenChainIds } from "../../utils/network";
+import { tokenChainIds } from "../../utils/networks";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
