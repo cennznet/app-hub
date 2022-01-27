@@ -100,7 +100,11 @@ const Exchange: React.FC<{}> = () => {
 						padding: "0px",
 					}}
 				>
-					<TokenPicker setToken={setExchangeToken} cennznet={true} />
+					<TokenPicker
+						setToken={setExchangeToken}
+						cennznet={true}
+						forceSelection={exchangeToken}
+					/>
 					<TextField
 						label="Amount"
 						variant="outlined"
@@ -112,8 +116,19 @@ const Exchange: React.FC<{}> = () => {
 						value={exchangeTokenValue}
 						onChange={(event) => setExchangeTokenValue(event.target.value)}
 					/>
-					<ExchangeIcon onClick={() => {}} />
-					<TokenPicker setToken={setReceivedToken} cennznet={true} />
+					<ExchangeIcon
+						onClick={() => {
+							setReceivedToken(exchangeToken);
+							setExchangeToken(receivedToken);
+							setExchangeTokenValue(receivedTokenValue);
+							setReceivedTokenValue(exchangeTokenValue);
+						}}
+					/>
+					<TokenPicker
+						setToken={setReceivedToken}
+						cennznet={true}
+						forceSelection={receivedToken}
+					/>
 					<TextField
 						label="Amount"
 						variant="outlined"

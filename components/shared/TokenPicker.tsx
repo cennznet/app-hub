@@ -10,6 +10,7 @@ import ERC20Tokens from "../../artifacts/erc20tokens.json";
 import { ETH, ETH_LOGO } from "../../utils/helpers";
 import { useAssets } from "../../providers/SupportedAssetsProvider";
 import { tokenChainIds } from "../../utils/networks";
+import { Asset } from "../../types/exchange";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -22,13 +23,18 @@ const MenuProps = {
 	},
 };
 
-const TokenPicker: React.FC<{ setToken: Function; cennznet?: boolean }> = ({
-	setToken,
-	cennznet = false,
-}) => {
+const TokenPicker: React.FC<{
+	setToken: Function;
+	cennznet?: boolean;
+	forceSelection?: Asset;
+}> = ({ setToken, cennznet = false, forceSelection }) => {
 	const [tokens, setTokens] = useState<Object[]>([{}]);
 	const [selectedToken, setSelectedToken] = useState("");
 	const assets = useAssets();
+
+	useEffect(() => {
+		if (forceSelection) setSelectedToken(forceSelection.symbol);
+	}, [forceSelection]);
 
 	useEffect(() => {
 		if (cennznet && assets) {
@@ -100,7 +106,9 @@ const TokenPicker: React.FC<{ setToken: Function; cennznet?: boolean }> = ({
 			<Select
 				required
 				value={selectedToken}
-				onChange={(e) => setSelectedToken(e.target.value)}
+				onChange={(e) => {
+					setSelectedToken(e.target.value);
+				}}
 				input={<OutlinedInput label="Token" />}
 				MenuProps={MenuProps}
 				sx={{ fontSize: "18px" }}
