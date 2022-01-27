@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import store from "store";
 import {
 	FormControl,
 	InputLabel,
@@ -10,6 +9,7 @@ import {
 import ERC20Tokens from "../../artifacts/erc20tokens.json";
 import { ETH, ETH_LOGO } from "../../utils/helpers";
 import { useAssets } from "../../providers/SupportedAssetsProvider";
+import { tokenChainIds } from "../../utils/networks";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -53,7 +53,7 @@ const TokenPicker: React.FC<{ setToken: Function; cennznet?: boolean }> = ({
 			setTokens(tokes);
 		}
 		//TODO potentially add spinner here while assets are being retrieved
-		else if (!assets) setTokens([]);
+		else if (cennznet && !assets) setTokens([]);
 		else {
 			let tokes: Object[] = [
 				{
@@ -61,10 +61,12 @@ const TokenPicker: React.FC<{ setToken: Function; cennznet?: boolean }> = ({
 					logo: ETH_LOGO,
 				},
 			];
-			const chainId = store.get("token-chain-id");
+			const CENNZnetNetwork = window.localStorage.getItem("CENNZnet-network")
+				? window.localStorage.getItem("CENNZnet-network")
+				: "Azalea";
 
 			ERC20Tokens.tokens.map((token) => {
-				if (token.chainId === chainId) {
+				if (token.chainId === tokenChainIds[CENNZnetNetwork]) {
 					tokes.push({ symbol: token.symbol, logo: token.logoURI });
 				}
 			});
@@ -76,11 +78,14 @@ const TokenPicker: React.FC<{ setToken: Function; cennznet?: boolean }> = ({
 		if (cennznet && assets) {
 			assets.map((asset) => selectedToken === asset.symbol && setToken(asset));
 		} else {
-			const chainId = store.get("token-chain-id");
+			const CENNZnetNetwork = window.localStorage.getItem("CENNZnet-network")
+				? window.localStorage.getItem("CENNZnet-network")
+				: "Azalea";
 
 			ERC20Tokens.tokens.map((token) => {
 				if (
-					(token.symbol === selectedToken && token.chainId === chainId) ||
+					(token.symbol === selectedToken &&
+						token.chainId === tokenChainIds[CENNZnetNetwork]) ||
 					selectedToken === "ETH"
 				) {
 					selectedToken === "ETH" ? setToken(ETH) : setToken(token.address);

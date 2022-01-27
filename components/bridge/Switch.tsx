@@ -12,7 +12,7 @@ const Switch: React.FC<{ isDeposit: Boolean; toggleIsDeposit: Function }> = ({
 				flexDirection: "row",
 				justifyContent: "center",
 				alignItems: "center",
-				marginTop: "10%",
+				marginTop: "4%",
 			}}
 		>
 			{isDeposit ? (

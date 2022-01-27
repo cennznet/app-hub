@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import store from "store";
+import React, { useEffect, useState } from "react";
 import { Box, Button, CircularProgress, Modal } from "@mui/material";
 import {
 	StyledModal,
@@ -16,15 +15,19 @@ const WalletModal: React.FC<{
 	modalState: string;
 }> = ({ setModalOpen, setModalState, modalState }) => {
 	const [open] = useState(true);
-	const { bridgeBalances, selectedAccount, selectAccount, setBalances } =
+	const { getBridgeBalances, bridgeBalances, selectedAccount, selectAccount } =
 		useWallet();
 	const accounts = useWeb3Accounts();
 
+	useEffect(() => {
+		if (selectedAccount && !bridgeBalances)
+			getBridgeBalances(selectedAccount.address);
+	}, [bridgeBalances, getBridgeBalances, selectedAccount]);
+
 	const updateAccount = (account) => {
 		if (account !== selectedAccount) {
-			setBalances(null);
 			selectAccount(account);
-			store.set("selected-CENNZnet-account", account);
+			getBridgeBalances(selectedAccount.address);
 		}
 		setModalState("showWallet");
 	};

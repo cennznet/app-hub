@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useRouter } from "next/router";
 import { Button, Modal } from "@mui/material";
 import {
 	StyledModal,
@@ -6,20 +7,41 @@ import {
 	SmallText,
 	Option,
 } from "../../theme/StyledComponents";
-import { networks, updateNetworks } from "../../utils/bridge/networks";
 import { useCENNZApi } from "../../providers/CENNZApiProvider";
+import { useBlockchain } from "../../providers/BlockchainProvider";
+import {
+	networks,
+	chainIds,
+	chains,
+	bridgeNetworks,
+} from "../../utils/networks";
 
 const NetworkModal: React.FC<{
 	setModalOpen: Function;
 	setModalState: Function;
 	currentNetwork: string;
 }> = ({ setModalOpen, setModalState, currentNetwork }) => {
+	const router = useRouter();
 	const [open] = useState(true);
 	const { api } = useCENNZApi();
+	const { updateNetwork } = useBlockchain();
 
 	const changeNetwork = async (selectedNetwork) => {
 		if (api && api.isConnected) await api.disconnect();
-		updateNetworks(selectedNetwork);
+		if (router.asPath === "/bridge") {
+			const { ethereum }: any = window;
+			const ethChainId = await ethereum.request({ method: "eth_chainId" });
+
+			if (ethChainId !== chainIds[selectedNetwork]) {
+				await ethereum.request({
+					method: "wallet_switchEthereumChain",
+					params: [{ chainId: chainIds[selectedNetwork] }],
+				});
+				updateNetwork(ethereum, chains[selectedNetwork]);
+			}
+		}
+		window.localStorage.setItem("CENNZnet-network", selectedNetwork);
+		window.location.reload();
 	};
 
 	return (
@@ -79,7 +101,7 @@ const NetworkModal: React.FC<{
 								textTransform: "none",
 							}}
 						>
-							{network}
+							{router.asPath === "/bridge" ? bridgeNetworks[network] : network}
 						</SmallText>
 					</Option>
 				))}

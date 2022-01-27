@@ -2,7 +2,6 @@ import {
 	InjectedExtension,
 	InjectedAccountWithMeta,
 } from "@polkadot/extension-inject/types";
-import { Signer } from "@cennznet/types";
 import {
 	createContext,
 	PropsWithChildren,
@@ -31,8 +30,8 @@ type WalletContext = {
 	connectWallet: (callback?: () => void) => Promise<void>;
 	disconnectWallet: () => void;
 	selectAccount: (account: InjectedAccountWithMeta) => void;
-	setBalances: Function;
 	bridgeBalances: Object;
+	getBridgeBalances: Function;
 };
 
 const SupportedWalletContext = createContext<WalletContext>({
@@ -42,8 +41,8 @@ const SupportedWalletContext = createContext<WalletContext>({
 	connectWallet: null,
 	disconnectWallet: null,
 	selectAccount: null,
-	setBalances: null,
 	bridgeBalances: null,
+	getBridgeBalances: null,
 });
 
 type ProviderProps = {};
@@ -55,9 +54,9 @@ export default function SupportedWalletProvider({
 	const { api } = useCENNZApi();
 	const accounts = useWeb3Accounts();
 	const { web3Enable, web3FromSource } = useDappModule();
-	const [signer, setSigner] = useState<Signer>(null);
 	const [wallet, setWallet] = useState<InjectedExtension>(null);
 	const [selectedAccount, setAccount] = useState<InjectedAccountWithMeta>(null);
+	const [bridgeBalances, setBridgeBalances] = useState<Object>();
 
 	const connectWallet = useCallback(
 		async (callback) => {
@@ -216,7 +215,6 @@ export default function SupportedWalletProvider({
 	// 3. Fetch `account` balance
 	const assets = useAssets();
 	const [balances, setBalances] = useState<Array<BalanceInfo>>();
-	const [bridgeBalances, setBridgeBalances] = useState<Object>();
 	useEffect(() => {
 		if (!assets || !selectedAccount || !api) return;
 
@@ -237,8 +235,7 @@ export default function SupportedWalletProvider({
 		}
 
 		fetchAssetBalances();
-		getBridgeBalances(selectedAccount.address);
-	}, [assets, selectedAccount, api, getBridgeBalances]);
+	}, [assets, selectedAccount, api]);
 
 	return (
 		<SupportedWalletContext.Provider
@@ -249,8 +246,8 @@ export default function SupportedWalletProvider({
 				connectWallet,
 				disconnectWallet,
 				selectAccount,
-				setBalances,
 				bridgeBalances,
+				getBridgeBalances,
 			}}
 		>
 			{children}

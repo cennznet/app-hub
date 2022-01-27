@@ -30,24 +30,28 @@ export default function SupportedAssetsProvider({
 
 	useEffect(() => {
 		if (!api) return;
-		async function fetchSupportedAssets() {
-			const assets = await (api.rpc as any).genericAsset.registeredAssets();
-			if (!assets?.length) return;
-			const assetInfos = assetIds.map((assetId) => {
-				const [tokenId, { symbol, decimalPlaces }] = assets.find((asset) => {
-					return asset[0].toString() === assetId;
+		(async () => {
+			try {
+				const assets = await (api.rpc as any).genericAsset.registeredAssets();
+				if (!assets?.length) return;
+				const assetInfos = assetIds.map((assetId) => {
+					const [tokenId, { symbol, decimalPlaces }] = assets?.find((asset) => {
+						return asset[0].toString() === assetId;
+					});
+					return {
+						id: Number(tokenId),
+						symbol: u8aToString(symbol),
+						decimals: decimalPlaces.toNumber(),
+					};
 				});
-				return {
-					id: Number(tokenId),
-					symbol: u8aToString(symbol),
-					decimals: decimalPlaces.toNumber(),
-				};
-			});
 
-			setSupportedAssets(assetInfos);
-		}
-
-		fetchSupportedAssets();
+				setSupportedAssets(assetInfos);
+			} catch (err) {
+				if (err.message.includes("WebSocket is not connected"))
+					console.log("Connecting api...");
+				else console.log(err.message);
+			}
+		})();
 	}, [api]);
 
 	return (
