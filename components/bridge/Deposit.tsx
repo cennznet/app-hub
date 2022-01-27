@@ -9,7 +9,7 @@ import { useBlockchain } from "../../providers/BlockchainProvider";
 import { useCENNZApi } from "../../providers/CENNZApiProvider";
 import TxModal from "./TxModal";
 import TokenPicker from "../shared/TokenPicker";
-import CENNZnetAccountPicker from "./CENNZnetAccountPicker";
+import CENNZnetAccountPicker from "../shared/CENNZnetAccountPicker";
 
 const Deposit: React.FC<{}> = () => {
 	const [customAddress, setCustomAddress] = useState(false);

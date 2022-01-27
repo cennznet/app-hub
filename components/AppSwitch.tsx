@@ -31,7 +31,7 @@ const Switch: React.FC<{ location: string; setLocation: Function }> = ({
 			}
 		}
 
-		if (newLocation === "exchange") {
+		if (newLocation === "exchange" || newLocation === "liquidity") {
 			updateApi(apiUrls["Azalea"]);
 			window.localStorage.setItem("CENNZnet-network", "Azalea");
 		}
@@ -41,11 +41,14 @@ const Switch: React.FC<{ location: string; setLocation: Function }> = ({
 	return (
 		<Box
 			sx={{
+				width: "552px",
+				left: "calc(50% - 552px/2)",
 				display: "flex",
 				flexDirection: "row",
 				justifyContent: "center",
 				alignItems: "center",
-				marginTop: "2%",
+				position: "absolute",
+				top: "4%",
 			}}
 		>
 			{indexColours && (
@@ -53,7 +56,6 @@ const Switch: React.FC<{ location: string; setLocation: Function }> = ({
 					<SwitchButton
 						onClick={() => switchLocation("bridge")}
 						style={{
-							left: "calc(50% - 276px/2 - 138px)",
 							backgroundColor: "#FFFFFF",
 							color: "#1130FF",
 							borderRight: "2px solid #1130FF",
@@ -64,13 +66,23 @@ const Switch: React.FC<{ location: string; setLocation: Function }> = ({
 					<SwitchButton
 						onClick={() => switchLocation("exchange")}
 						style={{
-							left: "calc(50% - 276px/2 - 138px)",
+							backgroundColor: "#FFFFFF",
+							color: "#1130FF",
+							borderLeft: "2px solid #1130FF",
+							borderRight: "2px solid #1130FF",
+						}}
+					>
+						exchange
+					</SwitchButton>
+					<SwitchButton
+						onClick={() => switchLocation("liquidity")}
+						style={{
 							backgroundColor: "#FFFFFF",
 							color: "#1130FF",
 							borderLeft: "2px solid #1130FF",
 						}}
 					>
-						exchange
+						liquidity
 					</SwitchButton>
 				</>
 			)}
@@ -78,7 +90,6 @@ const Switch: React.FC<{ location: string; setLocation: Function }> = ({
 				<>
 					<SwitchButton
 						style={{
-							left: "calc(50% - 276px/2 - 138px)",
 							backgroundColor: "#1130FF",
 							color: "#FFFFFF",
 						}}
@@ -88,12 +99,21 @@ const Switch: React.FC<{ location: string; setLocation: Function }> = ({
 					<SwitchButton
 						onClick={() => switchLocation("exchange")}
 						style={{
-							left: "calc(50% - 276px/2 - 138px)",
 							backgroundColor: "#FFFFFF",
 							color: "#1130FF",
 						}}
 					>
 						exchange
+					</SwitchButton>
+					<SwitchButton
+						onClick={() => switchLocation("liquidity")}
+						style={{
+							backgroundColor: "#FFFFFF",
+							color: "#1130FF",
+							borderLeft: "2px solid #1130FF",
+						}}
+					>
+						liquidity
 					</SwitchButton>
 				</>
 			)}
@@ -102,7 +122,6 @@ const Switch: React.FC<{ location: string; setLocation: Function }> = ({
 					<SwitchButton
 						onClick={() => switchLocation("bridge")}
 						style={{
-							left: "calc(50% - 276px/2 - 138px)",
 							backgroundColor: "#FFFFFF",
 							color: "#1130FF",
 						}}
@@ -111,12 +130,52 @@ const Switch: React.FC<{ location: string; setLocation: Function }> = ({
 					</SwitchButton>
 					<SwitchButton
 						style={{
-							left: "calc(50% - 276px/2 - 138px)",
 							backgroundColor: "#1130FF",
 							color: "#FFFFFF",
 						}}
 					>
 						exchange
+					</SwitchButton>
+					<SwitchButton
+						onClick={() => switchLocation("liquidity")}
+						style={{
+							backgroundColor: "#FFFFFF",
+							color: "#1130FF",
+							borderLeft: "2px solid #1130FF",
+						}}
+					>
+						liquidity
+					</SwitchButton>
+				</>
+			)}
+			{location === "liquidity" && (
+				<>
+					<SwitchButton
+						onClick={() => switchLocation("bridge")}
+						style={{
+							backgroundColor: "#FFFFFF",
+							color: "#1130FF",
+						}}
+					>
+						bridge
+					</SwitchButton>
+					<SwitchButton
+						onClick={() => switchLocation("exchange")}
+						style={{
+							backgroundColor: "#FFFFFF",
+							color: "#1130FF",
+						}}
+					>
+						exchange
+					</SwitchButton>
+					<SwitchButton
+						style={{
+							backgroundColor: "#1130FF",
+							color: "#FFFFFF",
+							borderLeft: "2px solid #1130FF",
+						}}
+					>
+						liquidity
 					</SwitchButton>
 				</>
 			)}

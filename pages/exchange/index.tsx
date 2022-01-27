@@ -53,8 +53,8 @@ const Exchange: React.FC<{}> = () => {
 			<Box
 				sx={{
 					position: "absolute",
-					top: "30%",
-					left: "30%",
+					top: "25%",
+					left: "calc(50% - 552px/2)",
 					display: "flex",
 					justifyContent: "center",
 					alignItems: "center",
