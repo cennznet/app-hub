@@ -2,18 +2,12 @@ import React, { useEffect, useState } from "react";
 import { Typography } from "@mui/material";
 import { Frame, Heading, SmallText } from "../../theme/StyledComponents";
 import { useBlockchain } from "../../providers/BlockchainProvider";
-import { useWallet } from "../../providers/SupportedWalletProvider";
 import Switch from "../../components/bridge/Switch";
 import Deposit from "../../components/bridge/Deposit";
 import Withdraw from "../../components/bridge/Withdraw";
-import WalletModal from "../../components/bridge/WalletModal";
 
 const Emery: React.FC<{}> = () => {
 	const [isDeposit, toggleIsDeposit] = useState<boolean>(true);
-	const [modalOpen, setModalOpen] = useState<boolean>(false);
-	const [modalState, setModalState] = useState<string>("");
-	const [isWalletConnected, setIsWalletConnected] = useState<boolean>(false);
-	const { selectedAccount, connectWallet } = useWallet();
 	const { initBlockchain, Account } = useBlockchain();
 
 	useEffect(() => {
@@ -24,37 +18,11 @@ const Emery: React.FC<{}> = () => {
 			});
 
 			if (!Account) initBlockchain(ethereum, accounts);
-			if (!isWalletConnected) connectWallet();
 		})();
-	}, [Account, initBlockchain, connectWallet, isWalletConnected]);
-
-	useEffect(() => {
-		selectedAccount ? setIsWalletConnected(true) : setIsWalletConnected(false);
-	}, [selectedAccount]);
-
-	const walletClickHandler: React.EventHandler<React.SyntheticEvent> = (
-		event: React.SyntheticEvent
-	) => {
-		if (isWalletConnected) {
-			setModalState("showWallet");
-			setModalOpen(true);
-		} else {
-			connectWallet();
-			setModalState("changeAccount");
-			setModalOpen(true);
-		}
-	};
+	}, [Account, initBlockchain]);
 
 	return (
 		<>
-			{modalOpen &&
-				(modalState === "showWallet" || modalState === "changeAccount") && (
-					<WalletModal
-						modalState={modalState}
-						setModalOpen={setModalOpen}
-						setModalState={setModalState}
-					/>
-				)}
 			<Typography
 				sx={{
 					position: "absolute",
@@ -72,51 +40,6 @@ const Emery: React.FC<{}> = () => {
 				ETHEREUM BRIDGE
 			</Typography>
 			<Switch isDeposit={isDeposit} toggleIsDeposit={toggleIsDeposit} />
-			<Frame
-				sx={{
-					top: "4%",
-					right: "5%",
-					backgroundColor:
-						modalState === "showWallet" || modalState === "changeAccount"
-							? "#1130FF"
-							: "#FFFFFF",
-					cursor: "pointer",
-				}}
-				onClick={walletClickHandler}
-			>
-				<img src="wallet.svg" alt="CENNZnet-wallet" />
-				<Heading
-					sx={{
-						ml: "5px",
-						mt: "3px",
-						fontSize: "20px",
-						color:
-							modalState === "showWallet" || modalState === "changeAccount"
-								? "#FFFFFF"
-								: "#1130FF",
-						flexGrow: 1,
-						whiteSpace: "nowrap",
-					}}
-				>
-					CENNZnet
-				</Heading>
-				{selectedAccount && (
-					<SmallText
-						sx={{
-							whiteSpace: "nowrap",
-							overflow: "hidden",
-							ml: "1.5px",
-							fontSize: "15px",
-							color:
-								modalState === "showWallet" || modalState === "changeAccount"
-									? "#FFFFFF"
-									: "black",
-						}}
-					>
-						{selectedAccount.meta.name}
-					</SmallText>
-				)}
-			</Frame>
 			<Frame
 				sx={{
 					top: "12%",

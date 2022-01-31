@@ -5,7 +5,7 @@ import { Frame, Heading, SmallText } from "../../theme/StyledComponents";
 import { useBlockchain } from "../../providers/BlockchainProvider";
 import { useWallet } from "../../providers/SupportedWalletProvider";
 import ErrorModal from "../../components/bridge/ErrorModal";
-import WalletModal from "../../components/bridge/WalletModal";
+import WalletModal from "../../components/shared/WalletModal";
 
 const ETH_CHAIN_ID = process.env.NEXT_PUBLIC_ETH_CHAIN_ID;
 
