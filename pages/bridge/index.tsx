@@ -5,6 +5,8 @@ import BlockchainProvider from "../../providers/BlockchainProvider";
 import { useWallet } from "../../providers/SupportedWalletProvider";
 import { useCENNZApi } from "../../providers/CENNZApiProvider";
 
+const ETH_CHAIN_ID = process.env.NEXT_PUBLIC_ETH_CHAIN_ID;
+
 const Home: React.FC<{}> = () => {
 	const [bridgeState, setBridgeState] = useState("");
 	const { selectedAccount } = useWallet();
@@ -22,7 +24,9 @@ const Home: React.FC<{}> = () => {
 			const ethChainId = await ethereum.request({ method: "eth_chainId" });
 			const CENNZnetAccount = window.localStorage.getItem("CENNZnet-account");
 
-			ethChainId === "0x1" && CENNZnetAccount
+			((ethChainId === "0x1" && ETH_CHAIN_ID === "1") ||
+				(ethChainId === "0x2a" && ETH_CHAIN_ID === "42")) &&
+			CENNZnetAccount
 				? setBridgeState("emery")
 				: setBridgeState("connect");
 		})();

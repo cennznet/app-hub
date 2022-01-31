@@ -3,6 +3,8 @@ import { ethers } from "ethers";
 import CENNZnetBridge from "../artifacts/CENNZnetBridge.json";
 import ERC20Peg from "../artifacts/ERC20Peg.json";
 
+const ETH_CHAIN_ID = process.env.NEXT_PUBLIC_ETH_CHAIN_ID;
+
 type blockchainContextType = {
 	Contracts: object;
 	Account: string;
@@ -44,8 +46,19 @@ const BlockchainProvider: React.FC<React.PropsWithChildren<{}>> = ({
 			try {
 				const provider = new ethers.providers.Web3Provider(ethereum);
 				const signer = provider.getSigner();
-				const BridgeAddress = "0x369e2285CCf43483e76746cebbf3d1d6060913EC";
-				const ERC20PegAddress = "0x8F68fe02884b2B05e056aF72E4F2D2313E9900eC";
+				let BridgeAddress: string, ERC20PegAddress: string;
+
+				switch (ETH_CHAIN_ID) {
+					default:
+					case "1":
+						BridgeAddress = "0x369e2285CCf43483e76746cebbf3d1d6060913EC";
+						ERC20PegAddress = "0x8F68fe02884b2B05e056aF72E4F2D2313E9900eC";
+						break;
+					case "42":
+						BridgeAddress = "0x9AFe4E42d8ab681d402e8548Ee860635BaA952C5";
+						ERC20PegAddress = "0x5Ff2f9582FcA1e11d47e4e623BEf4594EB12b30d";
+						break;
+				}
 
 				const bridge: ethers.Contract = new ethers.Contract(
 					BridgeAddress,

@@ -7,6 +7,8 @@ import { useWallet } from "../../providers/SupportedWalletProvider";
 import ErrorModal from "../../components/bridge/ErrorModal";
 import WalletModal from "../../components/bridge/WalletModal";
 
+const ETH_CHAIN_ID = process.env.NEXT_PUBLIC_ETH_CHAIN_ID;
+
 const Connect: React.FC<{ setBridgeState: Function }> = ({
 	setBridgeState,
 }) => {
@@ -24,10 +26,16 @@ const Connect: React.FC<{ setBridgeState: Function }> = ({
 			});
 			const ethChainId = await ethereum.request({ method: "eth_chainId" });
 
-			if (ethChainId !== "0x1") {
+			if (ETH_CHAIN_ID === "1" && ethChainId !== "0x1") {
 				await ethereum.request({
 					method: "wallet_switchEthereumChain",
 					params: [{ chainId: "0x1" }],
+				});
+				window.location.reload();
+			} else if (ETH_CHAIN_ID === "42" && ethChainId !== "0x2a") {
+				await ethereum.request({
+					method: "wallet_switchEthereumChain",
+					params: [{ chainId: "0x2a" }],
 				});
 				window.location.reload();
 			}

@@ -22,6 +22,8 @@ const MenuProps = {
 	},
 };
 
+const ETH_CHAIN_ID = process.env.NEXT_PUBLIC_ETH_CHAIN_ID;
+
 const TokenPicker: React.FC<{
 	setToken: Function;
 	cennznet?: boolean;
@@ -70,7 +72,7 @@ const TokenPicker: React.FC<{
 			];
 
 			ERC20Tokens.tokens.map((token) => {
-				if (token.chainId === 1) {
+				if (token.chainId === Number(ETH_CHAIN_ID)) {
 					tokes.push({ symbol: token.symbol, logo: token.logoURI });
 				}
 			});
@@ -84,7 +86,8 @@ const TokenPicker: React.FC<{
 		} else {
 			ERC20Tokens.tokens.map((token) => {
 				if (
-					(token.symbol === selectedToken && token.chainId === 1) ||
+					(token.symbol === selectedToken &&
+						token.chainId === Number(ETH_CHAIN_ID)) ||
 					selectedToken === "ETH"
 				) {
 					selectedToken === "ETH" ? setToken(ETH) : setToken(token.address);
