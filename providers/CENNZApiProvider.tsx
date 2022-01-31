@@ -7,7 +7,7 @@ import {
 } from "react";
 import { Api, ApiRx } from "@cennznet/api";
 
-const endpoint = "wss://cennznet.unfrastructure.io/public/ws";
+const endpoint = process.env.NEXT_PUBLIC_API_URL;
 
 type CENNZApiContextType = {
 	api: Api;
