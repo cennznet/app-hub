@@ -1,10 +1,13 @@
 import React from "react";
 import { Box, Button } from "@mui/material";
+import { useWallet } from "../../providers/SupportedWalletProvider";
 
 const Switch: React.FC<{ isDeposit: Boolean; toggleIsDeposit: Function }> = ({
 	isDeposit,
 	toggleIsDeposit,
 }) => {
+	const { selectedAccount } = useWallet();
+
 	return (
 		<Box
 			sx={{
@@ -64,6 +67,7 @@ const Switch: React.FC<{ isDeposit: Boolean; toggleIsDeposit: Function }> = ({
 							lineHeight: "124%",
 							color: "#1130FF",
 						}}
+						disabled={selectedAccount ? false : true}
 					>
 						Withdraw
 					</Button>
