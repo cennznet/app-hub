@@ -9,7 +9,6 @@ import {
 import ERC20Tokens from "../../artifacts/erc20tokens.json";
 import { ETH, ETH_LOGO } from "../../utils/helpers";
 import { useAssets } from "../../providers/SupportedAssetsProvider";
-import { tokenChainIds } from "../../utils/networks";
 import { Asset } from "../../types/exchange";
 
 const ITEM_HEIGHT = 48;
@@ -22,6 +21,8 @@ const MenuProps = {
 		},
 	},
 };
+
+const ETH_CHAIN_ID = process.env.NEXT_PUBLIC_ETH_CHAIN_ID;
 
 const TokenPicker: React.FC<{
 	setToken: Function;
@@ -69,12 +70,9 @@ const TokenPicker: React.FC<{
 					logo: ETH_LOGO,
 				},
 			];
-			const CENNZnetNetwork = window.localStorage.getItem("CENNZnet-network")
-				? window.localStorage.getItem("CENNZnet-network")
-				: "Azalea";
 
 			ERC20Tokens.tokens.map((token) => {
-				if (token.chainId === tokenChainIds[CENNZnetNetwork]) {
+				if (token.chainId === Number(ETH_CHAIN_ID)) {
 					tokes.push({ symbol: token.symbol, logo: token.logoURI });
 				}
 			});
@@ -86,14 +84,10 @@ const TokenPicker: React.FC<{
 		if (cennznet && assets) {
 			assets.map((asset) => selectedToken === asset.symbol && setToken(asset));
 		} else {
-			const CENNZnetNetwork = window.localStorage.getItem("CENNZnet-network")
-				? window.localStorage.getItem("CENNZnet-network")
-				: "Azalea";
-
 			ERC20Tokens.tokens.map((token) => {
 				if (
 					(token.symbol === selectedToken &&
-						token.chainId === tokenChainIds[CENNZnetNetwork]) ||
+						token.chainId === Number(ETH_CHAIN_ID)) ||
 					selectedToken === "ETH"
 				) {
 					selectedToken === "ETH" ? setToken(ETH) : setToken(token.address);

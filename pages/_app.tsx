@@ -13,7 +13,6 @@ import SupportedWalletProvider from "../providers/SupportedWalletProvider";
 import DappModuleProvider from "../providers/DappModuleProvider";
 import Web3AccountsProvider from "../providers/Web3AccountsProvider";
 import Switch from "../components/AppSwitch";
-import NetworkFrame from "../components/NetworkFrame";
 
 function MyApp({ Component, pageProps }: AppProps) {
 	const router = useRouter();
@@ -37,7 +36,6 @@ function MyApp({ Component, pageProps }: AppProps) {
 					<DappModuleProvider>
 						<Web3AccountsProvider>
 							<SupportedWalletProvider>
-								<NetworkFrame />
 								<Box
 									onClick={() => setLocation("index")}
 									sx={{ cursor: "pointer" }}

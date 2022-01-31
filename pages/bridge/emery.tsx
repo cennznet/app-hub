@@ -14,15 +14,19 @@ const Emery: React.FC<{}> = () => {
 	const [modalState, setModalState] = useState<string>("");
 	const [isWalletConnected, setIsWalletConnected] = useState<boolean>(false);
 	const { selectedAccount, connectWallet } = useWallet();
-	const { updateNetwork, Account } = useBlockchain();
+	const { initBlockchain, Account } = useBlockchain();
 
 	useEffect(() => {
-		const { ethereum }: any = window;
-		const ethereumNetwork = window.localStorage.getItem("ethereum-network");
+		(async () => {
+			const { ethereum }: any = window;
+			const accounts = await ethereum.request({
+				method: "eth_requestAccounts",
+			});
 
-		if (!Account) updateNetwork(ethereum, ethereumNetwork);
-		if (!isWalletConnected) connectWallet();
-	}, [Account, updateNetwork, connectWallet, isWalletConnected]);
+			if (!Account) initBlockchain(ethereum, accounts);
+			if (!isWalletConnected) connectWallet();
+		})();
+	}, [Account, initBlockchain, connectWallet, isWalletConnected]);
 
 	useEffect(() => {
 		selectedAccount ? setIsWalletConnected(true) : setIsWalletConnected(false);
@@ -70,7 +74,7 @@ const Emery: React.FC<{}> = () => {
 			<Switch isDeposit={isDeposit} toggleIsDeposit={toggleIsDeposit} />
 			<Frame
 				sx={{
-					top: "12%",
+					top: "4%",
 					right: "5%",
 					backgroundColor:
 						modalState === "showWallet" || modalState === "changeAccount"
@@ -115,7 +119,7 @@ const Emery: React.FC<{}> = () => {
 			</Frame>
 			<Frame
 				sx={{
-					top: "20%",
+					top: "12%",
 					right: "5%",
 					backgroundColor: "#FFFFFF",
 					cursor: "copy",

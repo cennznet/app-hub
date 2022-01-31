@@ -27,6 +27,7 @@ const WalletModal: React.FC<{
 	const updateAccount = (account) => {
 		if (account !== selectedAccount) {
 			selectAccount(account);
+			window.localStorage.setItem("CENNZnet-account", account);
 			getBridgeBalances(selectedAccount.address);
 		}
 		setModalState("showWallet");
