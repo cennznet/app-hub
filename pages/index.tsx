@@ -1,9 +1,16 @@
-import type { NextPage } from "next";
-import Head from "next/head";
-import Image from "next/image";
+import React, { useEffect } from "react";
 import styles from "../styles/home.module.css";
+import { useCENNZApi } from "../providers/CENNZApiProvider";
 
-const Home: NextPage = () => {
+const Home: React.FC<{}> = () => {
+	const { api, initApi } = useCENNZApi();
+
+	useEffect(() => {
+		if (!api?.isConnected) {
+			initApi();
+		}
+	}, [api, initApi]);
+
 	return <div className={styles.container}></div>;
 };
 

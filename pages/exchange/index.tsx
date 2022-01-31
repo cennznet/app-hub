@@ -17,8 +17,14 @@ const Exchange: React.FC<{}> = () => {
 		React.useState<string>("0");
 	const [exchangeTokenValue, setExchangeTokenValue] =
 		React.useState<string>("0");
-	const { api, apiRx }: any = useCENNZApi();
+	const { api, apiRx, initApi, initApiRx }: any = useCENNZApi();
 	const assets = useAssets();
+
+	useEffect(() => {
+		if (!api?.isConnected) {
+			initApi();
+		}
+	}, [api, initApi]);
 
 	useEffect(() => {
 		const setReceivedTokenAmount = async () => {
@@ -53,8 +59,8 @@ const Exchange: React.FC<{}> = () => {
 			<Box
 				sx={{
 					position: "absolute",
-					top: "30%",
-					left: "30%",
+					top: "25%",
+					left: "calc(50% - 552px/2)",
 					display: "flex",
 					justifyContent: "center",
 					alignItems: "center",
