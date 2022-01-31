@@ -45,6 +45,8 @@ export default function SupportedAssetsProvider({
 					};
 				});
 
+				console.log("assetInfos", assetInfos);
+
 				setSupportedAssets(assetInfos);
 			} catch (err) {
 				if (err.message.includes("WebSocket is not connected"))

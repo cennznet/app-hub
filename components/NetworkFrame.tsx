@@ -13,7 +13,7 @@ const NetworkFrame: React.FC<{}> = () => {
 	const { api, updateApi }: any = useCENNZApi();
 
 	useEffect(() => {
-		if (router.asPath === "/exchange") {
+		if (router.asPath === "/swap" || router.asPath === "/pool") {
 			setCurrentNetwork("Azalea");
 			window.localStorage.setItem("CENNZnet-network", "Azalea");
 			return;

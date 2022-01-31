@@ -2,7 +2,7 @@ import { ApiRx } from "@cennznet/api";
 import { Signer } from "@cennznet/api/types";
 import { InjectedWindowProvider } from "@polkadot/extension-inject/types";
 import { Observable } from "rxjs/internal/Observable";
-import { Amount } from "../../utils/exchange/Amount";
+import { Amount } from "../../utils/Amount";
 
 export interface FeeExchangeResult {
 	amount: Amount;

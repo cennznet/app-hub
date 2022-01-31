@@ -95,7 +95,13 @@ const TokenPicker: React.FC<{ setToken: Function; cennznet?: boolean }> = ({
 	}, [cennznet, assets, selectedToken, setToken]);
 
 	return (
-		<FormControl sx={{ width: "80%", mt: "50px" }} required>
+		<FormControl
+			sx={{
+				width: cennznet ? "40%" : "80%",
+				mt: cennznet ? "30px" : "50px",
+			}}
+			required
+		>
 			<InputLabel>Token</InputLabel>
 			<Select
 				required

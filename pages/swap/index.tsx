@@ -6,7 +6,7 @@ import { useCENNZApi } from "../../providers/CENNZApiProvider";
 import SupportedAssetsProvider, {
 	useAssets,
 } from "../../providers/SupportedAssetsProvider";
-import { Amount, AmountUnit } from "../../utils/exchange/Amount";
+import { Amount, AmountUnit } from "../../utils/Amount";
 import { Asset } from "../../types/exchange";
 import BigNumber from "bignumber.js";
 
