@@ -11,6 +11,7 @@ import TxModal from "./TxModal";
 import TokenPicker from "../shared/TokenPicker";
 import CENNZnetAccountPicker from "./CENNZnetAccountPicker";
 import ErrorModal from "./ErrorModal";
+import { useWallet } from "../../providers/SupportedWalletProvider";
 
 const ETH_CHAIN_ID = process.env.NEXT_PUBLIC_ETH_CHAIN_ID;
 
@@ -32,6 +33,7 @@ const Deposit: React.FC<{}> = () => {
 	});
 	const [tokenBalance, setTokenBalance] = useState<Number>();
 	const { Contracts, Signer, Account, initBlockchain }: any = useBlockchain();
+	const { wallet, connectWallet } = useWallet();
 	const { api }: any = useCENNZApi();
 
 	const connectMetamask = async () => {
@@ -55,6 +57,8 @@ const Deposit: React.FC<{}> = () => {
 			}
 
 			initBlockchain(ethereum, accounts);
+
+			if (!wallet) connectWallet();
 		} catch (err) {
 			console.log(err.message);
 			setModalState("noMetamask");
@@ -276,7 +280,7 @@ const Deposit: React.FC<{}> = () => {
 						variant="outlined"
 						onClick={connectMetamask}
 					>
-						connect metamask
+						{wallet ? "connect metamask" : "connect wallets"}
 					</Button>
 				)}
 			</Box>

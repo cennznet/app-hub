@@ -329,7 +329,7 @@ const Withdraw: React.FC<{}> = () => {
 						variant="outlined"
 						onClick={connectMetamask}
 					>
-						metamask
+						connect metamask
 					</Button>
 				)}
 			</Box>
