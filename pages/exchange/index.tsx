@@ -8,6 +8,8 @@ import { Amount, AmountUnit } from "../../utils/exchange/Amount";
 import { Asset } from "../../types/exchange";
 import BigNumber from "bignumber.js";
 
+import styles from "../../styles/exchange.module.css";
+
 const Exchange: React.FC<{}> = () => {
 	const [exchangeToken, setExchangeToken] = useState<Asset>();
 	const [receivedToken, setReceivedToken] = useState<Asset>();
@@ -16,6 +18,7 @@ const Exchange: React.FC<{}> = () => {
 	const [exchangeTokenValue, setExchangeTokenValue] =
 		React.useState<string>("0");
 	const [estimatedFee, setEstimatedFee] = useState<string>();
+	const [error, setError] = useState<string>();
 	const { api, apiRx, initApi, initApiRx }: any = useCENNZApi();
 	const assets = useAssets();
 
@@ -27,33 +30,39 @@ const Exchange: React.FC<{}> = () => {
 
 	useEffect(() => {
 		const setReceivedTokenAmount = async () => {
-			if (
-				parseInt(exchangeTokenValue) > 0 &&
-				api &&
-				exchangeToken &&
-				receivedToken
-			) {
-				let exchangeAmount: any = new BigNumber(exchangeTokenValue.toString());
-				exchangeAmount = exchangeAmount
-					.multipliedBy(Math.pow(10, exchangeToken.decimals))
-					.toString(10);
-				const sellPrice = await (api.rpc as any).cennzx.sellPrice(
-					exchangeToken.id,
-					exchangeAmount,
-					receivedToken.id
-				);
-				let receivedAmount: any = new Amount(
-					sellPrice.price.toString(),
-					AmountUnit.UN
-				);
-				receivedAmount = receivedAmount.toAmount(receivedToken.decimals);
-				setReceivedTokenValue(receivedAmount);
-				const estimatedFee = await getEstimatedTransactionFee(
-					exchangeAmount,
-					exchangeToken.id,
-					receivedToken.id
-				);
-				setEstimatedFee(estimatedFee);
+			try {
+				if (
+					parseInt(exchangeTokenValue) > 0 &&
+					api &&
+					exchangeToken &&
+					receivedToken
+				) {
+					let exchangeAmount: any = new BigNumber(
+						exchangeTokenValue.toString()
+					);
+					exchangeAmount = exchangeAmount
+						.multipliedBy(Math.pow(10, exchangeToken.decimals))
+						.toString(10);
+					const sellPrice = await (api.rpc as any).cennzx.sellPrice(
+						exchangeToken.id,
+						exchangeAmount,
+						receivedToken.id
+					);
+					let receivedAmount: any = new Amount(
+						sellPrice.price.toString(),
+						AmountUnit.UN
+					);
+					receivedAmount = receivedAmount.toAmount(receivedToken.decimals);
+					setReceivedTokenValue(receivedAmount);
+					const estimatedFee = await getEstimatedTransactionFee(
+						exchangeAmount,
+						exchangeToken.id,
+						receivedToken.id
+					);
+					setEstimatedFee(estimatedFee);
+				}
+			} catch (e) {
+				setError(e.message);
 			}
 		};
 		setReceivedTokenAmount();
@@ -66,7 +75,6 @@ const Exchange: React.FC<{}> = () => {
 	) => {
 		//TODO calculate slippage here
 		const maxAmount = parseInt(exchangeAmount) * 2;
-		console.info(api.network);
 		const extrinsic = api.tx.cennzx.buyAsset(
 			null,
 			exchangeTokenId,
@@ -86,6 +94,32 @@ const Exchange: React.FC<{}> = () => {
 		const CPAY_DECIMALS = 4;
 		estimatedFee = estimatedFee.toAmount(CPAY_DECIMALS);
 		return estimatedFee.toString();
+	};
+
+	const exchangeTokens = async () => {
+		try {
+			if (
+				parseInt(exchangeTokenValue) > 0 &&
+				api &&
+				exchangeToken &&
+				receivedToken
+			) {
+				const maxAmount = parseInt(exchangeTokenValue) * 2;
+				const extrinsic = api.tx.cennzx.buyAsset(
+					null,
+					exchangeToken.id,
+					receivedToken.id,
+					exchangeTokenValue,
+					maxAmount
+				);
+				console.info(extrinsic);
+				//TODO inject signer from wallet here
+				// const signer: any;
+				// await extrinsic.signAndSend(signer);
+			}
+		} catch (e) {
+			setError(e.message);
+		}
 	};
 
 	return (
@@ -155,6 +189,7 @@ const Exchange: React.FC<{}> = () => {
 					value={exchangeTokenValue}
 					onChange={(event) => setExchangeTokenValue(event.target.value)}
 				/>
+				{error && <p className={styles.errorMsg}>{error}</p>}
 				<ExchangeIcon
 					onClick={() => {
 						setReceivedToken(exchangeToken);
@@ -180,7 +215,9 @@ const Exchange: React.FC<{}> = () => {
 					value={receivedTokenValue}
 					onChange={(event) => setReceivedTokenValue(event.target.value)}
 				/>
-				<p>Transaction fee (estimated): {estimatedFee} CPAY</p>
+				{estimatedFee && (
+					<p>Transaction fee (estimated): {estimatedFee} CPAY</p>
+				)}
 				<Button
 					sx={{
 						fontFamily: "Teko",
@@ -193,6 +230,7 @@ const Exchange: React.FC<{}> = () => {
 					}}
 					size="large"
 					variant="outlined"
+					onClick={exchangeTokens}
 				>
 					Exchange
 				</Button>
