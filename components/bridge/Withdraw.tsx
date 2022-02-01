@@ -77,7 +77,7 @@ const Withdraw: React.FC<{}> = () => {
 
 			setEstimatedFee(Number(totalFeeEstimate.toFixed(6)));
 		})();
-	}, [selectedAccount, Contracts.bridge, Signer]);
+	}, [selectedAccount, Account, Contracts.bridge, Signer]);
 
 	//Check CENNZnet account has enough tokens to withdraw
 	useEffect(() => {

@@ -14,7 +14,7 @@ const AccountBalances: React.FC<{
 
 	useEffect(() => {
 		if (router.asPath === "/bridge") getBridgeBalances(selectedAccount.address);
-	}, [router.asPath]);
+	}, [router.asPath, getBridgeBalances, selectedAccount]);
 
 	useEffect(() => {
 		if (router.asPath === "/bridge") {
