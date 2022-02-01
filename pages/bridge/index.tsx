@@ -9,7 +9,7 @@ import Withdraw from "../../components/bridge/Withdraw";
 
 const Emery: React.FC<{}> = () => {
 	const [isDeposit, toggleIsDeposit] = useState<boolean>(true);
-	const { initBlockchain, Account } = useBlockchain();
+	const { Account } = useBlockchain();
 	const { api, initApi } = useCENNZApi();
 
 	useEffect(() => {
@@ -17,17 +17,6 @@ const Emery: React.FC<{}> = () => {
 			initApi();
 		}
 	}, [api, initApi]);
-
-	useEffect(() => {
-		(async () => {
-			const { ethereum }: any = window;
-			const accounts = await ethereum.request({
-				method: "eth_requestAccounts",
-			});
-
-			if (!Account) initBlockchain(ethereum, accounts);
-		})();
-	}, [Account, initBlockchain]);
 
 	return (
 		<>
