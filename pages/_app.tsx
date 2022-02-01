@@ -43,7 +43,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 									<BlockchainProvider>
 										<Wallet />
 										<Box
-											onClick={() => setLocation("index")}
+											onClick={() => router.push("/")}
 											sx={{ cursor: "pointer" }}
 										>
 											<img
