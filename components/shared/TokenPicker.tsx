@@ -10,6 +10,10 @@ import ERC20Tokens from "../../artifacts/erc20tokens.json";
 import { ETH, ETH_LOGO } from "../../utils/helpers";
 import { useAssets } from "../../providers/SupportedAssetsProvider";
 import { Asset } from "../../types/exchange";
+import { useBlockchain } from "../../providers/BlockchainProvider";
+import { useRouter } from "next/router";
+
+const ETH_CHAIN_ID = process.env.NEXT_PUBLIC_ETH_CHAIN_ID;
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -22,7 +26,14 @@ const MenuProps = {
 	},
 };
 
-const ETH_CHAIN_ID = process.env.NEXT_PUBLIC_ETH_CHAIN_ID;
+export type BridgeToken = {
+	chainId: number;
+	address: string;
+	name: string;
+	symbol: string;
+	decimals: number;
+	logoURI: string;
+};
 
 const TokenPicker: React.FC<{
 	setToken: Function;
@@ -30,9 +41,11 @@ const TokenPicker: React.FC<{
 	forceSelection?: Asset;
 	removeToken?: Asset;
 }> = ({ setToken, cennznet = false, forceSelection, removeToken }) => {
-	const [tokens, setTokens] = useState<Object[]>([{}]);
-	const [selectedToken, setSelectedToken] = useState("");
+	const router = useRouter();
+	const [tokens, setTokens] = useState<Object[]>();
+	const [selectedToken, setSelectedToken] = useState<string>();
 	const assets = useAssets();
+	const { Account } = useBlockchain();
 
 	useEffect(() => {
 		if (forceSelection) setSelectedToken(forceSelection.symbol);
@@ -84,13 +97,15 @@ const TokenPicker: React.FC<{
 		if (cennznet && assets) {
 			assets.map((asset) => selectedToken === asset.symbol && setToken(asset));
 		} else {
-			ERC20Tokens.tokens.map((token) => {
+			ERC20Tokens.tokens.map((token: BridgeToken) => {
 				if (
 					(token.symbol === selectedToken &&
 						token.chainId === Number(ETH_CHAIN_ID)) ||
 					selectedToken === "ETH"
 				) {
-					selectedToken === "ETH" ? setToken(ETH) : setToken(token.address);
+					selectedToken === "ETH"
+						? setToken({ address: ETH, symbol: "ETH", decimals: 18 })
+						: setToken(token);
 				}
 			});
 		}
@@ -103,6 +118,7 @@ const TokenPicker: React.FC<{
 				mt: "30px",
 			}}
 			required
+			disabled={router.asPath === "/bridge" ? (Account ? false : true) : false}
 		>
 			<InputLabel>Token</InputLabel>
 			<Select
@@ -115,7 +131,7 @@ const TokenPicker: React.FC<{
 				MenuProps={MenuProps}
 				sx={{ fontSize: "18px" }}
 			>
-				{tokens.map((token: any, i) => (
+				{tokens?.map((token: any, i) => (
 					<MenuItem
 						key={i}
 						value={token.symbol}
