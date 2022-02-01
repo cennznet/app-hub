@@ -6,7 +6,7 @@ const Switch: React.FC<{ location: string; setLocation: Function }> = ({
 	location,
 	setLocation,
 }) => {
-	const indexColours = location === undefined || location === "index";
+	const indexColours = location === undefined;
 
 	return (
 		<Box

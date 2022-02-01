@@ -8,20 +8,6 @@ module.exports = {
 		});
 		return config;
 	},
-	async redirects() {
-		return [
-			{
-				source: "/bridge/connect",
-				destination: "/bridge",
-				permanent: true,
-			},
-			{
-				source: "/bridge/emery",
-				destination: "/bridge",
-				permanent: true,
-			},
-		];
-	},
 	eslint: {
 		dirs: ["pages", "components", "providers"],
 	},

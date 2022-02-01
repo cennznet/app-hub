@@ -7,6 +7,7 @@ import {
 } from "react";
 import { InjectedAccountWithMeta } from "@polkadot/extension-inject/types";
 import { useDappModule } from "./DappModuleProvider";
+import { useWallet } from "./SupportedWalletProvider";
 
 const Web3AccountsContext = createContext<Array<InjectedAccountWithMeta>>(null);
 
@@ -16,6 +17,7 @@ export default function Web3AccountsProvider({
 	children,
 }: PropsWithChildren<ProviderProps>) {
 	const { web3Enable, web3Accounts, web3AccountsSubscribe } = useDappModule();
+	const { selectAccount } = useWallet();
 	const [accounts, setAccounts] =
 		useState<Array<InjectedAccountWithMeta>>(null);
 
@@ -25,9 +27,10 @@ export default function Web3AccountsProvider({
 		let unsubscribe: () => void;
 
 		async function fetchAndSubscribeAccounts() {
-			await web3Enable("CENNZnet App");
+			await web3Enable("CENNZnet Hub");
 			const accounts = await web3Accounts();
 			setAccounts(accounts);
+			selectAccount(accounts[0]);
 
 			unsubscribe = await web3AccountsSubscribe(setAccounts);
 		}

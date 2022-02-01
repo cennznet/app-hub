@@ -47,9 +47,7 @@ export default function SupportedAssetsProvider({
 
 				setSupportedAssets(assetInfos);
 			} catch (err) {
-				if (err.message.includes("WebSocket is not connected"))
-					console.log("Connecting api...");
-				else console.log(err.message);
+				console.log(err.message);
 			}
 		})();
 	}, [api]);
