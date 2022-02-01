@@ -17,6 +17,7 @@ const Exchange: React.FC<{}> = () => {
 		React.useState<string>("0");
 	const [exchangeTokenValue, setExchangeTokenValue] =
 		React.useState<string>("0");
+	const [estimatedFee, setEstimatedFee] = useState<string>();
 	const { api, apiRx, initApi, initApiRx }: any = useCENNZApi();
 	const assets = useAssets();
 
@@ -49,10 +50,45 @@ const Exchange: React.FC<{}> = () => {
 				);
 				receivedAmount = receivedAmount.toAmount(receivedToken.decimals);
 				setReceivedTokenValue(receivedAmount);
+				const estimatedFee = await getEstimatedTransactionFee(
+					exchangeAmount,
+					exchangeToken.id,
+					receivedToken.id
+				);
+				setEstimatedFee(estimatedFee);
 			}
 		};
 		setReceivedTokenAmount();
 	}, [api, exchangeTokenValue, assets, exchangeToken, receivedToken]);
+
+	const getEstimatedTransactionFee = async (
+		exchangeAmount: string,
+		exchangeTokenId: number,
+		receivedTokenId: number
+	) => {
+		//TODO calculate slippage here
+		const maxAmount = parseInt(exchangeAmount) * 2;
+		console.info(api.network);
+		const extrinsic = api.tx.cennzx.buyAsset(
+			null,
+			exchangeTokenId,
+			receivedTokenId,
+			exchangeAmount,
+			maxAmount
+		);
+		const assetIds =
+			process.env.NEXT_PUBLIC_SUPPORTED_ASSETS &&
+			process.env.NEXT_PUBLIC_SUPPORTED_ASSETS.split(",");
+
+		const feeFromQuery = await api.derive.fees.estimateFee({
+			extrinsic,
+			userFeeAssetId: assetIds[1],
+		});
+		let estimatedFee: any = new Amount(feeFromQuery.toString(), AmountUnit.UN);
+		const CPAY_DECIMALS = 4;
+		estimatedFee = estimatedFee.toAmount(CPAY_DECIMALS);
+		return estimatedFee.toString();
+	};
 
 	return (
 		<SupportedAssetsProvider>
@@ -147,6 +183,7 @@ const Exchange: React.FC<{}> = () => {
 						value={receivedTokenValue}
 						onChange={(event) => setReceivedTokenValue(event.target.value)}
 					/>
+					<p>Transaction fee (estimated): {estimatedFee} CPAY</p>
 					<Button
 						sx={{
 							fontFamily: "Teko",
