@@ -1,36 +1,76 @@
 import React, { useEffect, useState } from "react";
-import Connect from "./connect";
-import Emery from "./emery";
-import { chains, chainIds } from "../../utils/networks";
-import BlockchainProvider from "../../providers/BlockchainProvider";
-import { useWallet } from "../../providers/SupportedWalletProvider";
-const Home: React.FC<{}> = () => {
-	const [bridgeState, setBridgeState] = useState("");
-	const { selectedAccount } = useWallet();
+import { Typography } from "@mui/material";
+import { Frame, Heading, SmallText } from "../../theme/StyledComponents";
+import { useBlockchain } from "../../providers/BlockchainProvider";
+import { useCENNZApi } from "../../providers/CENNZApiProvider";
+import Switch from "../../components/bridge/Switch";
+import Deposit from "../../components/bridge/Deposit";
+import Withdraw from "../../components/bridge/Withdraw";
+
+const Emery: React.FC<{}> = () => {
+	const [isDeposit, toggleIsDeposit] = useState<boolean>(true);
+	const { Account } = useBlockchain();
+	const { api, initApi } = useCENNZApi();
 
 	useEffect(() => {
-		(async () => {
-			const CENNZnetNetwork = window.localStorage.getItem("CENNZnet-network")
-				? window.localStorage.getItem("CENNZnet-network")
-				: "Azalea";
-			const ethereumNetwork = window.localStorage.getItem("ethereum-network");
-			const { ethereum }: any = window;
-			const ethChainId = await ethereum.request({ method: "eth_chainId" });
-
-			ethereumNetwork === chains[CENNZnetNetwork] &&
-			ethChainId === chainIds[CENNZnetNetwork] &&
-			selectedAccount
-				? setBridgeState("emery")
-				: setBridgeState("connect");
-		})();
-	}, [selectedAccount]);
+		if (!api?.isConnected) {
+			initApi();
+		}
+	}, [api, initApi]);
 
 	return (
-		<BlockchainProvider>
-			{bridgeState === "emery" && <Emery />}
-			{bridgeState === "connect" && <Connect setBridgeState={setBridgeState} />}
-		</BlockchainProvider>
+		<>
+			<Typography
+				sx={{
+					position: "absolute",
+					top: "4.5%",
+					left: "16%",
+					fontFamily: "Teko",
+					fontStyle: "normal",
+					fontWeight: "bold",
+					fontSize: "24px",
+					lineHeight: "124%",
+					color: "black",
+					letterSpacing: "1px",
+				}}
+			>
+				ETHEREUM BRIDGE
+			</Typography>
+			<Switch isDeposit={isDeposit} toggleIsDeposit={toggleIsDeposit} />
+			{Account && (
+				<Frame
+					sx={{
+						top: "12%",
+						right: "5%",
+						backgroundColor: "#FFFFFF",
+						cursor: "copy",
+					}}
+					onClick={() => navigator.clipboard.writeText(Account)}
+				>
+					<>
+						<Heading
+							sx={{
+								color: "primary.main",
+								ml: "10px",
+								mt: "3px",
+								fontSize: "20px",
+								flexGrow: 1,
+							}}
+						>
+							METAMASK
+						</Heading>
+						<SmallText sx={{ color: "black", fontSize: "16px" }}>
+							{Account.substring(0, 6).concat(
+								"...",
+								Account.substring(Account.length - 4, Account.length)
+							)}
+						</SmallText>
+					</>
+				</Frame>
+			)}
+			{isDeposit ? <Deposit /> : <Withdraw />}
+		</>
 	);
 };
 
-export default Home;
+export default Emery;

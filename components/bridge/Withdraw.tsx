@@ -8,40 +8,76 @@ import { useCENNZApi } from "../../providers/CENNZApiProvider";
 import { useWallet } from "../../providers/SupportedWalletProvider";
 import TxModal from "./TxModal";
 import TokenPicker from "../shared/TokenPicker";
+import ErrorModal from "./ErrorModal";
+
+const ETH_CHAIN_ID = process.env.NEXT_PUBLIC_ETH_CHAIN_ID;
 
 const Withdraw: React.FC<{}> = () => {
 	const [token, setToken] = useState("");
 	const [tokenBalance, setTokenBalance] = useState<Number>();
 	const [amount, setAmount] = useState("");
 	const [modalOpen, setModalOpen] = useState(false);
+	const [errorModalOpen, setErrorModalOpen] = useState(false);
+	const [modalState, setModalState] = useState("");
 	const [modal, setModal] = useState({
 		state: "",
 		text: "",
 		hash: "",
 	});
 	const [estimatedFee, setEstimatedFee] = useState(0);
-	const { Contracts, Account, Signer }: any = useBlockchain();
+	const { Contracts, Account, Signer, initBlockchain }: any = useBlockchain();
 	const { api }: any = useCENNZApi();
 	const { wallet, selectedAccount, bridgeBalances } = useWallet();
 	const { signer } = wallet;
 
+	const connectMetamask = async () => {
+		const { ethereum } = window as any;
+		try {
+			const accounts = await ethereum.request({
+				method: "eth_requestAccounts",
+			});
+			const ethChainId = await ethereum.request({ method: "eth_chainId" });
+
+			if (ETH_CHAIN_ID === "1" && ethChainId !== "0x1") {
+				await ethereum.request({
+					method: "wallet_switchEthereumChain",
+					params: [{ chainId: "0x1" }],
+				});
+				window.location.reload();
+			} else if (ETH_CHAIN_ID === "42" && ethChainId !== "0x2a") {
+				await ethereum.request({
+					method: "wallet_switchEthereumChain",
+					params: [{ chainId: "0x2a" }],
+				});
+				window.location.reload();
+			}
+
+			initBlockchain(ethereum, accounts);
+		} catch (err) {
+			console.log(err.message);
+			setModalState("noMetamask");
+			setErrorModalOpen(true);
+		}
+	};
+
 	//Estimate fee
 	useEffect(() => {
-		if (selectedAccount)
-			(async () => {
-				let gasPrice = (await Signer.getGasPrice()).toString();
-				gasPrice = ethers.utils.formatUnits(gasPrice);
+		if (!selectedAccount || !Account) return;
 
-				const gasEstimate = Number(gasPrice) * 150000;
+		(async () => {
+			let gasPrice = (await Signer.getGasPrice()).toString();
+			gasPrice = ethers.utils.formatUnits(gasPrice);
 
-				let verificationFee = await Contracts.bridge.verificationFee();
-				verificationFee = ethers.utils.formatUnits(verificationFee);
+			const gasEstimate = Number(gasPrice) * 150000;
 
-				const totalFeeEstimate = gasEstimate + Number(verificationFee);
+			let verificationFee = await Contracts.bridge.verificationFee();
+			verificationFee = ethers.utils.formatUnits(verificationFee);
 
-				setEstimatedFee(Number(totalFeeEstimate.toFixed(6)));
-			})();
-	}, [selectedAccount, Contracts.bridge, Signer]);
+			const totalFeeEstimate = gasEstimate + Number(verificationFee);
+
+			setEstimatedFee(Number(totalFeeEstimate.toFixed(6)));
+		})();
+	}, [selectedAccount, Account, Contracts.bridge, Signer]);
 
 	//Check CENNZnet account has enough tokens to withdraw
 	useEffect(() => {
@@ -219,6 +255,9 @@ const Withdraw: React.FC<{}> = () => {
 					resetModal={resetModal}
 				/>
 			)}
+			{errorModalOpen && (
+				<ErrorModal setModalOpen={setErrorModalOpen} modalState={modalState} />
+			)}
 			<Box
 				component="form"
 				sx={{
@@ -258,24 +297,43 @@ const Withdraw: React.FC<{}> = () => {
 						<CircularProgress size="1.5rem" sx={{ color: "black" }} />
 					)}
 				</Box>
-				<Button
-					sx={{
-						fontFamily: "Teko",
-						fontWeight: "bold",
-						fontSize: "21px",
-						lineHeight: "124%",
-						color: "#1130FF",
-						m: "30px auto 50px",
-					}}
-					disabled={
-						token && amount && Number(amount) <= tokenBalance ? false : true
-					}
-					size="large"
-					variant="outlined"
-					onClick={withdraw}
-				>
-					Withdraw
-				</Button>
+				{Account ? (
+					<Button
+						sx={{
+							fontFamily: "Teko",
+							fontWeight: "bold",
+							fontSize: "21px",
+							lineHeight: "124%",
+							color: "#1130FF",
+							m: "30px auto 50px",
+						}}
+						disabled={
+							token && amount && Number(amount) <= tokenBalance ? false : true
+						}
+						size="large"
+						variant="outlined"
+						onClick={withdraw}
+					>
+						Withdraw
+					</Button>
+				) : (
+					<Button
+						sx={{
+							fontFamily: "Teko",
+							fontWeight: "bold",
+							fontSize: "21px",
+							lineHeight: "124%",
+							color: "#1130FF",
+							mt: "30px",
+							mb: "50px",
+						}}
+						size="large"
+						variant="outlined"
+						onClick={connectMetamask}
+					>
+						metamask
+					</Button>
+				)}
 			</Box>
 		</>
 	);
