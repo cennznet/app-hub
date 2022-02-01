@@ -99,8 +99,8 @@ const TokenPicker: React.FC<{
 	return (
 		<FormControl
 			sx={{
-				width: cennznet ? "40%" : "80%",
-				mt: cennznet ? "30px" : "50px",
+				width: "80%",
+				mt: "30px",
 			}}
 			required
 		>

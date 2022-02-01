@@ -67,12 +67,10 @@ const PoolForm: React.FC<{}> = () => {
 					flexDirection: "column",
 				}}
 			>
-				<CENNZnetAccountPicker updateSelectedAccount={updateSelectedAccount} />
 				<span
 					style={{
 						display: "flex",
 						flexDirection: "row",
-						marginTop: "20px",
 						alignContent: "justify",
 						width: "100%",
 					}}
@@ -122,22 +120,20 @@ const PoolForm: React.FC<{}> = () => {
 					)}
 				</SmallText>
 			</Box>
-			<span style={{ width: "80%", display: "flex", flexDirection: "row" }}>
-				<TextField
-					label="Amount"
-					variant="outlined"
-					type="number"
-					required
-					sx={{
-						width: "80%",
-						m: "30px 0 30px",
-					}}
-					onChange={(e) =>
-						setState({ ...state, tokenAmount: Number(e.target.value) })
-					}
-				/>
-				<TokenPicker setToken={setToken} cennznet={true} />
-			</span>
+			<TokenPicker setToken={setToken} cennznet={true} />
+			<TextField
+				label="Amount"
+				variant="outlined"
+				type="number"
+				required
+				sx={{
+					width: "80%",
+					m: "30px 0 0",
+				}}
+				onChange={(e) =>
+					setState({ ...state, tokenAmount: Number(e.target.value) })
+				}
+			/>
 			<span
 				style={{
 					display: "flex",
@@ -145,6 +141,7 @@ const PoolForm: React.FC<{}> = () => {
 					width: "80%",
 				}}
 			>
+				<Image src={CPAY.logo} height={40} width={40} />
 				<TextField
 					label="Amount"
 					type="number"
@@ -152,13 +149,12 @@ const PoolForm: React.FC<{}> = () => {
 					required
 					sx={{
 						width: "100%",
-						m: "30px 5% 30px 0",
+						m: "30px 0 30px 5%",
 					}}
 					onChange={(e) =>
 						setState({ ...state, cpayAmount: Number(e.target.value) })
 					}
 				/>
-				<Image src={CPAY.logo} height={40} width={40} />
 			</span>
 			<Button
 				sx={{
