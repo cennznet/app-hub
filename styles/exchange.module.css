@@ -1,0 +1,12 @@
+.errorMsg {
+    font-family: "Roboto";
+    font-style: normal;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 19px;
+    display: flex;
+    align-self: start;
+    margin-left: 56px;
+
+    color: #EC022C;
+}
