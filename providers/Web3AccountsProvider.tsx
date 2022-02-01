@@ -27,7 +27,7 @@ export default function Web3AccountsProvider({
 		let unsubscribe: () => void;
 
 		async function fetchAndSubscribeAccounts() {
-			await web3Enable("CENNZnet App");
+			await web3Enable("CENNZnet Hub");
 			const accounts = await web3Accounts();
 			setAccounts(accounts);
 			selectAccount(accounts[0]);
