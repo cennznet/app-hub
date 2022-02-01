@@ -7,6 +7,7 @@ import { defineTxModal } from "../../utils/bridge/modal";
 import { getMetamaskBalance, ETH } from "../../utils/helpers";
 import { useBlockchain } from "../../providers/BlockchainProvider";
 import { useCENNZApi } from "../../providers/CENNZApiProvider";
+import { useWallet } from "../../providers/SupportedWalletProvider";
 import TxModal from "./TxModal";
 import ErrorModal from "./ErrorModal";
 import TokenPicker from "../shared/TokenPicker";
@@ -32,6 +33,7 @@ const Deposit: React.FC<{}> = () => {
 	});
 	const [tokenBalance, setTokenBalance] = useState<Number>();
 	const { Contracts, Signer, Account, initBlockchain }: any = useBlockchain();
+	const { wallet, connectWallet } = useWallet();
 	const { api }: any = useCENNZApi();
 
 	const connectMetamask = async () => {
@@ -47,16 +49,16 @@ const Deposit: React.FC<{}> = () => {
 					method: "wallet_switchEthereumChain",
 					params: [{ chainId: "0x1" }],
 				});
-				window.location.reload();
 			} else if (ETH_CHAIN_ID === "42" && ethChainId !== "0x2a") {
 				await ethereum.request({
 					method: "wallet_switchEthereumChain",
 					params: [{ chainId: "0x2a" }],
 				});
-				window.location.reload();
 			}
 
 			initBlockchain(ethereum, accounts);
+
+			if (!wallet) connectWallet();
 		} catch (err) {
 			console.log(err.message);
 			setModalState("noMetamask");
@@ -278,7 +280,7 @@ const Deposit: React.FC<{}> = () => {
 						variant="outlined"
 						onClick={connectMetamask}
 					>
-						connect metamask
+						{wallet ? "connect metamask" : "connect wallets"}
 					</Button>
 				)}
 			</Box>

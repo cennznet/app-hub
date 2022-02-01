@@ -115,7 +115,18 @@ const ErrorModal: React.FC<{
 						Please create an account in the CENNZnet extension
 					</SmallText>
 				)}
-
+				{modalState === "connectCENNZ" && (
+					<SmallText
+						sx={{
+							ml: "5%",
+							display: "inline-flex",
+							fontSize: "18px",
+							mb: "30px",
+						}}
+					>
+						Please connect your CENNZnet account
+					</SmallText>
+				)}
 				<Button
 					sx={{
 						fontFamily: "Teko",

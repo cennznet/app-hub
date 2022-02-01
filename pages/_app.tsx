@@ -37,9 +37,9 @@ function MyApp({ Component, pageProps }: AppProps) {
 				<CssBaseline />
 				<CENNZApiProvider>
 					<DappModuleProvider>
-						<Web3AccountsProvider>
-							<SupportedAssetsProvider>
-								<SupportedWalletProvider>
+						<SupportedAssetsProvider>
+							<SupportedWalletProvider>
+								<Web3AccountsProvider>
 									<BlockchainProvider>
 										<Wallet />
 										<Box
@@ -60,9 +60,9 @@ function MyApp({ Component, pageProps }: AppProps) {
 										<Switch setLocation={setLocation} />
 										<Component {...pageProps} />
 									</BlockchainProvider>
-								</SupportedWalletProvider>
-							</SupportedAssetsProvider>
-						</Web3AccountsProvider>
+								</Web3AccountsProvider>
+							</SupportedWalletProvider>
+						</SupportedAssetsProvider>
 					</DappModuleProvider>
 				</CENNZApiProvider>
 			</ThemeProvider>

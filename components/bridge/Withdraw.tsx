@@ -43,13 +43,11 @@ const Withdraw: React.FC<{}> = () => {
 					method: "wallet_switchEthereumChain",
 					params: [{ chainId: "0x1" }],
 				});
-				window.location.reload();
 			} else if (ETH_CHAIN_ID === "42" && ethChainId !== "0x2a") {
 				await ethereum.request({
 					method: "wallet_switchEthereumChain",
 					params: [{ chainId: "0x2a" }],
 				});
-				window.location.reload();
 			}
 
 			initBlockchain(ethereum, accounts);
@@ -331,7 +329,7 @@ const Withdraw: React.FC<{}> = () => {
 						variant="outlined"
 						onClick={connectMetamask}
 					>
-						metamask
+						connect metamask
 					</Button>
 				)}
 			</Box>

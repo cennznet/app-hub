@@ -10,6 +10,9 @@ import {
 } from "@mui/material";
 import { Heading, SmallText, StyledModal } from "../../theme/StyledComponents";
 import { useCENNZApi } from "../../providers/CENNZApiProvider";
+
+const ETH_CHAIN_ID = process.env.NEXT_PUBLIC_ETH_CHAIN_ID;
+
 interface Props {
 	modalState: string;
 	modalText: string;
@@ -48,22 +51,16 @@ const TxModal: React.FC<Props> = ({
 	};
 
 	useEffect(() => {
-		const ethereumNetwork = window.localStorage.getItem("ethereum-network");
 		let relayerLink;
 
-		switch (ethereumNetwork) {
+		switch (ETH_CHAIN_ID) {
 			default:
-			case "Mainnet":
+			case "1":
 				setEtherscanLink(`https://etherscan.io/tx/${etherscanHash}`);
 				if (modalState === "relayer")
 					relayerLink = `https://bridge-contracts.centralityapp.com/transactions/${etherscanHash}`;
 				break;
-			case "Ropsten":
-				setEtherscanLink(`https://ropsten.etherscan.io/tx/${etherscanHash}`);
-				if (modalState === "relayer")
-					relayerLink = `https://bridge-contracts.rata.centrality.me/transactions/${etherscanHash}`;
-				break;
-			case "Kovan":
+			case "42":
 				setEtherscanLink(`https://kovan.etherscan.io/tx/${etherscanHash}`);
 				if (modalState === "relayer")
 					relayerLink = `https://bridge-contracts.nikau.centrality.me/transactions/${etherscanHash}`;
