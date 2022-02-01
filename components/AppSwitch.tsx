@@ -1,12 +1,11 @@
 import React from "react";
+import { useRouter } from "next/router";
 import { Box } from "@mui/material";
 import { SwitchButton } from "../theme/StyledComponents";
 
-const Switch: React.FC<{ location: string; setLocation: Function }> = ({
-	location,
-	setLocation,
-}) => {
-	const indexColours = location === undefined || location === "index";
+const Switch: React.FC<{ setLocation: Function }> = ({ setLocation }) => {
+	const router = useRouter();
+	const location = router.asPath;
 
 	return (
 		<Box
@@ -21,14 +20,14 @@ const Switch: React.FC<{ location: string; setLocation: Function }> = ({
 				top: "4%",
 			}}
 		>
-			{indexColours && (
+			{location === "/" && (
 				<>
 					<SwitchButton
 						onClick={() => setLocation("swap")}
 						style={{
 							backgroundColor: "#FFFFFF",
 							color: "#1130FF",
-							borderLeft: "2px solid #1130FF",
+							borderLeft: "4px solid #1130FF",
 							borderRight: "2px solid #1130FF",
 						}}
 					>
@@ -39,6 +38,7 @@ const Switch: React.FC<{ location: string; setLocation: Function }> = ({
 						style={{
 							backgroundColor: "#FFFFFF",
 							color: "#1130FF",
+							borderLeft: "2px solid #1130FF",
 							borderRight: "2px solid #1130FF",
 						}}
 					>
@@ -56,7 +56,7 @@ const Switch: React.FC<{ location: string; setLocation: Function }> = ({
 					</SwitchButton>
 				</>
 			)}
-			{location === "bridge" && (
+			{location === "/bridge" && (
 				<>
 					<SwitchButton
 						onClick={() => setLocation("swap")}
@@ -87,7 +87,7 @@ const Switch: React.FC<{ location: string; setLocation: Function }> = ({
 					</SwitchButton>
 				</>
 			)}
-			{location === "swap" && (
+			{location === "/swap" && (
 				<>
 					<SwitchButton
 						style={{
@@ -118,7 +118,7 @@ const Switch: React.FC<{ location: string; setLocation: Function }> = ({
 					</SwitchButton>
 				</>
 			)}
-			{location === "pool" && (
+			{location === "/pool" && (
 				<>
 					<SwitchButton
 						onClick={() => setLocation("swap")}
