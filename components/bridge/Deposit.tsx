@@ -47,13 +47,11 @@ const Deposit: React.FC<{}> = () => {
 					method: "wallet_switchEthereumChain",
 					params: [{ chainId: "0x1" }],
 				});
-				window.location.reload();
 			} else if (ETH_CHAIN_ID === "42" && ethChainId !== "0x2a") {
 				await ethereum.request({
 					method: "wallet_switchEthereumChain",
 					params: [{ chainId: "0x2a" }],
 				});
-				window.location.reload();
 			}
 
 			initBlockchain(ethereum, accounts);
