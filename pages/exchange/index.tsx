@@ -9,6 +9,7 @@ import { Asset } from "../../types/exchange";
 import BigNumber from "bignumber.js";
 
 import styles from "../../styles/exchange.module.css";
+import { useWallet } from "../../providers/SupportedWalletProvider";
 
 const Exchange: React.FC<{}> = () => {
 	const [exchangeToken, setExchangeToken] = useState<Asset>();
@@ -19,8 +20,11 @@ const Exchange: React.FC<{}> = () => {
 		React.useState<string>("0");
 	const [estimatedFee, setEstimatedFee] = useState<string>();
 	const [error, setError] = useState<string>();
+	const [success, setSuccess] = useState<string>();
 	const { api, apiRx, initApi, initApiRx }: any = useCENNZApi();
 	const assets = useAssets();
+	const { wallet, selectedAccount, bridgeBalances } = useWallet();
+	const { signer } = wallet;
 
 	useEffect(() => {
 		if (!api?.isConnected) {
@@ -37,6 +41,8 @@ const Exchange: React.FC<{}> = () => {
 					exchangeToken &&
 					receivedToken
 				) {
+					setError(undefined);
+					setSuccess(undefined);
 					let exchangeAmount: any = new BigNumber(
 						exchangeTokenValue.toString()
 					);
@@ -112,10 +118,16 @@ const Exchange: React.FC<{}> = () => {
 					exchangeTokenValue,
 					maxAmount
 				);
-				console.info(extrinsic);
-				//TODO inject signer from wallet here
-				// const signer: any;
-				// await extrinsic.signAndSend(signer);
+				extrinsic.signAndSend(
+					selectedAccount.address,
+					{ signer },
+					async ({ status }: any) => {
+						if (status.isInBlock) {
+							setError(undefined);
+							setSuccess("Successfully Swapped Tokens!");
+						}
+					}
+				);
 			}
 		} catch (e) {
 			setError(e.message);
@@ -190,6 +202,7 @@ const Exchange: React.FC<{}> = () => {
 					onChange={(event) => setExchangeTokenValue(event.target.value)}
 				/>
 				{error && <p className={styles.errorMsg}>{error}</p>}
+				{success && <p className={styles.successMsg}>{success}</p>}
 				<ExchangeIcon
 					onClick={() => {
 						setReceivedToken(exchangeToken);
