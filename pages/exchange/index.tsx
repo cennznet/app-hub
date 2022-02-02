@@ -21,9 +21,9 @@ const Exchange: React.FC<{}> = () => {
 	const [estimatedFee, setEstimatedFee] = useState<string>();
 	const [error, setError] = useState<string>();
 	const [success, setSuccess] = useState<string>();
-	const { api, apiRx, initApi, initApiRx }: any = useCENNZApi();
+	const { api, initApi }: any = useCENNZApi();
 	const assets = useAssets();
-	const { wallet, selectedAccount, bridgeBalances } = useWallet();
+	const { wallet, selectedAccount, balances } = useWallet();
 	const { signer } = wallet;
 
 	useEffect(() => {
@@ -49,6 +49,14 @@ const Exchange: React.FC<{}> = () => {
 					exchangeAmount = exchangeAmount
 						.multipliedBy(Math.pow(10, exchangeToken.decimals))
 						.toString(10);
+
+					//check if they own enough tokens to exchange
+					const exchangeTokenBalance = balances.find(
+						(token) => token.id === exchangeToken.id
+					);
+					if (parseInt(exchangeTokenValue) > exchangeTokenBalance.value) {
+						throw new Error("Account Balance is too low.");
+					}
 					const sellPrice = await (api.rpc as any).cennzx.sellPrice(
 						exchangeToken.id,
 						exchangeAmount,
