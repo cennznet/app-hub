@@ -29,8 +29,10 @@ const Exchange: React.FC<{}> = () => {
 	const { web3Enable } = useDappModule();
 
 	useEffect(() => {
-		if (!wallet) connectWallet();
-	}, [web3Enable]);
+		if (!wallet) {
+			connectWallet();
+		}
+	}, [web3Enable, api]);
 
 	useEffect(() => {
 		if (!api?.isConnected) {
