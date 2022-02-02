@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { Box, Button, TextField } from "@mui/material";
 import TokenPicker from "../../components/shared/TokenPicker";
 import ExchangeIcon from "../../components/exchange/ExchangeIcon";
@@ -24,7 +24,7 @@ const Exchange: React.FC<{}> = () => {
 	const { api, initApi }: any = useCENNZApi();
 	const assets = useAssets();
 	const { wallet, selectedAccount, balances } = useWallet();
-	const { signer } = wallet;
+	const signer = useMemo(() => wallet?.signer, [wallet]);
 
 	useEffect(() => {
 		if (!api?.isConnected) {
@@ -110,7 +110,8 @@ const Exchange: React.FC<{}> = () => {
 		return estimatedFee.toString();
 	};
 
-	const exchangeTokens = async () => {
+	const exchangeTokens = useCallback(async () => {
+		if (!signer) return;
 		try {
 			if (
 				parseInt(exchangeTokenValue) > 0 &&
@@ -140,7 +141,7 @@ const Exchange: React.FC<{}> = () => {
 		} catch (e) {
 			setError(e.message);
 		}
-	};
+	}, [signer]);
 
 	return (
 		<Box
@@ -252,8 +253,9 @@ const Exchange: React.FC<{}> = () => {
 					size="large"
 					variant="outlined"
 					onClick={exchangeTokens}
+					disabled={!signer}
 				>
-					Exchange
+					{!!signer ? "Exchange" : "Connect Wallet"}
 				</Button>
 			</Box>
 		</Box>
