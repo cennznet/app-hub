@@ -10,6 +10,7 @@ import BigNumber from "bignumber.js";
 
 import styles from "../../styles/exchange.module.css";
 import { useWallet } from "../../providers/SupportedWalletProvider";
+import { useDappModule } from "../../providers/DappModuleProvider";
 
 const Exchange: React.FC<{}> = () => {
 	const [exchangeToken, setExchangeToken] = useState<Asset>();
@@ -23,8 +24,13 @@ const Exchange: React.FC<{}> = () => {
 	const [success, setSuccess] = useState<string>();
 	const { api, initApi }: any = useCENNZApi();
 	const assets = useAssets();
-	const { wallet, selectedAccount, balances } = useWallet();
+	const { wallet, selectedAccount, balances, connectWallet } = useWallet();
 	const signer = useMemo(() => wallet?.signer, [wallet]);
+	const { web3Enable } = useDappModule();
+
+	useEffect(() => {
+		if (!wallet) connectWallet();
+	}, [web3Enable]);
 
 	useEffect(() => {
 		if (!api?.isConnected) {
