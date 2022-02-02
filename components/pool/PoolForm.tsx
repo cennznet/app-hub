@@ -2,26 +2,29 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { Box, Button, TextField } from "@mui/material";
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
+import { Heading, SmallText } from "../../theme/StyledComponents";
 import TokenPicker from "../../components/shared/TokenPicker";
 import { useCENNZApi } from "../../providers/CENNZApiProvider";
 import { useAssets, AssetInfo } from "../../providers/SupportedAssetsProvider";
-import CENNZnetAccountPicker from "../../components/shared/CENNZnetAccountPicker";
-import { Heading, SmallText } from "../../theme/StyledComponents";
+import { useWallet } from "../../providers/SupportedWalletProvider";
 import { PoolAction, usePool } from "../../providers/PoolProvider";
+import { Amount, AmountUnit } from "../../utils/Amount";
+import BigNumber from "bignumber.js";
 
 const CPAY = { id: 2, symbol: "CPAY", logo: "/images/cpay.svg", decimals: 4 };
 
+type UserBalances = {
+	poolToken: number;
+	cpay: number;
+};
+
 const PoolForm: React.FC<{}> = () => {
-	const [state, setState] = useState({
-		poolAction: PoolAction.ADD,
-		tokenAmount: 0,
-		cpayAmount: 0,
-	});
-	const [token, setToken] = useState<AssetInfo>();
-	const [selectedAccount, updateSelectedAccount] = useState({
-		address: "",
-		name: "",
-	});
+	const [poolAction, setPoolAction] = useState<string>(PoolAction.ADD);
+	const [poolToken, setPoolToken] = useState<AssetInfo>();
+	const [poolTokenAmount, setPoolTokenAmount] = useState<number>(0);
+	const [cpayAmount, setCpayAmount] = useState<number>(0);
+	const [userBalances, setUserBalances] = useState<UserBalances>();
+	const { balances } = useWallet();
 	const { api, apiRx } = useCENNZApi();
 	const assets = useAssets();
 	const {
@@ -33,12 +36,49 @@ const PoolForm: React.FC<{}> = () => {
 		userShareInPool,
 	} = usePool();
 
+	//get user balances
+	useEffect(() => {
+		if (!balances || !poolToken) return;
+
+		const userPoolToken = balances.find(
+			(asset) => asset.symbol === poolToken.symbol
+		);
+		const userCpay = balances.find((asset) => asset.symbol === "CPAY");
+
+		setUserBalances({ poolToken: userPoolToken.value, cpay: userCpay.value });
+	}, [balances, poolToken]);
+
+	//set CPAY amount
+	useEffect(() => {
+		if (!api || !assets || !poolToken || poolTokenAmount <= 0) return;
+		(async () => {
+			const CPAY = assets.find((asset) => asset.symbol === "CPAY");
+
+			let tokenValue: any = new BigNumber(poolTokenAmount.toString());
+			tokenValue = tokenValue
+				.multipliedBy(Math.pow(10, poolToken.decimals))
+				.toString(10);
+
+			const { price } = await (api.rpc as any).cennzx.sellPrice(
+				CPAY.id,
+				tokenValue,
+				poolToken.id
+			);
+
+			let poolCpayAmount: any = new Amount(
+				price.toString(),
+				AmountUnit.UN
+			).toAmount(CPAY.decimals);
+
+			setCpayAmount(Number(poolCpayAmount.toString(10)));
+		})();
+	}, [api, assets, poolToken, poolTokenAmount, setCpayAmount]);
+
 	async function confirm() {
 		console.log({
-			state,
-			token,
-			selectedAccount,
-			assets,
+			poolTokenAmount,
+			cpayAmount,
+			poolToken,
 		});
 	}
 	return (
@@ -78,13 +118,11 @@ const PoolForm: React.FC<{}> = () => {
 					<Button
 						sx={{ borderRadius: "10%", ml: "10%" }}
 						onClick={() =>
-							setState({
-								...state,
-								poolAction:
-									state.poolAction === PoolAction.ADD
-										? PoolAction.REMOVE
-										: PoolAction.ADD,
-							})
+							setPoolAction(
+								poolAction === PoolAction.ADD
+									? PoolAction.REMOVE
+									: PoolAction.ADD
+							)
 						}
 					>
 						<SwapHorizIcon sx={{ fontSize: "30px" }} />
@@ -96,7 +134,7 @@ const PoolForm: React.FC<{}> = () => {
 							textTransform: "uppercase",
 						}}
 					>
-						{state.poolAction} Liquidity
+						{poolAction} Liquidity
 					</Heading>
 				</span>
 				<SmallText
@@ -105,35 +143,57 @@ const PoolForm: React.FC<{}> = () => {
 						mt: "10px",
 					}}
 				>
-					{state.poolAction === PoolAction.ADD ? (
+					{poolAction === PoolAction.ADD ? (
 						<>
 							To keep the liquidity pool functional, deposits require an equal
-							value of {token?.symbol || "your token"} and CPAY at the current
-							exchange rate.
+							value of {poolToken?.symbol || "your token"} and CPAY at the
+							current exchange rate.
 						</>
 					) : (
 						<>
 							To keep the liquidity pool functional, withdrawals will return an
-							equal value of {token?.symbol || "your token"} and CPAY at the
+							equal value of {poolToken?.symbol || "your token"} and CPAY at the
 							current exchange rate.
 						</>
 					)}
 				</SmallText>
 			</Box>
-			<TokenPicker setToken={setToken} cennznet={true} />
-			<TextField
-				label="Amount"
-				variant="outlined"
-				type="number"
-				required
+			<TokenPicker setToken={setPoolToken} cennznet={true} />
+			<Box
 				sx={{
 					width: "80%",
-					m: "30px 0 0",
+					height: "60px",
+					display: "inline-flex",
+					m: "30px auto 30px",
 				}}
-				onChange={(e) =>
-					setState({ ...state, tokenAmount: Number(e.target.value) })
-				}
-			/>
+			>
+				<TextField
+					label="Amount"
+					variant="outlined"
+					required
+					value={poolTokenAmount}
+					sx={{
+						width: "80%",
+						m: "30px 0 0",
+					}}
+					helperText={
+						userBalances ? `Balance: ${userBalances.poolToken}` : null
+					}
+					onChange={(e) => setPoolTokenAmount(Number(e.target.value))}
+				/>
+				<Button
+					sx={{
+						position: "relative",
+						display: "flex",
+						height: "30px",
+						mt: "40px",
+					}}
+					disabled={userBalances && poolToken ? false : true}
+					onClick={() => setPoolTokenAmount(userBalances.poolToken)}
+				>
+					Max
+				</Button>
+			</Box>
 			<span
 				style={{
 					display: "flex",
@@ -141,19 +201,19 @@ const PoolForm: React.FC<{}> = () => {
 					width: "80%",
 				}}
 			>
-				<Image src={CPAY.logo} height={40} width={40} />
+				<Image src={CPAY.logo} height={40} width={40} alt="CPAY logo" />
 				<TextField
 					label="Amount"
 					type="number"
 					variant="outlined"
 					required
+					value={cpayAmount}
 					sx={{
 						width: "100%",
 						m: "30px 0 30px 5%",
 					}}
-					onChange={(e) =>
-						setState({ ...state, cpayAmount: Number(e.target.value) })
-					}
+					helperText={userBalances ? `Balance: ${userBalances.cpay}` : null}
+					// onChange={(e) => setCpayAmount(Number(e.target.value))}
 				/>
 			</span>
 			<Button

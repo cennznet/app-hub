@@ -45,8 +45,6 @@ export default function SupportedAssetsProvider({
 					};
 				});
 
-				console.log("assetInfos", assetInfos);
-
 				setSupportedAssets(assetInfos);
 			} catch (err) {
 				console.log(err.message);
