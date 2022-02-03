@@ -1,83 +1,80 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
+import { AnyNumber } from "@cennznet/types";
 import Image from "next/image";
 import { Box, Button, TextField } from "@mui/material";
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
 import { Heading, SmallText } from "../../theme/StyledComponents";
 import TokenPicker from "../../components/shared/TokenPicker";
-import { useCENNZApi } from "../../providers/CENNZApiProvider";
 import { useAssets, AssetInfo } from "../../providers/SupportedAssetsProvider";
 import { useWallet } from "../../providers/SupportedWalletProvider";
 import { PoolAction, usePool } from "../../providers/PoolProvider";
-import { Amount, AmountUnit } from "../../utils/Amount";
-import BigNumber from "bignumber.js";
+import { Amount } from "../../utils/Amount";
 
-const CPAY = { id: 2, symbol: "CPAY", logo: "/images/cpay.svg", decimals: 4 };
+const ROUND_UP = 1;
 
 type UserBalances = {
 	poolToken: number;
-	cpay: number;
+	core: number;
 };
 
 const PoolForm: React.FC<{}> = () => {
 	const [poolAction, setPoolAction] = useState<string>(PoolAction.ADD);
-	const [poolToken, setPoolToken] = useState<AssetInfo>();
+	const [poolToken, setPoolToken] = useState<AssetInfo>(null);
 	const [poolTokenAmount, setPoolTokenAmount] = useState<number>(0);
-	const [cpayAmount, setCpayAmount] = useState<number>(0);
+	const [coreAmount, setCoreAmount] = useState<AnyNumber>(0);
 	const [userBalances, setUserBalances] = useState<UserBalances>();
-	const { balances } = useWallet();
-	const { api, apiRx } = useCENNZApi();
+	const { balances, selectedAccount } = useWallet();
 	const assets = useAssets();
-	const {
-		assetReserve,
-		coreReserve,
-		coreAssetId,
-		fee,
-		feeRate,
-		userShareInPool,
-	} = usePool();
+	const { coreAsset, fee, feeRate, exchangePool, updateExchangePool } =
+		usePool();
 
 	//get user balances
 	useEffect(() => {
-		if (!balances || !poolToken) return;
+		if (!balances || !poolToken || !coreAsset) return;
+
+		console.log("coreAsset", coreAsset);
 
 		const userPoolToken = balances.find(
 			(asset) => asset.symbol === poolToken.symbol
 		);
-		const userCpay = balances.find((asset) => asset.symbol === "CPAY");
+		const userCore = balances.find(
+			(asset) => asset.symbol === coreAsset.symbol
+		);
 
-		setUserBalances({ poolToken: userPoolToken.value, cpay: userCpay.value });
-	}, [balances, poolToken]);
+		setUserBalances({ poolToken: userPoolToken.value, core: userCore.value });
+	}, [balances, poolToken, coreAsset]);
 
-	//set CPAY amount
 	useEffect(() => {
-		if (!api || !assets || !poolToken || poolTokenAmount <= 0) return;
-		(async () => {
-			const CPAY = assets.find((asset) => asset.symbol === "CPAY");
+		if (!poolToken) return;
 
-			let tokenValue: any = new BigNumber(poolTokenAmount.toString());
-			tokenValue = tokenValue
-				.multipliedBy(Math.pow(10, poolToken.decimals))
-				.toString(10);
+		updateExchangePool(poolToken);
+	}, [updateExchangePool, poolToken]);
 
-			const { price } = await (api.rpc as any).cennzx.sellPrice(
-				CPAY.id,
-				tokenValue,
-				poolToken.id
-			);
+	//set core amount from token amount
+	useEffect(() => {
+		if (!exchangePool || !poolToken) return;
+		if (poolTokenAmount <= 0) setCoreAmount(0);
 
-			let poolCpayAmount: any = new Amount(
-				price.toString(),
-				AmountUnit.UN
-			).toAmount(CPAY.decimals);
+		if (
+			exchangePool.coreAssetBalance.isZero() ||
+			exchangePool.assetBalance.isZero()
+		) {
+			setCoreAmount(poolTokenAmount);
+		} else {
+			const coreAmount = new Amount(poolTokenAmount)
+				.mul(exchangePool.coreAssetBalance)
+				.div(exchangePool.assetBalance)
+				.subn(ROUND_UP);
 
-			setCpayAmount(Number(poolCpayAmount.toString(10)));
-		})();
-	}, [api, assets, poolToken, poolTokenAmount, setCpayAmount]);
+			setCoreAmount(coreAmount);
+		}
+		//eslint-disable-next-line
+	}, [poolTokenAmount, exchangePool, poolToken]);
 
 	async function confirm() {
 		console.log({
 			poolTokenAmount,
-			cpayAmount,
+			coreAmount,
 			poolToken,
 		});
 	}
@@ -201,19 +198,24 @@ const PoolForm: React.FC<{}> = () => {
 					width: "80%",
 				}}
 			>
-				<Image src={CPAY.logo} height={40} width={40} alt="CPAY logo" />
+				<Image
+					src={`/images/${coreAsset?.symbol.toLowerCase()}.svg`}
+					height={40}
+					width={40}
+					alt="coreAsset logo"
+				/>
 				<TextField
 					label="Amount"
 					type="number"
 					variant="outlined"
-					required
-					value={cpayAmount}
+					disabled={true}
+					value={coreAmount}
 					sx={{
 						width: "100%",
 						m: "30px 0 30px 5%",
 					}}
-					helperText={userBalances ? `Balance: ${userBalances.cpay}` : null}
-					// onChange={(e) => setCpayAmount(Number(e.target.value))}
+					helperText={userBalances ? `Balance: ${userBalances.core}` : null}
+					// onChange={(e) => setCoreAmount(Number(e.target.value))}
 				/>
 			</span>
 			<Button
