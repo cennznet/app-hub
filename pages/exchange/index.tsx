@@ -122,26 +122,38 @@ const Exchange: React.FC<{}> = () => {
 		if (!signer) return;
 		try {
 			if (
-				parseInt(exchangeTokenValue) > 0 &&
+				parseInt(receivedTokenValue) > 0 &&
 				api &&
 				exchangeToken &&
 				receivedToken
 			) {
-				const maxAmount = parseInt(exchangeTokenValue) * 2;
+				let exchangeAmount: any = new BigNumber(exchangeTokenValue.toString());
+				exchangeAmount = exchangeAmount
+					.multipliedBy(Math.pow(10, exchangeToken.decimals))
+					.toString(10);
+				const maxAmount = parseInt(exchangeAmount) * 2;
+				let buyAmount: any = new BigNumber(receivedTokenValue.toString());
+				buyAmount = buyAmount
+					.multipliedBy(Math.pow(10, receivedToken.decimals))
+					.toString(10);
 				const extrinsic = api.tx.cennzx.buyAsset(
 					null,
 					exchangeToken.id,
 					receivedToken.id,
-					exchangeTokenValue,
+					buyAmount,
 					maxAmount
 				);
 				extrinsic.signAndSend(
 					selectedAccount.address,
 					{ signer },
-					async ({ status }: any) => {
-						if (status.isInBlock) {
-							setError(undefined);
-							setSuccess("Successfully Swapped Tokens!");
+					async ({ status, events }: any) => {
+						if (status.isInBlock && events !== undefined) {
+							for (const { event } of events) {
+								if (event.method === "AssetBought") {
+									setError(undefined);
+									setSuccess(`Successfully Swapped Tokens!`);
+								}
+							}
 						}
 					}
 				);
@@ -149,7 +161,7 @@ const Exchange: React.FC<{}> = () => {
 		} catch (e) {
 			setError(e.message);
 		}
-	}, [signer]);
+	}, [signer, api, exchangeToken, receivedToken, receivedTokenValue]);
 
 	return (
 		<Box
