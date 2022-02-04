@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import type { AppProps } from "next/app";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -11,9 +12,20 @@ import CENNZApiProvider from "../providers/CENNZApiProvider";
 import SupportedWalletProvider from "../providers/SupportedWalletProvider";
 import DappModuleProvider from "../providers/DappModuleProvider";
 import Web3AccountsProvider from "../providers/Web3AccountsProvider";
+import Switch from "../components/AppSwitch";
+import Wallet from "../components/Wallet";
+import SupportedAssetsProvider from "../providers/SupportedAssetsProvider";
+import BlockchainProvider from "../providers/BlockchainProvider";
 
 function MyApp({ Component, pageProps }: AppProps) {
 	const router = useRouter();
+	const [location, setLocation] = useState<string>();
+
+	useEffect(() => {
+		if (location !== undefined) router.push(`/${location}`);
+		//eslint-disable-next-line
+	}, [location]);
+
 	return (
 		<>
 			<Head>
@@ -25,26 +37,32 @@ function MyApp({ Component, pageProps }: AppProps) {
 				<CssBaseline />
 				<CENNZApiProvider>
 					<DappModuleProvider>
-						<Web3AccountsProvider>
+						<SupportedAssetsProvider>
 							<SupportedWalletProvider>
-								<Box
-									onClick={() => router.push("/")}
-									sx={{ cursor: "pointer" }}
-								>
-									<img
-										src="/cennznet-header.png"
-										alt="CENNZnet header"
-										style={{
-											width: isBrowser || isTablet ? "90px" : "45px",
-											position: "absolute",
-											top: "5%",
-											left: "6%",
-										}}
-									/>
-								</Box>
-								<Component {...pageProps} />
+								<Web3AccountsProvider>
+									<BlockchainProvider>
+										<Wallet />
+										<Box
+											onClick={() => router.push("/")}
+											sx={{ cursor: "pointer" }}
+										>
+											<img
+												src="/cennznet-header.png"
+												alt="CENNZnet header"
+												style={{
+													width: isBrowser || isTablet ? "90px" : "45px",
+													position: "absolute",
+													top: "5%",
+													left: "6%",
+												}}
+											/>
+										</Box>
+										<Switch location={location} setLocation={setLocation} />
+										<Component {...pageProps} />
+									</BlockchainProvider>
+								</Web3AccountsProvider>
 							</SupportedWalletProvider>
-						</Web3AccountsProvider>
+						</SupportedAssetsProvider>
 					</DappModuleProvider>
 				</CENNZApiProvider>
 			</ThemeProvider>

@@ -1,14 +1,9 @@
 import React, { useState } from "react";
-import store from "store";
 import { Box, Button, CircularProgress, Modal } from "@mui/material";
-import {
-	StyledModal,
-	Heading,
-	SmallText,
-	Option,
-} from "../../theme/StyledComponents";
+import { StyledModal, Heading, Option } from "../../theme/StyledComponents";
 import { useWeb3Accounts } from "../../providers/Web3AccountsProvider";
 import { useWallet } from "../../providers/SupportedWalletProvider";
+import AccountBalances from "./AccountBalances";
 
 const WalletModal: React.FC<{
 	setModalOpen: Function;
@@ -16,84 +11,15 @@ const WalletModal: React.FC<{
 	modalState: string;
 }> = ({ setModalOpen, setModalState, modalState }) => {
 	const [open] = useState(true);
-	const { bridgeBalances, selectedAccount, selectAccount, setBalances } =
-		useWallet();
+	const { selectAccount, selectedAccount } = useWallet();
 	const accounts = useWeb3Accounts();
 
 	const updateAccount = (account) => {
 		if (account !== selectedAccount) {
-			setBalances(null);
 			selectAccount(account);
-			store.set("selected-CENNZnet-account", account);
 		}
 		setModalState("showWallet");
 	};
-
-	const AccountBalances = selectedAccount && (
-		<>
-			<Box sx={{ mt: "5%", pl: "5%", display: "flex" }}>
-				<Heading
-					sx={{
-						color: "primary.main",
-						fontSize: "18px",
-
-						textTransform: "uppercase",
-					}}
-				>
-					{selectedAccount.meta.name}&nbsp;
-				</Heading>
-				<Heading
-					sx={{
-						color: "black",
-						fontSize: "18px",
-						display: "flex",
-					}}
-				>
-					{"[Account Name]"}
-				</Heading>
-			</Box>
-			<SmallText sx={{ pl: "5%", opacity: "70%" }}>
-				{selectedAccount.address}
-			</SmallText>
-			{bridgeBalances ? (
-				<Box sx={{ mt: "3%", pl: "5%", display: "block" }}>
-					{Object.values(bridgeBalances).map((token: any, i) => (
-						<Box key={i}>
-							<SmallText
-								sx={{
-									color: "black",
-									fontSize: "18px",
-									display: "inline-flex",
-								}}
-							>
-								{token.symbol} Balance:
-							</SmallText>
-							<SmallText
-								sx={{
-									color: "black",
-									fontWeight: "bold",
-									fontSize: "18px",
-									display: "inline-flex",
-								}}
-							>
-								{token.balance}
-							</SmallText>
-							<br />
-						</Box>
-					))}
-				</Box>
-			) : (
-				<>
-					<SmallText
-						sx={{ color: "primary.main", fontSize: "14", margin: "10px auto" }}
-					>
-						Fetching Balances...
-					</SmallText>
-					<CircularProgress sx={{ margin: "0 auto" }} />
-				</>
-			)}
-		</>
-	);
 
 	return (
 		<Modal open={open}>
@@ -124,7 +50,9 @@ const WalletModal: React.FC<{
 				</Box>
 				{modalState === "showWallet" ? (
 					<>
-						{AccountBalances}
+						{selectedAccount && (
+							<AccountBalances selectedAccount={selectedAccount} />
+						)}
 						<Button
 							sx={{
 								fontFamily: "Teko",

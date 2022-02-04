@@ -42,3 +42,21 @@ export const Option = styled(Button)({
 	background: "#FFFFFF",
 	border: "4px solid #1130FF",
 });
+
+export const SwitchButton = styled(Button)({
+	position: "static",
+	maxWidth: "276px",
+	top: "0%",
+	bottom: "0%",
+	border: "4px solid #1130FF",
+	flex: "none",
+	order: 0,
+	alignSelf: "stretch",
+	flexGrow: 1,
+	margin: "0px 0px",
+	fontFamily: "Teko",
+	fontStyle: "normal",
+	fontWeight: "bold",
+	fontSize: "24px",
+	lineHeight: "124%",
+});

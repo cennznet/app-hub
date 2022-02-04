@@ -2,19 +2,19 @@ import React, { createContext, useContext, ReactNode, useState } from "react";
 import { ethers } from "ethers";
 import CENNZnetBridge from "../artifacts/CENNZnetBridge.json";
 import ERC20Peg from "../artifacts/ERC20Peg.json";
-import store from "store";
-import { useCENNZApi } from "./CENNZApiProvider";
+
+const ETH_CHAIN_ID = process.env.NEXT_PUBLIC_ETH_CHAIN_ID;
 
 type blockchainContextType = {
 	Contracts: object;
 	Account: string;
-	updateNetwork: Function;
+	initBlockchain: Function;
 };
 
 const blockchainContextDefaultValues: blockchainContextType = {
-	Contracts: {},
-	Account: "",
-	updateNetwork: (ethereum: any, ethereumNetwork: string) => {},
+	Contracts: null,
+	Account: null,
+	initBlockchain: null,
 };
 
 const BlockchainContext = createContext<blockchainContextType>(
@@ -32,7 +32,6 @@ type Props = {
 const BlockchainProvider: React.FC<React.PropsWithChildren<{}>> = ({
 	children,
 }: Props) => {
-	const { updateApi } = useCENNZApi();
 	const [value, setValue] = useState({
 		Contracts: {
 			bridge: {} as ethers.Contract,
@@ -42,43 +41,24 @@ const BlockchainProvider: React.FC<React.PropsWithChildren<{}>> = ({
 		Signer: {} as ethers.providers.JsonRpcSigner,
 	});
 
-	const updateNetwork = (ethereum: any, ethereumNetwork: string) => {
+	const initBlockchain = (ethereum: any, accounts: string[]) => {
 		return new Promise(async (resolve, reject) => {
 			try {
 				const provider = new ethers.providers.Web3Provider(ethereum);
 				const signer = provider.getSigner();
-				window.localStorage.setItem("ethereum-network", ethereumNetwork);
-				let BridgeAddress: string,
-					ERC20PegAddress: string,
-					tokenChainId: number,
-					apiUrl: string;
+				let BridgeAddress: string, ERC20PegAddress: string;
 
-				switch (ethereumNetwork) {
-					case "Mainnet":
+				switch (ETH_CHAIN_ID) {
+					default:
+					case "1":
 						BridgeAddress = "0x369e2285CCf43483e76746cebbf3d1d6060913EC";
 						ERC20PegAddress = "0x8F68fe02884b2B05e056aF72E4F2D2313E9900eC";
-						tokenChainId = 1;
-						apiUrl = "wss://cennznet.unfrastructure.io/public/ws";
 						break;
-					case "Kovan":
+					case "42":
 						BridgeAddress = "0x9AFe4E42d8ab681d402e8548Ee860635BaA952C5";
 						ERC20PegAddress = "0x5Ff2f9582FcA1e11d47e4e623BEf4594EB12b30d";
-						tokenChainId = 42;
-						apiUrl = "wss://nikau.centrality.me/public/ws";
-						break;
-					case "Ropsten":
-						BridgeAddress = "0x25b53B1bDc5F03e982c383865889A4B3c6cB98AA";
-						ERC20PegAddress = "0x927a710681B63b0899E28480114Bf50c899a5c27";
-						tokenChainId = 3;
-						apiUrl = "wss://kong2.centrality.me/public/rata/ws";
-						break;
-					default:
-						reject();
 						break;
 				}
-
-				store.set("token-chain-id", tokenChainId);
-				updateApi(apiUrl);
 
 				const bridge: ethers.Contract = new ethers.Contract(
 					BridgeAddress,
@@ -91,10 +71,6 @@ const BlockchainProvider: React.FC<React.PropsWithChildren<{}>> = ({
 					ERC20Peg,
 					signer
 				);
-
-				const accounts = await ethereum.request({
-					method: "eth_requestAccounts",
-				});
 
 				setValue({
 					Contracts: {
@@ -114,7 +90,7 @@ const BlockchainProvider: React.FC<React.PropsWithChildren<{}>> = ({
 
 	return (
 		<>
-			<BlockchainContext.Provider value={{ ...value, updateNetwork }}>
+			<BlockchainContext.Provider value={{ ...value, initBlockchain }}>
 				{children}
 			</BlockchainContext.Provider>
 		</>

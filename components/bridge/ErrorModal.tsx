@@ -1,22 +1,12 @@
 import React, { useState } from "react";
 import { Box, Button, Link, Modal } from "@mui/material";
-import {
-	StyledModal,
-	Heading,
-	SmallText,
-	Option,
-} from "../../theme/StyledComponents";
-import { networks, updateNetworks } from "../../utils/bridge/networks";
+import { StyledModal, Heading, SmallText } from "../../theme/StyledComponents";
 
 const ErrorModal: React.FC<{
 	setModalOpen: Function;
 	modalState: string;
 }> = ({ setModalOpen, modalState }) => {
 	const [open] = useState(true);
-
-	const changeNetwork = async (selectedNetwork) => {
-		updateNetworks(selectedNetwork);
-	};
 
 	return (
 		<Modal open={open}>
@@ -125,46 +115,18 @@ const ErrorModal: React.FC<{
 						Please create an account in the CENNZnet extension
 					</SmallText>
 				)}
-				{modalState === "wrongNetwork" && (
-					<>
-						<SmallText
-							sx={{
-								ml: "5%",
-								display: "inline-flex",
-								fontSize: "18px",
-								mb: "30px",
-							}}
-						>
-							Please select one of these networks and wait for page to refresh
-						</SmallText>
-						{networks.map((network, i) => (
-							<Option
-								sx={{
-									width: "85%",
-									margin: "0 auto",
-									height: "53px",
-									display: "flex",
-									mb: "10px",
-									border: "1px solid #1130FF",
-									backgroundColor: "#FFFFFF",
-								}}
-								key={i}
-								onClick={() => changeNetwork(network)}
-							>
-								<SmallText
-									sx={{
-										fontSize: "20px",
-										color: "black",
-										textTransform: "none",
-									}}
-								>
-									{network}
-								</SmallText>
-							</Option>
-						))}
-					</>
+				{modalState === "connectCENNZ" && (
+					<SmallText
+						sx={{
+							ml: "5%",
+							display: "inline-flex",
+							fontSize: "18px",
+							mb: "30px",
+						}}
+					>
+						Please connect your CENNZnet account
+					</SmallText>
 				)}
-
 				<Button
 					sx={{
 						fontFamily: "Teko",

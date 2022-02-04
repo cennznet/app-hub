@@ -4,12 +4,16 @@ import { decodeAddress } from "@polkadot/keyring";
 import { Box, Button, TextField } from "@mui/material";
 import GenericERC20TokenAbi from "../../artifacts/GenericERC20Token.json";
 import { defineTxModal } from "../../utils/bridge/modal";
-import { getMetamaskBalance, ETH } from "../../utils/bridge/helpers";
+import { getMetamaskBalance, ETH } from "../../utils/helpers";
 import { useBlockchain } from "../../providers/BlockchainProvider";
 import { useCENNZApi } from "../../providers/CENNZApiProvider";
 import TxModal from "./TxModal";
-import TokenPicker from "./TokenPicker";
+import TokenPicker from "../shared/TokenPicker";
 import CENNZnetAccountPicker from "./CENNZnetAccountPicker";
+import ErrorModal from "./ErrorModal";
+import { useWallet } from "../../providers/SupportedWalletProvider";
+
+const ETH_CHAIN_ID = process.env.NEXT_PUBLIC_ETH_CHAIN_ID;
 
 const Deposit: React.FC<{}> = () => {
 	const [customAddress, setCustomAddress] = useState(false);
@@ -20,14 +24,47 @@ const Deposit: React.FC<{}> = () => {
 		name: "",
 	});
 	const [modalOpen, setModalOpen] = useState(false);
+	const [errorModalOpen, setErrorModalOpen] = useState(false);
+	const [modalState, setModalState] = useState("");
 	const [modal, setModal] = useState({
 		state: "",
 		text: "",
 		hash: "",
 	});
 	const [tokenBalance, setTokenBalance] = useState<Number>();
-	const { Contracts, Signer, Account }: any = useBlockchain();
+	const { Contracts, Signer, Account, initBlockchain }: any = useBlockchain();
+	const { wallet, connectWallet } = useWallet();
 	const { api }: any = useCENNZApi();
+
+	const connectMetamask = async () => {
+		const { ethereum } = window as any;
+		try {
+			const accounts = await ethereum.request({
+				method: "eth_requestAccounts",
+			});
+			const ethChainId = await ethereum.request({ method: "eth_chainId" });
+
+			if (ETH_CHAIN_ID === "1" && ethChainId !== "0x1") {
+				await ethereum.request({
+					method: "wallet_switchEthereumChain",
+					params: [{ chainId: "0x1" }],
+				});
+			} else if (ETH_CHAIN_ID === "42" && ethChainId !== "0x2a") {
+				await ethereum.request({
+					method: "wallet_switchEthereumChain",
+					params: [{ chainId: "0x2a" }],
+				});
+			}
+
+			initBlockchain(ethereum, accounts);
+
+			if (!wallet) connectWallet();
+		} catch (err) {
+			console.log(err.message);
+			setModalState("noMetamask");
+			setErrorModalOpen(true);
+		}
+	};
 
 	//Check MetaMask account has enough tokens to deposit
 	useEffect(() => {
@@ -111,6 +148,9 @@ const Deposit: React.FC<{}> = () => {
 					etherscanHash={modal.hash}
 					resetModal={resetModal}
 				/>
+			)}
+			{errorModalOpen && (
+				<ErrorModal setModalOpen={setErrorModalOpen} modalState={modalState} />
 			)}
 			<Box
 				component="form"
@@ -200,27 +240,49 @@ const Deposit: React.FC<{}> = () => {
 						</Button>
 					</>
 				)}
-				<Button
-					sx={{
-						fontFamily: "Teko",
-						fontWeight: "bold",
-						fontSize: "21px",
-						lineHeight: "124%",
-						color: "#1130FF",
-						mt: "30px",
-						mb: "50px",
-					}}
-					disabled={
-						amount && token && selectedAccount && Number(amount) <= tokenBalance
-							? false
-							: true
-					}
-					size="large"
-					variant="outlined"
-					onClick={deposit}
-				>
-					Deposit
-				</Button>
+				{Account ? (
+					<Button
+						sx={{
+							fontFamily: "Teko",
+							fontWeight: "bold",
+							fontSize: "21px",
+							lineHeight: "124%",
+							color: "#1130FF",
+							mt: "30px",
+							mb: "50px",
+						}}
+						disabled={
+							amount &&
+							token &&
+							selectedAccount &&
+							Number(amount) <= tokenBalance
+								? false
+								: true
+						}
+						size="large"
+						variant="outlined"
+						onClick={deposit}
+					>
+						confirm
+					</Button>
+				) : (
+					<Button
+						sx={{
+							fontFamily: "Teko",
+							fontWeight: "bold",
+							fontSize: "21px",
+							lineHeight: "124%",
+							color: "#1130FF",
+							mt: "30px",
+							mb: "50px",
+						}}
+						size="large"
+						variant="outlined"
+						onClick={connectMetamask}
+					>
+						{wallet ? "connect metamask" : "connect wallets"}
+					</Button>
+				)}
 			</Box>
 		</>
 	);
