@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { Box, Button, TextField } from "@mui/material";
 import TokenPicker from "../../components/shared/TokenPicker";
-import ExchangeIcon from "../../components/exchange/ExchangeIcon";
+import ExchangeIcon from "../../components/swap/ExchangeIcon";
 import { useCENNZApi } from "../../providers/CENNZApiProvider";
 import { useAssets } from "../../providers/SupportedAssetsProvider";
 import { Amount, AmountUnit } from "../../utils/Amount";
@@ -9,6 +9,8 @@ import { Asset } from "../../types/exchange";
 import BigNumber from "bignumber.js";
 
 import styles from "../../styles/exchange.module.css";
+import { useWallet } from "../../providers/SupportedWalletProvider";
+import { useDappModule } from "../../providers/DappModuleProvider";
 
 const Exchange: React.FC<{}> = () => {
 	const [exchangeToken, setExchangeToken] = useState<Asset>();
@@ -19,8 +21,18 @@ const Exchange: React.FC<{}> = () => {
 		React.useState<string>("0");
 	const [estimatedFee, setEstimatedFee] = useState<string>();
 	const [error, setError] = useState<string>();
-	const { api, apiRx, initApi, initApiRx }: any = useCENNZApi();
+	const [success, setSuccess] = useState<string>();
+	const { api, initApi }: any = useCENNZApi();
 	const assets = useAssets();
+	const { wallet, selectedAccount, balances, connectWallet } = useWallet();
+	const signer = useMemo(() => wallet?.signer, [wallet]);
+	const { web3Enable } = useDappModule();
+
+	useEffect(() => {
+		if (!wallet) {
+			connectWallet();
+		}
+	}, [web3Enable, api]);
 
 	useEffect(() => {
 		if (!api?.isConnected) {
@@ -37,12 +49,22 @@ const Exchange: React.FC<{}> = () => {
 					exchangeToken &&
 					receivedToken
 				) {
+					setError(undefined);
+					setSuccess(undefined);
 					let exchangeAmount: any = new BigNumber(
 						exchangeTokenValue.toString()
 					);
 					exchangeAmount = exchangeAmount
 						.multipliedBy(Math.pow(10, exchangeToken.decimals))
 						.toString(10);
+
+					//check if they own enough tokens to exchange
+					const exchangeTokenBalance = balances.find(
+						(token) => token.id === exchangeToken.id
+					);
+					if (parseInt(exchangeTokenValue) > exchangeTokenBalance.value) {
+						throw new Error("Account Balance is too low.");
+					}
 					const sellPrice = await (api.rpc as any).cennzx.sellPrice(
 						exchangeToken.id,
 						exchangeAmount,
@@ -96,31 +118,50 @@ const Exchange: React.FC<{}> = () => {
 		return estimatedFee.toString();
 	};
 
-	const exchangeTokens = async () => {
+	const exchangeTokens = useCallback(async () => {
+		if (!signer) return;
 		try {
 			if (
-				parseInt(exchangeTokenValue) > 0 &&
+				parseInt(receivedTokenValue) > 0 &&
 				api &&
 				exchangeToken &&
 				receivedToken
 			) {
-				const maxAmount = parseInt(exchangeTokenValue) * 2;
+				let exchangeAmount: any = new BigNumber(exchangeTokenValue.toString());
+				exchangeAmount = exchangeAmount
+					.multipliedBy(Math.pow(10, exchangeToken.decimals))
+					.toString(10);
+				const maxAmount = parseInt(exchangeAmount) * 2;
+				let buyAmount: any = new BigNumber(receivedTokenValue.toString());
+				buyAmount = buyAmount
+					.multipliedBy(Math.pow(10, receivedToken.decimals))
+					.toString(10);
 				const extrinsic = api.tx.cennzx.buyAsset(
 					null,
 					exchangeToken.id,
 					receivedToken.id,
-					exchangeTokenValue,
+					buyAmount,
 					maxAmount
 				);
-				console.info(extrinsic);
-				//TODO inject signer from wallet here
-				// const signer: any;
-				// await extrinsic.signAndSend(signer);
+				extrinsic.signAndSend(
+					selectedAccount.address,
+					{ signer },
+					async ({ status, events }: any) => {
+						if (status.isInBlock && events !== undefined) {
+							for (const { event } of events) {
+								if (event.method === "AssetBought") {
+									setError(undefined);
+									setSuccess(`Successfully Swapped Tokens!`);
+								}
+							}
+						}
+					}
+				);
 			}
 		} catch (e) {
 			setError(e.message);
 		}
-	};
+	}, [signer, api, exchangeToken, receivedToken, receivedTokenValue]);
 
 	return (
 		<Box
@@ -190,6 +231,7 @@ const Exchange: React.FC<{}> = () => {
 					onChange={(event) => setExchangeTokenValue(event.target.value)}
 				/>
 				{error && <p className={styles.errorMsg}>{error}</p>}
+				{success && <p className={styles.successMsg}>{success}</p>}
 				<ExchangeIcon
 					onClick={() => {
 						setReceivedToken(exchangeToken);
@@ -231,8 +273,9 @@ const Exchange: React.FC<{}> = () => {
 					size="large"
 					variant="outlined"
 					onClick={exchangeTokens}
+					disabled={!signer}
 				>
-					Exchange
+					{!!signer ? "Exchange" : "Connect Wallet"}
 				</Button>
 			</Box>
 		</Box>
