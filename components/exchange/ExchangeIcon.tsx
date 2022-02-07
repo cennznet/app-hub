@@ -1,6 +1,6 @@
 import React, { FC, useState } from "react";
 import styled from "styled-components";
-import { CompareArrows } from "@material-ui/icons";
+import CompareArrowsIcon from "@mui/icons-material/CompareArrows";
 
 interface ExchangeIconProps {
 	onClick: () => void;
@@ -10,7 +10,7 @@ export interface ExchangeArrowProps {
 	rotations: number;
 }
 
-const ExchangeIcon = styled(CompareArrows)<ExchangeArrowProps>`
+const ExchangeIcon = styled(CompareArrowsIcon)<ExchangeArrowProps>`
 	height: 30px;
 	width: 30px;
 	color: rgba(17, 48, 255, 0.3);
@@ -48,7 +48,7 @@ const ExchangeIconClass: FC<ExchangeIconProps> = ({ onClick }) => {
 				onClick();
 			}}
 		>
-			<ExchangeIcon rotations={rotations} icon={CompareArrows as any} />
+			<ExchangeIcon rotations={rotations} icon={CompareArrowsIcon as any} />
 		</Container>
 	);
 };
