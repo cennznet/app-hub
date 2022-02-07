@@ -16,6 +16,7 @@ export type AssetInfo = {
 	id: number;
 	symbol: string;
 	decimals: number;
+	existentialDeposit?: number;
 };
 
 const SupportedAssetsContext = createContext<AssetInfo[]>([]);
