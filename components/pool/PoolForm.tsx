@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { AnyNumber } from "@cennznet/types";
 import Image from "next/image";
-import { Box, Button, TextField } from "@mui/material";
+import { Box, Button, TextField, Typography } from "@mui/material";
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
 import { Heading, SmallText } from "../../theme/StyledComponents";
 import TokenPicker from "../../components/shared/TokenPicker";
@@ -20,19 +20,27 @@ type UserBalances = {
 const PoolForm: React.FC<{}> = () => {
 	const [poolAction, setPoolAction] = useState<string>(PoolAction.ADD);
 	const [poolToken, setPoolToken] = useState<AssetInfo>(null);
-	const [poolTokenAmount, setPoolTokenAmount] = useState<number>(0);
+	const [poolTokenAmount, setPoolTokenAmount] = useState<Amount>();
 	const [coreAmount, setCoreAmount] = useState<AnyNumber>(0);
 	const [userBalances, setUserBalances] = useState<UserBalances>();
 	const { balances, selectedAccount } = useWallet();
 	const assets = useAssets();
-	const { coreAsset, fee, feeRate, exchangePool, updateExchangePool } =
-		usePool();
+	const {
+		coreAsset,
+		fee,
+		feeRate,
+		exchangePool,
+		updateExchangePool,
+		addLiquidity,
+		getUserPoolShare,
+		userPoolShare,
+	} = usePool();
 
-	//get user balances
+	//get user and pool balances
 	useEffect(() => {
 		if (!balances || !poolToken || !coreAsset) return;
-
-		console.log("coreAsset", coreAsset);
+		updateExchangePool(poolToken);
+		getUserPoolShare(poolToken);
 
 		const userPoolToken = balances.find(
 			(asset) => asset.symbol === poolToken.symbol
@@ -42,19 +50,13 @@ const PoolForm: React.FC<{}> = () => {
 		);
 
 		setUserBalances({ poolToken: userPoolToken.value, core: userCore.value });
+		//eslint-disable-next-line
 	}, [balances, poolToken, coreAsset]);
-
-	useEffect(() => {
-		if (!poolToken) return;
-
-		updateExchangePool(poolToken);
-	}, [updateExchangePool, poolToken]);
 
 	//set core amount from token amount
 	useEffect(() => {
-		if (!exchangePool || !poolToken) return;
-		if (poolTokenAmount <= 0) setCoreAmount(0);
-
+		if (!exchangePool || !poolToken || !poolTokenAmount) return;
+		if (poolTokenAmount.toNumber() <= 0) setCoreAmount(0);
 		if (
 			exchangePool.coreAssetBalance.isZero() ||
 			exchangePool.assetBalance.isZero()
@@ -69,14 +71,10 @@ const PoolForm: React.FC<{}> = () => {
 			setCoreAmount(coreAmount);
 		}
 		//eslint-disable-next-line
-	}, [poolTokenAmount, exchangePool, poolToken]);
+	}, [poolTokenAmount, poolToken]);
 
 	async function confirm() {
-		console.log({
-			poolTokenAmount,
-			coreAmount,
-			poolToken,
-		});
+		addLiquidity(poolToken, poolTokenAmount, coreAmount);
 	}
 	return (
 		<Box
@@ -155,7 +153,11 @@ const PoolForm: React.FC<{}> = () => {
 					)}
 				</SmallText>
 			</Box>
-			<TokenPicker setToken={setPoolToken} cennznet={true} />
+			<TokenPicker
+				setToken={setPoolToken}
+				cennznet={true}
+				removeToken={coreAsset}
+			/>
 			<Box
 				sx={{
 					width: "80%",
@@ -176,7 +178,7 @@ const PoolForm: React.FC<{}> = () => {
 					helperText={
 						userBalances ? `Balance: ${userBalances.poolToken}` : null
 					}
-					onChange={(e) => setPoolTokenAmount(Number(e.target.value))}
+					onChange={(e) => setPoolTokenAmount(new Amount(e.target.value))}
 				/>
 				<Button
 					sx={{
@@ -186,7 +188,7 @@ const PoolForm: React.FC<{}> = () => {
 						mt: "40px",
 					}}
 					disabled={userBalances && poolToken ? false : true}
-					onClick={() => setPoolTokenAmount(userBalances.poolToken)}
+					onClick={() => setPoolTokenAmount(new Amount(userBalances.poolToken))}
 				>
 					Max
 				</Button>
@@ -218,6 +220,18 @@ const PoolForm: React.FC<{}> = () => {
 					// onChange={(e) => setCoreAmount(Number(e.target.value))}
 				/>
 			</span>
+			<Box>
+				{!!userPoolShare && (
+					<>
+						<Typography>
+							Your Liquidity: {userPoolShare.assetBalance.toNumber()}{" "}
+							{poolToken.symbol} + {userPoolShare.coreAssetBalance.toNumber()}{" "}
+							{coreAsset.symbol}
+						</Typography>
+						<Typography>Pool Liquidity:</Typography>
+					</>
+				)}
+			</Box>
 			<Button
 				sx={{
 					fontFamily: "Teko",
