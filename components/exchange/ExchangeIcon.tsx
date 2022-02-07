@@ -1,17 +1,16 @@
-import { faExchangeAlt } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { FC, useState } from "react";
 import styled from "styled-components";
+import { CompareArrows } from "@material-ui/icons";
 
 interface ExchangeIconProps {
 	onClick: () => void;
 }
 
-export interface FontAwesomeIconProps {
+export interface ExchangeArrowProps {
 	rotations: number;
 }
 
-const ExchangeIcon = styled(FontAwesomeIcon)<FontAwesomeIconProps>`
+const ExchangeIcon = styled(CompareArrows)<ExchangeArrowProps>`
 	height: 30px;
 	width: 30px;
 	color: rgba(17, 48, 255, 0.3);
@@ -49,7 +48,7 @@ const ExchangeIconClass: FC<ExchangeIconProps> = ({ onClick }) => {
 				onClick();
 			}}
 		>
-			<ExchangeIcon rotations={rotations} icon={faExchangeAlt as any} />
+			<ExchangeIcon rotations={rotations} icon={CompareArrows as any} />
 		</Container>
 	);
 };
