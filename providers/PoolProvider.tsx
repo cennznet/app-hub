@@ -191,7 +191,7 @@ export default function PoolProvider({
 	);
 
 	const sendExtrinsic = useCallback(async () => {
-		if (!api || !value.currentExtrinsic) return;
+		if (!api || !value.currentExtrinsic || !selectedAccount || !signer) return;
 		value.currentExtrinsic.signAndSend(
 			selectedAccount.address,
 			{ signer },
@@ -205,7 +205,7 @@ export default function PoolProvider({
 				}
 			}
 		);
-	}, [api, value]);
+	}, [api, value, selectedAccount, signer]);
 
 	return (
 		<PoolContext.Provider
