@@ -1,20 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { Box, Button, TextField, Typography } from "@mui/material";
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
 import { Heading, SmallText } from "../../theme/StyledComponents";
 import TokenPicker from "../../components/shared/TokenPicker";
-import { AssetInfo } from "../../providers/SupportedAssetsProvider";
+import { AssetInfo, PoolValues } from "../../types";
 import { useWallet } from "../../providers/SupportedWalletProvider";
 import { PoolAction, usePool } from "../../providers/PoolProvider";
 import { Amount } from "../../utils/Amount";
+import PoolSummary from "./PoolSummary";
 
 const ROUND_UP = 1;
-
-type PoolValues = {
-	poolAsset: number | string;
-	coreAsset: number | string;
-};
 
 const PoolForm: React.FC<{}> = () => {
 	const [poolAction, setPoolAction] = useState<string>(PoolAction.ADD);
@@ -34,6 +30,17 @@ const PoolForm: React.FC<{}> = () => {
 		userPoolShare,
 		sendExtrinsic,
 	} = usePool();
+
+	const poolSummaryProps = useMemo(
+		() => ({
+			coreAsset,
+			poolAsset,
+			userPoolShare,
+			poolLiquidity,
+			estimatedFee,
+		}),
+		[coreAsset, poolAsset, userPoolShare, poolLiquidity, estimatedFee]
+	);
 
 	//get user and pool balances
 	useEffect(() => {
@@ -246,31 +253,7 @@ const PoolForm: React.FC<{}> = () => {
 					// onChange={(e) => setCoreAmount(new Amount(e.target.value))}
 				/>
 			</span>
-			{!!poolAsset && (
-				<Box>
-					{!!userPoolShare && (
-						<Typography>
-							Your Liquidity:{" "}
-							{userPoolShare.assetBalance.asString(poolAsset.decimals)}{" "}
-							{poolAsset.symbol} +{" "}
-							{userPoolShare.coreAssetBalance.asString(coreAsset.decimals)}{" "}
-							{coreAsset.symbol}
-						</Typography>
-					)}
-					{!!poolLiquidity && (
-						<Typography>
-							Pool Liquidity: {poolLiquidity.poolAsset} {poolAsset.symbol} +{" "}
-							{poolLiquidity.coreAsset} {coreAsset.symbol}
-						</Typography>
-					)}
-					{!!estimatedFee && (
-						<Typography>
-							Estimated Fee: {estimatedFee.asString(coreAsset.decimals)}{" "}
-							{coreAsset.symbol}
-						</Typography>
-					)}
-				</Box>
-			)}
+			{!!poolAsset && <PoolSummary poolSummaryProps={poolSummaryProps} />}
 			<Button
 				sx={{
 					fontFamily: "Teko",
