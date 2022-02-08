@@ -1,54 +1,74 @@
 import React from "react";
+import { useRouter } from "next/router";
 import { Box } from "@mui/material";
 import { SwitchButton } from "../theme/StyledComponents";
 
-const Switch: React.FC<{ location: string; setLocation: Function }> = ({
-	location,
-	setLocation,
-}) => {
-	const indexColours = location === undefined;
+const Switch: React.FC<{ setLocation: Function }> = ({ setLocation }) => {
+	const router = useRouter();
+	const location = router.asPath;
 
 	return (
 		<Box
 			sx={{
+				width: "552px",
+				left: "calc(50% - 552px/2)",
 				display: "flex",
 				flexDirection: "row",
 				justifyContent: "center",
 				alignItems: "center",
-				marginTop: "2%",
+				position: "absolute",
+				top: "4%",
 			}}
 		>
-			{indexColours && (
+			{location === "/" && (
 				<>
+					<SwitchButton
+						onClick={() => setLocation("swap")}
+						style={{
+							backgroundColor: "#FFFFFF",
+							color: "#1130FF",
+							borderLeft: "4px solid #1130FF",
+							borderRight: "2px solid #1130FF",
+						}}
+					>
+						swap
+					</SwitchButton>
 					<SwitchButton
 						onClick={() => setLocation("bridge")}
 						style={{
-							left: "calc(50% - 276px/2 - 138px)",
 							backgroundColor: "#FFFFFF",
 							color: "#1130FF",
+							borderLeft: "2px solid #1130FF",
 							borderRight: "2px solid #1130FF",
 						}}
 					>
 						bridge
 					</SwitchButton>
 					<SwitchButton
-						onClick={() => setLocation("exchange")}
+						onClick={() => setLocation("pool")}
 						style={{
-							left: "calc(50% - 276px/2 - 138px)",
 							backgroundColor: "#FFFFFF",
 							color: "#1130FF",
 							borderLeft: "2px solid #1130FF",
 						}}
 					>
-						exchange
+						pool
 					</SwitchButton>
 				</>
 			)}
-			{location === "bridge" && (
+			{location === "/bridge" && (
 				<>
 					<SwitchButton
+						onClick={() => setLocation("swap")}
 						style={{
-							left: "calc(50% - 276px/2 - 138px)",
+							backgroundColor: "#FFFFFF",
+							color: "#1130FF",
+						}}
+					>
+						swap
+					</SwitchButton>
+					<SwitchButton
+						style={{
 							backgroundColor: "#1130FF",
 							color: "#FFFFFF",
 						}}
@@ -56,23 +76,62 @@ const Switch: React.FC<{ location: string; setLocation: Function }> = ({
 						bridge
 					</SwitchButton>
 					<SwitchButton
-						onClick={() => setLocation("exchange")}
+						onClick={() => setLocation("pool")}
 						style={{
-							left: "calc(50% - 276px/2 - 138px)",
 							backgroundColor: "#FFFFFF",
 							color: "#1130FF",
+							borderLeft: "2px solid #1130FF",
 						}}
 					>
-						exchange
+						pool
 					</SwitchButton>
 				</>
 			)}
-			{location === "exchange" && (
+			{location === "/swap" && (
 				<>
+					<SwitchButton
+						style={{
+							backgroundColor: "#1130FF",
+							color: "#FFFFFF",
+						}}
+					>
+						swap
+					</SwitchButton>
 					<SwitchButton
 						onClick={() => setLocation("bridge")}
 						style={{
-							left: "calc(50% - 276px/2 - 138px)",
+							backgroundColor: "#FFFFFF",
+							color: "#1130FF",
+						}}
+					>
+						bridge
+					</SwitchButton>
+					<SwitchButton
+						onClick={() => setLocation("pool")}
+						style={{
+							backgroundColor: "#FFFFFF",
+							color: "#1130FF",
+							borderLeft: "2px solid #1130FF",
+						}}
+					>
+						pool
+					</SwitchButton>
+				</>
+			)}
+			{location === "/pool" && (
+				<>
+					<SwitchButton
+						onClick={() => setLocation("swap")}
+						style={{
+							backgroundColor: "#FFFFFF",
+							color: "#1130FF",
+						}}
+					>
+						swap
+					</SwitchButton>
+					<SwitchButton
+						onClick={() => setLocation("bridge")}
+						style={{
 							backgroundColor: "#FFFFFF",
 							color: "#1130FF",
 						}}
@@ -81,12 +140,12 @@ const Switch: React.FC<{ location: string; setLocation: Function }> = ({
 					</SwitchButton>
 					<SwitchButton
 						style={{
-							left: "calc(50% - 276px/2 - 138px)",
 							backgroundColor: "#1130FF",
 							color: "#FFFFFF",
+							borderLeft: "2px solid #1130FF",
 						}}
 					>
-						exchange
+						pool
 					</SwitchButton>
 				</>
 			)}

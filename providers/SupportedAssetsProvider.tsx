@@ -7,16 +7,11 @@ import {
 } from "react";
 import { useCENNZApi } from "./CENNZApiProvider";
 import { u8aToString } from "@polkadot/util";
+import { AssetInfo } from "../types";
 
 const assetIds =
 	process.env.NEXT_PUBLIC_SUPPORTED_ASSETS &&
 	process.env.NEXT_PUBLIC_SUPPORTED_ASSETS.split(",");
-
-export type AssetInfo = {
-	id: number;
-	symbol: string;
-	decimals: number;
-};
 
 const SupportedAssetsContext = createContext<AssetInfo[]>([]);
 

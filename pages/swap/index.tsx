@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { Box, Button, TextField } from "@mui/material";
 import TokenPicker from "../../components/shared/TokenPicker";
-import ExchangeIcon from "../../components/exchange/ExchangeIcon";
+import ExchangeIcon from "../../components/swap/ExchangeIcon";
 import { useCENNZApi } from "../../providers/CENNZApiProvider";
 import { useAssets } from "../../providers/SupportedAssetsProvider";
-import { Amount, AmountUnit } from "../../utils/exchange/Amount";
-import { Asset } from "../../types/exchange";
+import { Amount, AmountUnit } from "../../utils/Amount";
+import { Asset } from "../../types";
 import BigNumber from "bignumber.js";
 
 import styles from "../../styles/exchange.module.css";

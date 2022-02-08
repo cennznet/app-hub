@@ -4,20 +4,20 @@ import { decodeAddress } from "@polkadot/keyring";
 import { Box, Button, TextField } from "@mui/material";
 import GenericERC20TokenAbi from "../../artifacts/GenericERC20Token.json";
 import { defineTxModal } from "../../utils/bridge/modal";
-import { getMetamaskBalance, ETH } from "../../utils/helpers";
+import { getMetamaskBalance, ETH } from "../../utils/bridge/helpers";
 import { useBlockchain } from "../../providers/BlockchainProvider";
 import { useCENNZApi } from "../../providers/CENNZApiProvider";
-import TxModal from "./TxModal";
-import TokenPicker from "../shared/TokenPicker";
-import CENNZnetAccountPicker from "./CENNZnetAccountPicker";
-import ErrorModal from "./ErrorModal";
 import { useWallet } from "../../providers/SupportedWalletProvider";
+import TxModal from "./TxModal";
+import ErrorModal from "./ErrorModal";
+import TokenPicker, { BridgeToken } from "../shared/TokenPicker";
+import CENNZnetAccountPicker from "../shared/CENNZnetAccountPicker";
 
 const ETH_CHAIN_ID = process.env.NEXT_PUBLIC_ETH_CHAIN_ID;
 
 const Deposit: React.FC<{}> = () => {
 	const [customAddress, setCustomAddress] = useState(false);
-	const [token, setToken] = useState("");
+	const [token, setToken] = useState<BridgeToken>();
 	const [amount, setAmount] = useState("");
 	const [selectedAccount, updateSelectedAccount] = useState({
 		address: "",
@@ -69,11 +69,11 @@ const Deposit: React.FC<{}> = () => {
 	//Check MetaMask account has enough tokens to deposit
 	useEffect(() => {
 		const { ethereum }: any = window;
-		if (token !== "")
-			(async () => {
-				let balance = await getMetamaskBalance(ethereum, token, Account);
-				setTokenBalance(balance);
-			})();
+		if (!token) return;
+		(async () => {
+			let balance = await getMetamaskBalance(ethereum, token.address, Account);
+			setTokenBalance(balance);
+		})();
 	}, [token, Account]);
 
 	const resetModal = () => {
@@ -98,7 +98,7 @@ const Deposit: React.FC<{}> = () => {
 
 	const depositERC20 = async () => {
 		const tokenContract = new ethers.Contract(
-			token,
+			token.address,
 			GenericERC20TokenAbi,
 			Signer
 		);
@@ -110,7 +110,7 @@ const Deposit: React.FC<{}> = () => {
 		setModal(defineTxModal("approve", tx.hash, setModalOpen));
 		await tx.wait();
 		tx = await Contracts.peg.deposit(
-			token,
+			token.address,
 			ethers.utils.parseUnits(amount),
 			decodeAddress(selectedAccount.address)
 		);
@@ -129,7 +129,7 @@ const Deposit: React.FC<{}> = () => {
 			ETHdepositsActive &&
 			CENNZdepositsActive.isTrue
 		) {
-			if (token === ETH) {
+			if (token.address === ETH) {
 				depositEth();
 			} else {
 				depositERC20();

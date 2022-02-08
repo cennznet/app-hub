@@ -57,7 +57,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 												}}
 											/>
 										</Box>
-										<Switch location={location} setLocation={setLocation} />
+										<Switch setLocation={setLocation} />
 										<Component {...pageProps} />
 									</BlockchainProvider>
 								</Web3AccountsProvider>

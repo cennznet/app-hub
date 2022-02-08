@@ -38,7 +38,7 @@ export default function Web3AccountsProvider({
 		fetchAndSubscribeAccounts();
 
 		return unsubscribe;
-	}, [web3Enable, web3Accounts, web3AccountsSubscribe]);
+	}, [web3Enable, web3Accounts, web3AccountsSubscribe, selectAccount]);
 
 	return (
 		<Web3AccountsContext.Provider value={accounts}>

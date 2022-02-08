@@ -7,13 +7,13 @@ import { useBlockchain } from "../../providers/BlockchainProvider";
 import { useCENNZApi } from "../../providers/CENNZApiProvider";
 import { useWallet } from "../../providers/SupportedWalletProvider";
 import TxModal from "./TxModal";
-import TokenPicker from "../shared/TokenPicker";
+import TokenPicker, { BridgeToken } from "../shared/TokenPicker";
 import ErrorModal from "./ErrorModal";
 
 const ETH_CHAIN_ID = process.env.NEXT_PUBLIC_ETH_CHAIN_ID;
 
 const Withdraw: React.FC<{}> = () => {
-	const [token, setToken] = useState("");
+	const [token, setToken] = useState<BridgeToken>();
 	const [tokenBalance, setTokenBalance] = useState<Number>();
 	const [amount, setAmount] = useState("");
 	const [modalOpen, setModalOpen] = useState(false);
@@ -79,21 +79,20 @@ const Withdraw: React.FC<{}> = () => {
 
 	//Check CENNZnet account has enough tokens to withdraw
 	useEffect(() => {
-		if (token !== "" && bridgeBalances)
-			(async () => {
-				const tokenExist = await api.query.erc20Peg.erc20ToAssetId(token);
-				const tokenId = tokenExist.isSome
-					? tokenExist.unwrap()
-					: await api.query.genericAsset.nextAssetId();
+		if (!token || !bridgeBalances || !api) return;
+		(async () => {
+			const tokenExist = await api.query.erc20Peg.erc20ToAssetId(token.address);
+			const tokenId = tokenExist.isSome
+				? tokenExist.unwrap()
+				: await api.query.genericAsset.nextAssetId();
 
-				Object.values(bridgeBalances).map((token: any) => {
-					if (token.tokenId === tokenId.toString()) {
-						setTokenBalance(token.balance);
-					}
-				});
-			})();
-		//eslint-disable-next-line
-	}, [token, bridgeBalances]);
+			Object.values(bridgeBalances).map((token: any) => {
+				if (token.tokenId === tokenId.toString()) {
+					setTokenBalance(token.balance);
+				}
+			});
+		})();
+	}, [token, bridgeBalances, api]);
 
 	const resetModal = () => {
 		setModal({ state: "", text: "", hash: "" });
@@ -111,16 +110,21 @@ const Withdraw: React.FC<{}> = () => {
 			CENNZwithdrawalsActive.isTrue &&
 			ETHwithdrawalsActive
 		) {
-			if (token !== "") {
+			if (token.address !== "") {
 				setModal(defineTxModal("withdrawCENNZside", "", setModalOpen));
 				let withdrawAmount = ethers.utils.parseUnits(amount).toString();
 
 				const eventProof = await withdrawCENNZside(
 					withdrawAmount,
 					Account,
-					token
+					token.address
 				);
-				await withdrawEthSide(withdrawAmount, eventProof, Account, token);
+				await withdrawEthSide(
+					withdrawAmount,
+					eventProof,
+					Account,
+					token.address
+				);
 			} else {
 				setModal(defineTxModal("error", "noTokenSelected", setModalOpen));
 			}
