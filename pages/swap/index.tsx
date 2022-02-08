@@ -197,7 +197,7 @@ const Exchange: React.FC<{}> = () => {
 					color: "#1130FF",
 				}}
 			>
-				Swap Tokens
+				Swap
 			</Button>
 			<Box
 				component="form"

@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import {
+	Button,
 	FormControl,
 	InputLabel,
 	MenuItem,
 	OutlinedInput,
 	Select,
+	TextField,
 } from "@mui/material";
 import ERC20Tokens from "../../artifacts/erc20tokens.json";
 import { ETH, ETH_LOGO } from "../../utils/bridge/helpers";
@@ -15,16 +17,7 @@ import { useRouter } from "next/router";
 
 const ETH_CHAIN_ID = process.env.NEXT_PUBLIC_ETH_CHAIN_ID;
 
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-	PaperProps: {
-		style: {
-			maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-			width: 250,
-		},
-	},
-};
+import styles from "../../styles/components/shared/tokenpicker.module.css";
 
 export type BridgeToken = {
 	chainId: number;
