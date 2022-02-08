@@ -1,4 +1,3 @@
-import { FeeRate } from "@cennznet/types";
 import { Amount, AmountUnit } from "../utils/Amount";
 import { AssetInfo } from "./SupportedAssetsProvider";
 import {
@@ -21,6 +20,7 @@ import {
 } from "react";
 import { useCENNZApi } from "./CENNZApiProvider";
 import { useWallet } from "./SupportedWalletProvider";
+import { SubmittableExtrinsic } from "@cennznet/api/types";
 
 export enum PoolAction {
 	ADD = "Add",
@@ -29,28 +29,26 @@ export enum PoolAction {
 
 export type PoolContextType = {
 	coreAsset: AssetInfo;
-	exchangeRateMsg?: string;
-	txFeeMsg: string;
-	fee: any;
-	feeRate: FeeRate;
+	estimatedFee: Amount;
 	userPoolShare: IUserShareInPool;
 	getUserPoolShare: Function;
 	exchangePool: IExchangePool;
 	updateExchangePool: Function;
-	addLiquidity: Function;
+	currentExtrinsic: any;
+	defineExtrinsic: Function;
+	sendExtrinsic: Function;
 };
 
 const poolContextDefaultValues = {
 	coreAsset: null,
-	exchangeRateMsg: null,
-	txFeeMsg: null,
-	fee: null,
-	feeRate: null,
+	estimatedFee: null,
 	userPoolShare: null,
 	getUserPoolShare: null,
 	exchangePool: null,
 	updateExchangePool: null,
-	addLiquidity: null,
+	currentExtrinsic: null,
+	defineExtrinsic: null,
+	sendExtrinsic: null,
 };
 
 const PoolContext = createContext<PoolContextType>(poolContextDefaultValues);
@@ -65,17 +63,20 @@ export default function PoolProvider({
 	const { wallet, selectedAccount } = useWallet();
 	const signer = useMemo(() => wallet?.signer, [wallet]);
 
-	const setCoreAsset = useCallback(async () => {
-		if (!api) return;
-		const coreAssetId = await api.query.cennzx.coreAssetId();
-		let coreAsset: any = await api.query.genericAsset.assetMeta(
-			Number(coreAssetId)
-		);
+	//set core asset
+	useEffect(() => {
+		(async () => {
+			if (!api) return;
+			const coreAssetId = await api.query.cennzx.coreAssetId();
+			let coreAsset: any = await api.query.genericAsset.assetMeta(
+				Number(coreAssetId)
+			);
 
-		setValue((value) => ({
-			...value,
-			coreAsset: { ...coreAsset.toHuman(), id: Number(coreAssetId) },
-		}));
+			setValue((value) => ({
+				...value,
+				coreAsset: { ...coreAsset.toHuman(), id: Number(coreAssetId) },
+			}));
+		})();
 	}, [api]);
 
 	const updateExchangePool = useCallback(
@@ -102,68 +103,6 @@ export default function PoolProvider({
 		[api]
 	);
 
-	useEffect(() => {
-		setCoreAsset();
-	}, [setCoreAsset]);
-
-	/// Extrinsics
-	// api.tx.cennzx.addLiquidity(assetId, minimumLiqudityToBuy, maximumAssetToPlace, coreAssetToPlace);
-	// api.tx.cennzx.removeLiquidity(assetId, liquidityToWithdraw, minimumAssetToWithdraw, minimumCoreAssetToWithdraw);
-
-	// /// RPC Calls
-	// api.rpc.cennzx.liquidityValue(account, exchangeAsset);
-	// api.rpc.cennzx.liquidityPrice(exchangeAsset, liquidityAmount);
-
-	const addLiquidity = useCallback(
-		async (
-			asset: AssetInfo,
-			assetAmount: Amount,
-			coreAmount,
-			buffer = 0.05
-		) => {
-			if (!api || !signer || !selectedAccount || !value.exchangePool) return;
-
-			const totalLiquidity = await api.derive.cennzx.totalLiquidity(asset.id);
-
-			const min_liquidity = new Amount(coreAmount).mul(
-				totalLiquidity.div(value.exchangePool.coreAssetBalance)
-			);
-			const max_asset_amount = new Amount(assetAmount.muln(1 + buffer));
-
-			let extrinsic = api.tx.cennzx.addLiquidity(
-				asset.id,
-				min_liquidity,
-				max_asset_amount,
-				coreAmount
-			);
-
-			console.log("extrinsic", extrinsic);
-
-			const feeEstimate = await api.derive.fees.estimateFee({
-				extrinsic,
-				userFeeAssetId: asset.id,
-				maxPayment: "50000000000000000",
-			});
-
-			console.log("feeEstimate", feeEstimate.toString());
-
-			extrinsic.signAndSend(
-				selectedAccount.address,
-				{ signer },
-				async ({ status, events }: any) => {
-					if (status.isInBlock) {
-						for (const {
-							event: { method, section, data },
-						} of events) {
-							console.log({ method, section, data: data.toHuman() });
-						}
-					}
-				}
-			);
-		},
-		[api, selectedAccount, value, signer]
-	);
-
 	const getUserPoolShare = useCallback(
 		async (asset) => {
 			if (!api || !selectedAccount || !value.coreAsset) return;
@@ -187,9 +126,96 @@ export default function PoolProvider({
 		[api, selectedAccount, value]
 	);
 
+	const setEstimatedFee = useCallback(
+		async (extrinsic) => {
+			const feeEstimate: any = await api.derive.fees.estimateFee({
+				extrinsic,
+				userFeeAssetId: value.coreAsset.id,
+				maxPayment: "50000000000000000",
+			});
+
+			setValue({
+				...value,
+				estimatedFee: new Amount(feeEstimate),
+				currentExtrinsic: extrinsic,
+			});
+		},
+		[api, value]
+	);
+
+	const defineExtrinsic = useCallback(
+		async (
+			asset: AssetInfo,
+			assetAmount: Amount,
+			coreAmount: Amount,
+			poolAction,
+			buffer = 0.05
+		) => {
+			if (!api || !signer || !selectedAccount || !value.exchangePool) return;
+			let extrinsic;
+			if (poolAction === PoolAction.ADD) {
+				const totalLiquidity = await api.derive.cennzx.totalLiquidity(asset.id);
+
+				const assetAmountCal = new Amount(
+					assetAmount,
+					AmountUnit.DISPLAY,
+					asset.decimals
+				);
+				const coreAmountCal = new Amount(
+					coreAmount,
+					AmountUnit.DISPLAY,
+					value.coreAsset.decimals
+				);
+
+				const minLiquidity = totalLiquidity.isZero()
+					? coreAmount
+					: new Amount(coreAmountCal).mul(
+							totalLiquidity.div(value.exchangePool.coreAssetBalance)
+					  );
+
+				const maxAssetAmount = totalLiquidity.isZero()
+					? assetAmount
+					: new Amount(assetAmountCal.muln(1 + buffer));
+
+				extrinsic = api.tx.cennzx.addLiquidity(
+					asset.id,
+					minLiquidity,
+					maxAssetAmount,
+					coreAmountCal
+				);
+			}
+
+			setEstimatedFee(extrinsic);
+		},
+		[api, selectedAccount, value, signer, setEstimatedFee]
+	);
+
+	const sendExtrinsic = useCallback(async () => {
+		if (!api || !value.currentExtrinsic) return;
+		value.currentExtrinsic.signAndSend(
+			selectedAccount.address,
+			{ signer },
+			async ({ status, events }: any) => {
+				if (status.isInBlock) {
+					for (const {
+						event: { method, section, data },
+					} of events) {
+						console.log({ method, section, data: data.toHuman() });
+					}
+				}
+			}
+		);
+	}, [api, value]);
+
 	return (
 		<PoolContext.Provider
-			value={{ ...value, updateExchangePool, addLiquidity, getUserPoolShare }}
+			value={{
+				...value,
+				updateExchangePool,
+				defineExtrinsic,
+				getUserPoolShare,
+				sendExtrinsic,
+			}}
 		>
 			{children}
 		</PoolContext.Provider>

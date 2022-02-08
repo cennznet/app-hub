@@ -1,81 +1,107 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { AnyNumber } from "@cennznet/types";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { Box, Button, TextField, Typography } from "@mui/material";
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
 import { Heading, SmallText } from "../../theme/StyledComponents";
 import TokenPicker from "../../components/shared/TokenPicker";
-import { useAssets, AssetInfo } from "../../providers/SupportedAssetsProvider";
+import { AssetInfo } from "../../providers/SupportedAssetsProvider";
 import { useWallet } from "../../providers/SupportedWalletProvider";
 import { PoolAction, usePool } from "../../providers/PoolProvider";
 import { Amount } from "../../utils/Amount";
 
 const ROUND_UP = 1;
 
-type UserBalances = {
-	poolToken: number;
-	core: number;
+type PoolValues = {
+	poolAsset: number | string;
+	coreAsset: number | string;
 };
 
 const PoolForm: React.FC<{}> = () => {
 	const [poolAction, setPoolAction] = useState<string>(PoolAction.ADD);
-	const [poolToken, setPoolToken] = useState<AssetInfo>(null);
-	const [poolTokenAmount, setPoolTokenAmount] = useState<Amount>();
-	const [coreAmount, setCoreAmount] = useState<AnyNumber>(0);
-	const [userBalances, setUserBalances] = useState<UserBalances>();
-	const { balances, selectedAccount } = useWallet();
-	const assets = useAssets();
+	const [poolAsset, setPoolAsset] = useState<AssetInfo>(null);
+	const [poolAssetAmount, setPoolAssetAmount] = useState<Amount>(new Amount(0));
+	const [coreAmount, setCoreAmount] = useState<Amount>(new Amount(0));
+	const [poolLiquidity, setPoolLiquidity] = useState<PoolValues>();
+	const [userBalances, setUserBalances] = useState<PoolValues>();
+	const { balances } = useWallet();
 	const {
 		coreAsset,
-		fee,
-		feeRate,
+		estimatedFee,
 		exchangePool,
 		updateExchangePool,
-		addLiquidity,
+		defineExtrinsic,
 		getUserPoolShare,
 		userPoolShare,
+		sendExtrinsic,
 	} = usePool();
 
 	//get user and pool balances
 	useEffect(() => {
-		if (!balances || !poolToken || !coreAsset) return;
-		updateExchangePool(poolToken);
-		getUserPoolShare(poolToken);
+		if (!balances || !poolAsset || !coreAsset) return;
+		updateExchangePool(poolAsset);
+		getUserPoolShare(poolAsset);
 
 		const userPoolToken = balances.find(
-			(asset) => asset.symbol === poolToken.symbol
+			(asset) => asset.symbol === poolAsset.symbol
 		);
 		const userCore = balances.find(
 			(asset) => asset.symbol === coreAsset.symbol
 		);
 
-		setUserBalances({ poolToken: userPoolToken.value, core: userCore.value });
+		setUserBalances({
+			poolAsset: userPoolToken.value,
+			coreAsset: userCore.value,
+		});
 		//eslint-disable-next-line
-	}, [balances, poolToken, coreAsset]);
+	}, [balances, poolAsset, coreAsset]);
 
 	//set core amount from token amount
+	//define extrinsic & estimate fee
 	useEffect(() => {
-		if (!exchangePool || !poolToken || !poolTokenAmount) return;
-		if (poolTokenAmount.toNumber() <= 0) setCoreAmount(0);
+		if (!exchangePool || !poolAsset || !poolAssetAmount) return;
+		if (poolAssetAmount.toNumber() <= 0) setCoreAmount(new Amount(0));
 		if (
 			exchangePool.coreAssetBalance.isZero() ||
 			exchangePool.assetBalance.isZero()
 		) {
-			setCoreAmount(poolTokenAmount);
+			setCoreAmount(poolAssetAmount);
 		} else {
-			const coreAmount = new Amount(poolTokenAmount)
+			const coreAmount = new Amount(poolAssetAmount)
 				.mul(exchangePool.coreAssetBalance)
 				.div(exchangePool.assetBalance)
 				.subn(ROUND_UP);
 
-			setCoreAmount(coreAmount);
+			if (coreAmount.toNumber() <= 0) {
+				setCoreAmount(new Amount(0));
+			} else {
+				setCoreAmount(new Amount(coreAmount));
+				defineExtrinsic(poolAsset, poolAssetAmount, coreAmount, poolAction);
+			}
 		}
 		//eslint-disable-next-line
-	}, [poolTokenAmount, poolToken]);
+	}, [poolAssetAmount, poolAsset]);
+
+	//format pool liquidity
+	useEffect(() => {
+		if (!coreAsset || !poolAsset || !exchangePool) return;
+
+		const poolAssetLiquidity = exchangePool.assetBalance.asString(
+			poolAsset.decimals
+		);
+		const coreAssetLiquidity = exchangePool.coreAssetBalance.asString(
+			coreAsset.decimals
+		);
+
+		setPoolLiquidity({
+			poolAsset: poolAssetLiquidity,
+			coreAsset: coreAssetLiquidity,
+		});
+	}, [coreAsset, poolAsset, exchangePool]);
 
 	async function confirm() {
-		addLiquidity(poolToken, poolTokenAmount, coreAmount);
+		await sendExtrinsic();
 	}
+
 	return (
 		<Box
 			component="form"
@@ -141,20 +167,20 @@ const PoolForm: React.FC<{}> = () => {
 					{poolAction === PoolAction.ADD ? (
 						<>
 							To keep the liquidity pool functional, deposits require an equal
-							value of {poolToken?.symbol || "your token"} and CPAY at the
+							value of {poolAsset?.symbol || "your token"} and CPAY at the
 							current exchange rate.
 						</>
 					) : (
 						<>
 							To keep the liquidity pool functional, withdrawals will return an
-							equal value of {poolToken?.symbol || "your token"} and CPAY at the
+							equal value of {poolAsset?.symbol || "your token"} and CPAY at the
 							current exchange rate.
 						</>
 					)}
 				</SmallText>
 			</Box>
 			<TokenPicker
-				setToken={setPoolToken}
+				setToken={setPoolAsset}
 				cennznet={true}
 				removeToken={coreAsset}
 			/>
@@ -170,15 +196,15 @@ const PoolForm: React.FC<{}> = () => {
 					label="Amount"
 					variant="outlined"
 					required
-					value={poolTokenAmount}
+					value={poolAssetAmount}
 					sx={{
 						width: "80%",
 						m: "30px 0 0",
 					}}
 					helperText={
-						userBalances ? `Balance: ${userBalances.poolToken}` : null
+						userBalances ? `Balance: ${userBalances.poolAsset}` : null
 					}
-					onChange={(e) => setPoolTokenAmount(new Amount(e.target.value))}
+					onChange={(e) => setPoolAssetAmount(new Amount(e.target.value))}
 				/>
 				<Button
 					sx={{
@@ -187,8 +213,8 @@ const PoolForm: React.FC<{}> = () => {
 						height: "30px",
 						mt: "40px",
 					}}
-					disabled={userBalances && poolToken ? false : true}
-					onClick={() => setPoolTokenAmount(new Amount(userBalances.poolToken))}
+					disabled={userBalances && poolAsset ? false : true}
+					onClick={() => setPoolAssetAmount(new Amount(userBalances.poolAsset))}
 				>
 					Max
 				</Button>
@@ -208,30 +234,44 @@ const PoolForm: React.FC<{}> = () => {
 				/>
 				<TextField
 					label="Amount"
-					type="number"
 					variant="outlined"
-					disabled={true}
 					value={coreAmount}
 					sx={{
 						width: "100%",
 						m: "30px 0 30px 5%",
 					}}
-					helperText={userBalances ? `Balance: ${userBalances.core}` : null}
-					// onChange={(e) => setCoreAmount(Number(e.target.value))}
+					helperText={
+						userBalances ? `Balance: ${userBalances.coreAsset}` : null
+					}
+					// onChange={(e) => setCoreAmount(new Amount(e.target.value))}
 				/>
 			</span>
-			<Box>
-				{!!userPoolShare && (
-					<>
+			{!!poolAsset && (
+				<Box>
+					{!!userPoolShare && (
 						<Typography>
-							Your Liquidity: {userPoolShare.assetBalance.toNumber()}{" "}
-							{poolToken.symbol} + {userPoolShare.coreAssetBalance.toNumber()}{" "}
+							Your Liquidity:{" "}
+							{userPoolShare.assetBalance.asString(poolAsset.decimals)}{" "}
+							{poolAsset.symbol} +{" "}
+							{userPoolShare.coreAssetBalance.asString(coreAsset.decimals)}{" "}
 							{coreAsset.symbol}
 						</Typography>
-						<Typography>Pool Liquidity:</Typography>
-					</>
-				)}
-			</Box>
+					)}
+					{!!poolLiquidity && (
+						<Typography>
+							Pool Liquidity: {poolLiquidity.poolAsset} {poolAsset.symbol} +{" "}
+							{poolLiquidity.coreAsset} {coreAsset.symbol}
+						</Typography>
+					)}
+					{/* TODO - add this to Confirm Transaction popup */}
+					{!!estimatedFee && (
+						<Typography>
+							Estimated Fee: {estimatedFee.asString(coreAsset.decimals)}{" "}
+							{coreAsset.symbol}
+						</Typography>
+					)}
+				</Box>
+			)}
 			<Button
 				sx={{
 					fontFamily: "Teko",
@@ -245,6 +285,7 @@ const PoolForm: React.FC<{}> = () => {
 				size="large"
 				variant="outlined"
 				onClick={confirm}
+				disabled={poolAssetAmount.toNumber() <= 0 || coreAmount.toNumber() <= 0}
 			>
 				Confirm
 			</Button>
