@@ -86,7 +86,7 @@ const PoolForm: React.FC<{}> = () => {
 			}
 		}
 		//eslint-disable-next-line
-	}, [poolAssetAmount, poolAsset]);
+	}, [poolAssetAmount, poolAsset, poolAction]);
 
 	//format pool liquidity
 	useEffect(() => {
