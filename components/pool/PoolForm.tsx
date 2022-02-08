@@ -263,7 +263,6 @@ const PoolForm: React.FC<{}> = () => {
 							{poolLiquidity.coreAsset} {coreAsset.symbol}
 						</Typography>
 					)}
-					{/* TODO - add this to Confirm Transaction popup */}
 					{!!estimatedFee && (
 						<Typography>
 							Estimated Fee: {estimatedFee.asString(coreAsset.decimals)}{" "}

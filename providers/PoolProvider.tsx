@@ -152,21 +152,20 @@ export default function PoolProvider({
 			buffer = 0.05
 		) => {
 			if (!api || !signer || !selectedAccount || !value.exchangePool) return;
+			const totalLiquidity = await api.derive.cennzx.totalLiquidity(asset.id);
+			const assetAmountCal = new Amount(
+				assetAmount,
+				AmountUnit.DISPLAY,
+				asset.decimals
+			);
+			const coreAmountCal = new Amount(
+				coreAmount,
+				AmountUnit.DISPLAY,
+				value.coreAsset.decimals
+			);
+
 			let extrinsic;
 			if (poolAction === PoolAction.ADD) {
-				const totalLiquidity = await api.derive.cennzx.totalLiquidity(asset.id);
-
-				const assetAmountCal = new Amount(
-					assetAmount,
-					AmountUnit.DISPLAY,
-					asset.decimals
-				);
-				const coreAmountCal = new Amount(
-					coreAmount,
-					AmountUnit.DISPLAY,
-					value.coreAsset.decimals
-				);
-
 				const minLiquidity = totalLiquidity.isZero()
 					? coreAmount
 					: new Amount(coreAmountCal).mul(
@@ -182,6 +181,34 @@ export default function PoolProvider({
 					minLiquidity,
 					maxAssetAmount,
 					coreAmountCal
+				);
+			} else {
+				let liquidityAmount;
+				if (
+					value.exchangePool.assetBalance ===
+					value.exchangePool.coreAssetBalance
+				) {
+					liquidityAmount = assetAmountCal
+						.mul(totalLiquidity)
+						.div(value.exchangePool.assetBalance);
+				} else {
+					liquidityAmount = assetAmountCal
+						.mul(totalLiquidity)
+						.div(value.exchangePool.assetBalance)
+						.addn(1);
+				}
+				const coreWithdrawAmount = liquidityAmount
+					.mul(value.exchangePool.coreAssetBalance)
+					.div(totalLiquidity);
+
+				const minCoreWithdraw = new Amount(coreWithdrawAmount.muln(1 - buffer));
+				const minAssetWithdraw = new Amount(assetAmountCal.muln(1 - buffer));
+
+				extrinsic = api.tx.cennzx.removeLiquidity(
+					asset.id,
+					liquidityAmount,
+					minAssetWithdraw,
+					minCoreWithdraw
 				);
 			}
 
@@ -200,6 +227,7 @@ export default function PoolProvider({
 					for (const {
 						event: { method, section, data },
 					} of events) {
+						//TODO - format response for user
 						console.log({ method, section, data: data.toHuman() });
 					}
 				}
