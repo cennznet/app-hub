@@ -1,5 +1,5 @@
 import { Amount, AmountUnit } from "../utils/Amount";
-import { AssetInfo } from "./SupportedAssetsProvider";
+import { AssetInfo } from "../types";
 import {
 	AmountParams,
 	Asset,
@@ -8,7 +8,7 @@ import {
 	IOption,
 	IUserShareInPool,
 	LiquidityFormData,
-} from "../types/exchange";
+} from "../types";
 import {
 	createContext,
 	PropsWithChildren,
@@ -20,14 +20,13 @@ import {
 } from "react";
 import { useCENNZApi } from "./CENNZApiProvider";
 import { useWallet } from "./SupportedWalletProvider";
-import { SubmittableExtrinsic } from "@cennznet/api/types";
 
 export enum PoolAction {
 	ADD = "Add",
 	REMOVE = "Withdraw",
 }
 
-export type PoolContextType = {
+type PoolContextType = {
 	coreAsset: AssetInfo;
 	estimatedFee: Amount;
 	userPoolShare: IUserShareInPool;

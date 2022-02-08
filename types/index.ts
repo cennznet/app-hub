@@ -2,7 +2,7 @@ import { ApiRx } from "@cennznet/api";
 import { Signer } from "@cennznet/api/types";
 import { InjectedWindowProvider } from "@polkadot/extension-inject/types";
 import { Observable } from "rxjs/internal/Observable";
-import { Amount } from "../../utils/exchange/Amount";
+import { Amount } from "../utils/Amount";
 
 export interface FeeExchangeResult {
 	amount: Amount;
@@ -191,3 +191,23 @@ export interface LiquidityFormData {
 	buffer: number;
 	type: string;
 }
+
+export type AssetInfo = {
+	id: number;
+	symbol: string;
+	decimals: number;
+	existentialDeposit?: number;
+};
+
+export type PoolValues = {
+	poolAsset: number | string;
+	coreAsset: number | string;
+};
+
+export type PoolSummary = {
+	coreAsset: AssetInfo;
+	poolAsset: AssetInfo;
+	userPoolShare: IUserShareInPool;
+	poolLiquidity: PoolValues;
+	estimatedFee: Amount;
+};

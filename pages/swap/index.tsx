@@ -5,7 +5,7 @@ import ExchangeIcon from "../../components/swap/ExchangeIcon";
 import { useCENNZApi } from "../../providers/CENNZApiProvider";
 import { useAssets } from "../../providers/SupportedAssetsProvider";
 import { Amount, AmountUnit } from "../../utils/Amount";
-import { Asset } from "../../types/exchange";
+import { Asset } from "../../types";
 import BigNumber from "bignumber.js";
 
 import styles from "../../styles/exchange.module.css";

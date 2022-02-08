@@ -7,9 +7,9 @@ import {
 	Select,
 } from "@mui/material";
 import ERC20Tokens from "../../artifacts/erc20tokens.json";
-import { ETH, ETH_LOGO } from "../../utils/helpers";
+import { ETH, ETH_LOGO } from "../../utils/bridge/helpers";
 import { useAssets } from "../../providers/SupportedAssetsProvider";
-import { Asset } from "../../types/exchange";
+import { Asset } from "../../types";
 import { useBlockchain } from "../../providers/BlockchainProvider";
 import { useRouter } from "next/router";
 
