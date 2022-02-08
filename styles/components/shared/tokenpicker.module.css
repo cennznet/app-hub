@@ -36,3 +36,82 @@
 .amountInput:focus-visible{
     outline: none;
 }
+
+.tokenSelector {
+    height: 60px;
+    border: 1px solid #979797;
+    border-left:none;
+    border-right:none;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.tokenSelector:focus-visible{
+    outline: none;
+}
+
+.tokenButton {
+    cursor: pointer;
+    height: 60px;
+    width: 200px;
+    border: 1px solid #979797;
+    border-left:none;
+    border-right:none;
+    position: relative;
+    background-color: transparent;
+    font-family: "Roboto";
+    font-style: normal;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 125%;
+}
+
+.tokenDropdownContainer{
+    position: absolute;
+    top: 60px;
+    right: 3px;
+    background: #FFFFFF;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    z-index: 1;
+    width: 140px;
+    height: 242px;
+
+}
+
+.tokenDropdownContainer a {
+    padding: 12px 8px;
+    margin-top:5px;
+    text-decoration: none;
+    font-family: "Roboto";
+    font-style: normal;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 125%;
+    display: flex;
+    align-items: center;
+    letter-spacing: 1.12428px;
+    text-transform: uppercase;
+    color: #020202;
+    justify-content: center;
+    align-items: center;
+}
+
+.tokenChoiceContainer {
+    display: flex;
+    flex-direction: row;
+}
+
+.tokenChoiceContainer img{
+    margin-left: 11px;
+    margin-top: 7px;
+    margin-bottom: 7px;
+}
+
+.tokenChoiceContainer:hover{
+    background: #E5E8FF;
+}
+
+

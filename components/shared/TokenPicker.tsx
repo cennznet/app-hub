@@ -36,6 +36,8 @@ const TokenPicker: React.FC<{
 }> = ({ setToken, cennznet = false, forceSelection, removeToken }) => {
 	const router = useRouter();
 	const [tokens, setTokens] = useState<Object[]>();
+	const [tokenDropDownActive, setTokenDropDownActive] =
+		useState<boolean>(false);
 	const [selectedToken, setSelectedToken] = useState<string>("");
 	const assets = useAssets();
 	const { Account } = useBlockchain();

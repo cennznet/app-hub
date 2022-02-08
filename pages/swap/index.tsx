@@ -219,17 +219,17 @@ const Exchange: React.FC<{}> = () => {
 					cennznet={true}
 					forceSelection={exchangeToken}
 				/>
-				<TextField
-					label="Amount"
-					variant="outlined"
-					required
-					sx={{
-						width: "80%",
-						m: "30px 0 30px",
-					}}
-					value={exchangeTokenValue}
-					onChange={(event) => setExchangeTokenValue(event.target.value)}
-				/>
+				{/*<TextField*/}
+				{/*	label="Amount"*/}
+				{/*	variant="outlined"*/}
+				{/*	required*/}
+				{/*	sx={{*/}
+				{/*		width: "80%",*/}
+				{/*		m: "30px 0 30px",*/}
+				{/*	}}*/}
+				{/*	value={exchangeTokenValue}*/}
+				{/*	onChange={(event) => setExchangeTokenValue(event.target.value)}*/}
+				{/*/>*/}
 				{error && <p className={styles.errorMsg}>{error}</p>}
 				{success && <p className={styles.successMsg}>{success}</p>}
 				<ExchangeIcon
@@ -246,17 +246,17 @@ const Exchange: React.FC<{}> = () => {
 					forceSelection={receivedToken}
 					removeToken={exchangeToken}
 				/>
-				<TextField
-					label="Amount"
-					variant="outlined"
-					required
-					sx={{
-						width: "80%",
-						m: "30px 0 30px",
-					}}
-					value={receivedTokenValue}
-					onChange={(event) => setReceivedTokenValue(event.target.value)}
-				/>
+				{/*<TextField*/}
+				{/*	label="Amount"*/}
+				{/*	variant="outlined"*/}
+				{/*	required*/}
+				{/*	sx={{*/}
+				{/*		width: "80%",*/}
+				{/*		m: "30px 0 30px",*/}
+				{/*	}}*/}
+				{/*	value={receivedTokenValue}*/}
+				{/*	onChange={(event) => setReceivedTokenValue(event.target.value)}*/}
+				{/*/>*/}
 				{estimatedFee && (
 					<p>Transaction fee (estimated): {estimatedFee} CPAY</p>
 				)}
