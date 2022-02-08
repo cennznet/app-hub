@@ -35,7 +35,7 @@ const Container = styled.div`
 	display: flex;
 	flex-direction: row;
 	justify-content: center;
-	margin: -10px;
+	margin: 30px;
 	margin-bottom: -25px;
 `;
 
