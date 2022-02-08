@@ -59,7 +59,7 @@ export default function PoolProvider({
 }: PropsWithChildren<ProviderProps>) {
 	const [value, setValue] = useState<PoolContextType>(poolContextDefaultValues);
 	const { api } = useCENNZApi();
-	const { wallet, selectedAccount } = useWallet();
+	const { wallet, selectedAccount, fetchAssetBalances } = useWallet();
 	const signer = useMemo(() => wallet?.signer, [wallet]);
 
 	//set core asset
@@ -228,6 +228,7 @@ export default function PoolProvider({
 					} of events) {
 						//TODO - format response for user
 						console.log({ method, section, data: data.toHuman() });
+						if (method === "ExtrinsicSuccess") fetchAssetBalances();
 					}
 				}
 			}
