@@ -59,6 +59,7 @@ const PoolForm: React.FC<{}> = () => {
 			poolAsset: userPoolToken.value,
 			coreAsset: userCore.value,
 		});
+		// FIXME: Adding `getUserPoolShare` and `updateExchangePool` causes infinite loop
 		//eslint-disable-next-line
 	}, [balances, poolAsset, coreAsset]);
 
@@ -90,6 +91,7 @@ const PoolForm: React.FC<{}> = () => {
 				);
 			}
 		}
+		// FIXME: Adding 'defineExtrinsic' and 'exchangePool' causes infinite loop
 		//eslint-disable-next-line
 	}, [poolAssetAmount, poolAsset, poolAction]);
 
