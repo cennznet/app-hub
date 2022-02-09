@@ -255,6 +255,7 @@ const PoolForm: React.FC<{}> = () => {
 							);
 							setCoreAmount("");
 							setPoolAssetAmount("");
+							setError(null);
 						}}
 					>
 						<SwapHorizIcon sx={{ fontSize: "30px" }} />
