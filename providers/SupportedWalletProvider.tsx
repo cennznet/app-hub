@@ -236,6 +236,8 @@ export default function SupportedWalletProvider({
 	useEffect(() => {
 		if (!assets || !selectedAccount || !api) return;
 		fetchAssetBalances();
+		// FIXME: adding 'fetchAssetBalances' causes infinite loop
+		//eslint-disable-next-line
 	}, [assets, selectedAccount, api]);
 
 	return (

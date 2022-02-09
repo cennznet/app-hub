@@ -39,12 +39,18 @@ const PoolForm: React.FC<{}> = () => {
 		[poolAsset, poolLiquidity]
 	);
 
-	//get user and pool balances
+	//set pool balances
 	useEffect(() => {
-		if (!balances || !poolAsset || !coreAsset) return;
+		if (!poolAsset) return;
 		updateExchangePool(poolAsset);
 		getUserPoolShare(poolAsset);
+		// FIXME: Adding `getUserPoolShare` and `updateExchangePool` causes infinite loop
+		//eslint-disable-next-line
+	}, [poolAsset]);
 
+	//set user balances
+	useEffect(() => {
+		if (!balances || !poolAsset || !coreAsset || !userPoolShare) return;
 		const userPoolAsset = balances.find(
 			(asset) => asset.symbol === poolAsset.symbol
 		);
@@ -65,9 +71,7 @@ const PoolForm: React.FC<{}> = () => {
 			poolLiquidity: Number(userPoolLiquidity),
 			coreLiquidity: Number(userCoreLiquidity),
 		});
-		// FIXME: Adding `getUserPoolShare` and `updateExchangePool` causes infinite loop
-		//eslint-disable-next-line
-	}, [balances, poolAsset, coreAsset]);
+	}, [balances, poolAsset, coreAsset, userPoolShare]);
 
 	//format pool liquidity
 	useEffect(() => {

@@ -233,7 +233,7 @@ export default function PoolProvider({
 				}
 			}
 		);
-	}, [api, value, selectedAccount, signer]);
+	}, [api, value, selectedAccount, signer, fetchAssetBalances]);
 
 	return (
 		<PoolContext.Provider
