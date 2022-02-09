@@ -2,11 +2,7 @@ import React, { useState, useEffect } from "react";
 import {
 	Button,
 	FormControl,
-	InputLabel,
-	MenuItem,
-	OutlinedInput,
-	Select,
-	TextField,
+	CircularProgress
 } from "@mui/material";
 import ERC20Tokens from "../../artifacts/erc20tokens.json";
 import { ETH, ETH_LOGO } from "../../utils/bridge/helpers";
@@ -30,11 +26,21 @@ export type BridgeToken = {
 
 const TokenPicker: React.FC<{
 	setToken: Function;
+	setAmount: Function;
+	amount: string;
 	cennznet?: boolean;
 	forceSelection?: Asset;
 	removeToken?: Asset;
-}> = ({ setToken, cennznet = false, forceSelection, removeToken }) => {
+}> = ({
+	setToken,
+	setAmount,
+	amount,
+	cennznet = false,
+	forceSelection,
+	removeToken,
+}) => {
 	const router = useRouter();
+	const [assetsLoading, setAssetsLoading] = useState<boolean>(true);
 	const [tokens, setTokens] = useState<Asset[]>();
 	const [tokenDropDownActive, setTokenDropDownActive] =
 		useState<boolean>(false);
@@ -57,13 +63,13 @@ const TokenPicker: React.FC<{
 
 	useEffect(() => {
 		if (cennznet && assets) {
-			let tokes: Asset[] = assets;
+			let tokes: Asset[] = [...assets];
 			if (removeToken)
 				tokes = tokes.filter((toke) => toke.id !== removeToken.id);
 			setTokens(tokes);
-		}
-		//TODO potentially add spinner here while assets are being retrieved
-		else if (cennznet && !assets) setTokens([]);
+			setSelectedTokenIdx(0);
+			setAssetsLoading(false);
+		} else if (cennznet && !assets) setTokens([]);
 		else {
 			let tokes: Asset[] = [
 				{
@@ -79,27 +85,27 @@ const TokenPicker: React.FC<{
 			});
 			setTokens(tokes);
 			setSelectedTokenIdx(0);
+			setAssetsLoading(false);
 		}
 	}, [cennznet, assets, removeToken]);
 
 	useEffect(() => {
 		if (cennznet && assets) {
-			console.info(tokens[selectedTokenIdx]);
 			setToken(tokens[selectedTokenIdx]);
 		} else {
 			ERC20Tokens.tokens.map((token: BridgeToken) => {
 				if (
 					(token.symbol === tokens[selectedTokenIdx]?.symbol &&
 						token.chainId === Number(ETH_CHAIN_ID)) ||
-					selectedToken === "ETH"
+					tokens[selectedTokenIdx]?.symbol === "ETH"
 				) {
-					selectedToken === "ETH"
+					tokens[selectedTokenIdx]?.symbol === "ETH"
 						? setToken({ address: ETH, symbol: "ETH", decimals: 18 })
 						: setToken(token);
 				}
 			});
 		}
-	}, [cennznet, assets, selectedTokenIdx, setToken]);
+	}, [cennznet, assets, selectedTokenIdx, tokens]);
 
 	return (
 		<div className={styles.tokenPickerContainer}>
@@ -109,36 +115,35 @@ const TokenPicker: React.FC<{
 				}}
 			>
 				<div className={styles.tokenSelector}>
-					<img
-						className={styles.tokenSelectedImg}
-						alt=""
-						src={
-							selectedTokenIdx !== 0
-								? tokens[selectedTokenIdx]?.logo
-								: "/images/cennz.svg"
-						}
-						width={33}
-						height={33}
-					/>
-					<button
-						type="button"
-						className={styles.tokenButton}
-						onClick={() => setTokenDropDownActive(!tokenDropDownActive)}
-					>
-						{selectedTokenIdx !== 0
-							? tokens[selectedTokenIdx]?.symbol
-							: "CENNZ"}
-						<img
-							className={
-								tokenDropDownActive
-									? styles.tokenSelectedArrow
-									: styles.tokenSelectedArrowDown
-							}
-							alt="arrow"
-							src={"/arrow_up.svg"}
-						/>
-					</button>
-
+					{assetsLoading ? (
+						<CircularProgress />
+					) : (
+						<>
+							<img
+								className={styles.tokenSelectedImg}
+								alt=""
+								src={tokens[selectedTokenIdx]?.logo}
+								width={33}
+								height={33}
+							/>
+							<button
+								type="button"
+								className={styles.tokenButton}
+								onClick={() => setTokenDropDownActive(!tokenDropDownActive)}
+							>
+								{tokens[selectedTokenIdx]?.symbol}
+								<img
+									className={
+										tokenDropDownActive
+											? styles.tokenSelectedArrow
+											: styles.tokenSelectedArrowDown
+									}
+									alt="arrow"
+									src={"/arrow_up.svg"}
+								/>
+							</button>
+						</>
+					)}
 					{tokenDropDownActive && (
 						<div className={styles.tokenDropdownContainer}>
 							{tokens.map((token: any, i) => {
@@ -178,6 +183,8 @@ const TokenPicker: React.FC<{
 					className={styles.amountInput}
 					type="number"
 					placeholder={"0.00"}
+					value={amount}
+					onChange={(event) => setAmount(event.target.value)}
 				/>
 			</div>
 		</div>
