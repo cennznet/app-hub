@@ -15,14 +15,14 @@ const ROUND_UP = 1;
 const PoolForm: React.FC<{}> = () => {
 	const [poolAction, setPoolAction] = useState<string>(PoolAction.ADD);
 	const [poolAsset, setPoolAsset] = useState<AssetInfo>(null);
-	const [poolAssetAmount, setPoolAssetAmount] = useState<number | string>();
-	const [coreAmount, setCoreAmount] = useState<number | string>(0);
+	const [poolAssetAmount, setPoolAssetAmount] = useState<number | string>("");
+	const [coreAmount, setCoreAmount] = useState<number | string>("");
 	const [poolLiquidity, setPoolLiquidity] = useState<PoolValues>();
 	const [userBalances, setUserBalances] = useState<PoolValues>();
+	const [error, setError] = useState<string>();
 	const { balances } = useWallet();
 	const {
 		coreAsset,
-		estimatedFee,
 		exchangePool,
 		updateExchangePool,
 		defineExtrinsic,
@@ -33,13 +33,10 @@ const PoolForm: React.FC<{}> = () => {
 
 	const poolSummaryProps = useMemo(
 		() => ({
-			coreAsset,
 			poolAsset,
-			userPoolShare,
 			poolLiquidity,
-			estimatedFee,
 		}),
-		[coreAsset, poolAsset, userPoolShare, poolLiquidity, estimatedFee]
+		[poolAsset, poolLiquidity]
 	);
 
 	//get user and pool balances
@@ -48,7 +45,7 @@ const PoolForm: React.FC<{}> = () => {
 		updateExchangePool(poolAsset);
 		getUserPoolShare(poolAsset);
 
-		const userPoolToken = balances.find(
+		const userPoolAsset = balances.find(
 			(asset) => asset.symbol === poolAsset.symbol
 		);
 		const userCore = balances.find(
@@ -56,44 +53,12 @@ const PoolForm: React.FC<{}> = () => {
 		);
 
 		setUserBalances({
-			poolAsset: userPoolToken.value,
+			poolAsset: userPoolAsset.value,
 			coreAsset: userCore.value,
 		});
 		// FIXME: Adding `getUserPoolShare` and `updateExchangePool` causes infinite loop
 		//eslint-disable-next-line
 	}, [balances, poolAsset, coreAsset]);
-
-	//set core amount from token amount
-	//define extrinsic & estimate fee
-	useEffect(() => {
-		if (!exchangePool || !poolAsset || !poolAssetAmount) return;
-		if (poolAssetAmount <= 0) setCoreAmount(0);
-		if (
-			exchangePool.coreAssetBalance.isZero() ||
-			exchangePool.assetBalance.isZero()
-		) {
-			setCoreAmount(poolAssetAmount);
-		} else {
-			const coreAmount = new Amount(Math.round(Number(poolAssetAmount)))
-				.mul(exchangePool.coreAssetBalance)
-				.div(exchangePool.assetBalance)
-				.subn(ROUND_UP);
-
-			if (coreAmount.toNumber() <= 0) {
-				setCoreAmount(0);
-			} else {
-				setCoreAmount(coreAmount.toNumber());
-				defineExtrinsic(
-					poolAsset,
-					new Amount(poolAssetAmount),
-					coreAmount,
-					poolAction
-				);
-			}
-		}
-		// FIXME: Adding 'defineExtrinsic' and 'exchangePool' causes infinite loop
-		//eslint-disable-next-line
-	}, [poolAssetAmount, poolAsset, poolAction]);
 
 	//format pool liquidity
 	useEffect(() => {
@@ -111,6 +76,100 @@ const PoolForm: React.FC<{}> = () => {
 			coreAsset: coreAssetLiquidity,
 		});
 	}, [coreAsset, poolAsset, exchangePool]);
+
+	const checkBalances = (poolAction, coreAmount, poolAmount) => {
+		if (poolAction === PoolAction.ADD) {
+			if (
+				coreAmount.toNumber() > userBalances.coreAsset ||
+				poolAmount.toNumber() > userBalances.poolAsset
+			) {
+				return false;
+			}
+		} else {
+			const coreBalance = Number(
+				userPoolShare.coreAssetBalance.asString(coreAsset.decimals)
+			);
+			const poolBalance = Number(
+				userPoolShare.assetBalance.asString(poolAsset.decimals)
+			);
+
+			if (
+				coreAmount.toNumber() > coreBalance ||
+				poolAmount.toNumber() > poolBalance
+			) {
+				return false;
+			}
+		}
+		return true;
+	};
+
+	//set core amount from poolAsset amount
+	//define extrinsic & estimate fee
+	const setCoreFromPool = (amount) => {
+		setError(null);
+		if (!exchangePool || !poolAsset) return;
+		if (amount <= 0) {
+			setPoolAssetAmount(0);
+			setCoreAmount(0);
+		}
+		setPoolAssetAmount(amount);
+		if (
+			exchangePool.coreAssetBalance.isZero() ||
+			exchangePool.assetBalance.isZero()
+		) {
+			setCoreAmount(amount);
+		} else {
+			const poolAmount = new Amount(Math.round(Number(amount)));
+			const coreAmount = poolAmount
+				.mul(exchangePool.coreAssetBalance)
+				.div(exchangePool.assetBalance)
+				.subn(ROUND_UP);
+
+			if (coreAmount.toNumber() <= 0) {
+				setCoreAmount(0);
+			} else {
+				setCoreAmount(coreAmount.toNumber());
+				if (!checkBalances(poolAction, coreAmount, poolAmount)) {
+					setError("Balance Too Low");
+					return;
+				}
+				defineExtrinsic(poolAsset, poolAmount, coreAmount, poolAction);
+			}
+		}
+	};
+
+	const setPoolFromCore = (amount) => {
+		setError(null);
+		if (!exchangePool || !poolAsset) return;
+		if (amount <= 0) {
+			setPoolAssetAmount(0);
+			setCoreAmount(0);
+		}
+		setCoreAmount(amount);
+		if (
+			exchangePool.coreAssetBalance.isZero() ||
+			exchangePool.assetBalance.isZero()
+		) {
+			setPoolAssetAmount(amount);
+		} else {
+			const coreAmount = new Amount(Math.round(Number(amount)));
+			const poolAmount = coreAmount
+				.mul(exchangePool.assetBalance)
+				.div(exchangePool.coreAssetBalance)
+				.subn(ROUND_UP);
+
+			if (poolAmount.toNumber() <= 0) {
+				setPoolAssetAmount(0);
+			} else {
+				setPoolAssetAmount(poolAmount.toNumber());
+				if (!checkBalances(poolAction, coreAmount, poolAmount)) {
+					setError("Balance Too Low");
+					return;
+				}
+				defineExtrinsic(poolAsset, poolAmount, coreAmount, poolAction);
+			}
+		}
+	};
 
 	async function confirm() {
 		await sendExtrinsic();
@@ -198,6 +257,7 @@ const PoolForm: React.FC<{}> = () => {
 				cennznet={true}
 				removeToken={coreAsset}
 			/>
+			{!!error && <Typography>{error}</Typography>}
 			<Box
 				sx={{
 					width: "80%",
@@ -208,7 +268,6 @@ const PoolForm: React.FC<{}> = () => {
 			>
 				<TextField
 					label="Amount"
-					type="number"
 					variant="outlined"
 					required
 					value={poolAssetAmount}
@@ -219,7 +278,7 @@ const PoolForm: React.FC<{}> = () => {
 					helperText={
 						userBalances ? `Balance: ${userBalances.poolAsset}` : null
 					}
-					onChange={(e) => setPoolAssetAmount(e.target.value)}
+					onChange={(e) => setCoreFromPool(e.target.value)}
 				/>
 				<Button
 					sx={{
@@ -229,7 +288,7 @@ const PoolForm: React.FC<{}> = () => {
 						mt: "40px",
 					}}
 					disabled={userBalances && poolAsset ? false : true}
-					onClick={() => setPoolAssetAmount(userBalances.poolAsset)}
+					onClick={() => setCoreFromPool(userBalances.poolAsset)}
 				>
 					Max
 				</Button>
@@ -258,7 +317,7 @@ const PoolForm: React.FC<{}> = () => {
 					helperText={
 						userBalances ? `Balance: ${userBalances.coreAsset}` : null
 					}
-					// onChange={(e) => setCoreAmount(new Amount(e.target.value))}
+					onChange={(e) => setPoolFromCore(e.target.value)}
 				/>
 			</span>
 			{!!poolAsset && <PoolSummary poolSummaryProps={poolSummaryProps} />}
@@ -275,7 +334,7 @@ const PoolForm: React.FC<{}> = () => {
 				size="large"
 				variant="outlined"
 				onClick={confirm}
-				disabled={poolAssetAmount <= 0 || coreAmount <= 0}
+				disabled={poolAssetAmount <= 0 || coreAmount <= 0 || !!error}
 			>
 				Confirm
 			</Button>

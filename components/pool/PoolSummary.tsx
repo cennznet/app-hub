@@ -1,12 +1,13 @@
 import React from "react";
 import { Box, Typography } from "@mui/material";
 import { PoolSummary } from "../../types";
+import { usePool } from "../../providers/PoolProvider";
 
 const PoolSummary: React.FC<{ poolSummaryProps: PoolSummary }> = ({
 	poolSummaryProps,
 }) => {
-	const { coreAsset, poolAsset, userPoolShare, poolLiquidity, estimatedFee } =
-		poolSummaryProps;
+	const { poolAsset, poolLiquidity } = poolSummaryProps;
+	const { coreAsset, estimatedFee, userPoolShare } = usePool();
 
 	return (
 		<Box>

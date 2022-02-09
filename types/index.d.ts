@@ -205,9 +205,6 @@ export interface PoolValues {
 }
 
 export interface PoolSummary {
-	coreAsset: AssetInfo;
 	poolAsset: AssetInfo;
-	userPoolShare: IUserShareInPool;
 	poolLiquidity: PoolValues;
-	estimatedFee: Amount;
 }
