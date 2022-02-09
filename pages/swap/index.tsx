@@ -75,7 +75,7 @@ const Exchange: React.FC<{}> = () => {
 						AmountUnit.UN
 					);
 					receivedAmount = receivedAmount.toAmount(receivedToken.decimals);
-					setReceivedTokenValue(receivedAmount);
+					setReceivedTokenValue(receivedAmount.toString());
 					const estimatedFee = await getEstimatedTransactionFee(
 						exchangeAmount,
 						exchangeToken.id,
@@ -132,7 +132,7 @@ const Exchange: React.FC<{}> = () => {
 					.multipliedBy(Math.pow(10, exchangeToken.decimals))
 					.toString(10);
 				const maxAmount = parseInt(exchangeAmount) * 2;
-				let buyAmount: any = new BigNumber(receivedTokenValue.toString());
+				let buyAmount: any = new BigNumber(receivedTokenValue);
 				buyAmount = buyAmount
 					.multipliedBy(Math.pow(10, receivedToken.decimals))
 					.toString(10);
