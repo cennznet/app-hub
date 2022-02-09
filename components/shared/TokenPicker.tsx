@@ -176,7 +176,6 @@ const TokenPicker: React.FC<{
 			<div className={styles.amountContainer}>
 				<Button
 					sx={{
-						fontFamily: "Roboto",
 						fontWeight: "bold",
 						fontSize: "16px",
 						lineHeight: "16px",
