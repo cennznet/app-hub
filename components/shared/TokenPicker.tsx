@@ -35,36 +35,29 @@ const TokenPicker: React.FC<{
 	removeToken?: Asset;
 }> = ({ setToken, cennznet = false, forceSelection, removeToken }) => {
 	const router = useRouter();
-	const [tokens, setTokens] = useState<Object[]>();
+	const [tokens, setTokens] = useState<Asset[]>();
 	const [tokenDropDownActive, setTokenDropDownActive] =
 		useState<boolean>(false);
-	const [selectedToken, setSelectedToken] = useState<string>("");
+	const [selectedTokenIdx, setSelectedTokenIdx] = useState<number>(0);
 	const assets = useAssets();
 	const { Account } = useBlockchain();
 
 	useEffect(() => {
-		if (forceSelection) setSelectedToken(forceSelection.symbol);
+		if (forceSelection) {
+			let newAssets: Asset[] = [...assets];
+			if (removeToken)
+				newAssets = assets.filter((toke) => toke.id !== removeToken.id);
+			let foundtokenIdx = newAssets?.findIndex(
+				(token) => forceSelection.symbol == token.symbol
+			);
+			setTokens(newAssets);
+			setSelectedTokenIdx(foundtokenIdx);
+		}
 	}, [forceSelection]);
 
 	useEffect(() => {
 		if (cennznet && assets) {
-			let tokes: Asset[] = [];
-
-			assets.map((asset) => {
-				asset.symbol === "ETH"
-					? tokes.push({
-							id: asset.id,
-							symbol: asset.symbol,
-							logo: ETH_LOGO,
-							decimals: asset.decimals,
-					  })
-					: tokes.push({
-							id: asset.id,
-							symbol: asset.symbol,
-							logo: `/images/${asset.symbol.toLowerCase()}.svg`,
-							decimals: asset.decimals,
-					  });
-			});
+			let tokes: Asset[] = assets;
 			if (removeToken)
 				tokes = tokes.filter((toke) => toke.id !== removeToken.id);
 			setTokens(tokes);
@@ -72,7 +65,7 @@ const TokenPicker: React.FC<{
 		//TODO potentially add spinner here while assets are being retrieved
 		else if (cennznet && !assets) setTokens([]);
 		else {
-			let tokes: Object[] = [
+			let tokes: Asset[] = [
 				{
 					symbol: "ETH",
 					logo: ETH_LOGO,
@@ -85,16 +78,18 @@ const TokenPicker: React.FC<{
 				}
 			});
 			setTokens(tokes);
+			setSelectedTokenIdx(0);
 		}
 	}, [cennznet, assets, removeToken]);
 
 	useEffect(() => {
 		if (cennznet && assets) {
-			assets.map((asset) => selectedToken === asset.symbol && setToken(asset));
+			console.info(tokens[selectedTokenIdx]);
+			setToken(tokens[selectedTokenIdx]);
 		} else {
 			ERC20Tokens.tokens.map((token: BridgeToken) => {
 				if (
-					(token.symbol === selectedToken &&
+					(token.symbol === tokens[selectedTokenIdx]?.symbol &&
 						token.chainId === Number(ETH_CHAIN_ID)) ||
 					selectedToken === "ETH"
 				) {
@@ -104,47 +99,88 @@ const TokenPicker: React.FC<{
 				}
 			});
 		}
-	}, [cennznet, assets, selectedToken, setToken]);
+	}, [cennznet, assets, selectedTokenIdx, setToken]);
 
 	return (
-		<FormControl
-			sx={{
-				width: "80%",
-				mt: "30px",
-			}}
-			required
-			disabled={router.asPath === "/bridge" ? (Account ? false : true) : false}
-		>
-			<InputLabel>Token</InputLabel>
-			<Select
-				required
-				value={selectedToken}
-				onChange={(e) => {
-					setSelectedToken(e.target.value);
+		<div className={styles.tokenPickerContainer}>
+			<FormControl
+				sx={{
+					width: "142px",
 				}}
-				input={<OutlinedInput label="Token" />}
-				MenuProps={MenuProps}
-				sx={{ fontSize: "18px" }}
 			>
-				{tokens?.map((token: any, i) => (
-					<MenuItem
-						key={i}
-						value={token.symbol}
-						sx={{
-							fontSize: "18px",
-						}}
+				<div className={styles.tokenSelector}>
+					<img
+						className={styles.tokenSelectedImg}
+						alt=""
+						src={
+							selectedTokenIdx !== 0
+								? tokens[selectedTokenIdx]?.logo
+								: "/images/cennz.svg"
+						}
+						width={33}
+						height={33}
+					/>
+					<button
+						type="button"
+						className={styles.tokenButton}
+						onClick={() => setTokenDropDownActive(!tokenDropDownActive)}
 					>
+						{selectedTokenIdx !== 0
+							? tokens[selectedTokenIdx]?.symbol
+							: "CENNZ"}
 						<img
-							key={`img ${token.logo}`}
-							alt="token logo"
-							src={token.logo}
-							style={{ marginRight: "12px", width: "20px" }}
+							className={
+								tokenDropDownActive
+									? styles.tokenSelectedArrow
+									: styles.tokenSelectedArrowDown
+							}
+							alt="arrow"
+							src={"/arrow_up.svg"}
 						/>
-						{token.symbol}
-					</MenuItem>
-				))}
-			</Select>
-		</FormControl>
+					</button>
+
+					{tokenDropDownActive && (
+						<div className={styles.tokenDropdownContainer}>
+							{tokens.map((token: any, i) => {
+								return (
+									<div
+										key={i}
+										onClick={() => {
+											setSelectedTokenIdx(i);
+											setTokenDropDownActive(false);
+										}}
+										className={styles.tokenChoiceContainer}
+									>
+										<img alt="" src={token.logo} width={33} height={33} />
+										<span>{token.symbol}</span>
+									</div>
+								);
+							})}
+						</div>
+					)}
+				</div>
+			</FormControl>
+			<div className={styles.amountContainer}>
+				<Button
+					sx={{
+						fontFamily: "Roboto",
+						fontWeight: "bold",
+						fontSize: "16px",
+						lineHeight: "16px",
+						color: "black",
+						marginRight: "80px",
+					}}
+					size="large"
+				>
+					MAX
+				</Button>
+				<input
+					className={styles.amountInput}
+					type="number"
+					placeholder={"0.00"}
+				/>
+			</div>
+		</div>
 	);
 };
 
