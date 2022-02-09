@@ -52,9 +52,18 @@ const PoolForm: React.FC<{}> = () => {
 			(asset) => asset.symbol === coreAsset.symbol
 		);
 
+		const userPoolLiquidity = userPoolShare.assetBalance.asString(
+			poolAsset.decimals
+		);
+		const userCoreLiquidity = userPoolShare.coreAssetBalance.asString(
+			coreAsset.decimals
+		);
+
 		setUserBalances({
 			poolAsset: userPoolAsset.value,
 			coreAsset: userCore.value,
+			poolLiquidity: Number(userPoolLiquidity),
+			coreLiquidity: Number(userCoreLiquidity),
 		});
 		// FIXME: Adding `getUserPoolShare` and `updateExchangePool` causes infinite loop
 		//eslint-disable-next-line
@@ -86,16 +95,9 @@ const PoolForm: React.FC<{}> = () => {
 				return false;
 			}
 		} else {
-			const coreBalance = Number(
-				userPoolShare.coreAssetBalance.asString(coreAsset.decimals)
-			);
-			const poolBalance = Number(
-				userPoolShare.assetBalance.asString(poolAsset.decimals)
-			);
-
 			if (
-				coreAmount.toNumber() > coreBalance ||
-				poolAmount.toNumber() > poolBalance
+				coreAmount.toNumber() > userBalances.coreLiquidity ||
+				poolAmount.toNumber() > userBalances.poolLiquidity
 			) {
 				return false;
 			}
@@ -168,6 +170,17 @@ const PoolForm: React.FC<{}> = () => {
 				}
 				defineExtrinsic(poolAsset, poolAmount, coreAmount, poolAction);
 			}
+		}
+	};
+
+	const setMax = () => {
+		if (poolAction === PoolAction.ADD) {
+			const amount = Math.floor(Number(userBalances.poolAsset));
+			setPoolAssetAmount(amount);
+			setCoreFromPool(amount);
+		} else {
+			setPoolAssetAmount(userBalances.poolLiquidity);
+			setCoreFromPool(userBalances.poolLiquidity);
 		}
 	};
 
@@ -288,7 +301,7 @@ const PoolForm: React.FC<{}> = () => {
 						mt: "40px",
 					}}
 					disabled={userBalances && poolAsset ? false : true}
-					onClick={() => setCoreFromPool(userBalances.poolAsset)}
+					onClick={setMax}
 				>
 					Max
 				</Button>

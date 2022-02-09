@@ -202,6 +202,8 @@ export interface AssetInfo {
 export interface PoolValues {
 	poolAsset: number | string;
 	coreAsset: number | string;
+	poolLiquidity?: number;
+	coreLiquidity?: number;
 }
 
 export interface PoolSummary {
