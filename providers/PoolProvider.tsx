@@ -125,22 +125,19 @@ export default function PoolProvider({
 		[api, selectedAccount, value]
 	);
 
-	const setEstimatedFee = useCallback(
-		async (extrinsic) => {
-			const feeEstimate: any = await api.derive.fees.estimateFee({
-				extrinsic,
-				userFeeAssetId: value.coreAsset.id,
-				maxPayment: "50000000000000000",
-			});
+	const setEstimatedFee = async (extrinsic) => {
+		const feeEstimate: any = await api.derive.fees.estimateFee({
+			extrinsic,
+			userFeeAssetId: value.coreAsset.id,
+			maxPayment: "50000000000000000",
+		});
 
-			setValue({
-				...value,
-				estimatedFee: new Amount(feeEstimate),
-				currentExtrinsic: extrinsic,
-			});
-		},
-		[api, value]
-	);
+		setValue({
+			...value,
+			estimatedFee: new Amount(feeEstimate),
+			currentExtrinsic: extrinsic,
+		});
+	};
 
 	const defineExtrinsic = useCallback(
 		async (

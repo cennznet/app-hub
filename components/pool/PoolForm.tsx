@@ -41,12 +41,12 @@ const PoolForm: React.FC<{}> = () => {
 
 	//set pool balances
 	useEffect(() => {
-		if (!poolAsset) return;
+		if (!poolAsset || !balances) return;
 		updateExchangePool(poolAsset);
 		getUserPoolShare(poolAsset);
 		// FIXME: Adding `getUserPoolShare` and `updateExchangePool` causes infinite loop
 		//eslint-disable-next-line
-	}, [poolAsset]);
+	}, [poolAsset, balances]);
 
 	//set user balances
 	useEffect(() => {
@@ -111,7 +111,7 @@ const PoolForm: React.FC<{}> = () => {
 
 	//set core amount from poolAsset amount
 	//define extrinsic & estimate fee
-	const setCoreFromPool = (amount) => {
+	const setCoreFromPool = async (amount) => {
 		setError(null);
 		if (!exchangePool || !poolAsset) return;
 		if (amount <= 0) {
@@ -139,12 +139,18 @@ const PoolForm: React.FC<{}> = () => {
 					setError("Balance Too Low");
 					return;
 				}
-				defineExtrinsic(poolAsset, poolAmount, coreAmount, poolAction, false);
+				await defineExtrinsic(
+					poolAsset,
+					poolAmount,
+					coreAmount,
+					poolAction,
+					false
+				);
 			}
 		}
 	};
 
-	const setPoolFromCore = (amount) => {
+	const setPoolFromCore = async (amount) => {
 		setError(null);
 		if (!exchangePool || !poolAsset) return;
 		if (amount <= 0) {
@@ -172,26 +178,32 @@ const PoolForm: React.FC<{}> = () => {
 					setError("Balance Too Low");
 					return;
 				}
-				defineExtrinsic(poolAsset, poolAmount, coreAmount, poolAction, false);
+				await defineExtrinsic(
+					poolAsset,
+					poolAmount,
+					coreAmount,
+					poolAction,
+					false
+				);
 			}
 		}
 	};
 
-	const setMax = () => {
+	const setMax = async () => {
 		if (poolAction === PoolAction.ADD) {
 			const amount = Math.floor(Number(userBalances.poolAsset));
 			setPoolAssetAmount(amount);
 			setCoreFromPool(amount);
 		} else {
-			setPoolAssetAmount(Number(userBalances.poolLiquidity));
-			setCoreAmount(Number(userBalances.coreLiquidity));
-			defineExtrinsic(
+			await defineExtrinsic(
 				poolAsset,
 				userBalances.poolLiquidity,
 				userBalances.coreLiquidity,
 				poolAction,
 				true
 			);
+			setPoolAssetAmount(Number(userBalances.poolLiquidity));
+			setCoreAmount(Number(userBalances.coreLiquidity));
 		}
 	};
 
@@ -235,13 +247,15 @@ const PoolForm: React.FC<{}> = () => {
 				>
 					<Button
 						sx={{ borderRadius: "10%", ml: "10%" }}
-						onClick={() =>
+						onClick={() => {
 							setPoolAction(
 								poolAction === PoolAction.ADD
 									? PoolAction.REMOVE
 									: PoolAction.ADD
-							)
-						}
+							);
+							setCoreAmount("");
+							setPoolAssetAmount("");
+						}}
 					>
 						<SwapHorizIcon sx={{ fontSize: "30px" }} />
 					</Button>
