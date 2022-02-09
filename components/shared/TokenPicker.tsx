@@ -23,8 +23,8 @@ export type BridgeToken = {
 
 const TokenPicker: React.FC<{
 	setToken: Function;
-	setAmount: Function;
-	amount: string;
+	setAmount?: Function;
+	amount?: string;
 	cennznet?: boolean;
 	forceSelection?: Asset;
 	removeToken?: Asset;
