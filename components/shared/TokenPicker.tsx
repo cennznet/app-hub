@@ -1,9 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-	Button,
-	FormControl,
-	CircularProgress
-} from "@mui/material";
+import { Button, FormControl, CircularProgress } from "@mui/material";
 import ERC20Tokens from "../../artifacts/erc20tokens.json";
 import { ETH, ETH_LOGO } from "../../utils/bridge/helpers";
 import { useAssets } from "../../providers/SupportedAssetsProvider";
@@ -14,6 +10,7 @@ import { useRouter } from "next/router";
 const ETH_CHAIN_ID = process.env.NEXT_PUBLIC_ETH_CHAIN_ID;
 
 import styles from "../../styles/components/shared/tokenpicker.module.css";
+import { useWallet } from "../../providers/SupportedWalletProvider";
 
 export type BridgeToken = {
 	chainId: number;
@@ -45,8 +42,10 @@ const TokenPicker: React.FC<{
 	const [tokenDropDownActive, setTokenDropDownActive] =
 		useState<boolean>(false);
 	const [selectedTokenIdx, setSelectedTokenIdx] = useState<number>(0);
+	const [selectedTokenBalance, setSelectedTokenBalance] = useState<number>();
 	const assets = useAssets();
 	const { Account } = useBlockchain();
+	const { balances } = useWallet();
 
 	useEffect(() => {
 		if (forceSelection) {
@@ -90,9 +89,9 @@ const TokenPicker: React.FC<{
 	}, [cennznet, assets, removeToken]);
 
 	useEffect(() => {
-		if (cennznet && assets) {
+		if (cennznet && assets && tokens) {
 			setToken(tokens[selectedTokenIdx]);
-		} else {
+		} else if (tokens) {
 			ERC20Tokens.tokens.map((token: BridgeToken) => {
 				if (
 					(token.symbol === tokens[selectedTokenIdx]?.symbol &&
@@ -107,12 +106,21 @@ const TokenPicker: React.FC<{
 		}
 	}, [cennznet, assets, selectedTokenIdx, tokens]);
 
+	useEffect(() => {
+		if (!balances || !tokens) return;
+		const foundTokenBalance = balances.find(
+			(asset) => asset.symbol === tokens[selectedTokenIdx]?.symbol
+		);
+		setSelectedTokenBalance(foundTokenBalance.value);
+	}, [balances, tokens]);
+
 	return (
 		<div className={styles.tokenPickerContainer}>
 			<FormControl
 				sx={{
 					width: "142px",
 				}}
+				disabled={router.asPath === "/bridge" ? !Account : false}
 			>
 				<div className={styles.tokenSelector}>
 					{assetsLoading ? (
@@ -176,6 +184,8 @@ const TokenPicker: React.FC<{
 						marginRight: "80px",
 					}}
 					size="large"
+					disabled={!balances}
+					onClick={() => setAmount(selectedTokenBalance)}
 				>
 					MAX
 				</Button>

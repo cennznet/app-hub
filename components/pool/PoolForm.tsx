@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
-import { Box, Button, TextField, Typography } from "@mui/material";
+import { Box, Button, TextField } from "@mui/material";
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
 import { Heading, SmallText } from "../../theme/StyledComponents";
 import TokenPicker from "../../components/shared/TokenPicker";
@@ -195,45 +195,11 @@ const PoolForm: React.FC<{}> = () => {
 			</Box>
 			<TokenPicker
 				setToken={setPoolAsset}
+				setAmount={setPoolAssetAmount}
+				amount={poolAssetAmount?.toString()}
 				cennznet={true}
 				removeToken={coreAsset}
 			/>
-			<Box
-				sx={{
-					width: "80%",
-					height: "60px",
-					display: "inline-flex",
-					m: "30px auto 30px",
-				}}
-			>
-				<TextField
-					label="Amount"
-					type="number"
-					variant="outlined"
-					required
-					value={poolAssetAmount}
-					sx={{
-						width: "80%",
-						m: "30px 0 0",
-					}}
-					helperText={
-						userBalances ? `Balance: ${userBalances.poolAsset}` : null
-					}
-					onChange={(e) => setPoolAssetAmount(e.target.value)}
-				/>
-				<Button
-					sx={{
-						position: "relative",
-						display: "flex",
-						height: "30px",
-						mt: "40px",
-					}}
-					disabled={userBalances && poolAsset ? false : true}
-					onClick={() => setPoolAssetAmount(userBalances.poolAsset)}
-				>
-					Max
-				</Button>
-			</Box>
 			<span
 				style={{
 					display: "flex",
@@ -258,7 +224,6 @@ const PoolForm: React.FC<{}> = () => {
 					helperText={
 						userBalances ? `Balance: ${userBalances.coreAsset}` : null
 					}
-					// onChange={(e) => setCoreAmount(new Amount(e.target.value))}
 				/>
 			</span>
 			{!!poolAsset && <PoolSummary poolSummaryProps={poolSummaryProps} />}

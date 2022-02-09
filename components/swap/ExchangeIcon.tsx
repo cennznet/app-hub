@@ -40,7 +40,7 @@ const Container = styled.div`
 `;
 
 const ExchangeIconClass: FC<ExchangeIconProps> = ({ onClick }) => {
-	const [rotations, setRotations] = useState(0);
+	const [rotations, setRotations] = useState(1);
 	return (
 		<Container
 			onClick={() => {
