@@ -139,7 +139,7 @@ const PoolForm: React.FC<{}> = () => {
 					setError("Balance Too Low");
 					return;
 				}
-				defineExtrinsic(poolAsset, poolAmount, coreAmount, poolAction);
+				defineExtrinsic(poolAsset, poolAmount, coreAmount, poolAction, false);
 			}
 		}
 	};
@@ -172,7 +172,7 @@ const PoolForm: React.FC<{}> = () => {
 					setError("Balance Too Low");
 					return;
 				}
-				defineExtrinsic(poolAsset, poolAmount, coreAmount, poolAction);
+				defineExtrinsic(poolAsset, poolAmount, coreAmount, poolAction, false);
 			}
 		}
 	};
@@ -183,8 +183,15 @@ const PoolForm: React.FC<{}> = () => {
 			setPoolAssetAmount(amount);
 			setCoreFromPool(amount);
 		} else {
-			setPoolAssetAmount(userBalances.poolLiquidity);
-			setCoreFromPool(userBalances.poolLiquidity);
+			setPoolAssetAmount(Number(userBalances.poolLiquidity));
+			setCoreAmount(Number(userBalances.coreLiquidity));
+			defineExtrinsic(
+				poolAsset,
+				userBalances.poolLiquidity,
+				userBalances.coreLiquidity,
+				poolAction,
+				true
+			);
 		}
 	};
 
@@ -293,7 +300,12 @@ const PoolForm: React.FC<{}> = () => {
 						m: "30px 0 0",
 					}}
 					helperText={
-						userBalances ? `Balance: ${userBalances.poolAsset}` : null
+						poolAction === PoolAction.ADD
+							? !!userBalances && `Balance: ${userBalances.poolAsset}`
+							: !!userPoolShare &&
+							  `Withdrawable: ${userPoolShare.assetBalance.asString(
+									poolAsset?.decimals
+							  )}`
 					}
 					onChange={(e) => setCoreFromPool(e.target.value)}
 				/>
@@ -332,7 +344,12 @@ const PoolForm: React.FC<{}> = () => {
 						m: "30px 0 30px 5%",
 					}}
 					helperText={
-						userBalances ? `Balance: ${userBalances.coreAsset}` : null
+						poolAction === PoolAction.ADD
+							? !!userBalances && `Balance: ${userBalances.coreAsset}`
+							: !!userPoolShare &&
+							  `Withdrawable: ${userPoolShare.coreAssetBalance.asString(
+									coreAsset?.decimals
+							  )}`
 					}
 					onChange={(e) => setPoolFromCore(e.target.value)}
 				/>
