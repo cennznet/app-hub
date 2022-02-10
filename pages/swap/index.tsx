@@ -8,7 +8,7 @@ import { Amount, AmountUnit } from "../../utils/Amount";
 import { Asset } from "../../types";
 import BigNumber from "bignumber.js";
 
-import styles from "../../styles/exchange.module.css";
+import styles from "../../styles/components/swap/swap.module.css";
 import { useWallet } from "../../providers/SupportedWalletProvider";
 import { useDappModule } from "../../providers/DappModuleProvider";
 
@@ -164,73 +164,31 @@ const Exchange: React.FC<{}> = () => {
 	}, [signer, api, exchangeToken, receivedToken, receivedTokenValue]);
 
 	return (
-		<Box
-			sx={{
-				position: "absolute",
-				top: "25%",
-				left: "calc(50% - 552px/2)",
-				display: "flex",
-				justifyContent: "center",
-				alignItems: "center",
-			}}
-		>
-			<Button
-				style={{
-					position: "absolute",
-					top: "-5%",
-					width: "100%",
-					display: "flex",
-					justifyContent: "center",
-					alignItems: "center",
-					backgroundColor: "#FFFFFF",
-					border: "4px solid #1130FF",
-					flex: "none",
-					order: 0,
-					alignSelf: "stretch",
-					flexGrow: 1,
-					margin: "0px 0px",
-					borderBottom: "none",
-					fontFamily: "Teko",
-					fontWeight: "bold",
-					fontSize: "24px",
-					lineHeight: "124%",
-					color: "#1130FF",
-				}}
-			>
-				Swap
-			</Button>
-			<Box
-				component="form"
-				sx={{
-					width: "552px",
-					height: "auto",
-					margin: "0 auto",
-					background: "#FFFFFF",
-					border: "4px solid #1130FF",
-					display: "flex",
-					flexDirection: "column",
-					justifyContent: "center",
-					alignItems: "center",
-					padding: "0px",
-				}}
-			>
+		<div className={styles.swapContainer}>
+			<h1 className={styles.pageHeader}>SWAP</h1>
+			<div className={styles.tokenPickerContainer}>
+				<p className={styles.secondaryText}>YOU SEND</p>
 				<TokenPicker
 					setToken={setExchangeToken}
 					setAmount={setExchangeTokenValue}
 					amount={exchangeTokenValue}
 					cennznet={true}
 					forceSelection={exchangeToken}
+					showBalance={true}
 				/>
-				{error && <p className={styles.errorMsg}>{error}</p>}
-				{success && <p className={styles.successMsg}>{success}</p>}
-				<ExchangeIcon
-					onClick={() => {
-						setReceivedToken(exchangeToken);
-						setExchangeToken(receivedToken);
-						setExchangeTokenValue(receivedTokenValue);
-						setReceivedTokenValue(exchangeTokenValue);
-					}}
-				/>
+			</div>
+			{error && <p className={styles.errorMsg}>{error}</p>}
+			{success && <p className={styles.successMsg}>{success}</p>}
+			<ExchangeIcon
+				onClick={() => {
+					setReceivedToken(exchangeToken);
+					setExchangeToken(receivedToken);
+					setExchangeTokenValue(receivedTokenValue);
+					setReceivedTokenValue(exchangeTokenValue);
+				}}
+			/>
+			<div className={styles.tokenPickerContainer}>
+				<p className={styles.thirdText}>YOU GET</p>
 				<TokenPicker
 					setToken={setReceivedToken}
 					setAmount={setReceivedTokenValue}
@@ -239,28 +197,26 @@ const Exchange: React.FC<{}> = () => {
 					forceSelection={receivedToken}
 					removeToken={exchangeToken}
 				/>
-				{estimatedFee && (
-					<p>Transaction fee (estimated): {estimatedFee} CPAY</p>
-				)}
-				<Button
-					sx={{
-						fontFamily: "Teko",
-						fontWeight: "bold",
-						fontSize: "21px",
-						lineHeight: "124%",
-						color: "#1130FF",
-						mt: "30px",
-						mb: "50px",
-					}}
-					size="large"
-					variant="outlined"
-					onClick={exchangeTokens}
-					disabled={!signer}
-				>
-					{!!signer ? "Exchange" : "Connect Wallet"}
-				</Button>
-			</Box>
-		</Box>
+			</div>
+			{estimatedFee && <p>Transaction fee (estimated): {estimatedFee} CPAY</p>}
+			<Button
+				sx={{
+					fontFamily: "Teko",
+					fontWeight: "bold",
+					fontSize: "21px",
+					lineHeight: "124%",
+					color: "#1130FF",
+					mt: "20px",
+					mb: "50px",
+				}}
+				size="large"
+				variant="outlined"
+				onClick={exchangeTokens}
+				disabled={!signer}
+			>
+				{!!signer ? "Swap" : "Connect Wallet"}
+			</Button>
+		</div>
 	);
 };
 
