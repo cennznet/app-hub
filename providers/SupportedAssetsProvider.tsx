@@ -8,6 +8,7 @@ import {
 import { useCENNZApi } from "./CENNZApiProvider";
 import { u8aToString } from "@polkadot/util";
 import { AssetInfo } from "../types";
+import { ETH_LOGO } from "../utils/bridge/helpers";
 
 const assetIds =
 	process.env.NEXT_PUBLIC_SUPPORTED_ASSETS &&
@@ -33,10 +34,15 @@ export default function SupportedAssetsProvider({
 					const [tokenId, { symbol, decimalPlaces }] = assets?.find((asset) => {
 						return asset[0].toString() === assetId;
 					});
+					const logo =
+						u8aToString(symbol) === "ETH"
+							? ETH_LOGO
+							: `/images/${u8aToString(symbol).toLowerCase()}.svg`;
 					return {
 						id: Number(tokenId),
 						symbol: u8aToString(symbol),
 						decimals: decimalPlaces.toNumber(),
+						logo: logo,
 					};
 				});
 

@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-	FormControl,
-	InputLabel,
-	MenuItem,
-	OutlinedInput,
-	Select,
-} from "@mui/material";
+import { Button, FormControl, CircularProgress } from "@mui/material";
 import ERC20Tokens from "../../artifacts/erc20tokens.json";
 import { ETH, ETH_LOGO } from "../../utils/bridge/helpers";
 import { useAssets } from "../../providers/SupportedAssetsProvider";
@@ -15,16 +9,8 @@ import { useRouter } from "next/router";
 
 const ETH_CHAIN_ID = process.env.NEXT_PUBLIC_ETH_CHAIN_ID;
 
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-	PaperProps: {
-		style: {
-			maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-			width: 250,
-		},
-	},
-};
+import styles from "../../styles/components/shared/tokenpicker.module.css";
+import { useWallet } from "../../providers/SupportedWalletProvider";
 
 export type BridgeToken = {
 	chainId: number;
@@ -37,47 +23,60 @@ export type BridgeToken = {
 
 const TokenPicker: React.FC<{
 	setToken: Function;
+	setAmount?: Function;
+	amount?: string;
 	cennznet?: boolean;
 	forceSelection?: Asset;
 	removeToken?: Asset;
-}> = ({ setToken, cennznet = false, forceSelection, removeToken }) => {
+	showBalance?: boolean;
+	error?: string;
+	success?: string;
+}> = ({
+	setToken,
+	setAmount,
+	amount,
+	cennznet = false,
+	forceSelection,
+	removeToken,
+	showBalance,
+	error,
+	success,
+}) => {
 	const router = useRouter();
-	const [tokens, setTokens] = useState<Object[]>();
-	const [selectedToken, setSelectedToken] = useState<string>("");
+	const [assetsLoading, setAssetsLoading] = useState<boolean>(true);
+	const [tokens, setTokens] = useState<Asset[]>();
+	const [tokenDropDownActive, setTokenDropDownActive] =
+		useState<boolean>(false);
+	const [selectedTokenIdx, setSelectedTokenIdx] = useState<number>(0);
+	const [selectedTokenBalance, setSelectedTokenBalance] = useState<number>();
 	const assets = useAssets();
 	const { Account } = useBlockchain();
+	const { balances } = useWallet();
 
 	useEffect(() => {
-		if (forceSelection) setSelectedToken(forceSelection.symbol);
+		if (forceSelection) {
+			let newAssets: Asset[] = [...assets];
+			if (removeToken)
+				newAssets = assets.filter((toke) => toke.id !== removeToken.id);
+			let foundtokenIdx = newAssets?.findIndex(
+				(token) => forceSelection.symbol == token.symbol
+			);
+			setTokens(newAssets);
+			setSelectedTokenIdx(foundtokenIdx);
+		}
 	}, [forceSelection]);
 
 	useEffect(() => {
 		if (cennznet && assets) {
-			let tokes: Asset[] = [];
-
-			assets.map((asset) => {
-				asset.symbol === "ETH"
-					? tokes.push({
-							id: asset.id,
-							symbol: asset.symbol,
-							logo: ETH_LOGO,
-							decimals: asset.decimals,
-					  })
-					: tokes.push({
-							id: asset.id,
-							symbol: asset.symbol,
-							logo: `/images/${asset.symbol.toLowerCase()}.svg`,
-							decimals: asset.decimals,
-					  });
-			});
+			let tokes: Asset[] = [...assets];
 			if (removeToken)
 				tokes = tokes.filter((toke) => toke.id !== removeToken.id);
 			setTokens(tokes);
-		}
-		//TODO potentially add spinner here while assets are being retrieved
-		else if (cennznet && !assets) setTokens([]);
+			setSelectedTokenIdx(0);
+			setAssetsLoading(false);
+		} else if (cennznet && !assets) setTokens([]);
 		else {
-			let tokes: Object[] = [
+			let tokes: Asset[] = [
 				{
 					symbol: "ETH",
 					logo: ETH_LOGO,
@@ -90,66 +89,133 @@ const TokenPicker: React.FC<{
 				}
 			});
 			setTokens(tokes);
+			setSelectedTokenIdx(0);
+			setAssetsLoading(false);
 		}
 	}, [cennznet, assets, removeToken]);
 
 	useEffect(() => {
-		if (cennznet && assets) {
-			assets.map((asset) => selectedToken === asset.symbol && setToken(asset));
-		} else {
+		if (cennznet && assets && tokens) {
+			setToken(tokens[selectedTokenIdx]);
+		} else if (tokens) {
 			ERC20Tokens.tokens.map((token: BridgeToken) => {
 				if (
-					(token.symbol === selectedToken &&
+					(token.symbol === tokens[selectedTokenIdx]?.symbol &&
 						token.chainId === Number(ETH_CHAIN_ID)) ||
-					selectedToken === "ETH"
+					tokens[selectedTokenIdx]?.symbol === "ETH"
 				) {
-					selectedToken === "ETH"
+					tokens[selectedTokenIdx]?.symbol === "ETH"
 						? setToken({ address: ETH, symbol: "ETH", decimals: 18 })
 						: setToken(token);
 				}
 			});
 		}
-	}, [cennznet, assets, selectedToken, setToken]);
+	}, [cennznet, assets, selectedTokenIdx, tokens]);
+
+	useEffect(() => {
+		if (!balances || !tokens) return;
+		const foundTokenBalance = balances.find(
+			(asset) => asset.symbol === tokens[selectedTokenIdx]?.symbol
+		);
+		setSelectedTokenBalance(foundTokenBalance.value);
+	}, [balances, tokens, selectedTokenIdx]);
 
 	return (
-		<FormControl
-			sx={{
-				width: "80%",
-				mt: "30px",
-			}}
-			required
-			disabled={router.asPath === "/bridge" ? (Account ? false : true) : false}
-		>
-			<InputLabel>Token</InputLabel>
-			<Select
-				required
-				value={selectedToken}
-				onChange={(e) => {
-					setSelectedToken(e.target.value);
-				}}
-				input={<OutlinedInput label="Token" />}
-				MenuProps={MenuProps}
-				sx={{ fontSize: "18px" }}
-			>
-				{tokens?.map((token: any, i) => (
-					<MenuItem
-						key={i}
-						value={token.symbol}
+		<div className={styles.tokenPickerContainer}>
+			<div className={styles.tokenPickerBox}>
+				<FormControl
+					sx={{
+						width: "142px",
+					}}
+					disabled={router.asPath === "/bridge" ? !Account : false}
+				>
+					<div className={styles.tokenSelector}>
+						{assetsLoading ? (
+							<CircularProgress />
+						) : (
+							<>
+								<img
+									className={styles.tokenSelectedImg}
+									alt=""
+									src={tokens[selectedTokenIdx]?.logo}
+									width={33}
+									height={33}
+								/>
+								<button
+									type="button"
+									className={styles.tokenButton}
+									onClick={() => setTokenDropDownActive(!tokenDropDownActive)}
+								>
+									{tokens[selectedTokenIdx]?.symbol}
+									<img
+										className={
+											tokenDropDownActive
+												? styles.tokenSelectedArrow
+												: styles.tokenSelectedArrowDown
+										}
+										alt="arrow"
+										src={"/arrow_up.svg"}
+									/>
+								</button>
+							</>
+						)}
+						{tokenDropDownActive && (
+							<div className={styles.tokenDropdownContainer}>
+								{tokens.map((token: any, i) => {
+									return (
+										<div
+											key={i}
+											onClick={() => {
+												setSelectedTokenIdx(i);
+												setTokenDropDownActive(false);
+											}}
+											className={styles.tokenChoiceContainer}
+										>
+											<img alt="" src={token.logo} width={33} height={33} />
+											<span>{token.symbol}</span>
+										</div>
+									);
+								})}
+							</div>
+						)}
+					</div>
+				</FormControl>
+				<div className={styles.amountContainer}>
+					<Button
 						sx={{
-							fontSize: "18px",
+							fontWeight: "bold",
+							fontSize: "16px",
+							lineHeight: "16px",
+							color: "black",
+							marginRight: "80px",
 						}}
+						size="large"
+						disabled={!balances}
+						onClick={() => setAmount(selectedTokenBalance)}
 					>
-						<img
-							key={`img ${token.logo}`}
-							alt="token logo"
-							src={token.logo}
-							style={{ marginRight: "12px", width: "20px" }}
-						/>
-						{token.symbol}
-					</MenuItem>
-				))}
-			</Select>
-		</FormControl>
+						MAX
+					</Button>
+					<input
+						className={styles.amountInput}
+						type="number"
+						placeholder={"0.00"}
+						value={amount}
+						onChange={(event) => setAmount(event.target.value)}
+					/>
+				</div>
+			</div>
+			<div className={styles.bottomTextContainer}>
+				{showBalance && (
+					<p className={styles.balanceText}>
+						{`Balance: ${
+							selectedTokenBalance !== undefined ? selectedTokenBalance : ""
+						}`}
+					</p>
+				)}
+				{error && <p className={styles.errorMsg}>{error}</p>}
+				{success && <p className={styles.successMsg}>{success}</p>}
+			</div>
+		</div>
 	);
 };
 
