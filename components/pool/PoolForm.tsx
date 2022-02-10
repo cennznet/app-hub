@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { Box, Button, TextField, Typography } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Box, Button, Typography } from "@mui/material";
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
 import { Heading, SmallText } from "../../theme/StyledComponents";
 import TokenPicker from "../../components/shared/TokenPicker";
@@ -31,13 +31,10 @@ const PoolForm: React.FC<{}> = () => {
 		sendExtrinsic,
 	} = usePool();
 
-	const poolSummaryProps = useMemo(
-		() => ({
-			tradeAsset,
-			poolLiquidity,
-		}),
-		[tradeAsset, poolLiquidity]
-	);
+	const poolSummaryProps = {
+		tradeAsset,
+		poolLiquidity,
+	};
 
 	//set pool balances
 	useEffect(() => {
@@ -205,17 +202,14 @@ const PoolForm: React.FC<{}> = () => {
 		}
 	};
 
-	const poolConfig: PoolConfig = useMemo(
-		() => ({
-			tradeAsset,
-			coreAsset,
-			userPoolShare,
-			poolAction,
-			setOtherAsset,
-			setMax,
-		}),
-		[tradeAsset, coreAsset, userPoolShare, poolAction, setOtherAsset, setMax]
-	);
+	const poolConfig: PoolConfig = {
+		tradeAsset,
+		coreAsset,
+		userPoolShare,
+		poolAction,
+		setOtherAsset,
+		setMax,
+	};
 
 	async function confirm() {
 		await sendExtrinsic();

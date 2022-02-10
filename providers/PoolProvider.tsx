@@ -16,7 +16,6 @@ import {
 	useContext,
 	useEffect,
 	useState,
-	useMemo,
 } from "react";
 import { useCENNZApi } from "./CENNZApiProvider";
 import { useWallet } from "./SupportedWalletProvider";
@@ -60,7 +59,7 @@ export default function PoolProvider({
 	const [value, setValue] = useState<PoolContextType>(poolContextDefaultValues);
 	const { api } = useCENNZApi();
 	const { wallet, selectedAccount, fetchAssetBalances } = useWallet();
-	const signer = useMemo(() => wallet?.signer, [wallet]);
+	const signer = wallet?.signer;
 
 	//set core asset
 	useEffect(() => {
