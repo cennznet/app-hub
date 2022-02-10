@@ -8,18 +8,27 @@ import { useWallet } from "../../providers/SupportedWalletProvider";
 import { PoolAction, usePool } from "../../providers/PoolProvider";
 import { Amount } from "../../utils/Amount";
 import PoolSummary from "./PoolSummary";
+import SwapIconClass from "./SwapIcon";
+import styles from "../../styles/components/swap/swap.module.css";
 
 const ROUND_UP = 1;
 
+export enum PoolColors {
+	ADD = "#1130FF",
+	REMOVE = "#6200EE",
+}
+
 const PoolForm: React.FC<{}> = () => {
 	const [poolAction, setPoolAction] = useState<string>(PoolAction.ADD);
+	const [poolColors, setPoolColors] = useState<string>(PoolColors.ADD);
 	const [tradeAsset, setTradeAsset] = useState<AssetInfo>(null);
 	const [tradeAssetAmount, setTradeAssetAmount] = useState<number | string>("");
 	const [_, setCoreAsset] = useState<AssetInfo>(null);
 	const [coreAmount, setCoreAmount] = useState<number | string>("");
 	const [poolLiquidity, setPoolLiquidity] = useState<PoolValues>();
 	const [userBalances, setUserBalances] = useState<PoolValues>();
-	const [error, setError] = useState<string>();
+	const [tradeError, setTradeError] = useState<string>();
+	const [coreError, setCoreError] = useState<string>();
 	const { balances } = useWallet();
 	const {
 		coreAsset,
@@ -90,24 +99,34 @@ const PoolForm: React.FC<{}> = () => {
 	const checkBalances = (poolAction, coreAmount, tradeAmount) => {
 		if (poolAction === PoolAction.ADD) {
 			if (
-				coreAmount.toNumber() > userBalances.coreAsset ||
+				coreAmount.toNumber() > userBalances.coreAsset &&
 				tradeAmount.toNumber() > userBalances.tradeAsset
 			) {
-				return false;
+				setCoreError("Balance Too Low");
+				setTradeError("Balance Too Low");
+			} else if (coreAmount.toNumber() > userBalances.coreAsset) {
+				setCoreError("Balance Too Low");
+			} else if (tradeAmount.toNumber() > userBalances.tradeAsset) {
+				setTradeError("Balance Too Low");
 			}
 		} else {
 			if (
-				coreAmount.toNumber() > userBalances.coreLiquidity ||
+				coreAmount.toNumber() > userBalances.coreLiquidity &&
 				tradeAmount.toNumber() > userBalances.tradeLiquidity
 			) {
-				return false;
+				setCoreError("Balance Too Low");
+				setTradeError("Balance Too Low");
+			} else if (coreAmount.toNumber() > userBalances.coreLiquidity) {
+				setCoreError("Balance Too Low");
+			} else if (tradeAmount.toNumber() > userBalances.tradeLiquidity) {
+				setTradeError("Balance Too Low");
 			}
 		}
-		return true;
 	};
 
 	const setOtherAsset = async (amount, whichAsset?: string) => {
-		setError(null);
+		setCoreError(null);
+		setTradeError(null);
 		if (!exchangePool || !tradeAsset) return;
 		if (amount <= 0) {
 			setTradeAssetAmount(0);
@@ -136,10 +155,7 @@ const PoolForm: React.FC<{}> = () => {
 				setCoreAmount(0);
 			} else {
 				setCoreAmount(coreAmount.toNumber());
-				if (!checkBalances(poolAction, coreAmount, tradeAmount)) {
-					setError("Balance Too Low");
-					return;
-				}
+				checkBalances(poolAction, coreAmount, tradeAmount);
 				//define extrinsic & estimate fee
 				await defineExtrinsic(
 					tradeAsset,
@@ -161,10 +177,7 @@ const PoolForm: React.FC<{}> = () => {
 				setTradeAssetAmount(0);
 			} else {
 				setTradeAssetAmount(tradeAmount.toNumber());
-				if (!checkBalances(poolAction, coreAmount, tradeAmount)) {
-					setError("Balance Too Low");
-					return;
-				}
+				checkBalances(poolAction, coreAmount, tradeAmount);
 				//define extrinsic & estimate fee
 				await defineExtrinsic(
 					tradeAsset,
@@ -221,85 +234,126 @@ const PoolForm: React.FC<{}> = () => {
 			sx={{
 				width: "552px",
 				height: "auto",
-				margin: "0 auto",
+				margin: "0 auto 5%",
 				background: "#FFFFFF",
-				border: "4px solid #1130FF",
 				display: "flex",
 				flexDirection: "column",
 				justifyContent: "center",
 				alignItems: "center",
 				padding: "0px",
+				boxShadow: "4px 8px 8px rgba(17, 48, 255, 0.1)",
 			}}
 		>
+			<h1 className={styles.pageHeader}>POOL</h1>
 			<Box
-				sx={{
-					mt: "30px",
-					width: "100%",
+				style={{
 					display: "flex",
-					alignItems: "center",
-					justifyContent: "center",
-					flexDirection: "column",
+					flexDirection: "row",
+					alignContent: "justify",
+					width: "468px",
+					boxSizing: "border-box",
+					border: `1px solid ${poolColors}`,
 				}}
 			>
-				<span
-					style={{
-						display: "flex",
-						flexDirection: "row",
-						alignContent: "justify",
-						width: "100%",
+				<SwapIconClass
+					onClick={() => {
+						setPoolAction(
+							poolAction === PoolAction.ADD ? PoolAction.REMOVE : PoolAction.ADD
+						);
+						setPoolColors(
+							poolColors === PoolColors.ADD ? PoolColors.REMOVE : PoolColors.ADD
+						);
+						setCoreAmount("");
+						setTradeAssetAmount("");
+						setCoreError(null);
+						setTradeError(null);
 					}}
-				>
-					<Button
-						sx={{ borderRadius: "10%", ml: "10%" }}
-						onClick={() => {
-							setPoolAction(
-								poolAction === PoolAction.ADD
-									? PoolAction.REMOVE
-									: PoolAction.ADD
-							);
-							setCoreAmount("");
-							setTradeAssetAmount("");
-							setError(null);
-						}}
-					>
-						<SwapHorizIcon sx={{ fontSize: "30px" }} />
-					</Button>
-					<Heading
-						sx={{
-							m: "10px 0 0 20px",
-							fontSize: "24px",
-							textTransform: "uppercase",
-						}}
-					>
-						{poolAction} Liquidity
-					</Heading>
-				</span>
-				<SmallText
+					color={poolColors}
+				/>
+				<Typography
 					sx={{
-						width: "80%",
-						mt: "10px",
-						marginBottom: "40px",
+						m: "17px 0 0 20px",
+						fontSize: "17px",
+						lineHeight: "125%",
+						fontWeight: "bold",
+						textTransform: "uppercase",
+						color: poolColors,
+						letterSpacing: "1.2px",
 					}}
 				>
-					{poolAction === PoolAction.ADD ? (
-						<>
-							To keep the liquidity pool functional, deposits require an equal
-							value of {tradeAsset?.symbol || "your token"} and CPAY at the
-							current exchange rate.
-						</>
-					) : (
-						<>
-							To keep the liquidity pool functional, withdrawals will return an
-							equal value of {tradeAsset?.symbol || "your token"} and CPAY at
-							the current exchange rate.
-						</>
-					)}
-				</SmallText>
+					{poolAction === PoolAction.ADD
+						? "add too pool"
+						: "withdraw from pool"}
+				</Typography>
 			</Box>
+			<SmallText
+				sx={{
+					width: "80%",
+					mt: "10px",
+					marginBottom: "40px",
+				}}
+			>
+				{poolAction === PoolAction.ADD ? (
+					<Typography sx={{ fontSize: "16px", lineHeight: "150%" }}>
+						To keep the liquidity pool functional, deposits require an equal
+						value of&nbsp;
+						<span
+							style={{
+								color: "#6200EE",
+								fontSize: "16px",
+								fontWeight: "bold",
+								lineHeight: "150%",
+							}}
+						>
+							{tradeAsset?.symbol || "your token"}
+						</span>
+						&nbsp;and&nbsp;
+						<span
+							style={{
+								color: "#6200EE",
+								fontSize: "16px",
+								fontWeight: "bold",
+								lineHeight: "150%",
+							}}
+						>
+							CPAY
+						</span>
+						&nbsp;at the current exchange rate.
+					</Typography>
+				) : (
+					<Typography sx={{ fontSize: "16px", lineHeight: "150%" }}>
+						To keep the liquidity pool functional, withdrawals will return an
+						equal value of&nbsp;
+						<span
+							style={{
+								color: "#6200EE",
+								fontSize: "16px",
+								fontWeight: "bold",
+								lineHeight: "150%",
+							}}
+						>
+							{tradeAsset?.symbol || "your token"}
+						</span>
+						&nbsp;and&nbsp;
+						<span
+							style={{
+								color: "#6200EE",
+								fontSize: "16px",
+								fontWeight: "bold",
+								lineHeight: "150%",
+							}}
+						>
+							CPAY
+						</span>
+						&nbsp;at the current exchange rate.
+					</Typography>
+				)}
+			</SmallText>
 			<TokenPicker
 				setToken={setTradeAsset}
 				setAmount={setTradeAssetAmount}
 				amount={tradeAssetAmount?.toString()}
+				error={tradeError}
 				cennznet={true}
 				removeToken={coreAsset}
 				showBalance={true}
@@ -310,6 +364,7 @@ const PoolForm: React.FC<{}> = () => {
 				setToken={setCoreAsset}
 				setAmount={setCoreAmount}
 				amount={coreAmount?.toString()}
+				error={coreError}
 				cennznet={true}
 				forceSelection={coreAsset}
 				removeToken={tradeAsset}
@@ -317,24 +372,31 @@ const PoolForm: React.FC<{}> = () => {
 				poolConfig={poolConfig}
 				whichAsset={"core"}
 			/>
-			{!!error && <Typography>{error}</Typography>}
+			{/* {!!error && <Typography>{error}</Typography>} */}
 			{!!tradeAsset && <PoolSummary poolSummaryProps={poolSummaryProps} />}
 			<Button
 				sx={{
-					fontFamily: "Teko",
-					fontWeight: "bold",
-					fontSize: "21px",
-					lineHeight: "124%",
-					color: "#1130FF",
+					fontSize: "16px",
+					lineHeight: "125%",
+					color: poolColors,
 					mt: "30px",
 					mb: "50px",
+					borderColor: poolColors,
+					letterSpacing: "1.2px",
 				}}
 				size="large"
 				variant="outlined"
 				onClick={confirm}
-				disabled={tradeAssetAmount <= 0 || coreAmount <= 0 || !!error}
+				disabled={
+					tradeAssetAmount <= 0 ||
+					coreAmount <= 0 ||
+					!!coreError ||
+					!!tradeError
+				}
 			>
-				Confirm
+				<Typography sx={{ m: "5px 3px 5px 3px", fontWeight: "bold" }}>
+					{poolAction === PoolAction.ADD ? "add to pool" : "withdraw from pool"}
+				</Typography>
 			</Button>
 		</Box>
 	);
