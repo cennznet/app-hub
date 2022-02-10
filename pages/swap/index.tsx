@@ -24,7 +24,13 @@ const Exchange: React.FC<{}> = () => {
 	const [success, setSuccess] = useState<string>();
 	const { api, initApi }: any = useCENNZApi();
 	const assets = useAssets();
-	const { wallet, selectedAccount, balances, connectWallet } = useWallet();
+	const {
+		wallet,
+		selectedAccount,
+		balances,
+		connectWallet,
+		fetchAssetBalances,
+	} = useWallet();
 	const signer = wallet?.signer;
 	const { web3Enable } = useDappModule();
 
@@ -152,6 +158,7 @@ const Exchange: React.FC<{}> = () => {
 								if (event.method === "AssetBought") {
 									setError(undefined);
 									setSuccess(`Successfully Swapped Tokens!`);
+									fetchAssetBalances();
 								}
 							}
 						}
