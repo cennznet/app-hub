@@ -109,20 +109,26 @@ const PoolForm: React.FC<{}> = () => {
 		return true;
 	};
 
-	const setCoreFromTrade = async (amount) => {
+	const setOtherAsset = async (amount, whichAsset?: string) => {
 		setError(null);
 		if (!exchangePool || !tradeAsset) return;
 		if (amount <= 0) {
 			setTradeAssetAmount(0);
 			setCoreAmount(0);
+			return;
 		}
-		setTradeAssetAmount(amount);
+
 		if (
 			exchangePool.coreAssetBalance.isZero() ||
 			exchangePool.assetBalance.isZero()
 		) {
 			setCoreAmount(amount);
-		} else {
+			setTradeAssetAmount(amount);
+			return;
+		}
+
+		if (whichAsset === "trade") {
+			setTradeAssetAmount(amount);
 			const tradeAmount = new Amount(Math.round(Number(amount)));
 			const coreAmount = tradeAmount
 				.mul(exchangePool.coreAssetBalance)
@@ -146,23 +152,8 @@ const PoolForm: React.FC<{}> = () => {
 					false
 				);
 			}
-		}
-	};
-
-	const setTradeFromCore = async (amount) => {
-		setError(null);
-		if (!exchangePool || !tradeAsset) return;
-		if (amount <= 0) {
-			setTradeAssetAmount(0);
-			setCoreAmount(0);
-		}
-		setCoreAmount(amount);
-		if (
-			exchangePool.coreAssetBalance.isZero() ||
-			exchangePool.assetBalance.isZero()
-		) {
-			setTradeAssetAmount(amount);
 		} else {
+			setCoreAmount(amount);
 			const coreAmount = new Amount(Math.round(Number(amount)));
 			const tradeAmount = coreAmount
 				.mul(exchangePool.assetBalance)
@@ -189,29 +180,18 @@ const PoolForm: React.FC<{}> = () => {
 		}
 	};
 
-	const setMaxFromTradeAsset = async () => {
+	const setMax = async (whichAsset: string) => {
 		if (poolAction === PoolAction.ADD) {
-			const amount = Math.floor(Number(userBalances.tradeAsset));
-			setTradeAssetAmount(amount);
-			setCoreFromTrade(amount);
-		} else {
-			await defineExtrinsic(
-				tradeAsset,
-				userBalances.tradeLiquidity,
-				userBalances.coreLiquidity,
-				poolAction,
-				true
-			);
-			setTradeAssetAmount(Number(userBalances.tradeLiquidity));
-			setCoreAmount(Number(userBalances.coreLiquidity));
-		}
-	};
-
-	const setMaxFromCoreAsset = async () => {
-		if (poolAction === PoolAction.ADD) {
-			const amount = Math.floor(Number(userBalances.coreAsset));
-			setCoreAmount(amount);
-			setTradeFromCore(amount);
+			let amount;
+			if (whichAsset === "trade") {
+				amount = Math.floor(Number(userBalances.tradeAsset));
+				setTradeAssetAmount(amount);
+				setOtherAsset(amount, whichAsset);
+			} else {
+				amount = Math.floor(Number(userBalances.coreAsset));
+				setCoreAmount(amount);
+				setOtherAsset(amount, whichAsset);
+			}
 		} else {
 			await defineExtrinsic(
 				tradeAsset,
@@ -340,7 +320,7 @@ const PoolForm: React.FC<{}> = () => {
 									tradeAsset?.decimals
 							  )}`
 					}
-					onChange={(e) => setCoreFromTrade(e.target.value)}
+					onChange={(e) => setOtherAsset(e.target.value, "trade")}
 				/>
 				<Button
 					sx={{
@@ -350,7 +330,7 @@ const PoolForm: React.FC<{}> = () => {
 						mt: "40px",
 					}}
 					disabled={userBalances && tradeAsset ? false : true}
-					onClick={setMaxFromTradeAsset}
+					onClick={() => setMax("trade")}
 				>
 					Max
 				</Button>
@@ -384,7 +364,7 @@ const PoolForm: React.FC<{}> = () => {
 									coreAsset?.decimals
 							  )}`
 					}
-					onChange={(e) => setTradeFromCore(e.target.value)}
+					onChange={(e) => setOtherAsset(e.target.value)}
 				/>
 				<Button
 					sx={{
@@ -394,7 +374,7 @@ const PoolForm: React.FC<{}> = () => {
 						mt: "40px",
 					}}
 					disabled={userBalances && tradeAsset ? false : true}
-					onClick={setMaxFromCoreAsset}
+					onClick={() => setMax("core")}
 				>
 					Max
 				</Button>
