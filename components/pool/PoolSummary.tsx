@@ -6,7 +6,7 @@ import { usePool } from "../../providers/PoolProvider";
 const PoolSummary: React.FC<{ poolSummaryProps: PoolSummary }> = ({
 	poolSummaryProps,
 }) => {
-	const { poolAsset, poolLiquidity } = poolSummaryProps;
+	const { tradeAsset, poolLiquidity } = poolSummaryProps;
 	const { coreAsset, estimatedFee, userPoolShare } = usePool();
 
 	return (
@@ -14,15 +14,15 @@ const PoolSummary: React.FC<{ poolSummaryProps: PoolSummary }> = ({
 			{!!userPoolShare && (
 				<Typography>
 					Your Liquidity:{" "}
-					{userPoolShare.assetBalance.asString(poolAsset.decimals)}{" "}
-					{poolAsset.symbol} +{" "}
+					{userPoolShare.assetBalance.asString(tradeAsset.decimals)}{" "}
+					{tradeAsset.symbol} +{" "}
 					{userPoolShare.coreAssetBalance.asString(coreAsset.decimals)}{" "}
 					{coreAsset.symbol}
 				</Typography>
 			)}
 			{!!poolLiquidity && (
 				<Typography>
-					Pool Liquidity: {poolLiquidity.poolAsset} {poolAsset.symbol} +{" "}
+					Pool Liquidity: {poolLiquidity.tradeAsset} {tradeAsset.symbol} +{" "}
 					{poolLiquidity.coreAsset} {coreAsset.symbol}
 				</Typography>
 			)}
