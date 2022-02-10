@@ -33,7 +33,7 @@ export interface IAppConfig {
 
 export interface Asset {
 	symbol: string;
-	id: number;
+	id?: number;
 	decimals?: number;
 	logo?: string;
 	amount?: number;
@@ -209,4 +209,13 @@ export interface PoolValues {
 export interface PoolSummary {
 	tradeAsset: AssetInfo;
 	poolLiquidity: PoolValues;
+}
+
+export interface PoolConfig {
+	tradeAsset: AssetInfo;
+	coreAsset: AssetInfo;
+	userPoolShare: IUserShareInPool;
+	poolAction: string;
+	setOtherAsset: Function;
+	setMax: Function;
 }

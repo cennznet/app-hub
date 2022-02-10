@@ -1,10 +1,9 @@
 import React, { useEffect, useMemo, useState } from "react";
-import Image from "next/image";
 import { Box, Button, TextField, Typography } from "@mui/material";
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
 import { Heading, SmallText } from "../../theme/StyledComponents";
 import TokenPicker from "../../components/shared/TokenPicker";
-import { AssetInfo, PoolValues } from "../../types";
+import { AssetInfo, PoolConfig, PoolValues } from "../../types";
 import { useWallet } from "../../providers/SupportedWalletProvider";
 import { PoolAction, usePool } from "../../providers/PoolProvider";
 import { Amount } from "../../utils/Amount";
@@ -16,6 +15,7 @@ const PoolForm: React.FC<{}> = () => {
 	const [poolAction, setPoolAction] = useState<string>(PoolAction.ADD);
 	const [tradeAsset, setTradeAsset] = useState<AssetInfo>(null);
 	const [tradeAssetAmount, setTradeAssetAmount] = useState<number | string>("");
+	const [_, setCoreAsset] = useState<AssetInfo>(null);
 	const [coreAmount, setCoreAmount] = useState<number | string>("");
 	const [poolLiquidity, setPoolLiquidity] = useState<PoolValues>();
 	const [userBalances, setUserBalances] = useState<PoolValues>();
@@ -41,12 +41,12 @@ const PoolForm: React.FC<{}> = () => {
 
 	//set pool balances
 	useEffect(() => {
-		if (!tradeAsset || !balances) return;
+		if (!tradeAsset || !balances || !coreAsset) return;
 		updateExchangePool(tradeAsset);
 		getUserPoolShare(tradeAsset);
 		// FIXME: Adding `getUserPoolShare` and `updateExchangePool` causes infinite loop
 		//eslint-disable-next-line
-	}, [tradeAsset, balances]);
+	}, [tradeAsset, balances, coreAsset]);
 
 	//set user balances
 	useEffect(() => {
@@ -205,6 +205,18 @@ const PoolForm: React.FC<{}> = () => {
 		}
 	};
 
+	const poolConfig: PoolConfig = useMemo(
+		() => ({
+			tradeAsset,
+			coreAsset,
+			userPoolShare,
+			poolAction,
+			setOtherAsset,
+			setMax,
+		}),
+		[tradeAsset, coreAsset, userPoolShare, poolAction, setOtherAsset, setMax]
+	);
+
 	async function confirm() {
 		await sendExtrinsic();
 	}
@@ -272,6 +284,7 @@ const PoolForm: React.FC<{}> = () => {
 					sx={{
 						width: "80%",
 						mt: "10px",
+						marginBottom: "40px",
 					}}
 				>
 					{poolAction === PoolAction.ADD ? (
@@ -291,94 +304,26 @@ const PoolForm: React.FC<{}> = () => {
 			</Box>
 			<TokenPicker
 				setToken={setTradeAsset}
+				setAmount={setTradeAssetAmount}
+				amount={tradeAssetAmount?.toString()}
 				cennznet={true}
 				removeToken={coreAsset}
+				showBalance={true}
+				poolConfig={poolConfig}
+				whichAsset={"trade"}
+			/>
+			<TokenPicker
+				setToken={setCoreAsset}
+				setAmount={setCoreAmount}
+				amount={coreAmount?.toString()}
+				cennznet={true}
+				forceSelection={coreAsset}
+				removeToken={tradeAsset}
+				showBalance={true}
+				poolConfig={poolConfig}
+				whichAsset={"core"}
 			/>
 			{!!error && <Typography>{error}</Typography>}
-			<Box
-				sx={{
-					width: "80%",
-					height: "60px",
-					display: "inline-flex",
-					m: "30px auto 30px",
-				}}
-			>
-				<TextField
-					label="Amount"
-					variant="outlined"
-					required
-					value={tradeAssetAmount}
-					sx={{
-						width: "80%",
-						m: "30px 0 0",
-					}}
-					helperText={
-						poolAction === PoolAction.ADD
-							? !!userBalances && `Balance: ${userBalances.tradeAsset}`
-							: !!userPoolShare &&
-							  `Withdrawable: ${userPoolShare.assetBalance.asString(
-									tradeAsset?.decimals
-							  )}`
-					}
-					onChange={(e) => setOtherAsset(e.target.value, "trade")}
-				/>
-				<Button
-					sx={{
-						position: "relative",
-						display: "flex",
-						height: "30px",
-						mt: "40px",
-					}}
-					disabled={userBalances && tradeAsset ? false : true}
-					onClick={() => setMax("trade")}
-				>
-					Max
-				</Button>
-			</Box>
-			<span
-				style={{
-					display: "flex",
-					flexDirection: "row",
-					width: "80%",
-				}}
-			>
-				<Image
-					src={`/images/${coreAsset?.symbol.toLowerCase()}.svg`}
-					height={40}
-					width={40}
-					alt="coreAsset logo"
-				/>
-				<TextField
-					label="Amount"
-					variant="outlined"
-					value={coreAmount}
-					sx={{
-						width: "100%",
-						m: "30px 0 30px 5%",
-					}}
-					helperText={
-						poolAction === PoolAction.ADD
-							? !!userBalances && `Balance: ${userBalances.coreAsset}`
-							: !!userPoolShare &&
-							  `Withdrawable: ${userPoolShare.coreAssetBalance.asString(
-									coreAsset?.decimals
-							  )}`
-					}
-					onChange={(e) => setOtherAsset(e.target.value)}
-				/>
-				<Button
-					sx={{
-						position: "relative",
-						display: "flex",
-						height: "30px",
-						mt: "40px",
-					}}
-					disabled={userBalances && tradeAsset ? false : true}
-					onClick={() => setMax("core")}
-				>
-					Max
-				</Button>
-			</span>
 			{!!tradeAsset && <PoolSummary poolSummaryProps={poolSummaryProps} />}
 			<Button
 				sx={{
