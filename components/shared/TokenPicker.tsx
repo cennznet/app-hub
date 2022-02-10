@@ -207,7 +207,9 @@ const TokenPicker: React.FC<{
 			<div className={styles.bottomTextContainer}>
 				{showBalance && (
 					<p className={styles.balanceText}>
-						{"Balance: " + selectedTokenBalance}
+						{`Balance: ${
+							selectedTokenBalance !== undefined ? selectedTokenBalance : ""
+						}`}
 					</p>
 				)}
 				{error && <p className={styles.errorMsg}>{error}</p>}
