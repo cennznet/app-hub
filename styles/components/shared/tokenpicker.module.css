@@ -139,13 +139,12 @@
     background: #E5E8FF;
 }
 
-.balanceText {
-    margin-top: 12px;
-    margin-left: 3px;
-    font-weight: bold;
-}
-
 .bottomTextContainer{
+    font-family: "Roboto";
+    font-style: normal;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 19px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -153,28 +152,18 @@
 }
 
 
+.balanceText {
+    margin-top: 12px;
+    margin-left: 3px;
+    font-weight: bold;
+}
+
 .errorMsg {
-    font-family: "Roboto";
-    font-style: normal;
-    font-weight: 600;
-    font-size: 16px;
-    line-height: 19px;
-    display: flex;
-    align-self: start;
-    margin-left: 56px;
     margin-top: 12px;
     color: #EC022C;
 }
 
 .successMsg {
-    font-family: "Roboto";
-    font-style: normal;
-    font-weight: 600;
-    font-size: 16px;
-    line-height: 19px;
-    display: flex;
-    align-self: start;
-    margin-left: 56px;
     margin-top: 12px;
     color: green;
 }

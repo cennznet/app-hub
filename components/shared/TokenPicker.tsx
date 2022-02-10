@@ -205,7 +205,7 @@ const TokenPicker: React.FC<{
 				</div>
 			</div>
 			<div className={styles.bottomTextContainer}>
-				{showBalance && selectedTokenBalance && (
+				{showBalance && (
 					<p className={styles.balanceText}>
 						{"Balance: " + selectedTokenBalance}
 					</p>
