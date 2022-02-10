@@ -1,9 +1,9 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { Box, Button } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Box, Button, Typography } from "@mui/material";
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
 import { Heading, SmallText } from "../../theme/StyledComponents";
 import TokenPicker from "../../components/shared/TokenPicker";
-import { AssetInfo, PoolValues } from "../../types";
+import { AssetInfo, PoolConfig, PoolValues } from "../../types";
 import { useWallet } from "../../providers/SupportedWalletProvider";
 import { PoolAction, usePool } from "../../providers/PoolProvider";
 import { Amount } from "../../utils/Amount";
@@ -13,15 +13,16 @@ const ROUND_UP = 1;
 
 const PoolForm: React.FC<{}> = () => {
 	const [poolAction, setPoolAction] = useState<string>(PoolAction.ADD);
-	const [poolAsset, setPoolAsset] = useState<AssetInfo>(null);
-	const [poolAssetAmount, setPoolAssetAmount] = useState<number | string>();
-	const [coreAmount, setCoreAmount] = useState<number | string>(0);
+	const [tradeAsset, setTradeAsset] = useState<AssetInfo>(null);
+	const [tradeAssetAmount, setTradeAssetAmount] = useState<number | string>("");
 	const [_, setCoreAsset] = useState<AssetInfo>(null);
+	const [coreAmount, setCoreAmount] = useState<number | string>("");
 	const [poolLiquidity, setPoolLiquidity] = useState<PoolValues>();
+	const [userBalances, setUserBalances] = useState<PoolValues>();
+	const [error, setError] = useState<string>();
 	const { balances } = useWallet();
 	const {
 		coreAsset,
-		estimatedFee,
 		exchangePool,
 		updateExchangePool,
 		defineExtrinsic,
@@ -30,38 +31,103 @@ const PoolForm: React.FC<{}> = () => {
 		sendExtrinsic,
 	} = usePool();
 
-	const poolSummaryProps = useMemo(
-		() => ({
-			coreAsset,
-			poolAsset,
-			userPoolShare,
-			poolLiquidity,
-			estimatedFee,
-		}),
-		[coreAsset, poolAsset, userPoolShare, poolLiquidity, estimatedFee]
-	);
+	const poolSummaryProps = {
+		tradeAsset,
+		poolLiquidity,
+	};
 
-	// //get user and pool balances
+	//set pool balances
 	useEffect(() => {
-		if (!balances || !poolAsset || !coreAsset) return;
-		updateExchangePool(poolAsset);
-		getUserPoolShare(poolAsset);
+		if (!tradeAsset || !balances || !coreAsset) return;
+		updateExchangePool(tradeAsset);
+		getUserPoolShare(tradeAsset);
 		// FIXME: Adding `getUserPoolShare` and `updateExchangePool` causes infinite loop
 		//eslint-disable-next-line
-	}, [balances, poolAsset, coreAsset]);
+	}, [tradeAsset, balances, coreAsset]);
 
-	//set core amount from token amount
-	//define extrinsic & estimate fee
+	//set user balances
 	useEffect(() => {
-		if (!exchangePool || !poolAsset || !poolAssetAmount) return;
-		if (poolAssetAmount <= 0) setCoreAmount(0);
+		if (!balances || !tradeAsset || !coreAsset || !userPoolShare) return;
+		const userTradeAsset = balances.find(
+			(asset) => asset.symbol === tradeAsset.symbol
+		);
+		const userCore = balances.find(
+			(asset) => asset.symbol === coreAsset.symbol
+		);
+
+		const userTradeLiquidity = userPoolShare.assetBalance.asString(
+			tradeAsset.decimals
+		);
+		const userCoreLiquidity = userPoolShare.coreAssetBalance.asString(
+			coreAsset.decimals
+		);
+
+		setUserBalances({
+			tradeAsset: userTradeAsset.value,
+			coreAsset: userCore.value,
+			tradeLiquidity: Number(userTradeLiquidity),
+			coreLiquidity: Number(userCoreLiquidity),
+		});
+	}, [balances, tradeAsset, coreAsset, userPoolShare]);
+
+	//format pool liquidity
+	useEffect(() => {
+		if (!coreAsset || !tradeAsset || !exchangePool) return;
+
+		const tradeAssetLiquidity = exchangePool.assetBalance.asString(
+			tradeAsset.decimals
+		);
+		const coreAssetLiquidity = exchangePool.coreAssetBalance.asString(
+			coreAsset.decimals
+		);
+
+		setPoolLiquidity({
+			tradeAsset: tradeAssetLiquidity,
+			coreAsset: coreAssetLiquidity,
+		});
+	}, [coreAsset, tradeAsset, exchangePool]);
+
+	const checkBalances = (poolAction, coreAmount, tradeAmount) => {
+		if (poolAction === PoolAction.ADD) {
+			if (
+				coreAmount.toNumber() > userBalances.coreAsset ||
+				tradeAmount.toNumber() > userBalances.tradeAsset
+			) {
+				return false;
+			}
+		} else {
+			if (
+				coreAmount.toNumber() > userBalances.coreLiquidity ||
+				tradeAmount.toNumber() > userBalances.tradeLiquidity
+			) {
+				return false;
+			}
+		}
+		return true;
+	};
+
+	const setOtherAsset = async (amount, whichAsset?: string) => {
+		setError(null);
+		if (!exchangePool || !tradeAsset) return;
+		if (amount <= 0) {
+			setTradeAssetAmount(0);
+			setCoreAmount(0);
+			return;
+		}
+
 		if (
 			exchangePool.coreAssetBalance.isZero() ||
 			exchangePool.assetBalance.isZero()
 		) {
-			setCoreAmount(poolAssetAmount);
-		} else {
-			const coreAmount = new Amount(Math.round(Number(poolAssetAmount)))
+			setCoreAmount(amount);
+			setTradeAssetAmount(amount);
+			return;
+		}
+
+		if (whichAsset === "trade") {
+			setTradeAssetAmount(amount);
+			const tradeAmount = new Amount(Math.round(Number(amount)));
+			const coreAmount = tradeAmount
 				.mul(exchangePool.coreAssetBalance)
 				.div(exchangePool.assetBalance)
 				.subn(ROUND_UP);
@@ -70,34 +136,80 @@ const PoolForm: React.FC<{}> = () => {
 				setCoreAmount(0);
 			} else {
 				setCoreAmount(coreAmount.toNumber());
-				defineExtrinsic(
-					poolAsset,
-					new Amount(poolAssetAmount),
+				if (!checkBalances(poolAction, coreAmount, tradeAmount)) {
+					setError("Balance Too Low");
+					return;
+				}
+				//define extrinsic & estimate fee
+				await defineExtrinsic(
+					tradeAsset,
+					tradeAmount,
 					coreAmount,
-					poolAction
+					poolAction,
+					false
+				);
+			}
+		} else {
+			setCoreAmount(amount);
+			const coreAmount = new Amount(Math.round(Number(amount)));
+			const tradeAmount = coreAmount
+				.mul(exchangePool.assetBalance)
+				.div(exchangePool.coreAssetBalance)
+				.subn(ROUND_UP);
+
+			if (tradeAmount.toNumber() <= 0) {
+				setTradeAssetAmount(0);
+			} else {
+				setTradeAssetAmount(tradeAmount.toNumber());
+				if (!checkBalances(poolAction, coreAmount, tradeAmount)) {
+					setError("Balance Too Low");
+					return;
+				}
+				//define extrinsic & estimate fee
+				await defineExtrinsic(
+					tradeAsset,
+					tradeAmount,
+					coreAmount,
+					poolAction,
+					false
 				);
 			}
 		}
-		// FIXME: Adding 'defineExtrinsic' and 'exchangePool' causes infinite loop
-		//eslint-disable-next-line
-	}, [poolAssetAmount, poolAsset, poolAction]);
+	};
 
-	//format pool liquidity
-	useEffect(() => {
-		if (!coreAsset || !poolAsset || !exchangePool) return;
+	const setMax = async (whichAsset: string) => {
+		if (poolAction === PoolAction.ADD) {
+			let amount;
+			if (whichAsset === "trade") {
+				amount = Math.floor(Number(userBalances.tradeAsset));
+				setTradeAssetAmount(amount);
+				setOtherAsset(amount, whichAsset);
+			} else {
+				amount = Math.floor(Number(userBalances.coreAsset));
+				setCoreAmount(amount);
+				setOtherAsset(amount, whichAsset);
+			}
+		} else {
+			await defineExtrinsic(
+				tradeAsset,
+				userBalances.tradeLiquidity,
+				userBalances.coreLiquidity,
+				poolAction,
+				true
+			);
+			setTradeAssetAmount(Number(userBalances.tradeLiquidity));
+			setCoreAmount(Number(userBalances.coreLiquidity));
+		}
+	};
 
-		const poolAssetLiquidity = exchangePool.assetBalance.asString(
-			poolAsset.decimals
-		);
-		const coreAssetLiquidity = exchangePool.coreAssetBalance.asString(
-			coreAsset.decimals
-		);
-
-		setPoolLiquidity({
-			poolAsset: poolAssetLiquidity,
-			coreAsset: coreAssetLiquidity,
-		});
-	}, [coreAsset, poolAsset, exchangePool]);
+	const poolConfig: PoolConfig = {
+		tradeAsset,
+		coreAsset,
+		userPoolShare,
+		poolAction,
+		setOtherAsset,
+		setMax,
+	};
 
 	async function confirm() {
 		await sendExtrinsic();
@@ -139,13 +251,16 @@ const PoolForm: React.FC<{}> = () => {
 				>
 					<Button
 						sx={{ borderRadius: "10%", ml: "10%" }}
-						onClick={() =>
+						onClick={() => {
 							setPoolAction(
 								poolAction === PoolAction.ADD
 									? PoolAction.REMOVE
 									: PoolAction.ADD
-							)
-						}
+							);
+							setCoreAmount("");
+							setTradeAssetAmount("");
+							setError(null);
+						}}
 					>
 						<SwapHorizIcon sx={{ fontSize: "30px" }} />
 					</Button>
@@ -169,25 +284,27 @@ const PoolForm: React.FC<{}> = () => {
 					{poolAction === PoolAction.ADD ? (
 						<>
 							To keep the liquidity pool functional, deposits require an equal
-							value of {poolAsset?.symbol || "your token"} and CPAY at the
+							value of {tradeAsset?.symbol || "your token"} and CPAY at the
 							current exchange rate.
 						</>
 					) : (
 						<>
 							To keep the liquidity pool functional, withdrawals will return an
-							equal value of {poolAsset?.symbol || "your token"} and CPAY at the
-							current exchange rate.
+							equal value of {tradeAsset?.symbol || "your token"} and CPAY at
+							the current exchange rate.
 						</>
 					)}
 				</SmallText>
 			</Box>
 			<TokenPicker
-				setToken={setPoolAsset}
-				setAmount={setPoolAssetAmount}
-				amount={poolAssetAmount?.toString()}
+				setToken={setTradeAsset}
+				setAmount={setTradeAssetAmount}
+				amount={tradeAssetAmount?.toString()}
 				cennznet={true}
 				removeToken={coreAsset}
 				showBalance={true}
+				poolConfig={poolConfig}
+				whichAsset={"trade"}
 			/>
 			<TokenPicker
 				setToken={setCoreAsset}
@@ -195,9 +312,13 @@ const PoolForm: React.FC<{}> = () => {
 				amount={coreAmount?.toString()}
 				cennznet={true}
 				forceSelection={coreAsset}
+				removeToken={tradeAsset}
 				showBalance={true}
+				poolConfig={poolConfig}
+				whichAsset={"core"}
 			/>
-			{!!poolAsset && <PoolSummary poolSummaryProps={poolSummaryProps} />}
+			{!!error && <Typography>{error}</Typography>}
+			{!!tradeAsset && <PoolSummary poolSummaryProps={poolSummaryProps} />}
 			<Button
 				sx={{
 					fontFamily: "Teko",
@@ -211,7 +332,7 @@ const PoolForm: React.FC<{}> = () => {
 				size="large"
 				variant="outlined"
 				onClick={confirm}
-				disabled={poolAssetAmount <= 0 || coreAmount <= 0}
+				disabled={tradeAssetAmount <= 0 || coreAmount <= 0 || !!error}
 			>
 				Confirm
 			</Button>

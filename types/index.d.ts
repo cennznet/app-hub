@@ -200,14 +200,22 @@ export interface AssetInfo {
 }
 
 export interface PoolValues {
-	poolAsset: number | string;
+	tradeAsset: number | string;
 	coreAsset: number | string;
+	tradeLiquidity?: number;
+	coreLiquidity?: number;
 }
 
 export interface PoolSummary {
-	coreAsset: AssetInfo;
-	poolAsset: AssetInfo;
-	userPoolShare: IUserShareInPool;
+	tradeAsset: AssetInfo;
 	poolLiquidity: PoolValues;
-	estimatedFee: Amount;
+}
+
+export interface PoolConfig {
+	tradeAsset: AssetInfo;
+	coreAsset: AssetInfo;
+	userPoolShare: IUserShareInPool;
+	poolAction: string;
+	setOtherAsset: Function;
+	setMax: Function;
 }

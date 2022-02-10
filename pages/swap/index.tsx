@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo, useCallback } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Button } from "@mui/material";
 import TokenPicker from "../../components/shared/TokenPicker";
 import ExchangeIcon from "../../components/swap/ExchangeIcon";
@@ -11,7 +11,6 @@ import BigNumber from "bignumber.js";
 import styles from "../../styles/components/swap/swap.module.css";
 import { useWallet } from "../../providers/SupportedWalletProvider";
 import { useDappModule } from "../../providers/DappModuleProvider";
-import { sign } from "crypto";
 
 const Exchange: React.FC<{}> = () => {
 	const [exchangeToken, setExchangeToken] = useState<Asset>();
@@ -25,8 +24,14 @@ const Exchange: React.FC<{}> = () => {
 	const [success, setSuccess] = useState<string>();
 	const { api, initApi }: any = useCENNZApi();
 	const assets = useAssets();
-	const { wallet, selectedAccount, balances, connectWallet } = useWallet();
-	const signer = useMemo(() => wallet?.signer, [wallet]);
+	const {
+		wallet,
+		selectedAccount,
+		balances,
+		connectWallet,
+		fetchAssetBalances,
+	} = useWallet();
+	const signer = wallet?.signer;
 	const { web3Enable } = useDappModule();
 
 	useEffect(() => {
@@ -153,6 +158,7 @@ const Exchange: React.FC<{}> = () => {
 								if (event.method === "AssetBought") {
 									setError(undefined);
 									setSuccess(`Successfully Swapped Tokens!`);
+									fetchAssetBalances();
 								}
 							}
 						}

@@ -3,7 +3,7 @@ import { Button, FormControl, CircularProgress } from "@mui/material";
 import ERC20Tokens from "../../artifacts/erc20tokens.json";
 import { ETH, ETH_LOGO } from "../../utils/bridge/helpers";
 import { useAssets } from "../../providers/SupportedAssetsProvider";
-import { Asset } from "../../types";
+import { Asset, PoolConfig } from "../../types";
 import { useBlockchain } from "../../providers/BlockchainProvider";
 import { useRouter } from "next/router";
 
@@ -11,6 +11,7 @@ const ETH_CHAIN_ID = process.env.NEXT_PUBLIC_ETH_CHAIN_ID;
 
 import styles from "../../styles/components/shared/tokenpicker.module.css";
 import { useWallet } from "../../providers/SupportedWalletProvider";
+import { PoolAction } from "../../providers/PoolProvider";
 
 export type BridgeToken = {
 	chainId: number;
@@ -31,6 +32,8 @@ const TokenPicker: React.FC<{
 	showBalance?: boolean;
 	error?: string;
 	success?: string;
+	poolConfig?: PoolConfig;
+	whichAsset?: string;
 }> = ({
 	setToken,
 	setAmount,
@@ -41,6 +44,8 @@ const TokenPicker: React.FC<{
 	showBalance,
 	error,
 	success,
+	poolConfig,
+	whichAsset,
 }) => {
 	const router = useRouter();
 	const [assetsLoading, setAssetsLoading] = useState<boolean>(true);
@@ -127,7 +132,6 @@ const TokenPicker: React.FC<{
 					sx={{
 						width: "142px",
 					}}
-					disabled={router.asPath === "/bridge" ? !Account : false}
 				>
 					<div className={styles.tokenSelector}>
 						{assetsLoading ? (
@@ -145,17 +149,23 @@ const TokenPicker: React.FC<{
 									type="button"
 									className={styles.tokenButton}
 									onClick={() => setTokenDropDownActive(!tokenDropDownActive)}
+									disabled={
+										(router.asPath === "/bridge" && !Account) ||
+										whichAsset === "core"
+									}
 								>
 									{tokens[selectedTokenIdx]?.symbol}
-									<img
-										className={
-											tokenDropDownActive
-												? styles.tokenSelectedArrow
-												: styles.tokenSelectedArrowDown
-										}
-										alt="arrow"
-										src={"/arrow_up.svg"}
-									/>
+									{whichAsset !== "core" && (
+										<img
+											className={
+												tokenDropDownActive
+													? styles.tokenSelectedArrow
+													: styles.tokenSelectedArrowDown
+											}
+											alt="arrow"
+											src={"/arrow_up.svg"}
+										/>
+									)}
 								</button>
 							</>
 						)}
@@ -191,7 +201,11 @@ const TokenPicker: React.FC<{
 						}}
 						size="large"
 						disabled={!balances}
-						onClick={() => setAmount(selectedTokenBalance)}
+						onClick={() =>
+							whichAsset
+								? poolConfig.setMax(whichAsset)
+								: setAmount(selectedTokenBalance)
+						}
 					>
 						MAX
 					</Button>
@@ -200,16 +214,28 @@ const TokenPicker: React.FC<{
 						type="number"
 						placeholder={"0.00"}
 						value={amount}
-						onChange={(event) => setAmount(event.target.value)}
+						onChange={(event) =>
+							whichAsset
+								? poolConfig.setOtherAsset(event.target.value, whichAsset)
+								: setAmount(event.target.value)
+						}
 					/>
 				</div>
 			</div>
 			<div className={styles.bottomTextContainer}>
 				{showBalance && (
 					<p className={styles.balanceText}>
-						{`Balance: ${
-							selectedTokenBalance !== undefined ? selectedTokenBalance : ""
-						}`}
+						{poolConfig?.poolAction === PoolAction.REMOVE
+							? whichAsset === "trade"
+								? `Withdrawable: ${poolConfig.userPoolShare.assetBalance.asString(
+										poolConfig?.tradeAsset.decimals
+								  )}`
+								: `Withdrawable: ${poolConfig.userPoolShare.coreAssetBalance.asString(
+										poolConfig?.coreAsset.decimals
+								  )}`
+							: `Balance: ${
+									selectedTokenBalance !== undefined ? selectedTokenBalance : ""
+							  }`}
 					</p>
 				)}
 				{error && <p className={styles.errorMsg}>{error}</p>}
