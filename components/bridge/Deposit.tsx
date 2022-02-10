@@ -168,7 +168,6 @@ const Deposit: React.FC<{}> = () => {
 					padding: "0px",
 				}}
 			>
-				<ChainPicker setChain={() => {}} />
 				<TokenPicker setToken={setToken} />
 
 				<TextField

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Chain } from "../../types";
+import { Chain, SupportedChain } from "../../types";
 
 import styles from "../../styles/components/bridge/chainpicker.module.css";
 import { ETH_LOGO } from "../../utils/bridge/helpers";
@@ -17,11 +17,19 @@ const CHAINS: Chain[] = [
 
 const ChainPicker: React.FC<{
 	setChain: Function;
-}> = ({ setChain }) => {
+	initialChain: SupportedChain;
+}> = ({ setChain, initialChain }) => {
 	const [chains, setChains] = useState<Chain[]>(CHAINS);
 	const [chainDropDownActive, setChainDropDownActive] =
 		useState<boolean>(false);
 	const [selectedChainIdx, setSelectedChainIdx] = useState<number>(0);
+
+	useEffect(() => {
+		const foundChainIdx = chains.findIndex(
+			(chain) => chain.name === initialChain
+		);
+		setSelectedChainIdx(foundChainIdx);
+	}, []);
 
 	useEffect(() => {
 		setChain(chains[selectedChainIdx]);

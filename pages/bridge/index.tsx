@@ -7,8 +7,15 @@ import Switch from "../../components/bridge/Switch";
 import Deposit from "../../components/bridge/Deposit";
 import Withdraw from "../../components/bridge/Withdraw";
 
+import styles from "../../styles/components/bridge/bridge.module.css";
+import ChainPicker from "../../components/bridge/ChainPicker";
+import { Chain } from "../../types";
+import TokenPicker from "../../components/shared/TokenPicker";
+
 const Emery: React.FC<{}> = () => {
 	const [isDeposit, toggleIsDeposit] = useState<boolean>(true);
+	const [toChain, setToChain] = useState<Chain>();
+	const [fromChain, setFromChain] = useState<Chain>();
 	const { Account } = useBlockchain();
 	const { api, initApi } = useCENNZApi();
 
@@ -19,57 +26,15 @@ const Emery: React.FC<{}> = () => {
 	}, [api, initApi]);
 
 	return (
-		<>
-			<Typography
-				sx={{
-					position: "absolute",
-					top: "4.5%",
-					left: "16%",
-					fontFamily: "Teko",
-					fontStyle: "normal",
-					fontWeight: "bold",
-					fontSize: "24px",
-					lineHeight: "124%",
-					color: "black",
-					letterSpacing: "1px",
-				}}
-			>
-				ETHEREUM BRIDGE
-			</Typography>
-			<Switch isDeposit={isDeposit} toggleIsDeposit={toggleIsDeposit} />
-			{Account && (
-				<Frame
-					sx={{
-						top: "12%",
-						right: "5%",
-						backgroundColor: "#FFFFFF",
-						cursor: "copy",
-					}}
-					onClick={() => navigator.clipboard.writeText(Account)}
-				>
-					<>
-						<Heading
-							sx={{
-								color: "primary.main",
-								ml: "10px",
-								mt: "3px",
-								fontSize: "20px",
-								flexGrow: 1,
-							}}
-						>
-							METAMASK
-						</Heading>
-						<SmallText sx={{ color: "black", fontSize: "16px" }}>
-							{Account.substring(0, 6).concat(
-								"...",
-								Account.substring(Account.length - 4, Account.length)
-							)}
-						</SmallText>
-					</>
-				</Frame>
-			)}
-			{isDeposit ? <Deposit /> : <Withdraw />}
-		</>
+		<div className={styles.bridgeContainer}>
+			<h1 className={styles.pageHeader}>BRIDGE</h1>
+			<div className={styles.chainPickerContainer}>
+				<ChainPicker setChain={setToChain} initialChain={"Cennznet"} />
+				<ChainPicker setChain={setFromChain} initialChain={"Ethereum"} />
+			</div>
+			<TokenPicker setToken={() => {}} />
+			{/*{isDeposit ? <Deposit /> : <Withdraw />}*/}
+		</div>
 	);
 };
 
