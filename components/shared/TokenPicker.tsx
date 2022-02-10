@@ -29,6 +29,8 @@ const TokenPicker: React.FC<{
 	forceSelection?: Asset;
 	removeToken?: Asset;
 	showBalance?: boolean;
+	error?: string;
+	success?: string;
 }> = ({
 	setToken,
 	setAmount,
@@ -37,6 +39,8 @@ const TokenPicker: React.FC<{
 	forceSelection,
 	removeToken,
 	showBalance,
+	error,
+	success,
 }) => {
 	const router = useRouter();
 	const [assetsLoading, setAssetsLoading] = useState<boolean>(true);
@@ -200,11 +204,15 @@ const TokenPicker: React.FC<{
 					/>
 				</div>
 			</div>
-			{showBalance && selectedTokenBalance && (
-				<p className={styles.balanceText}>
-					{"Balance: " + selectedTokenBalance}
-				</p>
-			)}
+			<div className={styles.bottomTextContainer}>
+				{showBalance && selectedTokenBalance && (
+					<p className={styles.balanceText}>
+						{"Balance: " + selectedTokenBalance}
+					</p>
+				)}
+				{error && <p className={styles.errorMsg}>{error}</p>}
+				{success && <p className={styles.successMsg}>{success}</p>}
+			</div>
 		</div>
 	);
 };

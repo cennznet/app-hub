@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo, useCallback } from "react";
-import { Box, Button, TextField } from "@mui/material";
+import { Button } from "@mui/material";
 import TokenPicker from "../../components/shared/TokenPicker";
 import ExchangeIcon from "../../components/swap/ExchangeIcon";
 import { useCENNZApi } from "../../providers/CENNZApiProvider";
@@ -11,6 +11,7 @@ import BigNumber from "bignumber.js";
 import styles from "../../styles/components/swap/swap.module.css";
 import { useWallet } from "../../providers/SupportedWalletProvider";
 import { useDappModule } from "../../providers/DappModuleProvider";
+import { sign } from "crypto";
 
 const Exchange: React.FC<{}> = () => {
 	const [exchangeToken, setExchangeToken] = useState<Asset>();
@@ -175,10 +176,10 @@ const Exchange: React.FC<{}> = () => {
 					cennznet={true}
 					forceSelection={exchangeToken}
 					showBalance={true}
+					error={error}
+					success={success}
 				/>
 			</div>
-			{error && <p className={styles.errorMsg}>{error}</p>}
-			{success && <p className={styles.successMsg}>{success}</p>}
 			<ExchangeIcon
 				onClick={() => {
 					setReceivedToken(exchangeToken);
