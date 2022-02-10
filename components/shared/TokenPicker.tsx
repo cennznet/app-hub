@@ -28,6 +28,7 @@ const TokenPicker: React.FC<{
 	cennznet?: boolean;
 	forceSelection?: Asset;
 	removeToken?: Asset;
+	showBalance?: boolean;
 }> = ({
 	setToken,
 	setAmount,
@@ -35,6 +36,7 @@ const TokenPicker: React.FC<{
 	cennznet = false,
 	forceSelection,
 	removeToken,
+	showBalance,
 }) => {
 	const router = useRouter();
 	const [assetsLoading, setAssetsLoading] = useState<boolean>(true);
@@ -112,90 +114,97 @@ const TokenPicker: React.FC<{
 			(asset) => asset.symbol === tokens[selectedTokenIdx]?.symbol
 		);
 		setSelectedTokenBalance(foundTokenBalance.value);
-	}, [balances, tokens]);
+	}, [balances, tokens, selectedTokenIdx]);
 
 	return (
 		<div className={styles.tokenPickerContainer}>
-			<FormControl
-				sx={{
-					width: "142px",
-				}}
-				disabled={router.asPath === "/bridge" ? !Account : false}
-			>
-				<div className={styles.tokenSelector}>
-					{assetsLoading ? (
-						<CircularProgress />
-					) : (
-						<>
-							<img
-								className={styles.tokenSelectedImg}
-								alt=""
-								src={tokens[selectedTokenIdx]?.logo}
-								width={33}
-								height={33}
-							/>
-							<button
-								type="button"
-								className={styles.tokenButton}
-								onClick={() => setTokenDropDownActive(!tokenDropDownActive)}
-							>
-								{tokens[selectedTokenIdx]?.symbol}
-								<img
-									className={
-										tokenDropDownActive
-											? styles.tokenSelectedArrow
-											: styles.tokenSelectedArrowDown
-									}
-									alt="arrow"
-									src={"/arrow_up.svg"}
-								/>
-							</button>
-						</>
-					)}
-					{tokenDropDownActive && (
-						<div className={styles.tokenDropdownContainer}>
-							{tokens.map((token: any, i) => {
-								return (
-									<div
-										key={i}
-										onClick={() => {
-											setSelectedTokenIdx(i);
-											setTokenDropDownActive(false);
-										}}
-										className={styles.tokenChoiceContainer}
-									>
-										<img alt="" src={token.logo} width={33} height={33} />
-										<span>{token.symbol}</span>
-									</div>
-								);
-							})}
-						</div>
-					)}
-				</div>
-			</FormControl>
-			<div className={styles.amountContainer}>
-				<Button
+			<div className={styles.tokenPickerBox}>
+				<FormControl
 					sx={{
-						fontWeight: "bold",
-						fontSize: "16px",
-						lineHeight: "16px",
-						color: "black",
-						marginRight: "80px",
+						width: "142px",
 					}}
-					size="large"
-					disabled={!balances}
-					onClick={() => setAmount(selectedTokenBalance)}
+					disabled={router.asPath === "/bridge" ? !Account : false}
 				>
-					MAX
-				</Button>
-				<input
-					className={styles.amountInput}
-					type="number"
-					placeholder={"0.00"}
-					value={amount}
-					onChange={(event) => setAmount(event.target.value)}
-				/>
+					<div className={styles.tokenSelector}>
+						{assetsLoading ? (
+							<CircularProgress />
+						) : (
+							<>
+								<img
+									className={styles.tokenSelectedImg}
+									alt=""
+									src={tokens[selectedTokenIdx]?.logo}
+									width={33}
+									height={33}
+								/>
+								<button
+									type="button"
+									className={styles.tokenButton}
+									onClick={() => setTokenDropDownActive(!tokenDropDownActive)}
+								>
+									{tokens[selectedTokenIdx]?.symbol}
+									<img
+										className={
+											tokenDropDownActive
+												? styles.tokenSelectedArrow
+												: styles.tokenSelectedArrowDown
+										}
+										alt="arrow"
+										src={"/arrow_up.svg"}
+									/>
+								</button>
+							</>
+						)}
+						{tokenDropDownActive && (
+							<div className={styles.tokenDropdownContainer}>
+								{tokens.map((token: any, i) => {
+									return (
+										<div
+											key={i}
+											onClick={() => {
+												setSelectedTokenIdx(i);
+												setTokenDropDownActive(false);
+											}}
+											className={styles.tokenChoiceContainer}
+										>
+											<img alt="" src={token.logo} width={33} height={33} />
+											<span>{token.symbol}</span>
+										</div>
+									);
+								})}
+							</div>
+						)}
+					</div>
+				</FormControl>
+				<div className={styles.amountContainer}>
+					<Button
+						sx={{
+							fontWeight: "bold",
+							fontSize: "16px",
+							lineHeight: "16px",
+							color: "black",
+							marginRight: "80px",
+						}}
+						size="large"
+						disabled={!balances}
+						onClick={() => setAmount(selectedTokenBalance)}
+					>
+						MAX
+					</Button>
+					<input
+						className={styles.amountInput}
+						type="number"
+						placeholder={"0.00"}
+						value={amount}
+						onChange={(event) => setAmount(event.target.value)}
+					/>
+				</div>
 			</div>
+			{showBalance && selectedTokenBalance && (
+				<p className={styles.balanceText}>
+					{"Balance: " + selectedTokenBalance}
+				</p>
+			)}
 		</div>
 	);
 };

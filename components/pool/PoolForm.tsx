@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import Image from "next/image";
-import { Box, Button, TextField } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
 import { Heading, SmallText } from "../../theme/StyledComponents";
 import TokenPicker from "../../components/shared/TokenPicker";
@@ -17,8 +16,8 @@ const PoolForm: React.FC<{}> = () => {
 	const [poolAsset, setPoolAsset] = useState<AssetInfo>(null);
 	const [poolAssetAmount, setPoolAssetAmount] = useState<number | string>();
 	const [coreAmount, setCoreAmount] = useState<number | string>(0);
+	const [_, setCoreAsset] = useState<AssetInfo>(null);
 	const [poolLiquidity, setPoolLiquidity] = useState<PoolValues>();
-	const [userBalances, setUserBalances] = useState<PoolValues>();
 	const { balances } = useWallet();
 	const {
 		coreAsset,
@@ -42,23 +41,11 @@ const PoolForm: React.FC<{}> = () => {
 		[coreAsset, poolAsset, userPoolShare, poolLiquidity, estimatedFee]
 	);
 
-	//get user and pool balances
+	// //get user and pool balances
 	useEffect(() => {
 		if (!balances || !poolAsset || !coreAsset) return;
 		updateExchangePool(poolAsset);
 		getUserPoolShare(poolAsset);
-
-		const userPoolToken = balances.find(
-			(asset) => asset.symbol === poolAsset.symbol
-		);
-		const userCore = balances.find(
-			(asset) => asset.symbol === coreAsset.symbol
-		);
-
-		setUserBalances({
-			poolAsset: userPoolToken.value,
-			coreAsset: userCore.value,
-		});
 		// FIXME: Adding `getUserPoolShare` and `updateExchangePool` causes infinite loop
 		//eslint-disable-next-line
 	}, [balances, poolAsset, coreAsset]);
@@ -176,6 +163,7 @@ const PoolForm: React.FC<{}> = () => {
 					sx={{
 						width: "80%",
 						mt: "10px",
+						marginBottom: "40px",
 					}}
 				>
 					{poolAction === PoolAction.ADD ? (
@@ -199,33 +187,16 @@ const PoolForm: React.FC<{}> = () => {
 				amount={poolAssetAmount?.toString()}
 				cennznet={true}
 				removeToken={coreAsset}
+				showBalance={true}
 			/>
-			<span
-				style={{
-					display: "flex",
-					flexDirection: "row",
-					width: "80%",
-				}}
-			>
-				<Image
-					src={`/images/${coreAsset?.symbol.toLowerCase()}.svg`}
-					height={40}
-					width={40}
-					alt="coreAsset logo"
-				/>
-				<TextField
-					label="Amount"
-					variant="outlined"
-					value={coreAmount}
-					sx={{
-						width: "100%",
-						m: "30px 0 30px 5%",
-					}}
-					helperText={
-						userBalances ? `Balance: ${userBalances.coreAsset}` : null
-					}
-				/>
-			</span>
+			<TokenPicker
+				setToken={setCoreAsset}
+				setAmount={setCoreAmount}
+				amount={coreAmount?.toString()}
+				cennznet={true}
+				forceSelection={coreAsset}
+				showBalance={true}
+			/>
 			{!!poolAsset && <PoolSummary poolSummaryProps={poolSummaryProps} />}
 			<Button
 				sx={{
