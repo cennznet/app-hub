@@ -220,3 +220,10 @@ export interface PoolConfig {
 	setOtherAsset: Function;
 	setMax: Function;
 }
+
+export type SupportedChain = "Ethereum" | "Cennznet";
+
+export interface Chain {
+	name: SupportedChain;
+	logo: string;
+}

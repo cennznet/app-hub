@@ -12,6 +12,7 @@ import TxModal from "./TxModal";
 import ErrorModal from "./ErrorModal";
 import TokenPicker, { BridgeToken } from "../shared/TokenPicker";
 import CENNZnetAccountPicker from "../shared/CENNZnetAccountPicker";
+import ChainPicker from "./ChainPicker";
 
 const ETH_CHAIN_ID = process.env.NEXT_PUBLIC_ETH_CHAIN_ID;
 
@@ -167,6 +168,7 @@ const Deposit: React.FC<{}> = () => {
 					padding: "0px",
 				}}
 			>
+				<ChainPicker setChain={() => {}} />
 				<TokenPicker setToken={setToken} />
 
 				<TextField
