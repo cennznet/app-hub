@@ -11,6 +11,7 @@ import styles from "../../styles/components/bridge/bridge.module.css";
 import ChainPicker from "../../components/bridge/ChainPicker";
 import { Chain } from "../../types";
 import TokenPicker from "../../components/shared/TokenPicker";
+import ConnectWalletButton from "../../components/shared/ConnectWalletButton";
 
 const Emery: React.FC<{}> = () => {
 	const [isDeposit, toggleIsDeposit] = useState<boolean>(true);
@@ -34,6 +35,14 @@ const Emery: React.FC<{}> = () => {
 			</div>
 			<TokenPicker setToken={() => {}} />
 			{/*{isDeposit ? <Deposit /> : <Withdraw />}*/}
+			<ConnectWalletButton
+				onClick={() => {
+					console.log("confirming!!");
+				}}
+				buttonText={"CONFIRM"}
+				requireCennznet={false}
+				requireMetamask={true}
+			/>
 		</div>
 	);
 };

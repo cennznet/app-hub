@@ -1,0 +1,29 @@
+.connectWalletButton{
+    cursor: pointer;
+    width: 216px;
+    height: 60px;
+    background: #FFFFFF;
+    border: 1px solid #1130FF;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.connectWalletButton h1 {
+    font-style: normal;
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 125%;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    letter-spacing: 1.12px;
+    text-transform: uppercase;
+    color: #1130FF;
+    margin-left:9px;
+}
+
+.connectWalletButtonInner {
+    display: flex;
+}
