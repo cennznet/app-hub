@@ -37,6 +37,8 @@ export interface Asset {
 	decimals?: number;
 	logo?: string;
 	amount?: number;
+	address?: string;
+	name?: string;
 }
 
 export type BridgeToken = {

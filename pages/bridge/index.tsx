@@ -11,12 +11,8 @@ import styles from "../../styles/components/bridge/bridge.module.css";
 import ChainPicker from "../../components/bridge/ChainPicker";
 import { Chain, BridgeToken } from "../../types";
 import TokenPicker from "../../components/shared/TokenPicker";
-import ConnectWalletButton from "../../components/shared/ConnectWalletButton";
 import { ETH, getMetamaskBalance } from "../../utils/bridge/helpers";
 import { defineTxModal } from "../../utils/bridge/modal";
-import { ethers } from "ethers";
-import GenericERC20TokenAbi from "../../artifacts/GenericERC20Token.json";
-import { decodeAddress } from "@polkadot/keyring";
 
 const Emery: React.FC<{}> = () => {
 	const [isDeposit, toggleIsDeposit] = useState<boolean>(true);
@@ -41,7 +37,7 @@ const Emery: React.FC<{}> = () => {
 		const { ethereum }: any = window;
 		if (!erc20Token) return;
 		(async () => {
-			let balance = await getMetamaskBalance(
+			const balance = await getMetamaskBalance(
 				ethereum,
 				erc20Token.address,
 				Account
@@ -64,6 +60,7 @@ const Emery: React.FC<{}> = () => {
 				setAmount={setAmount}
 				amount={amount}
 				error={error}
+				showBalance={true}
 			/>
 			<Deposit token={erc20Token} amount={amount} />
 			{/*{isDeposit ? <Deposit /> : <Withdraw />}*/}

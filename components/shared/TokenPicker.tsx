@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button, FormControl, CircularProgress } from "@mui/material";
 import ERC20Tokens from "../../artifacts/erc20tokens.json";
-import { ETH, ETH_LOGO } from "../../utils/bridge/helpers";
+import { ETH, ETH_LOGO, getMetamaskBalance } from "../../utils/bridge/helpers";
 import { useAssets } from "../../providers/SupportedAssetsProvider";
 import { Asset, PoolConfig, BridgeToken } from "../../types";
 import { useBlockchain } from "../../providers/BlockchainProvider";
@@ -76,12 +76,19 @@ const TokenPicker: React.FC<{
 				{
 					symbol: "ETH",
 					logo: ETH_LOGO,
+					address: ETH,
 				},
 			];
 
-			ERC20Tokens.tokens.map((token) => {
+			ERC20Tokens.tokens.map((token: BridgeToken) => {
 				if (token.chainId === Number(ETH_CHAIN_ID)) {
-					tokes.push({ symbol: token.symbol, logo: token.logoURI });
+					tokes.push({
+						symbol: token.symbol,
+						logo: token.logoURI,
+						address: token.address,
+						decimals: token.decimals,
+						name: token.name,
+					});
 				}
 			});
 			setTokens(tokes);
@@ -109,13 +116,26 @@ const TokenPicker: React.FC<{
 	}, [cennznet, assets, selectedTokenIdx, tokens]);
 
 	useEffect(() => {
-		//TODO update to support eth balances as well
-		if (!balances || !tokens) return;
-		const foundTokenBalance = balances.find(
-			(asset) => asset.symbol === tokens[selectedTokenIdx]?.symbol
-		);
-		setSelectedTokenBalance(foundTokenBalance?.value);
-	}, [balances, tokens, selectedTokenIdx]);
+		if (!tokens) return;
+		if (cennznet) {
+			if (!balances) return;
+			const foundTokenBalance = balances.find(
+				(asset) => asset.symbol === tokens[selectedTokenIdx]?.symbol
+			);
+			setSelectedTokenBalance(foundTokenBalance?.value);
+		} else {
+			if (!Account || !tokens[selectedTokenIdx]) return;
+			const { ethereum }: any = window;
+			(async () => {
+				const balance = await getMetamaskBalance(
+					ethereum,
+					(tokens[selectedTokenIdx] as BridgeToken)?.address,
+					Account
+				);
+				setSelectedTokenBalance(parseFloat(balance.toFixed(4)));
+			})();
+		}
+	}, [balances, tokens, selectedTokenIdx, Account]);
 
 	return (
 		<div className={styles.tokenPickerContainer}>
