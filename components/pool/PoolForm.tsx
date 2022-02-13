@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Box, Button, Typography } from "@mui/material";
-import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
-import { Heading, SmallText } from "../../theme/StyledComponents";
+import { SmallText } from "../../theme/StyledComponents";
 import TokenPicker from "../../components/shared/TokenPicker";
 import { AssetInfo, PoolConfig, PoolValues } from "../../types";
 import { useWallet } from "../../providers/SupportedWalletProvider";
@@ -239,7 +238,6 @@ const PoolForm: React.FC<{}> = () => {
 	//update extrinsic on slippage change
 	useEffect(() => {
 		if (!slippage || !poolAction || !tradeAssetAmount || !coreAmount) return;
-
 		(async () => {
 			await defineExtrinsic(
 				tradeAsset,
@@ -250,6 +248,8 @@ const PoolForm: React.FC<{}> = () => {
 				slippage / 100
 			);
 		})();
+		// FIXME: adding 'defineExtrinsic' cause infinite loop
+		//eslint-disable-next-line
 	}, [slippage, poolAction, tradeAsset, tradeAssetAmount, coreAmount]);
 
 	const poolConfig: PoolConfig = {
@@ -318,9 +318,7 @@ const PoolForm: React.FC<{}> = () => {
 						letterSpacing: "1.2px",
 					}}
 				>
-					{poolAction === PoolAction.ADD
-						? "add too pool"
-						: "withdraw from pool"}
+					{poolAction === PoolAction.ADD ? "add to pool" : "withdraw from pool"}
 				</Typography>
 			</Box>
 			<SmallText

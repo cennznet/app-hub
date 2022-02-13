@@ -75,7 +75,7 @@ const PoolSummary: React.FC<{ poolSummaryProps: PoolSummaryProps }> = ({
 									lineHeight: "175%",
 								}}
 							>
-								1 {coreAsset.symbol} = {exchangeRate} {tradeAsset.symbol}
+								1 {coreAsset?.symbol} = {exchangeRate} {tradeAsset?.symbol}
 							</Typography>
 						</Box>
 					)}
@@ -105,8 +105,9 @@ const PoolSummary: React.FC<{ poolSummaryProps: PoolSummaryProps }> = ({
 										lineHeight: "175%",
 									}}
 								>
-									{formattedBalances.userTradeAsset} {tradeAsset.symbol} +&nbsp;
-									{formattedBalances.userCoreAsset} {coreAsset.symbol}
+									{formattedBalances.userTradeAsset} {tradeAsset?.symbol}{" "}
+									+&nbsp;
+									{formattedBalances.userCoreAsset} {coreAsset?.symbol}
 								</Typography>
 							)}
 						</Box>
@@ -166,7 +167,7 @@ const PoolSummary: React.FC<{ poolSummaryProps: PoolSummaryProps }> = ({
 									lineHeight: "175%",
 								}}
 							>
-								{estimatedFee.asString(coreAsset.decimals)} {coreAsset.symbol}
+								{estimatedFee.asString(coreAsset?.decimals)} {coreAsset?.symbol}
 							</Typography>
 						</Box>
 					)}
