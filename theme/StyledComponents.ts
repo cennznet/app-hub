@@ -60,3 +60,10 @@ export const SwitchButton = styled(Button)({
 	fontSize: "24px",
 	lineHeight: "124%",
 });
+
+export const SettingsText = styled(Typography)({
+	fontSize: "14px",
+	lineHeight: "17.5px",
+	fontWeight: "500",
+	letterSpacing: "1.2px",
+});
