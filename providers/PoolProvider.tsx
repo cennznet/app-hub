@@ -150,7 +150,7 @@ export default function PoolProvider({
 			coreAmount: Amount,
 			poolAction: string,
 			withdrawMax: boolean,
-			buffer = 0.05
+			buffer
 		) => {
 			if (!api || !signer || !selectedAccount || !value.exchangePool) return;
 			const totalLiquidity = await api.derive.cennzx.totalLiquidity(asset.id);

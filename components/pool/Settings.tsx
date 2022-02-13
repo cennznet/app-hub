@@ -1,12 +1,28 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
 import { SettingsText } from "../../theme/StyledComponents";
 import PercentIcon from "@mui/icons-material/Percent";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
-const Settings: React.FC<{}> = ({}) => {
+const Settings: React.FC<{
+	slippage: number;
+	setSlippage: Function;
+	coreAmount: number | string;
+}> = ({ slippage, setSlippage, coreAmount }) => {
 	const [open, setOpen] = useState<boolean>(false);
 	const [infoOpen, setInfoOpen] = useState<boolean>(false);
+	const [slippageValues, setSlippageValues] = useState({
+		min: null,
+		max: null,
+	});
+
+	useEffect(() => {
+		if (!coreAmount || !slippage) return;
+
+		const min = Number(coreAmount) * (1 - slippage / 100);
+		const max = Number(coreAmount) * (1 + slippage / 100);
+		setSlippageValues({ min, max });
+	}, [coreAmount, slippage]);
 
 	return (
 		<>
@@ -48,7 +64,7 @@ const Settings: React.FC<{}> = ({}) => {
 						>
 							<input
 								type="number"
-								placeholder={"5"}
+								placeholder={String(slippage)}
 								style={{
 									width: "150px",
 									height: "60px",
@@ -61,6 +77,7 @@ const Settings: React.FC<{}> = ({}) => {
 									outline: "none",
 									padding: "15px",
 								}}
+								onChange={(e) => setSlippage(Number(e.target.value))}
 							/>
 							<Box
 								sx={{
@@ -117,31 +134,33 @@ const Settings: React.FC<{}> = ({}) => {
 								</Box>
 							)}
 						</Box>
-						<Box
-							sx={{
-								width: "468px",
-								height: "auto",
-								mt: "30px",
-								backgroundColor: "#F5ECFF",
-								display: "flex",
-							}}
-						>
-							<Typography
+						{!!coreAmount && (
+							<Box
 								sx={{
-									fontSize: "16px",
-									lineHeight: "150%",
-									width: "90%",
-									m: "10px auto",
+									width: "468px",
+									height: "auto",
+									mt: "30px",
+									backgroundColor: "#F5ECFF",
+									display: "flex",
 								}}
 							>
-								If the amount of CPAY used sits outside{" "}
-								<span style={{ fontWeight: "bold" }}>5%</span> <br />
-								(1889.3633-8973.97 CPAY),{" "}
-								<span style={{ fontWeight: "bold" }}>
-									the transaction will fail.
-								</span>
-							</Typography>
-						</Box>
+								<Typography
+									sx={{
+										fontSize: "16px",
+										lineHeight: "150%",
+										width: "90%",
+										m: "10px auto",
+									}}
+								>
+									If the amount of CPAY used sits outside{" "}
+									<span style={{ fontWeight: "bold" }}>{slippage}%</span> <br />
+									({slippageValues?.min}-{slippageValues?.max} CPAY),{" "}
+									<span style={{ fontWeight: "bold" }}>
+										the transaction will fail.
+									</span>
+								</Typography>
+							</Box>
+						)}
 					</Box>
 				)}
 			</Box>

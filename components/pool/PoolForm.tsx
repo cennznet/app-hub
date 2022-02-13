@@ -31,6 +31,7 @@ const PoolForm: React.FC<{}> = () => {
 	const [userBalances, setUserBalances] = useState<PoolValues>();
 	const [tradeError, setTradeError] = useState<string>();
 	const [coreError, setCoreError] = useState<string>();
+	const [slippage, setSlippage] = useState<number>(5);
 	const [poolSummaryProps, setPoolSummaryProps] = useState<PoolSummaryProps>({
 		tradeAsset,
 		poolLiquidity,
@@ -180,7 +181,8 @@ const PoolForm: React.FC<{}> = () => {
 					tradeAmount,
 					coreAmount,
 					poolAction,
-					false
+					false,
+					slippage / 100
 				);
 			}
 		} else {
@@ -202,7 +204,8 @@ const PoolForm: React.FC<{}> = () => {
 					tradeAmount,
 					coreAmount,
 					poolAction,
-					false
+					false,
+					slippage / 100
 				);
 			}
 		}
@@ -232,6 +235,22 @@ const PoolForm: React.FC<{}> = () => {
 			setCoreAmount(Number(userBalances.coreLiquidity));
 		}
 	};
+
+	//update extrinsic on slippage change
+	useEffect(() => {
+		if (!slippage || !poolAction || !tradeAssetAmount || !coreAmount) return;
+
+		(async () => {
+			await defineExtrinsic(
+				tradeAsset,
+				tradeAssetAmount,
+				coreAmount,
+				poolAction,
+				false,
+				slippage / 100
+			);
+		})();
+	}, [slippage, poolAction, tradeAsset, tradeAssetAmount, coreAmount]);
 
 	const poolConfig: PoolConfig = {
 		tradeAsset,
@@ -391,7 +410,11 @@ const PoolForm: React.FC<{}> = () => {
 				whichAsset={"core"}
 			/>
 			<PoolSummary poolSummaryProps={poolSummaryProps} />
-			<Settings />
+			<Settings
+				slippage={slippage}
+				setSlippage={setSlippage}
+				coreAmount={coreAmount}
+			/>
 			<Button
 				sx={{
 					fontSize: "16px",
