@@ -39,6 +39,15 @@ export interface Asset {
 	amount?: number;
 }
 
+export type BridgeToken = {
+	chainId: number;
+	address: string;
+	name: string;
+	symbol: string;
+	decimals: number;
+	logoURI: string;
+};
+
 export interface AmountParams {
 	amount: Amount;
 	assetId: number;

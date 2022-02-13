@@ -10,15 +10,18 @@ import { useCENNZApi } from "../../providers/CENNZApiProvider";
 import { useWallet } from "../../providers/SupportedWalletProvider";
 import TxModal from "./TxModal";
 import ErrorModal from "./ErrorModal";
-import TokenPicker, { BridgeToken } from "../shared/TokenPicker";
+import TokenPicker from "../shared/TokenPicker";
 import CENNZnetAccountPicker from "../shared/CENNZnetAccountPicker";
+import ConnectWalletButton from "../shared/ConnectWalletButton";
+import { BridgeToken } from "../../types";
 
 const ETH_CHAIN_ID = process.env.NEXT_PUBLIC_ETH_CHAIN_ID;
 
-const Deposit: React.FC<{}> = () => {
+const Deposit: React.FC<{
+	token: BridgeToken;
+	amount: string;
+}> = ({ token, amount }) => {
 	const [customAddress, setCustomAddress] = useState(false);
-	const [token, setToken] = useState<BridgeToken>();
-	const [amount, setAmount] = useState("");
 	const [selectedAccount, updateSelectedAccount] = useState({
 		address: "",
 		name: "",
@@ -35,46 +38,6 @@ const Deposit: React.FC<{}> = () => {
 	const { Contracts, Signer, Account, initBlockchain }: any = useBlockchain();
 	const { wallet, connectWallet } = useWallet();
 	const { api }: any = useCENNZApi();
-
-	const connectMetamask = async () => {
-		const { ethereum } = window as any;
-		try {
-			const accounts = await ethereum.request({
-				method: "eth_requestAccounts",
-			});
-			const ethChainId = await ethereum.request({ method: "eth_chainId" });
-
-			if (ETH_CHAIN_ID === "1" && ethChainId !== "0x1") {
-				await ethereum.request({
-					method: "wallet_switchEthereumChain",
-					params: [{ chainId: "0x1" }],
-				});
-			} else if (ETH_CHAIN_ID === "42" && ethChainId !== "0x2a") {
-				await ethereum.request({
-					method: "wallet_switchEthereumChain",
-					params: [{ chainId: "0x2a" }],
-				});
-			}
-
-			initBlockchain(ethereum, accounts);
-
-			if (!wallet) connectWallet();
-		} catch (err) {
-			console.log(err.message);
-			setModalState("noMetamask");
-			setErrorModalOpen(true);
-		}
-	};
-
-	//Check MetaMask account has enough tokens to deposit
-	useEffect(() => {
-		const { ethereum }: any = window;
-		if (!token) return;
-		(async () => {
-			let balance = await getMetamaskBalance(ethereum, token.address, Account);
-			setTokenBalance(balance);
-		})();
-	}, [token, Account]);
 
 	const resetModal = () => {
 		setModal({ state: "", text: "", hash: "" });
@@ -141,149 +104,155 @@ const Deposit: React.FC<{}> = () => {
 
 	return (
 		<>
-			{modalOpen && (
-				<TxModal
-					modalState={modal.state}
-					modalText={modal.text}
-					etherscanHash={modal.hash}
-					resetModal={resetModal}
-				/>
-			)}
-			{errorModalOpen && (
-				<ErrorModal setModalOpen={setErrorModalOpen} modalState={modalState} />
-			)}
-			<Box
-				component="form"
-				sx={{
-					width: "552px",
-					height: "auto",
-					margin: "0 auto",
-					background: "#FFFFFF",
-					border: "4px solid #1130FF",
-					display: "flex",
-					flexDirection: "column",
-					justifyContent: "center",
-					alignItems: "center",
-					padding: "0px",
-				}}
-			>
-				<TokenPicker setToken={setToken} />
+			{/*{modalOpen && (*/}
+			{/*	<TxModal*/}
+			{/*		modalState={modal.state}*/}
+			{/*		modalText={modal.text}*/}
+			{/*		etherscanHash={modal.hash}*/}
+			{/*		resetModal={resetModal}*/}
+			{/*	/>*/}
+			{/*)}*/}
+			{/*{errorModalOpen && (*/}
+			{/*	<ErrorModal setModalOpen={setErrorModalOpen} modalState={modalState} />*/}
+			{/*)}*/}
+			{/*<Box*/}
+			{/*	component="form"*/}
+			{/*	sx={{*/}
+			{/*		width: "552px",*/}
+			{/*		height: "auto",*/}
+			{/*		margin: "0 auto",*/}
+			{/*		background: "#FFFFFF",*/}
+			{/*		border: "4px solid #1130FF",*/}
+			{/*		display: "flex",*/}
+			{/*		flexDirection: "column",*/}
+			{/*		justifyContent: "center",*/}
+			{/*		alignItems: "center",*/}
+			{/*		padding: "0px",*/}
+			{/*	}}*/}
+			{/*>*/}
+			{/*	<TokenPicker setToken={setToken} />*/}
 
-				<TextField
-					label="Amount"
-					variant="outlined"
-					required
-					sx={{
-						width: "80%",
-						m: "30px 0 30px",
-					}}
-					onChange={(e) => setAmount(e.target.value)}
-					helperText={
-						tokenBalance < Number(amount) ? "Account balance too low" : ""
-					}
-				/>
-				{customAddress ? (
-					<>
-						<TextField
-							label="Destination"
-							variant="outlined"
-							required
-							sx={{
-								width: "80%",
-							}}
-							onChange={(e) =>
-								updateSelectedAccount({
-									name: "",
-									address: e.target.value,
-								})
-							}
-						/>
-						<Button
-							size="small"
-							variant="outlined"
-							onClick={() => setCustomAddress(false)}
-							sx={{
-								fontFamily: "Teko",
-								fontWeight: "bold",
-								fontSize: "21px",
-								lineHeight: "124%",
-								color: "#1130FF",
-								width: "80%",
-								mb: "30px",
-								textTransform: "none",
-							}}
-						>
-							SELECT CENNZnet ADDRESS INSTEAD*
-						</Button>
-					</>
-				) : (
-					<>
-						<CENNZnetAccountPicker
-							updateSelectedAccount={updateSelectedAccount}
-						/>
-						<Button
-							size="small"
-							variant="outlined"
-							onClick={() => setCustomAddress(true)}
-							sx={{
-								fontFamily: "Teko",
-								fontWeight: "bold",
-								fontSize: "21px",
-								lineHeight: "124%",
-								color: "#1130FF",
-								width: "80%",
-								mb: "30px",
-								textTransform: "none",
-							}}
-						>
-							ENTER CENNZnet ADDRESS INSTEAD*
-						</Button>
-					</>
-				)}
-				{Account ? (
-					<Button
-						sx={{
-							fontFamily: "Teko",
-							fontWeight: "bold",
-							fontSize: "21px",
-							lineHeight: "124%",
-							color: "#1130FF",
-							mt: "30px",
-							mb: "50px",
-						}}
-						disabled={
-							amount &&
-							token &&
-							selectedAccount &&
-							Number(amount) <= tokenBalance
-								? false
-								: true
-						}
-						size="large"
-						variant="outlined"
-						onClick={deposit}
-					>
-						confirm
-					</Button>
-				) : (
-					<Button
-						sx={{
-							fontFamily: "Teko",
-							fontWeight: "bold",
-							fontSize: "21px",
-							lineHeight: "124%",
-							color: "#1130FF",
-							mt: "30px",
-							mb: "50px",
-						}}
-						size="large"
-						variant="outlined"
-						onClick={connectMetamask}
-					>
-						{wallet ? "connect metamask" : "connect wallets"}
-					</Button>
-				)}
-			</Box>
+			{/*	<TextField*/}
+			{/*		label="Amount"*/}
+			{/*		variant="outlined"*/}
+			{/*		required*/}
+			{/*		sx={{*/}
+			{/*			width: "80%",*/}
+			{/*			m: "30px 0 30px",*/}
+			{/*		}}*/}
+			{/*		onChange={(e) => setAmount(e.target.value)}*/}
+			{/*		helperText={*/}
+			{/*			tokenBalance < Number(amount) ? "Account balance too low" : ""*/}
+			{/*		}*/}
+			{/*	/>*/}
+			{/*	{customAddress ? (*/}
+			{/*		<>*/}
+			{/*			<TextField*/}
+			{/*				label="Destination"*/}
+			{/*				variant="outlined"*/}
+			{/*				required*/}
+			{/*				sx={{*/}
+			{/*					width: "80%",*/}
+			{/*				}}*/}
+			{/*				onChange={(e) =>*/}
+			{/*					updateSelectedAccount({*/}
+			{/*						name: "",*/}
+			{/*						address: e.target.value,*/}
+			{/*					})*/}
+			{/*				}*/}
+			{/*			/>*/}
+			{/*			<Button*/}
+			{/*				size="small"*/}
+			{/*				variant="outlined"*/}
+			{/*				onClick={() => setCustomAddress(false)}*/}
+			{/*				sx={{*/}
+			{/*					fontFamily: "Teko",*/}
+			{/*					fontWeight: "bold",*/}
+			{/*					fontSize: "21px",*/}
+			{/*					lineHeight: "124%",*/}
+			{/*					color: "#1130FF",*/}
+			{/*					width: "80%",*/}
+			{/*					mb: "30px",*/}
+			{/*					textTransform: "none",*/}
+			{/*				}}*/}
+			{/*			>*/}
+			{/*				SELECT CENNZnet ADDRESS INSTEAD**/}
+			{/*			</Button>*/}
+			{/*		</>*/}
+			{/*	) : (*/}
+			{/*		<>*/}
+			{/*			<CENNZnetAccountPicker*/}
+			{/*				updateSelectedAccount={updateSelectedAccount}*/}
+			{/*			/>*/}
+			{/*			<Button*/}
+			{/*				size="small"*/}
+			{/*				variant="outlined"*/}
+			{/*				onClick={() => setCustomAddress(true)}*/}
+			{/*				sx={{*/}
+			{/*					fontFamily: "Teko",*/}
+			{/*					fontWeight: "bold",*/}
+			{/*					fontSize: "21px",*/}
+			{/*					lineHeight: "124%",*/}
+			{/*					color: "#1130FF",*/}
+			{/*					width: "80%",*/}
+			{/*					mb: "30px",*/}
+			{/*					textTransform: "none",*/}
+			{/*				}}*/}
+			{/*			>*/}
+			{/*				ENTER CENNZnet ADDRESS INSTEAD**/}
+			{/*			</Button>*/}
+			{/*		</>*/}
+			{/*	)}*/}
+			{/*	{Account ? (*/}
+			{/*		<Button*/}
+			{/*			sx={{*/}
+			{/*				fontFamily: "Teko",*/}
+			{/*				fontWeight: "bold",*/}
+			{/*				fontSize: "21px",*/}
+			{/*				lineHeight: "124%",*/}
+			{/*				color: "#1130FF",*/}
+			{/*				mt: "30px",*/}
+			{/*				mb: "50px",*/}
+			{/*			}}*/}
+			{/*			disabled={*/}
+			{/*				amount &&*/}
+			{/*				token &&*/}
+			{/*				selectedAccount &&*/}
+			{/*				Number(amount) <= tokenBalance*/}
+			{/*					? false*/}
+			{/*					: true*/}
+			{/*			}*/}
+			{/*			size="large"*/}
+			{/*			variant="outlined"*/}
+			{/*			onClick={deposit}*/}
+			{/*		>*/}
+			{/*			confirm*/}
+			{/*		</Button>*/}
+			{/*	) : (*/}
+			{/*		<Button*/}
+			{/*			sx={{*/}
+			{/*				fontFamily: "Teko",*/}
+			{/*				fontWeight: "bold",*/}
+			{/*				fontSize: "21px",*/}
+			{/*				lineHeight: "124%",*/}
+			{/*				color: "#1130FF",*/}
+			{/*				mt: "30px",*/}
+			{/*				mb: "50px",*/}
+			{/*			}}*/}
+			{/*			size="large"*/}
+			{/*			variant="outlined"*/}
+			{/*			onClick={connectMetamask}*/}
+			{/*		>*/}
+			{/*			{wallet ? "connect metamask" : "connect wallets"}*/}
+			{/*		</Button>*/}
+			{/*	)}*/}
+			{/*</Box>*/}
+			<ConnectWalletButton
+				onClick={deposit}
+				buttonText={"CONFIRM"}
+				requireCennznet={false}
+				requireMetamask={true}
+			/>
 		</>
 	);
 };

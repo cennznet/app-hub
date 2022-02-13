@@ -3,7 +3,7 @@ import { Button, FormControl, CircularProgress } from "@mui/material";
 import ERC20Tokens from "../../artifacts/erc20tokens.json";
 import { ETH, ETH_LOGO } from "../../utils/bridge/helpers";
 import { useAssets } from "../../providers/SupportedAssetsProvider";
-import { Asset, PoolConfig } from "../../types";
+import { Asset, PoolConfig, BridgeToken } from "../../types";
 import { useBlockchain } from "../../providers/BlockchainProvider";
 import { useRouter } from "next/router";
 
@@ -12,15 +12,6 @@ const ETH_CHAIN_ID = process.env.NEXT_PUBLIC_ETH_CHAIN_ID;
 import styles from "../../styles/components/shared/tokenpicker.module.css";
 import { useWallet } from "../../providers/SupportedWalletProvider";
 import { PoolAction } from "../../providers/PoolProvider";
-
-export type BridgeToken = {
-	chainId: number;
-	address: string;
-	name: string;
-	symbol: string;
-	decimals: number;
-	logoURI: string;
-};
 
 const TokenPicker: React.FC<{
 	setToken: Function;
@@ -118,11 +109,12 @@ const TokenPicker: React.FC<{
 	}, [cennznet, assets, selectedTokenIdx, tokens]);
 
 	useEffect(() => {
+		//TODO update to support eth balances as well
 		if (!balances || !tokens) return;
 		const foundTokenBalance = balances.find(
 			(asset) => asset.symbol === tokens[selectedTokenIdx]?.symbol
 		);
-		setSelectedTokenBalance(foundTokenBalance.value);
+		setSelectedTokenBalance(foundTokenBalance?.value);
 	}, [balances, tokens, selectedTokenIdx]);
 
 	return (
@@ -214,11 +206,11 @@ const TokenPicker: React.FC<{
 						type="number"
 						placeholder={"0.00"}
 						value={amount}
-						onChange={(event) =>
+						onChange={(event) => {
 							whichAsset
 								? poolConfig.setOtherAsset(event.target.value, whichAsset)
-								: setAmount(event.target.value)
-						}
+								: setAmount(event.target.value);
+						}}
 					/>
 				</div>
 			</div>

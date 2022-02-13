@@ -2,8 +2,6 @@ import React, { FC, useEffect, useState } from "react";
 import styles from "../../styles/components/shared/connectwalletbutton.module.css";
 import { useWallet } from "../../providers/SupportedWalletProvider";
 import { useBlockchain } from "../../providers/BlockchainProvider";
-import { useDappModule } from "../../providers/DappModuleProvider";
-import { useCENNZApi } from "../../providers/CENNZApiProvider";
 
 const ETH_CHAIN_ID = process.env.NEXT_PUBLIC_ETH_CHAIN_ID;
 
