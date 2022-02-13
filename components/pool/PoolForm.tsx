@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Box, Button, Typography } from "@mui/material";
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
 import { Heading, SmallText } from "../../theme/StyledComponents";
@@ -7,9 +7,11 @@ import { AssetInfo, PoolConfig, PoolValues } from "../../types";
 import { useWallet } from "../../providers/SupportedWalletProvider";
 import { PoolAction, usePool } from "../../providers/PoolProvider";
 import { Amount } from "../../utils/Amount";
-import PoolSummary from "./PoolSummary";
 import SwapIconClass from "./SwapIcon";
 import styles from "../../styles/components/swap/swap.module.css";
+import { PoolSummaryProps } from "../../types";
+import PoolSummary from "./PoolSummary";
+import Settings from "./Settings";
 
 const ROUND_UP = 1;
 
@@ -29,6 +31,11 @@ const PoolForm: React.FC<{}> = () => {
 	const [userBalances, setUserBalances] = useState<PoolValues>();
 	const [tradeError, setTradeError] = useState<string>();
 	const [coreError, setCoreError] = useState<string>();
+	const [poolSummaryProps, setPoolSummaryProps] = useState<PoolSummaryProps>({
+		tradeAsset,
+		poolLiquidity,
+		exchangeRate: null,
+	});
 	const { balances } = useWallet();
 	const {
 		coreAsset,
@@ -40,10 +47,21 @@ const PoolForm: React.FC<{}> = () => {
 		sendExtrinsic,
 	} = usePool();
 
-	const poolSummaryProps = {
-		tradeAsset,
-		poolLiquidity,
-	};
+	useEffect(() => {
+		if (!exchangePool) return;
+
+		let exchangeRate: any = new Amount(1);
+		exchangeRate = exchangeRate
+			.mul(exchangePool.assetBalance)
+			.div(exchangePool.coreAssetBalance)
+			.subn(ROUND_UP);
+
+		setPoolSummaryProps({
+			tradeAsset,
+			poolLiquidity,
+			exchangeRate: exchangeRate.toNumber(),
+		});
+	}, [exchangePool, tradeAsset, poolLiquidity]);
 
 	//set pool balances
 	useEffect(() => {
@@ -372,8 +390,8 @@ const PoolForm: React.FC<{}> = () => {
 				poolConfig={poolConfig}
 				whichAsset={"core"}
 			/>
-			{/* {!!error && <Typography>{error}</Typography>} */}
-			{!!tradeAsset && <PoolSummary poolSummaryProps={poolSummaryProps} />}
+			<PoolSummary poolSummaryProps={poolSummaryProps} />
+			<Settings />
 			<Button
 				sx={{
 					fontSize: "16px",

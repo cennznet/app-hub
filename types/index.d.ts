@@ -206,9 +206,10 @@ export interface PoolValues {
 	coreLiquidity?: number;
 }
 
-export interface PoolSummary {
+export interface PoolSummaryProps {
 	tradeAsset: AssetInfo;
 	poolLiquidity: PoolValues;
+	exchangeRate: number;
 }
 
 export interface PoolConfig {

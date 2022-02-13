@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Box, CircularProgress, Typography } from "@mui/material";
-import { PoolSummary } from "../../types";
+import { PoolSummaryProps } from "../../types";
 import { usePool } from "../../providers/PoolProvider";
 
 interface FomattedBalances {
@@ -10,12 +10,12 @@ interface FomattedBalances {
 	poolCoreAsset: string;
 }
 
-const PoolSummary: React.FC<{ poolSummaryProps: PoolSummary }> = ({
+const PoolSummary: React.FC<{ poolSummaryProps: PoolSummaryProps }> = ({
 	poolSummaryProps,
 }) => {
-	const { tradeAsset, poolLiquidity } = poolSummaryProps;
 	const { coreAsset, estimatedFee, userPoolShare } = usePool();
-	const [loading, setLoading] = useState(true);
+	const { tradeAsset, poolLiquidity, exchangeRate }: any = poolSummaryProps;
+	const [loading, setLoading] = useState<boolean>(true);
 	const [formattedBalances, setFormattedBalances] =
 		useState<FomattedBalances>(null);
 
@@ -33,30 +33,52 @@ const PoolSummary: React.FC<{ poolSummaryProps: PoolSummary }> = ({
 			poolCoreAsset: Number(poolLiquidity?.coreAsset).toFixed(4),
 		});
 
-		setTimeout(() => setLoading(false), 1000);
+		setTimeout(() => setLoading(false), 2000);
 	}, [coreAsset, tradeAsset, userPoolShare, poolLiquidity]);
 
-	// if (loading)
-	// 	return (
-	// <Box sx={{ alignContent: "center", display: "flex" }}>
-	// 	<CircularProgress sx={{ margin: "40px auto" }} />
-	// </Box>
-	// 	);
-	// else
 	return (
 		<Box
 			sx={{
 				backgroundColor: userPoolShare ? "#F5ECFF" : null,
 				width: "468px",
-				height: "100px",
+				height: "auto",
 			}}
 		>
 			{loading ? (
 				<Box sx={{ alignContent: "center", display: "flex" }}>
-					<CircularProgress sx={{ margin: "30px auto" }} />
+					<CircularProgress sx={{ margin: "30px auto", color: "#6200EE" }} />
 				</Box>
 			) : (
 				<Box sx={{ m: "2% auto 2%" }}>
+					{!!exchangeRate && !!tradeAsset && (
+						<Box
+							sx={{
+								display: "flex",
+								flexDirection: "row",
+								ml: "8%",
+							}}
+						>
+							<Typography
+								sx={{
+									color: "#6200EE",
+									fontSize: "16px",
+									lineHeight: "175%",
+									fontWeight: "bold",
+								}}
+							>
+								Exchange Rate:
+							</Typography>
+							&nbsp;
+							<Typography
+								sx={{
+									fontSize: "16px",
+									lineHeight: "175%",
+								}}
+							>
+								1 {coreAsset.symbol} = {exchangeRate} {tradeAsset.symbol}
+							</Typography>
+						</Box>
+					)}
 					{!!userPoolShare && (
 						<Box
 							sx={{
