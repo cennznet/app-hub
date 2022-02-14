@@ -1,0 +1,16 @@
+.accountPickerContainer{
+    display: flex;
+    flex-direction: column;
+}
+
+.topText {
+    font-style: normal;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 125%;
+    letter-spacing: 1.12428px;
+    text-transform: uppercase;
+    color: #020202;
+    margin: 0;
+    margin-bottom: 6px;
+}
