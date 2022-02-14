@@ -2,25 +2,20 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { Autocomplete, TextField } from "@mui/material";
 import { useWeb3Accounts } from "../../providers/Web3AccountsProvider";
+import { useWallet } from "../../providers/SupportedWalletProvider";
 
 const CENNZnetAccountPicker: React.FC<{
 	updateSelectedAccount: Function;
-}> = ({ updateSelectedAccount }) => {
+	wallet?: boolean;
+}> = ({ updateSelectedAccount, wallet }) => {
 	const router = useRouter();
 	const accounts = useWeb3Accounts();
 	const [label, setLabel] = useState<string>();
 	const [accountNames, setAccountNames] = useState<string[]>([]);
+	const { selectedAccount } = useWallet();
 
 	useEffect(() => {
-		switch (router.asPath) {
-			default:
-			case "/liquidity":
-				setLabel("Account");
-				break;
-			case "/bridge":
-				setLabel("Destination");
-				break;
-		}
+		wallet ? setLabel("Switch Account") : setLabel("Destination");
 	}, [router.asPath]);
 
 	useEffect(() => {
@@ -36,10 +31,12 @@ const CENNZnetAccountPicker: React.FC<{
 	const updateAccount = (accountName: string) => {
 		accounts.forEach((account) => {
 			if (account.meta.name === accountName) {
-				updateSelectedAccount({
-					name: account.meta.name,
-					address: account.address,
-				});
+				wallet
+					? updateSelectedAccount(account)
+					: updateSelectedAccount({
+							name: account.meta.name,
+							address: account.address,
+					  });
 			}
 		});
 	};
@@ -50,9 +47,16 @@ const CENNZnetAccountPicker: React.FC<{
 			options={accountNames}
 			onSelect={(e: any) => updateAccount(e.target.value)}
 			sx={{
-				width: "80%",
+				width: wallet ? "100%" : "80%",
 			}}
-			renderInput={(params) => <TextField {...params} label={label} required />}
+			renderInput={(params) => (
+				<TextField
+					placeholder={selectedAccount?.meta.name}
+					{...params}
+					label={label}
+					required={!wallet}
+				/>
+			)}
 		/>
 	);
 };
