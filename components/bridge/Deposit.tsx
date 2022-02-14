@@ -17,8 +17,6 @@ const Deposit: React.FC<{
 	selectedAccount: CennznetAccount;
 	disabled: boolean;
 }> = ({ token, amount, selectedAccount, disabled }) => {
-	//TODO refactor custom address into Cennznet Account Picker
-	const [customAddress, setCustomAddress] = useState(false);
 	const [modalOpen, setModalOpen] = useState(false);
 	const [errorModalOpen, setErrorModalOpen] = useState(false);
 	const [modalState, _] = useState("");
@@ -106,67 +104,6 @@ const Deposit: React.FC<{
 			{errorModalOpen && (
 				<ErrorModal setModalOpen={setErrorModalOpen} modalState={modalState} />
 			)}
-
-			{/*	{customAddress ? (*/}
-			{/*		<>*/}
-			{/*<TextField*/}
-			{/*	label="Destination"*/}
-			{/*	variant="outlined"*/}
-			{/*	required*/}
-			{/*	sx={{*/}
-			{/*		width: "80%",*/}
-			{/*	}}*/}
-			{/*	onChange={(e) =>*/}
-			{/*		updateSelectedAccount({*/}
-			{/*			name: "",*/}
-			{/*			address: e.target.value,*/}
-			{/*		})*/}
-			{/*	}*/}
-			{/*/>*/}
-			{/*			<Button*/}
-			{/*				size="small"*/}
-			{/*				variant="outlined"*/}
-			{/*				onClick={() => setCustomAddress(false)}*/}
-			{/*				sx={{*/}
-			{/*					fontFamily: "Teko",*/}
-			{/*					fontWeight: "bold",*/}
-			{/*					fontSize: "21px",*/}
-			{/*					lineHeight: "124%",*/}
-			{/*					color: "#1130FF",*/}
-			{/*					width: "80%",*/}
-			{/*					mb: "30px",*/}
-			{/*					textTransform: "none",*/}
-			{/*				}}*/}
-			{/*			>*/}
-			{/*				SELECT CENNZnet ADDRESS INSTEAD**/}
-			{/*			</Button>*/}
-			{/*		</>*/}
-			{/*	) : (*/}
-			{/*		<>*/}
-			{/*			<CENNZnetAccountPicker*/}
-			{/*				updateSelectedAccount={updateSelectedAccount}*/}
-			{/*			/>*/}
-			{/*			<Button*/}
-			{/*				size="small"*/}
-			{/*				variant="outlined"*/}
-			{/*				onClick={() => setCustomAddress(true)}*/}
-			{/*				sx={{*/}
-			{/*					fontFamily: "Teko",*/}
-			{/*					fontWeight: "bold",*/}
-			{/*					fontSize: "21px",*/}
-			{/*					lineHeight: "124%",*/}
-			{/*					color: "#1130FF",*/}
-			{/*					width: "80%",*/}
-			{/*					mb: "30px",*/}
-			{/*					textTransform: "none",*/}
-			{/*				}}*/}
-			{/*			>*/}
-			{/*				ENTER CENNZnet ADDRESS INSTEAD**/}
-			{/*			</Button>*/}
-			{/*		</>*/}
-			{/*	)}*/}
-			{/*	) : (*/}
-			{/*</Box>*/}
 			<ConnectWalletButton
 				disabled={disabled}
 				onClick={deposit}

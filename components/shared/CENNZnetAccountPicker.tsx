@@ -10,6 +10,7 @@ const CENNZnetAccountPicker: React.FC<{
 	const accounts = useWeb3Accounts();
 	const [selectedAccount, setSelectedAccount] = useState<string>();
 	const [accountNames, setAccountNames] = useState<string[]>([]);
+	const [error, setError] = useState<string>();
 
 	useEffect(() => {
 		let names: string[] = [];
@@ -22,6 +23,9 @@ const CENNZnetAccountPicker: React.FC<{
 	}, [accounts]);
 
 	const updateAccount = (accountName: string) => {
+		setError("");
+		let foundAccount = false;
+		//Check if account name exist in lists of user accounts
 		accounts.forEach((account) => {
 			if (account.meta.name === accountName) {
 				wallet
@@ -31,8 +35,24 @@ const CENNZnetAccountPicker: React.FC<{
 							address: account.address,
 					  });
 				setSelectedAccount(account.meta.name);
+				setError("");
+				foundAccount = true;
+				return;
 			}
 		});
+		if (foundAccount) return;
+		//else check if the account they entered is valid cennznet address
+		//TODO improve address validation
+		const cennznetAddressLength = 48;
+		if (accountName.length === cennznetAddressLength) {
+			setSelectedAccount(accountName);
+			if (!accountNames.includes(accountName)) {
+				const newAccountNames = [...accountNames, accountName];
+				setAccountNames(newAccountNames);
+			}
+		} else if (accountName !== "") {
+			setError("Invalid Cennznet Address");
+		}
 	};
 
 	return (
@@ -45,6 +65,7 @@ const CENNZnetAccountPicker: React.FC<{
 					setSelectedAccount(e.target.value);
 					updateAccount(e.target.value);
 				}}
+				clearIcon={<img src={"blue_minus.svg"} alt={""} />}
 				onChange={(event, value, reason) => {
 					if (reason === "clear") {
 						updateAccount("");
@@ -53,6 +74,7 @@ const CENNZnetAccountPicker: React.FC<{
 							address: "",
 							name: "",
 						});
+						setError("");
 					}
 				}}
 				sx={{
@@ -63,12 +85,13 @@ const CENNZnetAccountPicker: React.FC<{
 					<TextField
 						placeholder={"placeholder"}
 						{...params}
-						label={selectedAccount ? "" : "Enter Address"}
+						label={selectedAccount ? "" : "Select or Type Address"}
 						InputLabelProps={{ shrink: false }}
 						required={!wallet}
 					/>
 				)}
 			/>
+			{error && <div className={styles.errorMsg}>{error}</div>}
 		</div>
 	);
 };
