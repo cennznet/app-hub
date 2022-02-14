@@ -17,7 +17,7 @@ const Deposit: React.FC<{
 	selectedAccount: CennznetAccount;
 	disabled: boolean;
 }> = ({ token, amount, selectedAccount, disabled }) => {
-	//TODO refactor custom address
+	//TODO refactor custom address into Cennznet Account Picker
 	const [customAddress, setCustomAddress] = useState(false);
 	const [modalOpen, setModalOpen] = useState(false);
 	const [errorModalOpen, setErrorModalOpen] = useState(false);
@@ -165,41 +165,10 @@ const Deposit: React.FC<{
 			{/*			</Button>*/}
 			{/*		</>*/}
 			{/*	)}*/}
-			{/*	{Account ? (*/}
-			{/*		<Button*/}
-			{/*			sx={{*/}
-			{/*				fontFamily: "Teko",*/}
-			{/*				fontWeight: "bold",*/}
-			{/*				fontSize: "21px",*/}
-			{/*				lineHeight: "124%",*/}
-			{/*				color: "#1130FF",*/}
-			{/*				mt: "30px",*/}
-			{/*				mb: "50px",*/}
-			{/*			}}*/}
-			{/*			disabled={*/}
-			{/*				amount &&*/}
-			{/*				token &&*/}
-			{/*				selectedAccount &&*/}
-			{/*				Number(amount) <= tokenBalance*/}
-			{/*					? false*/}
-			{/*					: true*/}
-			{/*			}*/}
-			{/*			size="large"*/}
-			{/*			variant="outlined"*/}
-			{/*			onClick={deposit}*/}
-			{/*		>*/}
-			{/*			confirm*/}
-			{/*		</Button>*/}
 			{/*	) : (*/}
 			{/*</Box>*/}
 			<ConnectWalletButton
-				// disabled={
-				// 	amount && token && selectedAccount && Number(amount) <= tokenBalance
-				// 		? false
-				// 		: true
-				// }
-				//TODO fix disabled state
-				disabled={true}
+				disabled={disabled}
 				onClick={deposit}
 				buttonText={"CONFIRM"}
 				requireCennznet={false}

@@ -10,7 +10,7 @@ interface ConnectWalletButtonProps {
 	buttonText: string;
 	requireMetamask: boolean;
 	requireCennznet: boolean;
-	disabled: boolean;
+	disabled?: boolean;
 }
 
 const ConnectWalletButton: FC<ConnectWalletButtonProps> = ({
@@ -63,7 +63,7 @@ const ConnectWalletButton: FC<ConnectWalletButtonProps> = ({
 		}
 	};
 
-	const metamaskButtonComponent = (onClick) => {
+	const metamaskButtonComponent = (onClick: Function) => {
 		return (
 			<div
 				className={styles.connectWalletButtonInner}
@@ -77,7 +77,7 @@ const ConnectWalletButton: FC<ConnectWalletButtonProps> = ({
 		);
 	};
 
-	const cennznetButtonComponent = (onClick) => {
+	const cennznetButtonComponent = (onClick: Function) => {
 		return (
 			<div
 				className={styles.connectWalletButtonInner}
@@ -91,26 +91,36 @@ const ConnectWalletButton: FC<ConnectWalletButtonProps> = ({
 		);
 	};
 
-	const defaultButtonComponent = (onClick, buttonText) => {
+	const defaultButtonComponent = (
+		onClick: Function,
+		buttonText: string,
+		disabled: boolean
+	) => {
 		return (
-			<div
+			<button
+				style={{
+					opacity: disabled && "0.3",
+					cursor: disabled && "not-allowed",
+				}}
+				type={"button"}
 				onClick={() => {
 					onClick();
 				}}
+				disabled={disabled}
 			>
-				<h1>{buttonText}</h1>
-			</div>
+				{buttonText}
+			</button>
 		);
 	};
 
 	return (
-		<button className={styles.connectWalletButton} disabled={disabled}>
+		<div className={styles.connectWalletButton}>
 			{metamaskConnected
 				? cennznetConnected
-					? defaultButtonComponent(onClick, buttonText)
+					? defaultButtonComponent(onClick, buttonText, disabled)
 					: cennznetButtonComponent(connectWallet)
 				: metamaskButtonComponent(connectMetamask)}
-		</button>
+		</div>
 	);
 };
 

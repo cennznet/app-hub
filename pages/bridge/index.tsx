@@ -24,6 +24,7 @@ const Emery: React.FC<{}> = () => {
 		address: "",
 		name: "",
 	});
+	const [enoughBalance, setEnoughBalance] = useState<boolean>(false);
 
 	useEffect(() => {
 		if (!api?.isConnected) {
@@ -44,6 +45,9 @@ const Emery: React.FC<{}> = () => {
 			);
 			if (balance < parseFloat(amount)) {
 				setError("Account Balance is too low");
+				setEnoughBalance(false);
+			} else {
+				setEnoughBalance(true);
 			}
 		})();
 	}, [erc20Token, Account, amount]);
@@ -83,7 +87,11 @@ const Emery: React.FC<{}> = () => {
 					token={erc20Token}
 					amount={amount}
 					selectedAccount={selectedAccount}
-					disabled={true}
+					disabled={
+						!selectedAccount.address ||
+						!(parseFloat(amount) > 0) ||
+						!enoughBalance
+					}
 				/>
 			) : null}
 		</div>
