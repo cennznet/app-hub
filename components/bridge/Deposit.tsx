@@ -15,7 +15,8 @@ const Deposit: React.FC<{
 	token: BridgeToken;
 	amount: string;
 	selectedAccount: CennznetAccount;
-}> = ({ token, amount, selectedAccount }) => {
+	disabled: boolean;
+}> = ({ token, amount, selectedAccount, disabled }) => {
 	//TODO refactor custom address
 	const [customAddress, setCustomAddress] = useState(false);
 	const [modalOpen, setModalOpen] = useState(false);
@@ -192,6 +193,13 @@ const Deposit: React.FC<{
 			{/*	) : (*/}
 			{/*</Box>*/}
 			<ConnectWalletButton
+				// disabled={
+				// 	amount && token && selectedAccount && Number(amount) <= tokenBalance
+				// 		? false
+				// 		: true
+				// }
+				//TODO fix disabled state
+				disabled={true}
 				onClick={deposit}
 				buttonText={"CONFIRM"}
 				requireCennznet={false}

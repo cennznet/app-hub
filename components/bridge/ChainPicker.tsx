@@ -18,7 +18,8 @@ const CHAINS: Chain[] = [
 const ChainPicker: React.FC<{
 	setChain: Function;
 	initialChain: SupportedChain;
-}> = ({ setChain, initialChain }) => {
+	topText?: string;
+}> = ({ setChain, initialChain, topText }) => {
 	const [chains, setChains] = useState<Chain[]>(CHAINS);
 	const [chainDropDownActive, setChainDropDownActive] =
 		useState<boolean>(false);
@@ -37,6 +38,7 @@ const ChainPicker: React.FC<{
 
 	return (
 		<div className={styles.chainPickerContainer}>
+			<p className={styles.upperText}>{topText}</p>
 			<div className={styles.chainPickerBox}>
 				<div className={styles.chainSelector}>
 					<>
@@ -85,7 +87,7 @@ const ChainPicker: React.FC<{
 					)}
 				</div>
 			</div>
-			<div className={styles.bottomTextContainer}>CHAIN</div>
+			<div className={styles.bottomText}>CHAIN</div>
 		</div>
 	);
 };

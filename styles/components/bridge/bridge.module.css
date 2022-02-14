@@ -9,7 +9,7 @@
     background: #FFFFFF;
     box-shadow: 4px 8px 8px rgba(17, 48, 255, 0.1);
     width: 552px;
-    height: 587px;
+    height: 644px;
     padding: 26px 47px 50px 47px;
 }
 
@@ -21,7 +21,6 @@
     letter-spacing: 1.12428px;
     text-transform: uppercase;
     color: #1130FF;
-    margin-bottom: 42px;
 }
 
 .chainPickerContainer {
@@ -29,4 +28,22 @@
     justify-content: space-between;
     align-items: center;
     width:100%;
+    margin-top: 42px;
+}
+.tokenPickerTopContainer{
+    margin-bottom: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.tokenPickerTopText {
+    font-style: normal;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 125%;
+    letter-spacing: 1.12428px;
+    text-transform: uppercase;
+    text-align: left;
+    color: #020202;
 }

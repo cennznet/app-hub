@@ -7,12 +7,12 @@ import CENNZnetAccountPicker from "../../components/shared/CENNZnetAccountPicker
 
 import styles from "../../styles/components/bridge/bridge.module.css";
 import ChainPicker from "../../components/bridge/ChainPicker";
-import { Chain, BridgeToken, CennznetAccount } from "../../types";
+import { Chain, BridgeToken, CennznetAccount, BridgeState } from "../../types";
 import TokenPicker from "../../components/shared/TokenPicker";
 import { getMetamaskBalance } from "../../utils/bridge/helpers";
 
 const Emery: React.FC<{}> = () => {
-	const [isDeposit, toggleIsDeposit] = useState<boolean>(true);
+	const [bridgeState, setBridgeState] = useState<BridgeState>("Deposit");
 	const [toChain, setToChain] = useState<Chain>();
 	const [fromChain, setFromChain] = useState<Chain>();
 	const { Account } = useBlockchain();
@@ -52,23 +52,39 @@ const Emery: React.FC<{}> = () => {
 		<div className={styles.bridgeContainer}>
 			<h1 className={styles.pageHeader}>BRIDGE</h1>
 			<div className={styles.chainPickerContainer}>
-				<ChainPicker setChain={setToChain} initialChain={"Cennznet"} />
-				<ChainPicker setChain={setFromChain} initialChain={"Ethereum"} />
+				<ChainPicker
+					setChain={setToChain}
+					initialChain={"Cennznet"}
+					topText={"TO"}
+				/>
+				<ChainPicker
+					setChain={setFromChain}
+					initialChain={"Ethereum"}
+					topText={"FROM"}
+				/>
 			</div>
-			<TokenPicker
-				setToken={setErc20Token}
-				setAmount={setAmount}
-				amount={amount}
-				error={error}
-				showBalance={true}
-			/>
+			<div>
+				<div className={styles.tokenPickerTopContainer}>
+					<p className={styles.tokenPickerTopText}>Select Token</p>
+					<p className={styles.tokenPickerTopText}>Enter Amount</p>
+				</div>
+				<TokenPicker
+					setToken={setErc20Token}
+					setAmount={setAmount}
+					amount={amount}
+					error={error}
+					showBalance={true}
+				/>
+			</div>
 			<CENNZnetAccountPicker updateSelectedAccount={updateSelectedAccount} />
-			<Deposit
-				token={erc20Token}
-				amount={amount}
-				selectedAccount={selectedAccount}
-			/>
-			{/*{isDeposit ? <Deposit /> : <Withdraw />}*/}
+			{bridgeState === "Deposit" ? (
+				<Deposit
+					token={erc20Token}
+					amount={amount}
+					selectedAccount={selectedAccount}
+					disabled={true}
+				/>
+			) : null}
 		</div>
 	);
 };

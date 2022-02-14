@@ -243,3 +243,5 @@ export interface CennznetAccount {
 	name: string;
 	address: string;
 }
+
+export type BridgeState = "Deposit" | "Withdraw";
