@@ -8,8 +8,7 @@
     letter-spacing: 1.12428px;
     text-transform: uppercase;
     color: #1130FF;
-    margin-top:26px;
-    margin-bottom: 42px;
+    padding-top:26px;
 }
 
 .secondaryText{
@@ -45,12 +44,8 @@
     position: absolute;
     top: 131px;
     left: calc(50% - 552px/2);
-    display: flex;
-    flexDirection: column;
-    justifyContent: center;
-    alignItems: center;
     background: #FFFFFF;
-    boxShadow: 4px 8px 8px rgba(17, 48, 255, 0.1);
+    box-shadow: 4px 8px 8px rgba(17, 48, 255, 0.1);
     width: 552px;
     height: 587px;
 }

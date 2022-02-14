@@ -50,7 +50,8 @@ const CENNZnetAccountPicker: React.FC<{
 			options={accountNames}
 			onSelect={(e: any) => updateAccount(e.target.value)}
 			sx={{
-				width: "80%",
+				width: "460px",
+				mb: "77px",
 			}}
 			renderInput={(params) => <TextField {...params} label={label} required />}
 		/>
