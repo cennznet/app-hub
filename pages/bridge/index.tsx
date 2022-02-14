@@ -57,20 +57,19 @@ const Emery: React.FC<{}> = () => {
 			<h1 className={styles.pageHeader}>BRIDGE</h1>
 			<div className={styles.chainPickerContainer}>
 				<ChainPicker
-					setChain={setToChain}
-					initialChain={"Cennznet"}
-					topText={"TO"}
-				/>
-				<ChainPicker
 					setChain={setFromChain}
 					initialChain={"Ethereum"}
 					topText={"FROM"}
+				/>
+				<ChainPicker
+					setChain={setToChain}
+					initialChain={"Cennznet"}
+					topText={"TO"}
 				/>
 			</div>
 			<div>
 				<div className={styles.tokenPickerTopContainer}>
 					<p className={styles.tokenPickerTopText}>Select Token</p>
-					<p className={styles.tokenPickerTopText}>Enter Amount</p>
 				</div>
 				<TokenPicker
 					setToken={setErc20Token}
