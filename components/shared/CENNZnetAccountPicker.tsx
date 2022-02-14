@@ -16,7 +16,7 @@ const CENNZnetAccountPicker: React.FC<{
 
 	useEffect(() => {
 		wallet ? setLabel("Switch Account") : setLabel("Destination");
-	}, [router.asPath]);
+	}, [router.asPath, wallet]);
 
 	useEffect(() => {
 		let names: string[] = [];
