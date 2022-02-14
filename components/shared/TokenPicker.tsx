@@ -25,6 +25,7 @@ const TokenPicker: React.FC<{
 	success?: string;
 	poolConfig?: PoolConfig;
 	whichAsset?: string;
+	width?: string;
 }> = ({
 	setToken,
 	setAmount,
@@ -37,6 +38,7 @@ const TokenPicker: React.FC<{
 	success,
 	poolConfig,
 	whichAsset,
+	width,
 }) => {
 	const router = useRouter();
 	const [assetsLoading, setAssetsLoading] = useState<boolean>(true);
@@ -139,7 +141,10 @@ const TokenPicker: React.FC<{
 
 	return (
 		<div className={styles.tokenPickerContainer}>
-			<div className={styles.tokenPickerBox}>
+			<div
+				className={styles.tokenPickerBox}
+				style={{ width: width ? width : "468px" }}
+			>
 				<FormControl
 					sx={{
 						width: "142px",

@@ -74,6 +74,7 @@ const Emery: React.FC<{}> = () => {
 					amount={amount}
 					error={error}
 					showBalance={true}
+					width={"460px"}
 				/>
 			</div>
 			<CENNZnetAccountPicker updateSelectedAccount={updateSelectedAccount} />
