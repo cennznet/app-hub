@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Button, FormControl, CircularProgress } from "@mui/material";
 import ERC20Tokens from "../../artifacts/erc20tokens.json";
-import { ETH, ETH_LOGO } from "../../utils/bridge/helpers";
+import { ETH, ETH_LOGO, getMetamaskBalance } from "../../utils/bridge/helpers";
 import { useAssets } from "../../providers/SupportedAssetsProvider";
-import { Asset, PoolConfig } from "../../types";
+import { Asset, PoolConfig, BridgeToken } from "../../types";
 import { useBlockchain } from "../../providers/BlockchainProvider";
 import { useRouter } from "next/router";
 
@@ -12,15 +12,6 @@ const ETH_CHAIN_ID = process.env.NEXT_PUBLIC_ETH_CHAIN_ID;
 import styles from "../../styles/components/shared/tokenpicker.module.css";
 import { useWallet } from "../../providers/SupportedWalletProvider";
 import { PoolAction } from "../../providers/PoolProvider";
-
-export type BridgeToken = {
-	chainId: number;
-	address: string;
-	name: string;
-	symbol: string;
-	decimals: number;
-	logoURI: string;
-};
 
 const TokenPicker: React.FC<{
 	setToken: Function;
@@ -34,6 +25,7 @@ const TokenPicker: React.FC<{
 	success?: string;
 	poolConfig?: PoolConfig;
 	whichAsset?: string;
+	width?: string;
 }> = ({
 	setToken,
 	setAmount,
@@ -46,6 +38,7 @@ const TokenPicker: React.FC<{
 	success,
 	poolConfig,
 	whichAsset,
+	width,
 }) => {
 	const router = useRouter();
 	const [assetsLoading, setAssetsLoading] = useState<boolean>(true);
@@ -85,12 +78,19 @@ const TokenPicker: React.FC<{
 				{
 					symbol: "ETH",
 					logo: ETH_LOGO,
+					address: ETH,
 				},
 			];
 
-			ERC20Tokens.tokens.map((token) => {
+			ERC20Tokens.tokens.map((token: BridgeToken) => {
 				if (token.chainId === Number(ETH_CHAIN_ID)) {
-					tokes.push({ symbol: token.symbol, logo: token.logoURI });
+					tokes.push({
+						symbol: token.symbol,
+						logo: token.logoURI,
+						address: token.address,
+						decimals: token.decimals,
+						name: token.name,
+					});
 				}
 			});
 			setTokens(tokes);
@@ -118,16 +118,33 @@ const TokenPicker: React.FC<{
 	}, [cennznet, assets, selectedTokenIdx, tokens]);
 
 	useEffect(() => {
-		if (!balances || !tokens) return;
-		const foundTokenBalance = balances.find(
-			(asset) => asset.symbol === tokens[selectedTokenIdx]?.symbol
-		);
-		setSelectedTokenBalance(foundTokenBalance.value);
-	}, [balances, tokens, selectedTokenIdx]);
+		if (!tokens) return;
+		if (cennznet) {
+			if (!balances) return;
+			const foundTokenBalance = balances.find(
+				(asset) => asset.symbol === tokens[selectedTokenIdx]?.symbol
+			);
+			setSelectedTokenBalance(foundTokenBalance?.value);
+		} else {
+			if (!Account || !tokens[selectedTokenIdx]) return;
+			const { ethereum }: any = window;
+			(async () => {
+				const balance = await getMetamaskBalance(
+					ethereum,
+					(tokens[selectedTokenIdx] as BridgeToken)?.address,
+					Account
+				);
+				setSelectedTokenBalance(parseFloat(balance.toFixed(4)));
+			})();
+		}
+	}, [balances, tokens, selectedTokenIdx, Account]);
 
 	return (
 		<div className={styles.tokenPickerContainer}>
-			<div className={styles.tokenPickerBox}>
+			<div
+				className={styles.tokenPickerBox}
+				style={{ width: width ? width : "468px" }}
+			>
 				<FormControl
 					sx={{
 						width: "142px",
@@ -214,11 +231,11 @@ const TokenPicker: React.FC<{
 						type="number"
 						placeholder={"0.00"}
 						value={amount}
-						onChange={(event) =>
+						onChange={(event) => {
 							whichAsset
 								? poolConfig.setOtherAsset(event.target.value, whichAsset)
-								: setAmount(event.target.value)
-						}
+								: setAmount(event.target.value);
+						}}
 					/>
 				</div>
 			</div>

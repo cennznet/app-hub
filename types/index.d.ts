@@ -37,7 +37,18 @@ export interface Asset {
 	decimals?: number;
 	logo?: string;
 	amount?: number;
+	address?: string;
+	name?: string;
 }
+
+export type BridgeToken = {
+	chainId: number;
+	address: string;
+	name: string;
+	symbol: string;
+	decimals: number;
+	logoURI: string;
+};
 
 export interface AmountParams {
 	amount: Amount;
@@ -220,3 +231,17 @@ export interface PoolConfig {
 	setOtherAsset: Function;
 	setMax: Function;
 }
+
+export type SupportedChain = "Ethereum" | "Cennznet";
+
+export interface Chain {
+	name: SupportedChain;
+	logo: string;
+}
+
+export interface CennznetAccount {
+	name: string;
+	address: string;
+}
+
+export type BridgeState = "Deposit" | "Withdraw";

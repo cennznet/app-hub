@@ -7,8 +7,9 @@ import { useBlockchain } from "../../providers/BlockchainProvider";
 import { useCENNZApi } from "../../providers/CENNZApiProvider";
 import { useWallet } from "../../providers/SupportedWalletProvider";
 import TxModal from "./TxModal";
-import TokenPicker, { BridgeToken } from "../shared/TokenPicker";
+import TokenPicker from "../shared/TokenPicker";
 import ErrorModal from "./ErrorModal";
+import { BridgeToken } from "../../types";
 
 const ETH_CHAIN_ID = process.env.NEXT_PUBLIC_ETH_CHAIN_ID;
 
