@@ -238,3 +238,8 @@ export interface Chain {
 	name: SupportedChain;
 	logo: string;
 }
+
+export interface CennznetAccount {
+	name: string;
+	address: string;
+}

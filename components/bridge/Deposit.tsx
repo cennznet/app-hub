@@ -1,42 +1,32 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { ethers } from "ethers";
 import { decodeAddress } from "@polkadot/keyring";
-import { Box, Button, TextField } from "@mui/material";
 import GenericERC20TokenAbi from "../../artifacts/GenericERC20Token.json";
 import { defineTxModal } from "../../utils/bridge/modal";
-import { getMetamaskBalance, ETH } from "../../utils/bridge/helpers";
+import { ETH } from "../../utils/bridge/helpers";
 import { useBlockchain } from "../../providers/BlockchainProvider";
 import { useCENNZApi } from "../../providers/CENNZApiProvider";
-import { useWallet } from "../../providers/SupportedWalletProvider";
 import TxModal from "./TxModal";
 import ErrorModal from "./ErrorModal";
-import TokenPicker from "../shared/TokenPicker";
-import CENNZnetAccountPicker from "../shared/CENNZnetAccountPicker";
 import ConnectWalletButton from "../shared/ConnectWalletButton";
-import { BridgeToken } from "../../types";
-
-const ETH_CHAIN_ID = process.env.NEXT_PUBLIC_ETH_CHAIN_ID;
+import { BridgeToken, CennznetAccount } from "../../types";
 
 const Deposit: React.FC<{
 	token: BridgeToken;
 	amount: string;
-}> = ({ token, amount }) => {
+	selectedAccount: CennznetAccount;
+}> = ({ token, amount, selectedAccount }) => {
+	//TODO refactor custom address
 	const [customAddress, setCustomAddress] = useState(false);
-	const [selectedAccount, updateSelectedAccount] = useState({
-		address: "",
-		name: "",
-	});
 	const [modalOpen, setModalOpen] = useState(false);
 	const [errorModalOpen, setErrorModalOpen] = useState(false);
-	const [modalState, setModalState] = useState("");
+	const [modalState, _] = useState("");
 	const [modal, setModal] = useState({
 		state: "",
 		text: "",
 		hash: "",
 	});
-	const [tokenBalance, setTokenBalance] = useState<Number>();
-	const { Contracts, Signer, Account, initBlockchain }: any = useBlockchain();
-	const { wallet, connectWallet } = useWallet();
+	const { Contracts, Signer }: any = useBlockchain();
 	const { api }: any = useCENNZApi();
 
 	const resetModal = () => {
@@ -48,7 +38,7 @@ const Deposit: React.FC<{
 		let tx: any = await Contracts.peg.deposit(
 			ETH,
 			ethers.utils.parseUnits(amount),
-			decodeAddress(selectedAccount.address),
+			decodeAddress(selectedAccount?.address),
 			{
 				value: ethers.utils.parseUnits(amount),
 			}
@@ -104,63 +94,34 @@ const Deposit: React.FC<{
 
 	return (
 		<>
-			{/*{modalOpen && (*/}
-			{/*	<TxModal*/}
-			{/*		modalState={modal.state}*/}
-			{/*		modalText={modal.text}*/}
-			{/*		etherscanHash={modal.hash}*/}
-			{/*		resetModal={resetModal}*/}
-			{/*	/>*/}
-			{/*)}*/}
-			{/*{errorModalOpen && (*/}
-			{/*	<ErrorModal setModalOpen={setErrorModalOpen} modalState={modalState} />*/}
-			{/*)}*/}
-			{/*<Box*/}
-			{/*	component="form"*/}
-			{/*	sx={{*/}
-			{/*		width: "552px",*/}
-			{/*		height: "auto",*/}
-			{/*		margin: "0 auto",*/}
-			{/*		background: "#FFFFFF",*/}
-			{/*		border: "4px solid #1130FF",*/}
-			{/*		display: "flex",*/}
-			{/*		flexDirection: "column",*/}
-			{/*		justifyContent: "center",*/}
-			{/*		alignItems: "center",*/}
-			{/*		padding: "0px",*/}
-			{/*	}}*/}
-			{/*>*/}
-			{/*	<TokenPicker setToken={setToken} />*/}
+			{modalOpen && (
+				<TxModal
+					modalState={modal.state}
+					modalText={modal.text}
+					etherscanHash={modal.hash}
+					resetModal={resetModal}
+				/>
+			)}
+			{errorModalOpen && (
+				<ErrorModal setModalOpen={setErrorModalOpen} modalState={modalState} />
+			)}
 
-			{/*	<TextField*/}
-			{/*		label="Amount"*/}
-			{/*		variant="outlined"*/}
-			{/*		required*/}
-			{/*		sx={{*/}
-			{/*			width: "80%",*/}
-			{/*			m: "30px 0 30px",*/}
-			{/*		}}*/}
-			{/*		onChange={(e) => setAmount(e.target.value)}*/}
-			{/*		helperText={*/}
-			{/*			tokenBalance < Number(amount) ? "Account balance too low" : ""*/}
-			{/*		}*/}
-			{/*	/>*/}
 			{/*	{customAddress ? (*/}
 			{/*		<>*/}
-			{/*			<TextField*/}
-			{/*				label="Destination"*/}
-			{/*				variant="outlined"*/}
-			{/*				required*/}
-			{/*				sx={{*/}
-			{/*					width: "80%",*/}
-			{/*				}}*/}
-			{/*				onChange={(e) =>*/}
-			{/*					updateSelectedAccount({*/}
-			{/*						name: "",*/}
-			{/*						address: e.target.value,*/}
-			{/*					})*/}
-			{/*				}*/}
-			{/*			/>*/}
+			{/*<TextField*/}
+			{/*	label="Destination"*/}
+			{/*	variant="outlined"*/}
+			{/*	required*/}
+			{/*	sx={{*/}
+			{/*		width: "80%",*/}
+			{/*	}}*/}
+			{/*	onChange={(e) =>*/}
+			{/*		updateSelectedAccount({*/}
+			{/*			name: "",*/}
+			{/*			address: e.target.value,*/}
+			{/*		})*/}
+			{/*	}*/}
+			{/*/>*/}
 			{/*			<Button*/}
 			{/*				size="small"*/}
 			{/*				variant="outlined"*/}
@@ -229,23 +190,6 @@ const Deposit: React.FC<{
 			{/*			confirm*/}
 			{/*		</Button>*/}
 			{/*	) : (*/}
-			{/*		<Button*/}
-			{/*			sx={{*/}
-			{/*				fontFamily: "Teko",*/}
-			{/*				fontWeight: "bold",*/}
-			{/*				fontSize: "21px",*/}
-			{/*				lineHeight: "124%",*/}
-			{/*				color: "#1130FF",*/}
-			{/*				mt: "30px",*/}
-			{/*				mb: "50px",*/}
-			{/*			}}*/}
-			{/*			size="large"*/}
-			{/*			variant="outlined"*/}
-			{/*			onClick={connectMetamask}*/}
-			{/*		>*/}
-			{/*			{wallet ? "connect metamask" : "connect wallets"}*/}
-			{/*		</Button>*/}
-			{/*	)}*/}
 			{/*</Box>*/}
 			<ConnectWalletButton
 				onClick={deposit}

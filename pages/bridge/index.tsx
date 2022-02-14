@@ -1,18 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Typography } from "@mui/material";
-import { Frame, Heading, SmallText } from "../../theme/StyledComponents";
 import { useBlockchain } from "../../providers/BlockchainProvider";
 import { useCENNZApi } from "../../providers/CENNZApiProvider";
-import Switch from "../../components/bridge/Switch";
 import Deposit from "../../components/bridge/Deposit";
 import Withdraw from "../../components/bridge/Withdraw";
+import CENNZnetAccountPicker from "../../components/shared/CENNZnetAccountPicker";
 
 import styles from "../../styles/components/bridge/bridge.module.css";
 import ChainPicker from "../../components/bridge/ChainPicker";
-import { Chain, BridgeToken } from "../../types";
+import { Chain, BridgeToken, CennznetAccount } from "../../types";
 import TokenPicker from "../../components/shared/TokenPicker";
-import { ETH, getMetamaskBalance } from "../../utils/bridge/helpers";
-import { defineTxModal } from "../../utils/bridge/modal";
+import { getMetamaskBalance } from "../../utils/bridge/helpers";
 
 const Emery: React.FC<{}> = () => {
 	const [isDeposit, toggleIsDeposit] = useState<boolean>(true);
@@ -23,7 +20,10 @@ const Emery: React.FC<{}> = () => {
 	const [amount, setAmount] = useState<string>("");
 	const [erc20Token, setErc20Token] = useState<BridgeToken>();
 	const [error, setError] = useState<string>();
-	const [success, setSuccess] = useState<string>();
+	const [selectedAccount, updateSelectedAccount] = useState<CennznetAccount>({
+		address: "",
+		name: "",
+	});
 
 	useEffect(() => {
 		if (!api?.isConnected) {
@@ -62,7 +62,12 @@ const Emery: React.FC<{}> = () => {
 				error={error}
 				showBalance={true}
 			/>
-			<Deposit token={erc20Token} amount={amount} />
+			<CENNZnetAccountPicker updateSelectedAccount={updateSelectedAccount} />
+			<Deposit
+				token={erc20Token}
+				amount={amount}
+				selectedAccount={selectedAccount}
+			/>
 			{/*{isDeposit ? <Deposit /> : <Withdraw />}*/}
 		</div>
 	);
