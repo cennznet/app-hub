@@ -17,11 +17,9 @@ const Wallet: React.FC<{}> = () => {
 		event: React.SyntheticEvent
 	) => {
 		if (isWalletConnected) {
-			setModalState("showWallet");
 			setModalOpen(true);
 		} else {
 			connectWallet();
-			setModalState("changeAccount");
 			setModalOpen(true);
 			setIsWalletConnected(true);
 		}
@@ -29,22 +27,12 @@ const Wallet: React.FC<{}> = () => {
 
 	return (
 		<>
-			{modalOpen &&
-				(modalState === "showWallet" || modalState === "changeAccount") && (
-					<WalletModal
-						modalState={modalState}
-						setModalOpen={setModalOpen}
-						setModalState={setModalState}
-					/>
-				)}
+			{modalOpen && <WalletModal setModalOpen={setModalOpen} />}
 			<Frame
 				sx={{
 					top: "4%",
 					right: "5%",
-					backgroundColor:
-						modalState === "showWallet" || modalState === "changeAccount"
-							? "#1130FF"
-							: "#FFFFFF",
+					backgroundColor: modalOpen ? "#1130FF" : "#FFFFFF",
 					cursor: "pointer",
 					textAlign: isWalletConnected ? null : "center",
 				}}
@@ -56,10 +44,7 @@ const Wallet: React.FC<{}> = () => {
 						ml: isWalletConnected ? "5px" : 0,
 						mt: "3px",
 						fontSize: "20px",
-						color:
-							modalState === "showWallet" || modalState === "changeAccount"
-								? "#FFFFFF"
-								: "#1130FF",
+						color: modalOpen ? "#FFFFFF" : "#1130FF",
 						flexGrow: 1,
 						whiteSpace: "nowrap",
 					}}
@@ -73,10 +58,7 @@ const Wallet: React.FC<{}> = () => {
 							overflow: "hidden",
 							ml: "1.5px",
 							fontSize: "15px",
-							color:
-								modalState === "showWallet" || modalState === "changeAccount"
-									? "#FFFFFF"
-									: "black",
+							color: modalOpen ? "#FFFFFF" : "black",
 						}}
 					>
 						{selectedAccount.meta.name}

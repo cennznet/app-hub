@@ -5,8 +5,7 @@ import AccountBalances from "./AccountBalances";
 
 const WalletModal: React.FC<{
 	setModalOpen: Function;
-	setModalState: Function;
-}> = ({ setModalOpen, setModalState }) => {
+}> = ({ setModalOpen }) => {
 	const [open] = useState(true);
 	const { selectAccount, selectedAccount } = useWallet();
 
@@ -40,7 +39,6 @@ const WalletModal: React.FC<{
 					size="large"
 					variant="outlined"
 					onClick={() => {
-						setModalState("");
 						setModalOpen(false);
 					}}
 				>
