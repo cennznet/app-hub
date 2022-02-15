@@ -33,11 +33,11 @@
 }
 
 .chainSelectedArrow{
-    margin-left: 30px;
+    margin-left: 27px;
 }
 
 .chainSelectedArrowDown{
-    margin-left: 30px;
+    margin-left: 27px;
     transform: rotate(-180deg);
 
 }

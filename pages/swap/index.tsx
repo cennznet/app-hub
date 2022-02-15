@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { Button } from "@mui/material";
 import TokenPicker from "../../components/shared/TokenPicker";
-import ExchangeIcon from "../../components/swap/ExchangeIcon";
+import ExchangeIcon from "../../components/shared/ExchangeIcon";
 import { useCENNZApi } from "../../providers/CENNZApiProvider";
 import { useAssets } from "../../providers/SupportedAssetsProvider";
 import { Asset } from "../../types";

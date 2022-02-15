@@ -8,13 +8,27 @@
     cursor: pointer;
     transition-duration: 0.7s;
     transition-property: transform;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .swapIcon:hover{
-    opacity: 0.7;
+    fill: white;
+    background: #1130FF;
 }
 
-/*.swapIcon:active{*/
-/*    transform: rotate(-180deg);*/
-/*    -webkit-transform: rotate(-180deg);*/
-/*}*/
+.horizontal {
+    transform: rotate(-90deg);
+    margin-bottom: 34px;
+    height: 60px;
+    width: 60px;
+}
+
+.swapIcon:hover > img{
+    filter: invert(1) sepia(1) hue-rotate(200deg);
+}
+
+.arrows:hover{
+    filter: invert(1) sepia(1) hue-rotate(200deg);
+}

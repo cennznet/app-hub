@@ -10,6 +10,7 @@ import ChainPicker from "../../components/bridge/ChainPicker";
 import { Chain, BridgeToken, CennznetAccount, BridgeState } from "../../types";
 import TokenPicker from "../../components/shared/TokenPicker";
 import { getMetamaskBalance } from "../../utils/bridge/helpers";
+import ExchangeIcon from "../../components/shared/ExchangeIcon";
 
 const Emery: React.FC<{}> = () => {
 	const [bridgeState, setBridgeState] = useState<BridgeState>("Deposit");
@@ -61,6 +62,7 @@ const Emery: React.FC<{}> = () => {
 					initialChain={"Ethereum"}
 					topText={"FROM"}
 				/>
+				<ExchangeIcon onClick={() => {}} horizontal={true} />
 				<ChainPicker
 					setChain={setToChain}
 					initialChain={"Cennznet"}
