@@ -11,6 +11,7 @@ import { Chain, BridgeToken, CennznetAccount, BridgeState } from "../../types";
 import TokenPicker from "../../components/shared/TokenPicker";
 import { getMetamaskBalance } from "../../utils/bridge/helpers";
 import ExchangeIcon from "../../components/shared/ExchangeIcon";
+import { useWallet } from "../../providers/SupportedWalletProvider";
 
 const Emery: React.FC<{}> = () => {
 	const [bridgeState, setBridgeState] = useState<BridgeState>("Withdraw");
@@ -18,13 +19,16 @@ const Emery: React.FC<{}> = () => {
 	const [fromChain, setFromChain] = useState<Chain>();
 	const { Account } = useBlockchain();
 	const { api, initApi } = useCENNZApi();
+	const { selectedAccount } = useWallet();
+	const { getBridgeBalances } = useWallet();
 	const [amount, setAmount] = useState<string>("");
 	const [erc20Token, setErc20Token] = useState<BridgeToken>();
 	const [error, setError] = useState<string>();
-	const [selectedAccount, updateSelectedAccount] = useState<CennznetAccount>({
-		address: "",
-		name: "",
-	});
+	const [selectedAccountCustom, updateSelectedAccountCustom] =
+		useState<CennznetAccount>({
+			address: "",
+			name: "",
+		});
 	const [enoughBalance, setEnoughBalance] = useState<boolean>(false);
 
 	useEffect(() => {
@@ -32,6 +36,10 @@ const Emery: React.FC<{}> = () => {
 			initApi();
 		}
 	}, [api, initApi]);
+
+	useEffect(() => {
+		getBridgeBalances(selectedAccount?.address);
+	}, [selectedAccount, api]);
 
 	//Check MetaMask account has enough tokens to deposit if eth token picker
 	useEffect(() => {
@@ -86,18 +94,20 @@ const Emery: React.FC<{}> = () => {
 					amount={amount}
 					error={error}
 					showBalance={true}
-					showWrappedERC20Balance={true}
+					wrappedERC20Balance={true}
 					width={"460px"}
 				/>
 			</div>
-			<CENNZnetAccountPicker updateSelectedAccount={updateSelectedAccount} />
+			<CENNZnetAccountPicker
+				updateSelectedAccount={updateSelectedAccountCustom}
+			/>
 			{bridgeState === "Deposit" ? (
 				<Deposit
 					token={erc20Token}
 					amount={amount}
-					selectedAccount={selectedAccount}
+					selectedAccount={selectedAccountCustom}
 					disabled={
-						!selectedAccount.address ||
+						!selectedAccountCustom?.address ||
 						!(parseFloat(amount) > 0) ||
 						!enoughBalance
 					}
@@ -106,9 +116,9 @@ const Emery: React.FC<{}> = () => {
 				<Withdraw
 					token={erc20Token}
 					amount={amount}
-					selectedAccount={selectedAccount}
+					selectedAccount={selectedAccountCustom}
 					disabled={
-						!selectedAccount.address ||
+						!selectedAccountCustom?.address ||
 						!(parseFloat(amount) > 0) ||
 						!enoughBalance
 					}

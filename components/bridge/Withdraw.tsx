@@ -16,7 +16,6 @@ const Withdraw: React.FC<{
 	disabled: boolean;
 	setEnoughBalance: Function;
 }> = ({ token, amount, selectedAccount, disabled, setEnoughBalance }) => {
-	const [tokenBalance, setTokenBalance] = useState<Number>();
 	const [modalOpen, setModalOpen] = useState(false);
 	const [errorModalOpen, setErrorModalOpen] = useState(false);
 	const [modalState, _] = useState("");

@@ -22,12 +22,12 @@ const TokenPicker: React.FC<{
 	forceSelection?: Asset;
 	removeToken?: Asset;
 	showBalance?: boolean;
+	wrappedERC20Balance?: boolean;
 	error?: string;
 	success?: string;
 	poolConfig?: PoolConfig;
 	whichAsset?: string;
 	width?: string;
-	showWrappedERC20Balance?: boolean;
 }> = ({
 	setToken,
 	setAmount,
@@ -41,7 +41,7 @@ const TokenPicker: React.FC<{
 	poolConfig,
 	whichAsset,
 	width,
-	showWrappedERC20Balance,
+	wrappedERC20Balance,
 }) => {
 	const router = useRouter();
 	const [assetsLoading, setAssetsLoading] = useState<boolean>(true);
@@ -131,7 +131,7 @@ const TokenPicker: React.FC<{
 			);
 			setSelectedTokenBalance(parseFloat(foundTokenBalance?.value.toFixed(4)));
 		} else {
-			if (showWrappedERC20Balance) {
+			if (wrappedERC20Balance) {
 				if (!tokens[selectedTokenIdx] || !bridgeBalances || !api) return;
 				(async () => {
 					const tokenExist = await api.query.erc20Peg.erc20ToAssetId(
@@ -161,7 +161,7 @@ const TokenPicker: React.FC<{
 				})();
 			}
 		}
-	}, [balances, tokens, selectedTokenIdx, Account]);
+	}, [balances, tokens, selectedTokenIdx, Account, bridgeBalances]);
 
 	return (
 		<div className={styles.tokenPickerContainer}>

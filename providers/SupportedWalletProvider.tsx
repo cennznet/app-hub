@@ -109,6 +109,7 @@ export default function SupportedWalletProvider({
 
 	const getBridgeBalances = useCallback(
 		async (address: string) => {
+			if (!api || !address) return;
 			const assets = await (api.rpc as any).genericAsset.registeredAssets();
 			const tokenMap = {};
 
