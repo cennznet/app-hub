@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
-import styles from "../styles/home.module.css";
 import { useCENNZApi } from "../providers/CENNZApiProvider";
+import Swap from "./swap";
 
 const Home: React.FC<{}> = () => {
 	const { api, initApi } = useCENNZApi();
@@ -11,7 +11,7 @@ const Home: React.FC<{}> = () => {
 		}
 	}, [api, initApi]);
 
-	return <div className={styles.container}></div>;
+	return <Swap />;
 };
 
 export default Home;
