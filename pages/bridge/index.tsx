@@ -100,6 +100,7 @@ const Emery: React.FC<{}> = () => {
 			</div>
 			<CENNZnetAccountPicker
 				updateSelectedAccount={updateSelectedAccountCustom}
+				topText={"DESTINATION"}
 			/>
 			{bridgeState === "Deposit" ? (
 				<Deposit

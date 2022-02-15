@@ -61,7 +61,7 @@ const Wallet: React.FC<{}> = () => {
 							color: modalOpen ? "#FFFFFF" : "black",
 						}}
 					>
-						{selectedAccount.meta.name}
+						{selectedAccount?.meta?.name}
 					</SmallText>
 				)}
 			</Frame>

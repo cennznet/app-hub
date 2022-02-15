@@ -6,8 +6,9 @@ import styles from "../../styles/components/shared/cennznetaccountpicker.module.
 const CENNZnetAccountPicker: React.FC<{
 	updateSelectedAccount: Function;
 	wallet?: boolean;
+	topText?: string;
 	forceAddress?: string;
-}> = ({ updateSelectedAccount, wallet }) => {
+}> = ({ updateSelectedAccount, wallet, topText }) => {
 	const accounts = useWeb3Accounts();
 	const [selectedAccount, setSelectedAccount] = useState<string>();
 	const [accountNames, setAccountNames] = useState<string[]>([]);
@@ -57,8 +58,14 @@ const CENNZnetAccountPicker: React.FC<{
 	};
 
 	return (
-		<div className={styles.accountPickerContainer}>
-			<p className={styles.topText}>DESTINATION</p>
+		<div
+			className={
+				wallet
+					? `${styles.accountPickerContainer} ${styles.walletContainer}`
+					: styles.accountPickerContainer
+			}
+		>
+			<p className={styles.topText}>{topText}</p>
 			<Autocomplete
 				disablePortal
 				options={accountNames}
@@ -80,7 +87,6 @@ const CENNZnetAccountPicker: React.FC<{
 				}}
 				sx={{
 					width: wallet ? "100%" : "460px",
-					mb: wallet ? null : "77px",
 				}}
 				renderInput={(params) => (
 					<TextField
@@ -88,7 +94,6 @@ const CENNZnetAccountPicker: React.FC<{
 						{...params}
 						label={selectedAccount ? "" : "Select or Type Address"}
 						InputLabelProps={{ shrink: false }}
-						required={!wallet}
 					/>
 				)}
 			/>
