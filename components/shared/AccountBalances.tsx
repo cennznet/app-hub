@@ -1,91 +1,128 @@
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/router";
-import { InjectedAccountWithMeta } from "@polkadot/extension-inject/types";
-import { Box, CircularProgress } from "@mui/material";
+import dynamic from "next/dynamic";
+import { Box, CircularProgress, Divider } from "@mui/material";
 import { Heading, SmallText } from "../../theme/StyledComponents";
 import { useWallet } from "../../providers/SupportedWalletProvider";
+import { ETH_LOGO } from "../../utils/bridge/helpers";
+import CENNZnetAccountPicker from "./CENNZnetAccountPicker";
+import ERC20Tokens from "../../artifacts/erc20tokens.json";
 
 const AccountBalances: React.FC<{
-	selectedAccount: InjectedAccountWithMeta;
-}> = ({ selectedAccount }) => {
-	const router = useRouter();
-	const [balancesToMap, setBalancesToMap] = useState<any>();
-	const { getBridgeBalances, bridgeBalances, balances } = useWallet();
+	updateSelectedAccount: Function;
+}> = ({ updateSelectedAccount }) => {
+	const { getBridgeBalances, bridgeBalances, selectedAccount } = useWallet();
 
 	useEffect(() => {
-		if (router.asPath === "/bridge") getBridgeBalances(selectedAccount.address);
-	}, [router.asPath, getBridgeBalances, selectedAccount]);
+		getBridgeBalances(selectedAccount.address);
+	}, [getBridgeBalances, selectedAccount]);
 
-	useEffect(() => {
-		if (router.asPath === "/bridge") {
-			setBalancesToMap(bridgeBalances);
-		} else {
-			setBalancesToMap(balances);
-		}
-	}, [balances, bridgeBalances, router.asPath]);
+	const Identicon = dynamic(() => import("@polkadot/react-identicon"), {
+		loading: () => <CircularProgress />,
+	});
 
 	return (
 		<>
-			<Box sx={{ mt: "5%", pl: "5%", display: "flex" }}>
-				<Heading
+			<Box sx={{ mt: "5%", pl: "5%", display: "flex", flexDirection: "row" }}>
+				<Identicon
+					value={selectedAccount.address}
+					theme="beachball"
+					size={50}
+				/>
+				<Box
 					sx={{
-						color: "primary.main",
-						fontSize: "18px",
-
-						textTransform: "uppercase",
-					}}
-				>
-					{selectedAccount.meta.name}&nbsp;
-				</Heading>
-				<Heading
-					sx={{
-						color: "black",
-						fontSize: "18px",
 						display: "flex",
+						flexDirection: "column",
+						mt: "10px",
+						ml: "10px",
 					}}
 				>
-					{"[Account Name]"}
-				</Heading>
+					<Heading
+						sx={{
+							color: "primary.main",
+							fontSize: "16px",
+							textTransform: "uppercase",
+						}}
+					>
+						{selectedAccount.meta.name}
+					</Heading>
+					<SmallText
+						sx={{ opacity: "70%", cursor: "copy", fontSize: "14px" }}
+						onClick={() =>
+							navigator.clipboard.writeText(selectedAccount.address)
+						}
+					>
+						{selectedAccount.address
+							.substring(0, 8)
+							.concat(
+								"...",
+								selectedAccount.address.substring(
+									selectedAccount.address.length - 8,
+									selectedAccount.address.length
+								)
+							)}
+					</SmallText>
+				</Box>
 			</Box>
-			<SmallText sx={{ pl: "5%", opacity: "70%" }}>
-				{selectedAccount.address}
-			</SmallText>
-			{balancesToMap ? (
+			<Box sx={{ m: "15px 5% 0 5%" }}>
+				<CENNZnetAccountPicker
+					updateSelectedAccount={updateSelectedAccount}
+					wallet={true}
+				/>
+			</Box>
+			<Divider sx={{ m: "15px 0 15px" }} />
+			<Heading sx={{ pl: "5%" }}>Balance</Heading>
+			{bridgeBalances ? (
 				<Box sx={{ mt: "3%", pl: "5%", display: "block" }}>
-					{Object.values(balancesToMap).map((token: any, i) => (
-						<Box key={i}>
-							<SmallText
+					{Object.values(bridgeBalances).map((token: any, i) => {
+						let logo;
+						ERC20Tokens.tokens.map((erc20token) => {
+							if (erc20token.symbol === token.symbol) {
+								logo = erc20token.logoURI;
+							}
+						});
+
+						return (
+							<Box
+								key={i}
 								sx={{
-									color: "black",
-									fontSize: "18px",
-									display: "inline-flex",
+									display: "flex",
+									height: "50px",
+									verticalAlign: "center",
 								}}
 							>
-								{token.symbol} Balance:
-							</SmallText>
-							<SmallText
-								sx={{
-									color: "black",
-									fontWeight: "bold",
-									fontSize: "18px",
-									display: "inline-flex",
-								}}
-							>
-								{token.balance || token.value}
-							</SmallText>
-							<br />
-						</Box>
-					))}
+								<Box sx={{ m: "10px 10px" }}>
+									<img
+										style={{ width: "40px", height: "40px" }}
+										src={
+											logo
+												? logo
+												: token.symbol === "ETH"
+												? ETH_LOGO
+												: `images/${token.symbol.toLowerCase()}.svg`
+										}
+										alt={`${token.symbol}-logo`}
+									/>
+								</Box>
+								<SmallText
+									sx={{
+										color: "black",
+										fontWeight: "bold",
+										fontSize: "18px",
+										display: "inline-flex",
+										mt: "18px",
+									}}
+								>
+									{token.balance?.toFixed(4) || token.value?.toFixed(4)}
+								</SmallText>
+								<br />
+							</Box>
+						);
+					})}
 				</Box>
 			) : (
-				<>
-					<SmallText
-						sx={{ color: "primary.main", fontSize: "14", margin: "10px auto" }}
-					>
-						Fetching Balances...
-					</SmallText>
-					<CircularProgress sx={{ margin: "0 auto" }} />
-				</>
+				<Box sx={{ m: "5% 0 0 calc(5% + 10px)" }}>
+					<CircularProgress />
+				</Box>
 			)}
 		</>
 	);

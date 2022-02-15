@@ -12,7 +12,6 @@ export const Frame = styled(Box)({
 });
 
 export const Heading = styled(Typography)({
-	fontFamily: "Teko",
 	fontStyle: "normal",
 	fontWeight: "bold",
 	lineHeight: "125%",
