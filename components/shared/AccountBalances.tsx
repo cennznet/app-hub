@@ -8,8 +8,6 @@ import { ETH_LOGO } from "../../utils/bridge/helpers";
 import CENNZnetAccountPicker from "./CENNZnetAccountPicker";
 import ERC20Tokens from "../../artifacts/erc20tokens.json";
 
-const Identicon = dynamic(() => import("@polkadot/react-identicon"));
-
 const AccountBalances: React.FC<{
 	updateSelectedAccount: Function;
 }> = ({ updateSelectedAccount }) => {
@@ -29,6 +27,8 @@ const AccountBalances: React.FC<{
 			setBalancesToMap(balances);
 		}
 	}, [balances, bridgeBalances, router.asPath]);
+
+	const Identicon = dynamic(() => import("@polkadot/react-identicon"));
 
 	return (
 		<>
@@ -122,7 +122,7 @@ const AccountBalances: React.FC<{
 										mt: "18px",
 									}}
 								>
-									{token.balance || token.value}
+									{token.balance?.toFixed(4) || token.value?.toFixed(4)}
 								</SmallText>
 								<br />
 							</Box>
