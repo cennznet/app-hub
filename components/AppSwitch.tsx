@@ -26,7 +26,7 @@ const Switch: React.FC<{ setLocation: Function }> = ({ setLocation }) => {
 				<>
 					<SwitchButton
 						sx={{
-							color: "#1130FF",
+							color: "primary.swap",
 							borderBottom: "2px solid #1130FF",
 						}}
 					>
@@ -47,8 +47,8 @@ const Switch: React.FC<{ setLocation: Function }> = ({ setLocation }) => {
 					</SwitchButton>
 					<SwitchButton
 						sx={{
-							color: "#1130FF",
-							borderBottom: "2px solid #1130FF",
+							color: "primary.pool",
+							borderBottom: "2px solid #9847FF",
 						}}
 					>
 						pool
@@ -68,8 +68,8 @@ const Switch: React.FC<{ setLocation: Function }> = ({ setLocation }) => {
 					</SwitchButton>
 					<SwitchButton
 						sx={{
-							color: "#1130FF",
-							borderBottom: "2px solid #1130FF",
+							color: "primary.bridge",
+							borderBottom: "2px solid #2DC8CB",
 						}}
 					>
 						bridge

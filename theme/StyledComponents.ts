@@ -44,21 +44,25 @@ export const Option = styled(Button)({
 });
 
 export const SwitchButton = styled(Button)({
-	backgroundColor: "#FFFFFF",
-	position: "static",
-	height: "48px",
-	maxWidth: "120px",
-	top: "0%",
-	bottom: "0%",
-	flex: "none",
-	order: 0,
-	alignSelf: "stretch",
-	flexGrow: 1,
-	margin: "0px 0px",
-	fontWeight: "500",
-	fontSize: "14px",
-	lineHeight: "16px",
-	letterSpacing: "1.25px",
+	"backgroundColor": "#FFFFFF",
+	"position": "static",
+	"height": "48px",
+	"maxWidth": "120px",
+	"top": "0%",
+	"bottom": "0%",
+	"flex": "none",
+	"order": 0,
+	"alignSelf": "stretch",
+	"flexGrow": 1,
+	"margin": "0px 0px",
+	"fontWeight": "500",
+	"fontSize": "14px",
+	"lineHeight": "16px",
+	"letterSpacing": "1.25px",
+	"&:hover": {
+		color: "white",
+		borderBottom: "2px solid white",
+	},
 });
 
 export const SettingsText = styled(Typography)({
