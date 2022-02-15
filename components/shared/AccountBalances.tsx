@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { Box, CircularProgress, Divider } from "@mui/material";
 import { Heading, SmallText } from "../../theme/StyledComponents";
 import { useWallet } from "../../providers/SupportedWalletProvider";
 import { ETH_LOGO } from "../../utils/bridge/helpers";
 import CENNZnetAccountPicker from "./CENNZnetAccountPicker";
-import AccountCircleTwoToneIcon from "@mui/icons-material/AccountCircleTwoTone";
 import ERC20Tokens from "../../artifacts/erc20tokens.json";
+
+const Identicon = dynamic(() => import("@polkadot/react-identicon"));
 
 const AccountBalances: React.FC<{
 	updateSelectedAccount: Function;
@@ -31,7 +33,11 @@ const AccountBalances: React.FC<{
 	return (
 		<>
 			<Box sx={{ mt: "5%", pl: "5%", display: "flex", flexDirection: "row" }}>
-				<AccountCircleTwoToneIcon sx={{ fontSize: "60px" }} />
+				<Identicon
+					value={selectedAccount.address}
+					theme="beachball"
+					size={50}
+				/>
 				<Box
 					sx={{
 						display: "flex",
