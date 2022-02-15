@@ -160,7 +160,7 @@ const Settings: React.FC<{
 									fontSize: "16px",
 									lineHeight: "150%",
 									width: "90%",
-									m: "10px auto",
+									m: "4% auto 4%",
 								}}
 							>
 								If the amount of CPAY used sits outside{" "}
