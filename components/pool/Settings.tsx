@@ -27,9 +27,14 @@ const Settings: React.FC<{
 
 	return (
 		<>
-			<Box sx={{ m: "30px", width: "468px" }}>
+			<Box sx={{ mt: "30px", width: "468px", mb: open && "30px" }}>
 				<Box
-					sx={{ display: "flex", flexDirection: "row", cursor: "pointer" }}
+					sx={{
+						display: "flex",
+						flexDirection: "row",
+						cursor: "pointer",
+						mb: open ? "35px" : "20px",
+					}}
 					onClick={() => {
 						setOpen(!open);
 						setInfoOpen(false);
@@ -49,7 +54,7 @@ const Settings: React.FC<{
 				{open && (
 					<Box
 						sx={{
-							m: "40px auto",
+							m: "0 auto",
 						}}
 					>
 						<SettingsText>SLIPPAGE</SettingsText>
@@ -114,19 +119,22 @@ const Settings: React.FC<{
 							{infoOpen && (
 								<Box
 									sx={{
-										border: "1px solid black",
+										position: "absolute",
+										left: "52%",
+										top: "64.8%",
+										border: "1px solid #979797",
+										boxSizing: "border-box",
 										width: "228px",
 										height: "auto",
 										backgroundColor: "white",
 										zIndex: +1,
-										m: "-20px 0 0 15px",
 										boxShadow: "4px 8px 8px rgba(17, 48, 255, 0.1)",
 									}}
 								>
 									<Typography
 										sx={{
-											m: "10px 8px 10px 8px",
-											fontSize: "12px",
+											m: "10px 10px 10px 10px",
+											fontSize: "13px",
 											lineHeight: "150%",
 										}}
 									>
