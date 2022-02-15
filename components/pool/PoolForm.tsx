@@ -283,30 +283,30 @@ const PoolForm: React.FC<{}> = () => {
 		>
 			<h1 className={styles.pageHeader}>POOL</h1>
 			<Box
-				style={{
+				sx={{
 					display: "flex",
 					flexDirection: "row",
 					alignContent: "justify",
 					width: "468px",
 					boxSizing: "border-box",
 					border: `1px solid ${poolColors}`,
+					mt: "30px",
+					cursor: "pointer",
+				}}
+				onClick={() => {
+					setPoolAction(
+						poolAction === PoolAction.ADD ? PoolAction.REMOVE : PoolAction.ADD
+					);
+					setPoolColors(
+						poolColors === PoolColors.ADD ? PoolColors.REMOVE : PoolColors.ADD
+					);
+					setCoreAmount("");
+					setTradeAssetAmount("");
+					setCoreError(null);
+					setTradeError(null);
 				}}
 			>
-				<SwapIconClass
-					onClick={() => {
-						setPoolAction(
-							poolAction === PoolAction.ADD ? PoolAction.REMOVE : PoolAction.ADD
-						);
-						setPoolColors(
-							poolColors === PoolColors.ADD ? PoolColors.REMOVE : PoolColors.ADD
-						);
-						setCoreAmount("");
-						setTradeAssetAmount("");
-						setCoreError(null);
-						setTradeError(null);
-					}}
-					color={poolColors}
-				/>
+				<SwapIconClass onClick={() => null} color={poolColors} />
 				<Typography
 					sx={{
 						m: "17px 0 0 20px",

@@ -67,3 +67,21 @@ export const SettingsText = styled(Typography)({
 	fontWeight: "500",
 	letterSpacing: "1.2px",
 });
+
+export const PoolSummaryBox = styled(Box)({
+	display: "flex",
+	flexDirection: "row",
+	marginLeft: "30px",
+});
+
+export const PoolSummaryText = styled(Typography)({
+	fontSize: "16px",
+	lineHeight: "175%",
+});
+
+export const PoolSummaryBoldText = styled(Typography)({
+	color: "#6200EE",
+	fontSize: "16px",
+	lineHeight: "175%",
+	fontWeight: "bold",
+});

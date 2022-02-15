@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Box, CircularProgress, Typography } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 import { PoolSummaryProps } from "../../types";
 import { usePool } from "../../providers/PoolProvider";
+import {
+	PoolSummaryBox,
+	PoolSummaryText,
+	PoolSummaryBoldText,
+} from "../../theme/StyledComponents";
 
 interface FomattedBalances {
 	userTradeAsset: string;
@@ -39,7 +44,7 @@ const PoolSummary: React.FC<{ poolSummaryProps: PoolSummaryProps }> = ({
 	return (
 		<Box
 			sx={{
-				backgroundColor: userPoolShare ? "#F5ECFF" : null,
+				backgroundColor: "#F5ECFF",
 				width: "468px",
 				height: "auto",
 			}}
@@ -49,57 +54,22 @@ const PoolSummary: React.FC<{ poolSummaryProps: PoolSummaryProps }> = ({
 					<CircularProgress sx={{ margin: "30px auto", color: "#6200EE" }} />
 				</Box>
 			) : (
-				<Box sx={{ m: "2% auto 2%" }}>
+				<Box sx={{ m: "4% auto 4%" }}>
 					{!!exchangeRate && !!tradeAsset && (
-						<Box
-							sx={{
-								display: "flex",
-								flexDirection: "row",
-								ml: "8%",
-							}}
-						>
-							<Typography
-								sx={{
-									color: "#6200EE",
-									fontSize: "16px",
-									lineHeight: "175%",
-									fontWeight: "bold",
-								}}
-							>
-								Exchange Rate:
-							</Typography>
+						<PoolSummaryBox>
+							<PoolSummaryBoldText>Exchange Rate:</PoolSummaryBoldText>
 							&nbsp;
-							<Typography
-								sx={{
-									fontSize: "16px",
-									lineHeight: "175%",
-								}}
-							>
+							<PoolSummaryText>
 								1 {coreAsset?.symbol} = {exchangeRate} {tradeAsset?.symbol}
-							</Typography>
-						</Box>
+							</PoolSummaryText>
+						</PoolSummaryBox>
 					)}
 					{!!userPoolShare && (
-						<Box
-							sx={{
-								display: "flex",
-								flexDirection: "row",
-								ml: "8%",
-							}}
-						>
-							<Typography
-								sx={{
-									color: "#6200EE",
-									fontSize: "16px",
-									lineHeight: "175%",
-									fontWeight: "bold",
-								}}
-							>
-								Your Liquidity:
-							</Typography>
+						<PoolSummaryBox>
+							<PoolSummaryBoldText>Your Liquidity:</PoolSummaryBoldText>
 							&nbsp;
 							{!!formattedBalances && (
-								<Typography
+								<PoolSummaryText
 									sx={{
 										fontSize: "16px",
 										lineHeight: "175%",
@@ -108,68 +78,28 @@ const PoolSummary: React.FC<{ poolSummaryProps: PoolSummaryProps }> = ({
 									{formattedBalances.userTradeAsset} {tradeAsset?.symbol}{" "}
 									+&nbsp;
 									{formattedBalances.userCoreAsset} {coreAsset?.symbol}
-								</Typography>
+								</PoolSummaryText>
 							)}
-						</Box>
+						</PoolSummaryBox>
 					)}
 					{!!poolLiquidity && (
-						<Box
-							sx={{
-								display: "flex",
-								flexDirection: "row",
-								ml: "8%",
-							}}
-						>
-							<Typography
-								sx={{
-									color: "#6200EE",
-									fontSize: "16px",
-									lineHeight: "175%",
-									fontWeight: "bold",
-								}}
-							>
-								Pool Liquidity:
-							</Typography>
+						<PoolSummaryBox>
+							<PoolSummaryBoldText>Pool Liquidity:</PoolSummaryBoldText>
 							&nbsp;
-							<Typography
-								sx={{
-									fontSize: "16px",
-									lineHeight: "175%",
-								}}
-							>
+							<PoolSummaryText>
 								{formattedBalances.poolTradeAsset} {tradeAsset.symbol} +&nbsp;
 								{formattedBalances.poolCoreAsset} {coreAsset.symbol}
-							</Typography>
-						</Box>
+							</PoolSummaryText>
+						</PoolSummaryBox>
 					)}
 					{!!estimatedFee && (
-						<Box
-							sx={{
-								display: "flex",
-								flexDirection: "row",
-								ml: "8%",
-							}}
-						>
-							<Typography
-								sx={{
-									color: "#6200EE",
-									fontSize: "16px",
-									lineHeight: "175%",
-									fontWeight: "bold",
-								}}
-							>
-								Estimated Fee:
-							</Typography>
+						<PoolSummaryBox>
+							<PoolSummaryBoldText>Estimated Fee:</PoolSummaryBoldText>
 							&nbsp;
-							<Typography
-								sx={{
-									fontSize: "16px",
-									lineHeight: "175%",
-								}}
-							>
+							<PoolSummaryText>
 								{estimatedFee.asString(coreAsset?.decimals)} {coreAsset?.symbol}
-							</Typography>
-						</Box>
+							</PoolSummaryText>
+						</PoolSummaryBox>
 					)}
 				</Box>
 			)}

@@ -152,7 +152,12 @@ const TokenPicker: React.FC<{
 				>
 					<div className={styles.tokenSelector}>
 						{assetsLoading ? (
-							<CircularProgress />
+							<CircularProgress
+								size={30}
+								sx={{
+									color: poolConfig ? "#6200EE" : "#1130FF",
+								}}
+							/>
 						) : (
 							<>
 								<img
@@ -165,11 +170,15 @@ const TokenPicker: React.FC<{
 								<button
 									type="button"
 									className={styles.tokenButton}
-									onClick={() => setTokenDropDownActive(!tokenDropDownActive)}
-									disabled={
-										(router.asPath === "/bridge" && !Account) ||
-										whichAsset === "core"
+									onClick={() =>
+										whichAsset !== "core"
+											? setTokenDropDownActive(!tokenDropDownActive)
+											: null
 									}
+									disabled={router.asPath === "/bridge" && !Account}
+									style={{
+										cursor: whichAsset !== "core" ? "hover" : "default",
+									}}
 								>
 									{tokens[selectedTokenIdx]?.symbol}
 									{whichAsset !== "core" && (

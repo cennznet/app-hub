@@ -18,7 +18,7 @@ const Pool: React.FC<{}> = () => {
 			<Box
 				sx={{
 					position: "absolute",
-					top: "20%",
+					top: "131px",
 					left: "calc(50% - 552px/2)",
 					display: "flex",
 					justifyContent: "center",
