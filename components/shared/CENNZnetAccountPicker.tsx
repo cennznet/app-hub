@@ -90,7 +90,6 @@ const CENNZnetAccountPicker: React.FC<{
 				}}
 				renderInput={(params) => (
 					<TextField
-						placeholder={"placeholder"}
 						{...params}
 						label={selectedAccount ? "" : "Select or Type Address"}
 						InputLabelProps={{ shrink: false }}

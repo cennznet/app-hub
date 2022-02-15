@@ -9,14 +9,14 @@ import styles from "../../styles/components/bridge/bridge.module.css";
 import ChainPicker from "../../components/bridge/ChainPicker";
 import { Chain, BridgeToken, CennznetAccount, BridgeState } from "../../types";
 import TokenPicker from "../../components/shared/TokenPicker";
-import { getMetamaskBalance } from "../../utils/bridge/helpers";
+import { CHAINS, getMetamaskBalance } from "../../utils/bridge/helpers";
 import ExchangeIcon from "../../components/shared/ExchangeIcon";
 import { useWallet } from "../../providers/SupportedWalletProvider";
 
 const Emery: React.FC<{}> = () => {
 	const [bridgeState, setBridgeState] = useState<BridgeState>("Withdraw");
-	const [toChain, setToChain] = useState<Chain>();
-	const [fromChain, setFromChain] = useState<Chain>();
+	const [toChain, setToChain] = useState<Chain>(CHAINS[1]);
+	const [fromChain, setFromChain] = useState<Chain>(CHAINS[0]);
 	const { Account } = useBlockchain();
 	const { api, initApi } = useCENNZApi();
 	const { selectedAccount } = useWallet();
@@ -40,6 +40,15 @@ const Emery: React.FC<{}> = () => {
 	useEffect(() => {
 		getBridgeBalances(selectedAccount?.address);
 	}, [selectedAccount, api]);
+
+	useEffect(() => {
+		if (!toChain) return;
+		if (toChain.name === "Cennznet") {
+			setBridgeState("Deposit");
+		} else {
+			setBridgeState("Withdraw");
+		}
+	}, [toChain, fromChain]);
 
 	//Check MetaMask account has enough tokens to deposit if eth token picker
 	useEffect(() => {
@@ -74,13 +83,22 @@ const Emery: React.FC<{}> = () => {
 			<div className={styles.chainPickerContainer}>
 				<ChainPicker
 					setChain={setFromChain}
-					initialChain={"Cennznet"}
+					setOppositeChain={setToChain}
+					initialChain={"Ethereum"}
+					forceChain={fromChain.name}
 					topText={"FROM"}
 				/>
-				<ExchangeIcon onClick={() => {}} horizontal={true} />
+				<ExchangeIcon
+					onClick={() => {
+						setFromChain(toChain);
+					}}
+					horizontal={true}
+				/>
 				<ChainPicker
 					setChain={setToChain}
-					initialChain={"Ethereum"}
+					setOppositeChain={setFromChain}
+					initialChain={"Cennznet"}
+					forceChain={toChain.name}
 					topText={"TO"}
 				/>
 			</div>
@@ -94,7 +112,7 @@ const Emery: React.FC<{}> = () => {
 					amount={amount}
 					error={error}
 					showBalance={true}
-					wrappedERC20Balance={true}
+					wrappedERC20Balance={bridgeState === "Withdraw"}
 					width={"460px"}
 				/>
 			</div>

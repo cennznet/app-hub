@@ -161,7 +161,14 @@ const TokenPicker: React.FC<{
 				})();
 			}
 		}
-	}, [balances, tokens, selectedTokenIdx, Account, bridgeBalances]);
+	}, [
+		balances,
+		tokens,
+		selectedTokenIdx,
+		Account,
+		bridgeBalances,
+		wrappedERC20Balance,
+	]);
 
 	return (
 		<div className={styles.tokenPickerContainer}>

@@ -2,38 +2,49 @@ import React, { useState, useEffect } from "react";
 import { Chain, SupportedChain } from "../../types";
 
 import styles from "../../styles/components/bridge/chainpicker.module.css";
-import { ETH_LOGO } from "../../utils/bridge/helpers";
-
-const CHAINS: Chain[] = [
-	{
-		name: "Cennznet",
-		logo: "images/cennz.svg",
-	},
-	{
-		name: "Ethereum",
-		logo: ETH_LOGO,
-	},
-];
+import { CHAINS } from "../../utils/bridge/helpers";
 
 const ChainPicker: React.FC<{
 	setChain: Function;
+	setOppositeChain: Function;
 	initialChain: SupportedChain;
+	forceChain: SupportedChain;
 	topText?: string;
-}> = ({ setChain, initialChain, topText }) => {
-	const [chains, setChains] = useState<Chain[]>(CHAINS);
+}> = ({ setChain, initialChain, setOppositeChain, forceChain, topText }) => {
+	const [chains, _] = useState<Chain[]>(CHAINS);
 	const [chainDropDownActive, setChainDropDownActive] =
 		useState<boolean>(false);
 	const [selectedChainIdx, setSelectedChainIdx] = useState<number>(0);
+	const [initialRenderComplete, setInitialRenderComplete] =
+		useState<boolean>(false);
 
 	useEffect(() => {
 		const foundChainIdx = chains.findIndex(
 			(chain) => chain.name === initialChain
 		);
+		if (foundChainIdx === selectedChainIdx) return;
 		setSelectedChainIdx(foundChainIdx);
+		setChain(initialChain);
 	}, []);
 
 	useEffect(() => {
+		if (initialChain === forceChain && !initialRenderComplete) {
+			setInitialRenderComplete(true);
+			return;
+		}
+		const foundChainIdx = chains.findIndex(
+			(chain) => chain.name === forceChain
+		);
+		if (foundChainIdx === selectedChainIdx) return;
+		setSelectedChainIdx(foundChainIdx);
+	}, [forceChain]);
+
+	useEffect(() => {
 		setChain(chains[selectedChainIdx]);
+		const foundOppositeChainIdx = chains.findIndex(
+			(chain) => chain.name !== chains[selectedChainIdx].name
+		);
+		setOppositeChain(chains[foundOppositeChainIdx]);
 	}, [selectedChainIdx]);
 
 	return (
@@ -69,19 +80,21 @@ const ChainPicker: React.FC<{
 					{chainDropDownActive && (
 						<div className={styles.chainDropdownContainer}>
 							{chains.map((chain: any, i) => {
-								return (
-									<div
-										key={i}
-										onClick={() => {
-											setSelectedChainIdx(i);
-											setChainDropDownActive(false);
-										}}
-										className={styles.chainChoiceContainer}
-									>
-										<img alt="" src={chain.logo} width={33} height={33} />
-										<span>{chain.name}</span>
-									</div>
-								);
+								if (chain.name !== chains[selectedChainIdx].name) {
+									return (
+										<div
+											key={i}
+											onClick={() => {
+												setSelectedChainIdx(i);
+												setChainDropDownActive(false);
+											}}
+											className={styles.chainChoiceContainer}
+										>
+											<img alt="" src={chain.logo} width={33} height={33} />
+											<span>{chain.name}</span>
+										</div>
+									);
+								}
 							})}
 						</div>
 					)}
