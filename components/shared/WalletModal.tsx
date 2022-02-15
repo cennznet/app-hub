@@ -10,7 +10,7 @@ const WalletModal: React.FC<{
 	const { selectAccount, selectedAccount } = useWallet();
 
 	return (
-		<Modal open={open}>
+		<Modal open={open} sx={{ outline: 0 }} onClose={() => setModalOpen(false)}>
 			<Box
 				sx={{
 					position: "absolute",

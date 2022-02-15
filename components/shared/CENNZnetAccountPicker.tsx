@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { Autocomplete, TextField } from "@mui/material";
 import { useWeb3Accounts } from "../../providers/Web3AccountsProvider";
-import { useWallet } from "../../providers/SupportedWalletProvider";
 
 const CENNZnetAccountPicker: React.FC<{
 	updateSelectedAccount: Function;
@@ -10,12 +9,11 @@ const CENNZnetAccountPicker: React.FC<{
 }> = ({ updateSelectedAccount, wallet }) => {
 	const router = useRouter();
 	const accounts = useWeb3Accounts();
-	const [label, setLabel] = useState<string>();
+	const [placeholder, setPlaceholder] = useState<string>();
 	const [accountNames, setAccountNames] = useState<string[]>([]);
-	const { selectedAccount } = useWallet();
 
 	useEffect(() => {
-		wallet ? setLabel("Switch Account") : setLabel("Destination");
+		wallet ? setPlaceholder("Switch Account") : setPlaceholder("Destination");
 	}, [router.asPath, wallet]);
 
 	useEffect(() => {
@@ -52,9 +50,9 @@ const CENNZnetAccountPicker: React.FC<{
 			}}
 			renderInput={(params) => (
 				<TextField
-					placeholder={selectedAccount?.meta.name}
+					placeholder={placeholder}
+					InputLabelProps={{ shrink: false }}
 					{...params}
-					label={label}
 					required={!wallet}
 				/>
 			)}
