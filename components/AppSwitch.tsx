@@ -10,142 +10,69 @@ const Switch: React.FC<{ setLocation: Function }> = ({ setLocation }) => {
 	return (
 		<Box
 			sx={{
-				width: "552px",
-				left: "calc(50% - 552px/2)",
+				width: "360px",
+				left: "calc(50% - 360px/2)",
 				display: "flex",
 				flexDirection: "row",
 				justifyContent: "center",
-				alignItems: "center",
+				alignItems: "flex-start",
+				padding: 0,
 				position: "absolute",
 				top: "4%",
+				filter: "drop-shadow(0px 3px 3px rgba(0, 0, 0, 0.12))",
 			}}
 		>
 			{location === "/" && (
 				<>
 					<SwitchButton
-						onClick={() => setLocation("swap")}
-						style={{
-							backgroundColor: "#FFFFFF",
+						sx={{
 							color: "#1130FF",
-							borderLeft: "4px solid #1130FF",
-							borderRight: "2px solid #1130FF",
+							borderBottom: "2px solid #1130FF",
 						}}
 					>
 						swap
 					</SwitchButton>
-					<SwitchButton
-						onClick={() => setLocation("bridge")}
-						style={{
-							backgroundColor: "#FFFFFF",
-							color: "#1130FF",
-							borderLeft: "2px solid #1130FF",
-							borderRight: "2px solid #1130FF",
-						}}
-					>
-						bridge
+					<SwitchButton onClick={() => setLocation("pool")}>
+						<span style={{ opacity: "0.5" }}>pool</span>
 					</SwitchButton>
-					<SwitchButton
-						onClick={() => setLocation("pool")}
-						style={{
-							backgroundColor: "#FFFFFF",
-							color: "#1130FF",
-							borderLeft: "2px solid #1130FF",
-						}}
-					>
-						pool
-					</SwitchButton>
-				</>
-			)}
-			{location === "/bridge" && (
-				<>
-					<SwitchButton
-						onClick={() => setLocation("swap")}
-						style={{
-							backgroundColor: "#FFFFFF",
-							color: "#1130FF",
-						}}
-					>
-						swap
-					</SwitchButton>
-					<SwitchButton
-						style={{
-							backgroundColor: "#1130FF",
-							color: "#FFFFFF",
-						}}
-					>
-						bridge
-					</SwitchButton>
-					<SwitchButton
-						onClick={() => setLocation("pool")}
-						style={{
-							backgroundColor: "#FFFFFF",
-							color: "#1130FF",
-							borderLeft: "2px solid #1130FF",
-						}}
-					>
-						pool
-					</SwitchButton>
-				</>
-			)}
-			{location === "/swap" && (
-				<>
-					<SwitchButton
-						style={{
-							backgroundColor: "#1130FF",
-							color: "#FFFFFF",
-						}}
-					>
-						swap
-					</SwitchButton>
-					<SwitchButton
-						onClick={() => setLocation("bridge")}
-						style={{
-							backgroundColor: "#FFFFFF",
-							color: "#1130FF",
-						}}
-					>
-						bridge
-					</SwitchButton>
-					<SwitchButton
-						onClick={() => setLocation("pool")}
-						style={{
-							backgroundColor: "#FFFFFF",
-							color: "#1130FF",
-							borderLeft: "2px solid #1130FF",
-						}}
-					>
-						pool
+					<SwitchButton onClick={() => setLocation("bridge")}>
+						<span style={{ opacity: "0.5" }}>bridge</span>
 					</SwitchButton>
 				</>
 			)}
 			{location === "/pool" && (
 				<>
-					<SwitchButton
-						onClick={() => setLocation("swap")}
-						style={{
-							backgroundColor: "#FFFFFF",
-							color: "#1130FF",
-						}}
-					>
-						swap
+					<SwitchButton onClick={() => setLocation("")}>
+						<span style={{ opacity: "0.5" }}>swap</span>
 					</SwitchButton>
 					<SwitchButton
-						onClick={() => setLocation("bridge")}
-						style={{
-							backgroundColor: "#FFFFFF",
+						sx={{
 							color: "#1130FF",
-						}}
-					>
-						bridge
-					</SwitchButton>
-					<SwitchButton
-						style={{
-							backgroundColor: "#1130FF",
-							color: "#FFFFFF",
-							borderLeft: "2px solid #1130FF",
+							borderBottom: "2px solid #1130FF",
 						}}
 					>
 						pool
+					</SwitchButton>
+					<SwitchButton onClick={() => setLocation("bridge")}>
+						<span style={{ opacity: "0.5" }}>bridge</span>
+					</SwitchButton>
+				</>
+			)}
+			{location === "/bridge" && (
+				<>
+					<SwitchButton onClick={() => setLocation("")}>
+						<span style={{ opacity: "0.5" }}>swap</span>
+					</SwitchButton>
+					<SwitchButton onClick={() => setLocation("pool")}>
+						<span style={{ opacity: "0.5" }}>pool</span>
+					</SwitchButton>
+					<SwitchButton
+						sx={{
+							color: "#1130FF",
+							borderBottom: "2px solid #1130FF",
+						}}
+					>
+						bridge
 					</SwitchButton>
 				</>
 			)}

@@ -22,7 +22,7 @@ const Exchange: React.FC<{}> = () => {
 	const [estimatedFee, setEstimatedFee] = useState<string>();
 	const [error, setError] = useState<string>();
 	const [success, setSuccess] = useState<string>();
-	const { api, initApi }: any = useCENNZApi();
+	const { api }: any = useCENNZApi();
 	const assets = useAssets();
 	const {
 		wallet,
@@ -39,12 +39,6 @@ const Exchange: React.FC<{}> = () => {
 			connectWallet();
 		}
 	}, [web3Enable, api]);
-
-	useEffect(() => {
-		if (!api?.isConnected) {
-			initApi();
-		}
-	}, [api, initApi]);
 
 	useEffect(() => {
 		const setReceivedTokenAmount = async () => {

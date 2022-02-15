@@ -11,4 +11,13 @@ module.exports = {
 	eslint: {
 		dirs: ["pages", "components", "providers"],
 	},
+	async redirects() {
+		return [
+			{
+				source: "/swap",
+				destination: "/",
+				permanent: true,
+			},
+		];
+	},
 };
