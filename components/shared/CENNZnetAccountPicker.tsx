@@ -6,6 +6,7 @@ import styles from "../../styles/components/shared/cennznetaccountpicker.module.
 const CENNZnetAccountPicker: React.FC<{
 	updateSelectedAccount: Function;
 	wallet?: boolean;
+	forceAddress?: string;
 }> = ({ updateSelectedAccount, wallet }) => {
 	const accounts = useWeb3Accounts();
 	const [selectedAccount, setSelectedAccount] = useState<string>();

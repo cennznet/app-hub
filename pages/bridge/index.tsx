@@ -13,7 +13,7 @@ import { getMetamaskBalance } from "../../utils/bridge/helpers";
 import ExchangeIcon from "../../components/shared/ExchangeIcon";
 
 const Emery: React.FC<{}> = () => {
-	const [bridgeState, setBridgeState] = useState<BridgeState>("Deposit");
+	const [bridgeState, setBridgeState] = useState<BridgeState>("Withdraw");
 	const [toChain, setToChain] = useState<Chain>();
 	const [fromChain, setFromChain] = useState<Chain>();
 	const { Account } = useBlockchain();
@@ -35,23 +35,29 @@ const Emery: React.FC<{}> = () => {
 
 	//Check MetaMask account has enough tokens to deposit if eth token picker
 	useEffect(() => {
-		setError("");
-		const { ethereum }: any = window;
-		if (!erc20Token) return;
-		(async () => {
-			const balance = await getMetamaskBalance(
-				ethereum,
-				erc20Token.address,
-				Account
-			);
-			if (balance < parseFloat(amount)) {
-				setError("Account Balance is too low");
-				setEnoughBalance(false);
-			} else {
-				setEnoughBalance(true);
-			}
-		})();
+		if (bridgeState === "Deposit") {
+			setError("");
+			const { ethereum }: any = window;
+			if (!erc20Token) return;
+			(async () => {
+				const balance = await getMetamaskBalance(
+					ethereum,
+					erc20Token.address,
+					Account
+				);
+				if (balance < parseFloat(amount)) {
+					setEnoughBalance(false);
+				} else {
+					setEnoughBalance(true);
+				}
+			})();
+		}
 	}, [erc20Token, Account, amount]);
+
+	//TODO fix error message show too often
+	useEffect(() => {
+		if (!enoughBalance) setError("Account Balance is too low");
+	}, [enoughBalance]);
 
 	return (
 		<div className={styles.bridgeContainer}>
@@ -59,13 +65,13 @@ const Emery: React.FC<{}> = () => {
 			<div className={styles.chainPickerContainer}>
 				<ChainPicker
 					setChain={setFromChain}
-					initialChain={"Ethereum"}
+					initialChain={"Cennznet"}
 					topText={"FROM"}
 				/>
 				<ExchangeIcon onClick={() => {}} horizontal={true} />
 				<ChainPicker
 					setChain={setToChain}
-					initialChain={"Cennznet"}
+					initialChain={"Ethereum"}
 					topText={"TO"}
 				/>
 			</div>
@@ -78,6 +84,7 @@ const Emery: React.FC<{}> = () => {
 					setAmount={setAmount}
 					amount={amount}
 					error={error}
+					//TODO fix show balance on withdrawal side show cennznet eth balance
 					showBalance={true}
 					width={"460px"}
 				/>
@@ -94,7 +101,19 @@ const Emery: React.FC<{}> = () => {
 						!enoughBalance
 					}
 				/>
-			) : null}
+			) : (
+				<Withdraw
+					token={erc20Token}
+					amount={amount}
+					selectedAccount={selectedAccount}
+					disabled={
+						!selectedAccount.address ||
+						!(parseFloat(amount) > 0) ||
+						!enoughBalance
+					}
+					setEnoughBalance={setEnoughBalance}
+				/>
+			)}
 		</div>
 	);
 };
