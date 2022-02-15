@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
-import { useRouter } from "next/router";
 import { Box, CircularProgress, Divider } from "@mui/material";
 import { Heading, SmallText } from "../../theme/StyledComponents";
 import { useWallet } from "../../providers/SupportedWalletProvider";
@@ -11,22 +10,11 @@ import ERC20Tokens from "../../artifacts/erc20tokens.json";
 const AccountBalances: React.FC<{
 	updateSelectedAccount: Function;
 }> = ({ updateSelectedAccount }) => {
-	const router = useRouter();
-	const [balancesToMap, setBalancesToMap] = useState<any>();
-	const { getBridgeBalances, bridgeBalances, balances, selectedAccount } =
-		useWallet();
+	const { getBridgeBalances, bridgeBalances, selectedAccount } = useWallet();
 
 	useEffect(() => {
-		if (router.asPath === "/bridge") getBridgeBalances(selectedAccount.address);
-	}, [router.asPath, getBridgeBalances, selectedAccount]);
-
-	useEffect(() => {
-		if (router.asPath === "/bridge") {
-			setBalancesToMap(bridgeBalances);
-		} else {
-			setBalancesToMap(balances);
-		}
-	}, [balances, bridgeBalances, router.asPath]);
+		getBridgeBalances(selectedAccount.address);
+	}, [getBridgeBalances, selectedAccount]);
 
 	const Identicon = dynamic(() => import("@polkadot/react-identicon"));
 
@@ -81,9 +69,9 @@ const AccountBalances: React.FC<{
 			</Box>
 			<Divider sx={{ m: "15px 0 15px" }} />
 			<Heading sx={{ pl: "5%" }}>Balance</Heading>
-			{balancesToMap ? (
+			{bridgeBalances ? (
 				<Box sx={{ mt: "3%", pl: "5%", display: "block" }}>
-					{Object.values(balancesToMap).map((token: any, i) => {
+					{Object.values(bridgeBalances).map((token: any, i) => {
 						let logo;
 						ERC20Tokens.tokens.map((erc20token) => {
 							if (erc20token.symbol === token.symbol) {
