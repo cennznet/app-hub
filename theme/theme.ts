@@ -1,10 +1,22 @@
 import { createTheme } from "@mui/material/styles";
 import { red } from "@mui/material/colors";
 
+declare module "@mui/material/styles" {
+	interface PaletteColorOptions {
+		main: string;
+		swap?: string;
+		pool?: string;
+		bridge?: string;
+	}
+}
+
 const theme = createTheme({
 	palette: {
 		primary: {
 			main: "#1130FF",
+			swap: "#1130FF",
+			pool: "#9847FF",
+			bridge: "#2DC8CB",
 		},
 		secondary: {
 			main: "#B3BDFF",

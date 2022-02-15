@@ -12,7 +12,6 @@ export const Frame = styled(Box)({
 });
 
 export const Heading = styled(Typography)({
-	fontFamily: "Teko",
 	fontStyle: "normal",
 	fontWeight: "bold",
 	lineHeight: "125%",
@@ -44,21 +43,26 @@ export const Option = styled(Button)({
 });
 
 export const SwitchButton = styled(Button)({
-	position: "static",
-	maxWidth: "276px",
-	top: "0%",
-	bottom: "0%",
-	border: "4px solid #1130FF",
-	flex: "none",
-	order: 0,
-	alignSelf: "stretch",
-	flexGrow: 1,
-	margin: "0px 0px",
-	fontFamily: "Teko",
-	fontStyle: "normal",
-	fontWeight: "bold",
-	fontSize: "24px",
-	lineHeight: "124%",
+	"backgroundColor": "#FFFFFF",
+	"position": "static",
+	"height": "48px",
+	"maxWidth": "120px",
+	"top": "0%",
+	"bottom": "0%",
+	"flex": "none",
+	"order": 0,
+	"alignSelf": "stretch",
+	"flexGrow": 1,
+	"margin": "0px 0px",
+	"fontWeight": "500",
+	"fontSize": "14px",
+	"lineHeight": "16px",
+	"letterSpacing": "1.25px",
+	"color": "rgba(17,48,255,0.5)",
+	"&:hover": {
+		color: "white",
+		borderBottom: "2px solid #FFFFFF",
+	},
 });
 
 export const SettingsText = styled(Typography)({
