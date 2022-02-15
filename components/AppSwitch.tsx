@@ -33,17 +33,17 @@ const Switch: React.FC<{ setLocation: Function }> = ({ setLocation }) => {
 						swap
 					</SwitchButton>
 					<SwitchButton onClick={() => setLocation("pool")}>
-						<span style={{ opacity: "inherit" }}>pool</span>
+						<span>pool</span>
 					</SwitchButton>
 					<SwitchButton onClick={() => setLocation("bridge")}>
-						<span style={{ opacity: "inherit" }}>bridge</span>
+						<span>bridge</span>
 					</SwitchButton>
 				</>
 			)}
 			{location === "/pool" && (
 				<>
 					<SwitchButton onClick={() => setLocation("")}>
-						<span style={{ opacity: "inherit" }}>swap</span>
+						<span>swap</span>
 					</SwitchButton>
 					<SwitchButton
 						sx={{
@@ -54,17 +54,17 @@ const Switch: React.FC<{ setLocation: Function }> = ({ setLocation }) => {
 						pool
 					</SwitchButton>
 					<SwitchButton onClick={() => setLocation("bridge")}>
-						<span style={{ opacity: "inherit" }}>bridge</span>
+						<span>bridge</span>
 					</SwitchButton>
 				</>
 			)}
 			{location === "/bridge" && (
 				<>
 					<SwitchButton onClick={() => setLocation("")}>
-						<span style={{ opacity: "inherit" }}>swap</span>
+						<span>swap</span>
 					</SwitchButton>
 					<SwitchButton onClick={() => setLocation("pool")}>
-						<span style={{ opacity: "inherit" }}>pool</span>
+						<span>pool</span>
 					</SwitchButton>
 					<SwitchButton
 						sx={{
