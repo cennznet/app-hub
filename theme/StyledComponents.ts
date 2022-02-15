@@ -59,9 +59,11 @@ export const SwitchButton = styled(Button)({
 	"fontSize": "14px",
 	"lineHeight": "16px",
 	"letterSpacing": "1.25px",
+	"opacity": "0.5",
 	"&:hover": {
-		color: "white",
-		borderBottom: "2px solid white",
+		color: "#FFFFFF",
+		borderBottom: "2px solid #FFFFFF",
+		opacity: "1.0",
 	},
 });
 
