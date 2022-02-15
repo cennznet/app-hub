@@ -12,6 +12,7 @@ const ETH_CHAIN_ID = process.env.NEXT_PUBLIC_ETH_CHAIN_ID;
 import styles from "../../styles/components/shared/tokenpicker.module.css";
 import { useWallet } from "../../providers/SupportedWalletProvider";
 import { PoolAction } from "../../providers/PoolProvider";
+import { useCENNZApi } from "../../providers/CENNZApiProvider";
 
 const TokenPicker: React.FC<{
 	setToken: Function;
@@ -26,6 +27,7 @@ const TokenPicker: React.FC<{
 	poolConfig?: PoolConfig;
 	whichAsset?: string;
 	width?: string;
+	showWrappedERC20Balance?: boolean;
 }> = ({
 	setToken,
 	setAmount,
@@ -39,6 +41,7 @@ const TokenPicker: React.FC<{
 	poolConfig,
 	whichAsset,
 	width,
+	showWrappedERC20Balance,
 }) => {
 	const router = useRouter();
 	const [assetsLoading, setAssetsLoading] = useState<boolean>(true);
@@ -50,6 +53,8 @@ const TokenPicker: React.FC<{
 	const assets = useAssets();
 	const { Account } = useBlockchain();
 	const { balances } = useWallet();
+	const { api }: any = useCENNZApi();
+	const { bridgeBalances } = useWallet();
 
 	useEffect(() => {
 		if (forceSelection) {
@@ -124,18 +129,37 @@ const TokenPicker: React.FC<{
 			const foundTokenBalance = balances.find(
 				(asset) => asset.symbol === tokens[selectedTokenIdx]?.symbol
 			);
-			setSelectedTokenBalance(foundTokenBalance?.value);
+			setSelectedTokenBalance(parseFloat(foundTokenBalance?.value.toFixed(4)));
 		} else {
-			if (!Account || !tokens[selectedTokenIdx]) return;
-			const { ethereum }: any = window;
-			(async () => {
-				const balance = await getMetamaskBalance(
-					ethereum,
-					(tokens[selectedTokenIdx] as BridgeToken)?.address,
-					Account
-				);
-				setSelectedTokenBalance(parseFloat(balance.toFixed(4)));
-			})();
+			if (showWrappedERC20Balance) {
+				if (!tokens[selectedTokenIdx] || !bridgeBalances || !api) return;
+				(async () => {
+					const tokenExist = await api.query.erc20Peg.erc20ToAssetId(
+						tokens[selectedTokenIdx]?.address
+					);
+					const tokenId = tokenExist.isSome
+						? tokenExist.unwrap()
+						: await api.query.genericAsset.nextAssetId();
+					Object.values(bridgeBalances).map((token: any) => {
+						if (token.tokenId === tokenId.toString()) {
+							setSelectedTokenBalance(parseFloat(token.balance.toFixed(4)));
+						} else {
+							setSelectedTokenBalance(0);
+						}
+					});
+				})();
+			} else {
+				if (!Account || !tokens[selectedTokenIdx]) return;
+				const { ethereum }: any = window;
+				(async () => {
+					const balance = await getMetamaskBalance(
+						ethereum,
+						(tokens[selectedTokenIdx] as BridgeToken)?.address,
+						Account
+					);
+					setSelectedTokenBalance(parseFloat(balance.toFixed(4)));
+				})();
+			}
 		}
 	}, [balances, tokens, selectedTokenIdx, Account]);
 

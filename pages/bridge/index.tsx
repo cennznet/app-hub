@@ -54,10 +54,11 @@ const Emery: React.FC<{}> = () => {
 		}
 	}, [erc20Token, Account, amount]);
 
-	//TODO fix error message show too often
 	useEffect(() => {
-		if (!enoughBalance) setError("Account Balance is too low");
-	}, [enoughBalance]);
+		if (!enoughBalance && parseFloat(amount) > 0)
+			setError("Account Balance is too low");
+		else if (enoughBalance || parseFloat(amount) === 0) setError("");
+	}, [enoughBalance, amount]);
 
 	return (
 		<div className={styles.bridgeContainer}>
@@ -84,8 +85,8 @@ const Emery: React.FC<{}> = () => {
 					setAmount={setAmount}
 					amount={amount}
 					error={error}
-					//TODO fix show balance on withdrawal side show cennznet eth balance
 					showBalance={true}
+					showWrappedERC20Balance={true}
 					width={"460px"}
 				/>
 			</div>

@@ -26,7 +26,7 @@ const Withdraw: React.FC<{
 		hash: "",
 	});
 	const [estimatedFee, setEstimatedFee] = useState(0);
-	const { Contracts, Account, Signer, initBlockchain }: any = useBlockchain();
+	const { Contracts, Account, Signer }: any = useBlockchain();
 	const { api }: any = useCENNZApi();
 	const { wallet, bridgeBalances } = useWallet();
 	const signer = wallet?.signer;
@@ -58,18 +58,19 @@ const Withdraw: React.FC<{
 			const tokenId = tokenExist.isSome
 				? tokenExist.unwrap()
 				: await api.query.genericAsset.nextAssetId();
-
 			Object.values(bridgeBalances).map((token: any) => {
 				if (token.tokenId === tokenId.toString()) {
-					if (token.balance < Number(amount)) {
-						setEnoughBalance(false);
-					} else {
+					if (token.balance > Number(amount)) {
 						setEnoughBalance(true);
+					} else {
+						setEnoughBalance(false);
 					}
+				} else {
+					setEnoughBalance(false);
 				}
 			});
 		})();
-	}, [token, bridgeBalances, api]);
+	}, [token, bridgeBalances, api, amount]);
 
 	const resetModal = () => {
 		setModal({ state: "", text: "", hash: "" });
