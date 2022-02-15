@@ -16,7 +16,9 @@ const AccountBalances: React.FC<{
 		getBridgeBalances(selectedAccount.address);
 	}, [getBridgeBalances, selectedAccount]);
 
-	const Identicon = dynamic(() => import("@polkadot/react-identicon"));
+	const Identicon = dynamic(() => import("@polkadot/react-identicon"), {
+		loading: () => <CircularProgress />,
+	});
 
 	return (
 		<>
