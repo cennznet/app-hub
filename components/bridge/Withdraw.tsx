@@ -37,7 +37,6 @@ const Withdraw: React.FC<{
 	const { wallet, bridgeBalances } = useWallet();
 	const signer = wallet?.signer;
 
-	//TODO pass down fee estimate param to bridge Estimate fee
 	useEffect(() => {
 		if (!selectedAccount || !Account) return;
 
@@ -244,46 +243,6 @@ const Withdraw: React.FC<{
 			{errorModalOpen && (
 				<ErrorModal setModalOpen={setErrorModalOpen} modalState={modalState} />
 			)}
-			{/*<Box*/}
-			{/*	component="form"*/}
-			{/*	sx={{*/}
-			{/*		width: "552px",*/}
-			{/*		height: "auto",*/}
-			{/*		margin: "0 auto",*/}
-			{/*		background: "#FFFFFF",*/}
-			{/*		border: "4px solid #1130FF",*/}
-			{/*		display: "flex",*/}
-			{/*		flexDirection: "column",*/}
-			{/*		justifyContent: "center",*/}
-			{/*		alignItems: "center",*/}
-			{/*		padding: "0px",*/}
-			{/*	}}*/}
-			{/*>*/}
-			{/*	<TokenPicker setToken={setToken} />*/}
-			{/*	<TextField*/}
-			{/*		label="Amount"*/}
-			{/*		variant="outlined"*/}
-			{/*		required*/}
-			{/*		sx={{*/}
-			{/*			width: "80%",*/}
-			{/*			m: "30px 0 30px",*/}
-			{/*		}}*/}
-			{/*		onChange={(e) => setAmount(e.target.value)}*/}
-			{/*		helperText={*/}
-			{/*			tokenBalance < Number(amount) ? "Account balance too low" : ""*/}
-			{/*		}*/}
-			{/*	/>*/}
-			{/*	<Box sx={{ textAlign: "center" }}>*/}
-			{/*		<Heading sx={{ textTransform: "uppercase", fontSize: "18px" }}>*/}
-			{/*			estimated withdrawal fee:*/}
-			{/*		</Heading>*/}
-			{/*		{estimatedFee ? (*/}
-			{/*			<SmallText>{estimatedFee} ETH</SmallText>*/}
-			{/*		) : (*/}
-			{/*			<CircularProgress size="1.5rem" sx={{ color: "black" }} />*/}
-			{/*		)}*/}
-			{/*	</Box>*/}
-			{/*</Box>*/}
 			<ConnectWalletButton
 				disabled={disabled}
 				onClick={withdraw}
