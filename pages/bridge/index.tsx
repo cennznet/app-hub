@@ -44,7 +44,7 @@ const Emery: React.FC<{}> = () => {
 
 	useEffect(() => {
 		if (!toChain) return;
-		if (toChain.name === "Cennznet") {
+		if (toChain.name === "CENNZnet") {
 			setBridgeState("Deposit");
 		} else {
 			setBridgeState("Withdraw");
@@ -74,7 +74,7 @@ const Emery: React.FC<{}> = () => {
 
 	useEffect(() => {
 		if (!enoughBalance && parseFloat(amount) > 0)
-			setError("Account Balance is too low");
+			setError("Account balance is too low");
 		else if (enoughBalance || parseFloat(amount) === 0) setError("");
 	}, [enoughBalance, amount]);
 
@@ -98,7 +98,7 @@ const Emery: React.FC<{}> = () => {
 				<ChainPicker
 					setChain={setToChain}
 					setOppositeChain={setFromChain}
-					initialChain={"Cennznet"}
+					initialChain={"CENNZnet"}
 					forceChain={toChain.name}
 					topText={"TO"}
 				/>
@@ -131,7 +131,7 @@ const Emery: React.FC<{}> = () => {
 					) : (
 						<div>
 							<p>
-								You will be awarded with <mark>X CPAY</mark> on your first
+								You will be awarded with <mark>5 CPAY</mark> on your first
 								transaction through the bridge!
 							</p>
 						</div>

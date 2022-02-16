@@ -26,7 +26,6 @@ const Withdraw: React.FC<{
 }) => {
 	const [modalOpen, setModalOpen] = useState(false);
 	const [errorModalOpen, setErrorModalOpen] = useState(false);
-	const [modalState, _] = useState("");
 	const [modal, setModal] = useState({
 		state: "",
 		text: "",
@@ -65,11 +64,7 @@ const Withdraw: React.FC<{
 				: await api.query.genericAsset.nextAssetId();
 			Object.values(bridgeBalances).map((token: any) => {
 				if (token.tokenId === tokenId.toString()) {
-					if (token.balance > Number(amount)) {
-						setEnoughBalance(true);
-					} else {
-						setEnoughBalance(false);
-					}
+					setEnoughBalance(token.balance > Number(amount));
 				} else {
 					setEnoughBalance(false);
 				}
@@ -241,7 +236,7 @@ const Withdraw: React.FC<{
 				/>
 			)}
 			{errorModalOpen && (
-				<ErrorModal setModalOpen={setErrorModalOpen} modalState={modalState} />
+				<ErrorModal setModalOpen={setErrorModalOpen} modalState={modal.state} />
 			)}
 			<ConnectWalletButton
 				disabled={disabled}

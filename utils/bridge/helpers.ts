@@ -8,7 +8,7 @@ export const ETH_LOGO =
 
 export const CHAINS: Chain[] = [
 	{
-		name: "Cennznet",
+		name: "CENNZnet",
 		logo: "images/cennz.svg",
 	},
 	{

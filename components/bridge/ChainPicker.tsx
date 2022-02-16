@@ -11,7 +11,6 @@ const ChainPicker: React.FC<{
 	forceChain: SupportedChain;
 	topText?: string;
 }> = ({ setChain, initialChain, setOppositeChain, forceChain, topText }) => {
-	const [chains, _] = useState<Chain[]>(CHAINS);
 	const [chainDropDownActive, setChainDropDownActive] =
 		useState<boolean>(false);
 	const [selectedChainIdx, setSelectedChainIdx] = useState<number>(0);
@@ -19,7 +18,7 @@ const ChainPicker: React.FC<{
 		useState<boolean>(false);
 
 	useEffect(() => {
-		const foundChainIdx = chains.findIndex(
+		const foundChainIdx = CHAINS.findIndex(
 			(chain) => chain.name === initialChain
 		);
 		if (foundChainIdx === selectedChainIdx) return;
@@ -32,7 +31,7 @@ const ChainPicker: React.FC<{
 			setInitialRenderComplete(true);
 			return;
 		}
-		const foundChainIdx = chains.findIndex(
+		const foundChainIdx = CHAINS.findIndex(
 			(chain) => chain.name === forceChain
 		);
 		if (foundChainIdx === selectedChainIdx) return;
@@ -40,11 +39,11 @@ const ChainPicker: React.FC<{
 	}, [forceChain]);
 
 	useEffect(() => {
-		setChain(chains[selectedChainIdx]);
-		const foundOppositeChainIdx = chains.findIndex(
-			(chain) => chain.name !== chains[selectedChainIdx].name
+		setChain(CHAINS[selectedChainIdx]);
+		const foundOppositeChainIdx = CHAINS.findIndex(
+			(chain) => chain.name !== CHAINS[selectedChainIdx].name
 		);
-		setOppositeChain(chains[foundOppositeChainIdx]);
+		setOppositeChain(CHAINS[foundOppositeChainIdx]);
 	}, [selectedChainIdx]);
 
 	return (
@@ -56,7 +55,7 @@ const ChainPicker: React.FC<{
 						<img
 							className={styles.chainSelectedImg}
 							alt=""
-							src={chains[selectedChainIdx]?.logo}
+							src={CHAINS[selectedChainIdx]?.logo}
 							width={33}
 							height={33}
 						/>
@@ -65,7 +64,7 @@ const ChainPicker: React.FC<{
 							className={styles.chainButton}
 							onClick={() => setChainDropDownActive(!chainDropDownActive)}
 						>
-							{chains[selectedChainIdx]?.name}
+							{CHAINS[selectedChainIdx]?.name}
 							<img
 								className={
 									chainDropDownActive
@@ -79,8 +78,8 @@ const ChainPicker: React.FC<{
 					</>
 					{chainDropDownActive && (
 						<div className={styles.chainDropdownContainer}>
-							{chains.map((chain: any, i) => {
-								if (chain.name !== chains[selectedChainIdx].name) {
+							{CHAINS.map((chain: any, i) => {
+								if (chain.name !== CHAINS[selectedChainIdx].name) {
 									return (
 										<div
 											key={i}
