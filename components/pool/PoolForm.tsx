@@ -283,30 +283,30 @@ const PoolForm: React.FC<{}> = () => {
 		>
 			<h1 className={styles.pageHeader}>POOL</h1>
 			<Box
-				style={{
+				sx={{
 					display: "flex",
 					flexDirection: "row",
 					alignContent: "justify",
 					width: "468px",
 					boxSizing: "border-box",
 					border: `1px solid ${poolColors}`,
+					mt: "30px",
+					cursor: "pointer",
+				}}
+				onClick={() => {
+					setPoolAction(
+						poolAction === PoolAction.ADD ? PoolAction.REMOVE : PoolAction.ADD
+					);
+					setPoolColors(
+						poolColors === PoolColors.ADD ? PoolColors.REMOVE : PoolColors.ADD
+					);
+					setCoreAmount("");
+					setTradeAssetAmount("");
+					setCoreError(null);
+					setTradeError(null);
 				}}
 			>
-				<SwapIconClass
-					onClick={() => {
-						setPoolAction(
-							poolAction === PoolAction.ADD ? PoolAction.REMOVE : PoolAction.ADD
-						);
-						setPoolColors(
-							poolColors === PoolColors.ADD ? PoolColors.REMOVE : PoolColors.ADD
-						);
-						setCoreAmount("");
-						setTradeAssetAmount("");
-						setCoreError(null);
-						setTradeError(null);
-					}}
-					color={poolColors}
-				/>
+				<SwapIconClass onClick={() => null} color={poolColors} />
 				<Typography
 					sx={{
 						m: "17px 0 0 20px",
@@ -323,66 +323,37 @@ const PoolForm: React.FC<{}> = () => {
 			</Box>
 			<SmallText
 				sx={{
-					width: "80%",
-					mt: "10px",
-					marginBottom: "40px",
+					width: "468px",
+					m: "20px 0 40px",
 				}}
 			>
-				{poolAction === PoolAction.ADD ? (
-					<Typography sx={{ fontSize: "16px", lineHeight: "150%" }}>
-						To keep the liquidity pool functional, deposits require an equal
-						value of&nbsp;
-						<span
-							style={{
-								color: "#6200EE",
-								fontSize: "16px",
-								fontWeight: "bold",
-								lineHeight: "150%",
-							}}
-						>
-							{tradeAsset?.symbol || "your token"}
-						</span>
-						&nbsp;and&nbsp;
-						<span
-							style={{
-								color: "#6200EE",
-								fontSize: "16px",
-								fontWeight: "bold",
-								lineHeight: "150%",
-							}}
-						>
-							CPAY
-						</span>
-						&nbsp;at the current exchange rate.
-					</Typography>
-				) : (
-					<Typography sx={{ fontSize: "16px", lineHeight: "150%" }}>
-						To keep the liquidity pool functional, withdrawals will return an
-						equal value of&nbsp;
-						<span
-							style={{
-								color: "#6200EE",
-								fontSize: "16px",
-								fontWeight: "bold",
-								lineHeight: "150%",
-							}}
-						>
-							{tradeAsset?.symbol || "your token"}
-						</span>
-						&nbsp;and&nbsp;
-						<span
-							style={{
-								color: "#6200EE",
-								fontSize: "16px",
-								fontWeight: "bold",
-								lineHeight: "150%",
-							}}
-						>
-							CPAY
-						</span>
-						&nbsp;at the current exchange rate.
-					</Typography>
-				)}
+				<Typography sx={{ fontSize: "16px", lineHeight: "150%" }}>
+					{poolAction === PoolAction.ADD
+						? "To keep the liquidity pool functional, deposits require an equal value of "
+						: "To keep the liquidity pool functional, withdrawals will return an equal value of "}
+					<span
+						style={{
+							color: "#6200EE",
+							fontSize: "16px",
+							fontWeight: "bold",
+							lineHeight: "150%",
+						}}
+					>
+						{tradeAsset?.symbol || "your token"}
+					</span>
+					&nbsp;and&nbsp;
+					<span
+						style={{
+							color: "#6200EE",
+							fontSize: "16px",
+							fontWeight: "bold",
+							lineHeight: "150%",
+						}}
+					>
+						CPAY
+					</span>
+					&nbsp;at the current exchange rate.
+				</Typography>
 			</SmallText>
 			<TokenPicker
 				setToken={setTradeAsset}
