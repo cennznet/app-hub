@@ -14,7 +14,7 @@ import ExchangeIcon from "../../components/shared/ExchangeIcon";
 import { useWallet } from "../../providers/SupportedWalletProvider";
 
 const Emery: React.FC<{}> = () => {
-	const [bridgeState, setBridgeState] = useState<BridgeState>("Withdraw");
+	const [bridgeState, setBridgeState] = useState<BridgeState>("Deposit");
 	const [toChain, setToChain] = useState<Chain>(CHAINS[0]);
 	const [fromChain, setFromChain] = useState<Chain>(CHAINS[1]);
 	const { Account } = useBlockchain();
