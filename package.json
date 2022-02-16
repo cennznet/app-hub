@@ -9,14 +9,12 @@
     "prettier-format": "prettier --config .prettierrc.json ./ --write"
   },
   "dependencies": {
-    "@cennznet/api": "^1.5.0",
-    "@cennznet/types": "^1.5.0",
+    "@cennznet/api": "^2.1.0-alpha.1",
+    "@cennznet/types": "^2.1.0-alpha.1",
     "@emotion/react": "^11.7.1",
     "@emotion/styled": "^11.6.0",
     "@mui/icons-material": "^5.3.1",
     "@mui/material": "^5.3.0",
-    "@polkadot/extension-dapp": "^0.42.7",
-    "@polkadot/keyring": "^8.3.3",
     "@polkadot/react-identicon": "^1.1.1",
     "axios": "^0.25.0",
     "bignumber.js": "^9.0.2",
