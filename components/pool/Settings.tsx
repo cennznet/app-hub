@@ -27,13 +27,13 @@ const Settings: React.FC<{
 
 	return (
 		<>
-			<Box sx={{ mt: "30px", width: "468px", mb: open && "30px" }}>
+			<Box sx={{ mt: "30px", width: "468px", mb: open && "10px" }}>
 				<Box
 					sx={{
 						display: "flex",
 						flexDirection: "row",
 						cursor: "pointer",
-						mb: open ? "35px" : "20px",
+						mb: open ? "35px" : "10px",
 					}}
 					onClick={() => {
 						setOpen(!open);
