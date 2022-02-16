@@ -9,7 +9,7 @@
     background: #FFFFFF;
     box-shadow: 4px 8px 8px rgba(17, 48, 255, 0.1);
     width: 552px;
-    height: 642px;
+    height: 746px;
     padding: 26px 47px 50px 47px;
 }
 
@@ -45,5 +45,25 @@
     letter-spacing: 1.12428px;
     text-transform: uppercase;
     text-align: left;
+    color: #020202;
+}
+
+.infoBoxContainer {
+    width: 460px;
+    height: 95px;
+    min-height: 95px;
+    background: #e0f7f7;
+    padding: 19px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 36px;
+}
+
+.infoBoxText {
+    font-style: normal;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 150%;
     color: #020202;
 }

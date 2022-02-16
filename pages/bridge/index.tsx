@@ -120,6 +120,12 @@ const Emery: React.FC<{}> = () => {
 				updateSelectedAccount={updateSelectedAccountCustom}
 				topText={"DESTINATION"}
 			/>
+			<div className={styles.infoBoxContainer}>
+				<p className={styles.infoBoxText}>
+					You will be awarded with X CPAY on your first transaction through the
+					bridge!
+				</p>
+			</div>
 			{bridgeState === "Deposit" ? (
 				<Deposit
 					token={erc20Token}

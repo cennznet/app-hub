@@ -276,43 +276,6 @@ const Withdraw: React.FC<{
 			{/*			<CircularProgress size="1.5rem" sx={{ color: "black" }} />*/}
 			{/*		)}*/}
 			{/*	</Box>*/}
-			{/*	{Account ? (*/}
-			{/*		<Button*/}
-			{/*			sx={{*/}
-			{/*				fontFamily: "Teko",*/}
-			{/*				fontWeight: "bold",*/}
-			{/*				fontSize: "21px",*/}
-			{/*				lineHeight: "124%",*/}
-			{/*				color: "#1130FF",*/}
-			{/*				m: "30px auto 50px",*/}
-			{/*			}}*/}
-			{/*			disabled={*/}
-			{/*				token && amount && Number(amount) <= tokenBalance ? false : true*/}
-			{/*			}*/}
-			{/*			size="large"*/}
-			{/*			variant="outlined"*/}
-			{/*			onClick={withdraw}*/}
-			{/*		>*/}
-			{/*			Withdraw*/}
-			{/*		</Button>*/}
-			{/*	) : (*/}
-			{/*		<Button*/}
-			{/*			sx={{*/}
-			{/*				fontFamily: "Teko",*/}
-			{/*				fontWeight: "bold",*/}
-			{/*				fontSize: "21px",*/}
-			{/*				lineHeight: "124%",*/}
-			{/*				color: "#1130FF",*/}
-			{/*				mt: "30px",*/}
-			{/*				mb: "50px",*/}
-			{/*			}}*/}
-			{/*			size="large"*/}
-			{/*			variant="outlined"*/}
-			{/*			onClick={connectMetamask}*/}
-			{/*		>*/}
-			{/*			connect metamask*/}
-			{/*		</Button>*/}
-			{/*	)}*/}
 			{/*</Box>*/}
 			<ConnectWalletButton
 				disabled={disabled}
