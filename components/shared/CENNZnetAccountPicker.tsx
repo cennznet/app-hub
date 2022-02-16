@@ -48,11 +48,11 @@ const CENNZnetAccountPicker: React.FC<{
 		const cennznetAddressLength = 48;
 		if (accountName.length === cennznetAddressLength) {
 			setSelectedAccount(accountName);
-			if (!accountNames.includes(accountName)) {
+			if (!accountNames.includes(accountName) && !wallet) {
 				const newAccountNames = [...accountNames, accountName];
 				setAccountNames(newAccountNames);
 			}
-		} else if (accountName !== "") {
+		} else if (accountName !== "" && !wallet) {
 			setError("Invalid Cennznet Address");
 		}
 	};
@@ -73,7 +73,7 @@ const CENNZnetAccountPicker: React.FC<{
 					setSelectedAccount(e.target.value);
 					updateAccount(e.target.value);
 				}}
-				clearIcon={<img src={"blue_minus.svg"} alt={""} />}
+				clearIcon={!wallet && <img src={"blue_minus.svg"} alt={""} />}
 				onChange={(event, value, reason) => {
 					if (reason === "clear") {
 						updateAccount("");
@@ -91,7 +91,13 @@ const CENNZnetAccountPicker: React.FC<{
 				renderInput={(params) => (
 					<TextField
 						{...params}
-						label={selectedAccount ? "" : "Select or Type Address"}
+						label={
+							selectedAccount
+								? ""
+								: wallet
+								? "Switch Account"
+								: "Select or Type Address"
+						}
 						InputLabelProps={{ shrink: false }}
 					/>
 				)}
