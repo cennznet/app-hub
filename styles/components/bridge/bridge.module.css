@@ -55,7 +55,7 @@
     background: #e0f7f7;
     padding: 19px;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     margin-bottom: 36px;
 }
@@ -66,4 +66,22 @@
     font-size: 16px;
     line-height: 150%;
     color: #020202;
+    text-align: left;
+}
+
+.feeContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.feeContainer p {
+    color: #1130FF;
+    margin-right: 5px;
+}
+
+
+.infoBoxText mark {
+    color: #1130FF;
+    background: transparent;
 }

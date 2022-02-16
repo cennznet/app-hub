@@ -15,7 +15,15 @@ const Withdraw: React.FC<{
 	selectedAccount: CennznetAccount;
 	disabled: boolean;
 	setEnoughBalance: Function;
-}> = ({ token, amount, selectedAccount, disabled, setEnoughBalance }) => {
+	setEstimatedFee: Function;
+}> = ({
+	token,
+	amount,
+	selectedAccount,
+	disabled,
+	setEnoughBalance,
+	setEstimatedFee,
+}) => {
 	const [modalOpen, setModalOpen] = useState(false);
 	const [errorModalOpen, setErrorModalOpen] = useState(false);
 	const [modalState, _] = useState("");
@@ -24,7 +32,6 @@ const Withdraw: React.FC<{
 		text: "",
 		hash: "",
 	});
-	const [estimatedFee, setEstimatedFee] = useState(0);
 	const { Contracts, Account, Signer }: any = useBlockchain();
 	const { api }: any = useCENNZApi();
 	const { wallet, bridgeBalances } = useWallet();

@@ -15,8 +15,8 @@ import { useWallet } from "../../providers/SupportedWalletProvider";
 
 const Emery: React.FC<{}> = () => {
 	const [bridgeState, setBridgeState] = useState<BridgeState>("Withdraw");
-	const [toChain, setToChain] = useState<Chain>(CHAINS[1]);
-	const [fromChain, setFromChain] = useState<Chain>(CHAINS[0]);
+	const [toChain, setToChain] = useState<Chain>(CHAINS[0]);
+	const [fromChain, setFromChain] = useState<Chain>(CHAINS[1]);
 	const { Account } = useBlockchain();
 	const { api, initApi } = useCENNZApi();
 	const { selectedAccount } = useWallet();
@@ -30,6 +30,7 @@ const Emery: React.FC<{}> = () => {
 			name: "",
 		});
 	const [enoughBalance, setEnoughBalance] = useState<boolean>(false);
+	const [estimatedFee, setEstimatedFee] = useState(0);
 
 	useEffect(() => {
 		if (!api?.isConnected) {
@@ -122,8 +123,19 @@ const Emery: React.FC<{}> = () => {
 			/>
 			<div className={styles.infoBoxContainer}>
 				<p className={styles.infoBoxText}>
-					You will be awarded with X CPAY on your first transaction through the
-					bridge!
+					{bridgeState === "Withdraw" ? (
+						<div className={styles.feeContainer}>
+							<p>{"Estimated Withdrawal Fee:"}</p>
+							{estimatedFee + " ETH"}
+						</div>
+					) : (
+						<div>
+							<p>
+								You will be awarded with <mark>X CPAY</mark> on your first
+								transaction through the bridge!
+							</p>
+						</div>
+					)}
 				</p>
 			</div>
 			{bridgeState === "Deposit" ? (
@@ -148,6 +160,7 @@ const Emery: React.FC<{}> = () => {
 						!enoughBalance
 					}
 					setEnoughBalance={setEnoughBalance}
+					setEstimatedFee={setEstimatedFee}
 				/>
 			)}
 		</div>
