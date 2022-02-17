@@ -62,13 +62,14 @@ const Withdraw: React.FC<{
 			const tokenId = tokenExist.isSome
 				? tokenExist.unwrap()
 				: await api.query.genericAsset.nextAssetId();
-			Object.values(bridgeBalances).map((token: any) => {
-				if (token.tokenId === tokenId.toString()) {
-					setEnoughBalance(token.balance > Number(amount));
-				} else {
-					setEnoughBalance(false);
-				}
-			});
+			const foundToken = Object.values(bridgeBalances).find(
+				(token: any) => token.tokenId === tokenId.toString()
+			);
+			if (foundToken) {
+				setEnoughBalance(foundToken.balance >= Number(amount));
+			} else {
+				setEnoughBalance(false);
+			}
 		})();
 	}, [token, bridgeBalances, api, amount]);
 

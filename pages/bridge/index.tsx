@@ -156,11 +156,7 @@ const Emery: React.FC<{}> = () => {
 					token={erc20Token}
 					amount={amount}
 					selectedAccount={selectedAccountCustom}
-					disabled={
-						!selectedAccountCustom?.address ||
-						!(parseFloat(amount) > 0) ||
-						!enoughBalance
-					}
+					disabled={!Account || !(parseFloat(amount) > 0) || !enoughBalance}
 					setEnoughBalance={setEnoughBalance}
 					setEstimatedFee={setEstimatedFee}
 				/>
