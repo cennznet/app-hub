@@ -48,7 +48,8 @@ describe("fetchExchangeRate", () => {
 		const exchangeRate = fetchExchangeRate(exchangePool);
 
 		const expectedExchangeRate =
-			exchangePool.assetBalance.toNumber() / exchangePool.coreAssetBalance;
+			exchangePool.assetBalance.toNumber() /
+			exchangePool.coreAssetBalance.toNumber();
 
 		expect(exchangeRate).toEqual(expectedExchangeRate.toFixed(4));
 	});

@@ -31,9 +31,10 @@ export const fetchTradeAmount = (
 	return tradeAmount;
 };
 
-export const fetchExchangeRate = (exchangePool) => {
+export const fetchExchangeRate = (exchangePool: IExchangePool) => {
 	const exchangeRate =
-		exchangePool.assetBalance.toNumber() / exchangePool.coreAssetBalance;
+		exchangePool.assetBalance.toNumber() /
+		exchangePool.coreAssetBalance.toNumber();
 
 	return exchangeRate.toFixed(4);
 };
