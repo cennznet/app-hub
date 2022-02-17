@@ -117,26 +117,26 @@ const PoolForm: React.FC<{}> = () => {
 	const checkBalances = (poolAction, coreAmount, tradeAmount) => {
 		if (poolAction === PoolAction.ADD) {
 			if (
-				coreAmount.toNumber() > userBalances.coreAsset &&
-				tradeAmount.toNumber() > userBalances.tradeAsset
+				coreAmount > userBalances.coreAsset &&
+				tradeAmount > userBalances.tradeAsset
 			) {
 				setCoreError("Balance Too Low");
 				setTradeError("Balance Too Low");
-			} else if (coreAmount.toNumber() > userBalances.coreAsset) {
+			} else if (coreAmount > userBalances.coreAsset) {
 				setCoreError("Balance Too Low");
-			} else if (tradeAmount.toNumber() > userBalances.tradeAsset) {
+			} else if (tradeAmount > userBalances.tradeAsset) {
 				setTradeError("Balance Too Low");
 			}
 		} else {
 			if (
-				coreAmount.toNumber() > userBalances.coreLiquidity &&
-				tradeAmount.toNumber() > userBalances.tradeLiquidity
+				coreAmount > userBalances.coreLiquidity &&
+				tradeAmount > userBalances.tradeLiquidity
 			) {
 				setCoreError("Balance Too Low");
 				setTradeError("Balance Too Low");
-			} else if (coreAmount.toNumber() > userBalances.coreLiquidity) {
+			} else if (coreAmount > userBalances.coreLiquidity) {
 				setCoreError("Balance Too Low");
-			} else if (tradeAmount.toNumber() > userBalances.tradeLiquidity) {
+			} else if (tradeAmount > userBalances.tradeLiquidity) {
 				setTradeError("Balance Too Low");
 			}
 		}
@@ -162,17 +162,16 @@ const PoolForm: React.FC<{}> = () => {
 		}
 
 		if (whichAsset === "trade") {
-			setTradeAssetAmount(amount);
-			const tradeAmount = new Amount(Math.round(Number(amount)));
-			const coreAmount = tradeAmount
-				.mul(exchangePool.coreAssetBalance)
-				.div(exchangePool.assetBalance)
-				.subn(ROUND_UP);
+			const tradeAmount = amount;
+			setTradeAssetAmount(tradeAmount);
+			const coreAmount =
+				(tradeAmount * exchangePool.coreAssetBalance.toNumber()) /
+				exchangePool.assetBalance.toNumber();
 
-			if (coreAmount.toNumber() <= 0) {
+			if (coreAmount <= 0) {
 				setCoreAmount(0);
 			} else {
-				setCoreAmount(coreAmount.toNumber());
+				setCoreAmount(coreAmount.toFixed(4));
 				checkBalances(poolAction, coreAmount, tradeAmount);
 				//define extrinsic & estimate fee
 				await defineExtrinsic(
@@ -186,16 +185,15 @@ const PoolForm: React.FC<{}> = () => {
 			}
 		} else {
 			setCoreAmount(amount);
-			const coreAmount = new Amount(Math.round(Number(amount)));
-			const tradeAmount = coreAmount
-				.mul(exchangePool.assetBalance)
-				.div(exchangePool.coreAssetBalance)
-				.subn(ROUND_UP);
+			const coreAmount = amount;
+			let tradeAmount =
+				(coreAmount * exchangePool.assetBalance.toNumber()) /
+				exchangePool.coreAssetBalance.toNumber();
 
-			if (tradeAmount.toNumber() <= 0) {
+			if (tradeAmount <= 0) {
 				setTradeAssetAmount(0);
 			} else {
-				setTradeAssetAmount(tradeAmount.toNumber());
+				setTradeAssetAmount(tradeAmount.toFixed(4));
 				checkBalances(poolAction, coreAmount, tradeAmount);
 				//define extrinsic & estimate fee
 				await defineExtrinsic(
@@ -212,15 +210,12 @@ const PoolForm: React.FC<{}> = () => {
 
 	const setMax = async (whichAsset: string) => {
 		if (poolAction === PoolAction.ADD) {
-			let amount;
 			if (whichAsset === "trade") {
-				amount = Math.floor(Number(userBalances.tradeAsset));
-				setTradeAssetAmount(amount);
-				setOtherAsset(amount, whichAsset);
+				setTradeAssetAmount(userBalances.tradeAsset);
+				setOtherAsset(userBalances.tradeAsset, whichAsset);
 			} else {
-				amount = Math.floor(Number(userBalances.coreAsset));
-				setCoreAmount(amount);
-				setOtherAsset(amount, whichAsset);
+				setCoreAmount(userBalances.coreAsset);
+				setOtherAsset(userBalances.coreAsset, whichAsset);
 			}
 		} else {
 			await defineExtrinsic(
