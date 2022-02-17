@@ -28,7 +28,7 @@ export const fetchTokenAmounts = async (
 		(token) => token.id === exchangeToken.id
 	);
 	if (parseInt(exchangeTokenValue) > exchangeTokenBalance.value) {
-		throw new Error("Account Balance is too low");
+		throw new Error("Account balance is too low");
 	}
 	const sellPrice = await (api.rpc as any).cennzx.sellPrice(
 		exchangeToken.id,
