@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Autocomplete, TextField } from "@mui/material";
 import { useWeb3Accounts } from "../../providers/Web3AccountsProvider";
 import styles from "../../styles/components/shared/cennznetaccountpicker.module.css";
@@ -8,7 +8,7 @@ const CENNZnetAccountPicker: React.FC<{
 	wallet?: boolean;
 	topText?: string;
 	forceAddress?: string;
-}> = ({ updateSelectedAccount, wallet, topText }) => {
+}> = ({ updateSelectedAccount, wallet, topText, forceAddress }) => {
 	const accounts = useWeb3Accounts();
 	const [selectedAccount, setSelectedAccount] = useState<string>();
 	const [accountNames, setAccountNames] = useState<string[]>([]);
@@ -20,9 +20,14 @@ const CENNZnetAccountPicker: React.FC<{
 			accounts.map((account) => {
 				names.push(account.meta.name);
 			});
-			setAccountNames(names);
+			if (forceAddress) setAccountNames([forceAddress]);
+			else setAccountNames(names);
 		}
-	}, [accounts]);
+	}, [accounts, forceAddress]);
+
+	useEffect(() => {
+		if (forceAddress) setAccountNames([]);
+	}, [forceAddress]);
 
 	const updateAccount = (accountName: string) => {
 		setError("");
@@ -42,7 +47,7 @@ const CENNZnetAccountPicker: React.FC<{
 				return;
 			}
 		});
-		if (foundAccount) return;
+		if (foundAccount || forceAddress) return;
 		//else check if the account they entered is valid cennznet address
 		//TODO improve address validation
 		const cennznetAddressLength = 48;
@@ -52,7 +57,7 @@ const CENNZnetAccountPicker: React.FC<{
 				const newAccountNames = [...accountNames, accountName];
 				setAccountNames(newAccountNames);
 			}
-		} else if (accountName !== "" && !wallet) {
+		} else if (accountName !== "" && !wallet && !forceAddress) {
 			setError("Invalid Cennznet Address");
 		}
 	};
@@ -96,9 +101,12 @@ const CENNZnetAccountPicker: React.FC<{
 								? ""
 								: wallet
 								? "Switch Account"
+								: forceAddress
+								? forceAddress
 								: "Select or Type Address"
 						}
 						InputLabelProps={{ shrink: false }}
+						disabled={!!forceAddress}
 					/>
 				)}
 			/>

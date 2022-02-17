@@ -28,7 +28,11 @@ const ConnectWalletButton: FC<ConnectWalletButtonProps> = ({
 	);
 
 	const { wallet, connectWallet } = useWallet();
-	const { initBlockchain }: any = useBlockchain();
+	const { initBlockchain, Account }: any = useBlockchain();
+
+	useEffect(() => {
+		if (Account) setMetamaskConnected(true);
+	}, []);
 
 	useEffect(() => {
 		if (wallet?.signer) setCennznetConnected(true);

@@ -58,6 +58,7 @@ const Emery: React.FC<{}> = () => {
 			const { ethereum }: any = window;
 			if (!erc20Token) return;
 			(async () => {
+				if (!erc20Token || !Account) return;
 				const balance = await getMetamaskBalance(
 					ethereum,
 					erc20Token.address,
@@ -120,6 +121,7 @@ const Emery: React.FC<{}> = () => {
 			<CENNZnetAccountPicker
 				updateSelectedAccount={updateSelectedAccountCustom}
 				topText={"DESTINATION"}
+				forceAddress={bridgeState === "Withdraw" && Account}
 			/>
 			<div className={styles.infoBoxContainer}>
 				<p className={styles.infoBoxText}>
