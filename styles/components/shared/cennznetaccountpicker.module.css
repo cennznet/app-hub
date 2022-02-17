@@ -1,0 +1,41 @@
+.accountPickerContainer{
+    display: flex;
+    flex-direction: column;
+    height:200px;
+    margin-bottom: 32px;
+}
+
+.walletContainer {
+    margin-bottom: 0;
+    height:60px;
+}
+
+.topText {
+    font-style: normal;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 125%;
+    letter-spacing: 1.12428px;
+    text-transform: uppercase;
+    color: #020202;
+    margin: 0;
+    margin-bottom: 6px;
+}
+
+.clearIcon {
+    height: 24px;
+    width: 24px;
+    background: #1130FF;
+    border-radius: 5px;
+}
+
+.errorMsg {
+    color: #EC022C;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 125%;
+    text-transform: uppercase;
+    margin: 0;
+    margin-top: 12px;
+    align-self: flex-end;
+}

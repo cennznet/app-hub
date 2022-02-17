@@ -78,7 +78,7 @@ describe("fetchTokenAmounts", () => {
 			"10000",
 			balances,
 			assets.CPAY
-		).catch((err) => expect(err.message).toEqual("Account Balance is too low"));
+		).catch((err) => expect(err.message).toEqual("Account balance is too low"));
 	});
 });
 

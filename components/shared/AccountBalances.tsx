@@ -43,7 +43,7 @@ const AccountBalances: React.FC<{
 							textTransform: "uppercase",
 						}}
 					>
-						{selectedAccount.meta.name}
+						{selectedAccount?.meta?.name}
 					</Heading>
 					<SmallText
 						sx={{ opacity: "70%", cursor: "copy", fontSize: "14px" }}

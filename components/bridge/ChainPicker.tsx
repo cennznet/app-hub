@@ -2,38 +2,48 @@ import React, { useState, useEffect } from "react";
 import { Chain, SupportedChain } from "../../types";
 
 import styles from "../../styles/components/bridge/chainpicker.module.css";
-import { ETH_LOGO } from "../../utils/bridge/helpers";
-
-const CHAINS: Chain[] = [
-	{
-		name: "Cennznet",
-		logo: "images/cennz.svg",
-	},
-	{
-		name: "Ethereum",
-		logo: ETH_LOGO,
-	},
-];
+import { CHAINS } from "../../utils/bridge/helpers";
 
 const ChainPicker: React.FC<{
 	setChain: Function;
+	setOppositeChain: Function;
 	initialChain: SupportedChain;
+	forceChain: SupportedChain;
 	topText?: string;
-}> = ({ setChain, initialChain, topText }) => {
-	const [chains, setChains] = useState<Chain[]>(CHAINS);
+}> = ({ setChain, initialChain, setOppositeChain, forceChain, topText }) => {
 	const [chainDropDownActive, setChainDropDownActive] =
 		useState<boolean>(false);
 	const [selectedChainIdx, setSelectedChainIdx] = useState<number>(0);
+	const [initialRenderComplete, setInitialRenderComplete] =
+		useState<boolean>(false);
 
 	useEffect(() => {
-		const foundChainIdx = chains.findIndex(
+		const foundChainIdx = CHAINS.findIndex(
 			(chain) => chain.name === initialChain
 		);
+		if (foundChainIdx === selectedChainIdx) return;
 		setSelectedChainIdx(foundChainIdx);
+		setChain(initialChain);
 	}, []);
 
 	useEffect(() => {
-		setChain(chains[selectedChainIdx]);
+		if (initialChain === forceChain && !initialRenderComplete) {
+			setInitialRenderComplete(true);
+			return;
+		}
+		const foundChainIdx = CHAINS.findIndex(
+			(chain) => chain.name === forceChain
+		);
+		if (foundChainIdx === selectedChainIdx) return;
+		setSelectedChainIdx(foundChainIdx);
+	}, [forceChain]);
+
+	useEffect(() => {
+		setChain(CHAINS[selectedChainIdx]);
+		const foundOppositeChainIdx = CHAINS.findIndex(
+			(chain) => chain.name !== CHAINS[selectedChainIdx].name
+		);
+		setOppositeChain(CHAINS[foundOppositeChainIdx]);
 	}, [selectedChainIdx]);
 
 	return (
@@ -45,7 +55,7 @@ const ChainPicker: React.FC<{
 						<img
 							className={styles.chainSelectedImg}
 							alt=""
-							src={chains[selectedChainIdx]?.logo}
+							src={CHAINS[selectedChainIdx]?.logo}
 							width={33}
 							height={33}
 						/>
@@ -54,7 +64,7 @@ const ChainPicker: React.FC<{
 							className={styles.chainButton}
 							onClick={() => setChainDropDownActive(!chainDropDownActive)}
 						>
-							{chains[selectedChainIdx]?.name}
+							{CHAINS[selectedChainIdx]?.name}
 							<img
 								className={
 									chainDropDownActive
@@ -68,20 +78,22 @@ const ChainPicker: React.FC<{
 					</>
 					{chainDropDownActive && (
 						<div className={styles.chainDropdownContainer}>
-							{chains.map((chain: any, i) => {
-								return (
-									<div
-										key={i}
-										onClick={() => {
-											setSelectedChainIdx(i);
-											setChainDropDownActive(false);
-										}}
-										className={styles.chainChoiceContainer}
-									>
-										<img alt="" src={chain.logo} width={33} height={33} />
-										<span>{chain.name}</span>
-									</div>
-								);
+							{CHAINS.map((chain: any, i) => {
+								if (chain.name !== CHAINS[selectedChainIdx].name) {
+									return (
+										<div
+											key={i}
+											onClick={() => {
+												setSelectedChainIdx(i);
+												setChainDropDownActive(false);
+											}}
+											className={styles.chainChoiceContainer}
+										>
+											<img alt="" src={chain.logo} width={33} height={33} />
+											<span>{chain.name}</span>
+										</div>
+									);
+								}
 							})}
 						</div>
 					)}

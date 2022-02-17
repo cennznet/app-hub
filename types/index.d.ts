@@ -232,7 +232,7 @@ export interface PoolConfig {
 	setMax: Function;
 }
 
-export type SupportedChain = "Ethereum" | "Cennznet";
+export type SupportedChain = "Ethereum" | "CENNZnet";
 
 export interface Chain {
 	name: SupportedChain;

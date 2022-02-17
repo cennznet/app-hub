@@ -28,7 +28,11 @@ const ConnectWalletButton: FC<ConnectWalletButtonProps> = ({
 	);
 
 	const { wallet, connectWallet } = useWallet();
-	const { initBlockchain }: any = useBlockchain();
+	const { initBlockchain, Account }: any = useBlockchain();
+
+	useEffect(() => {
+		if (Account) setMetamaskConnected(true);
+	}, []);
 
 	useEffect(() => {
 		if (wallet?.signer) setCennznetConnected(true);
@@ -71,7 +75,7 @@ const ConnectWalletButton: FC<ConnectWalletButtonProps> = ({
 					onClick();
 				}}
 			>
-				<img src={"metamask_logo.svg"} alt={""} />
+				<img src={"metamask_logo.svg"} alt={""} width={40} height={40} />
 				<h1>Connect Wallet</h1>
 			</div>
 		);

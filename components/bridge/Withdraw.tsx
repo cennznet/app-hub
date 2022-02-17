@@ -1,65 +1,41 @@
 import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
-import { Box, Button, CircularProgress, TextField } from "@mui/material";
-import { Heading, SmallText } from "../../theme/StyledComponents";
 import { defineTxModal } from "../../utils/bridge/modal";
 import { useBlockchain } from "../../providers/BlockchainProvider";
 import { useCENNZApi } from "../../providers/CENNZApiProvider";
 import { useWallet } from "../../providers/SupportedWalletProvider";
 import TxModal from "./TxModal";
-import TokenPicker from "../shared/TokenPicker";
 import ErrorModal from "./ErrorModal";
-import { BridgeToken } from "../../types";
+import { BridgeToken, CennznetAccount } from "../../types";
+import ConnectWalletButton from "../shared/ConnectWalletButton";
 
-const ETH_CHAIN_ID = process.env.NEXT_PUBLIC_ETH_CHAIN_ID;
-
-const Withdraw: React.FC<{}> = () => {
-	const [token, setToken] = useState<BridgeToken>();
-	const [tokenBalance, setTokenBalance] = useState<Number>();
-	const [amount, setAmount] = useState("");
+const Withdraw: React.FC<{
+	token: BridgeToken;
+	amount: string;
+	selectedAccount: CennznetAccount;
+	disabled: boolean;
+	setEnoughBalance: Function;
+	setEstimatedFee: Function;
+}> = ({
+	token,
+	amount,
+	selectedAccount,
+	disabled,
+	setEnoughBalance,
+	setEstimatedFee,
+}) => {
 	const [modalOpen, setModalOpen] = useState(false);
 	const [errorModalOpen, setErrorModalOpen] = useState(false);
-	const [modalState, setModalState] = useState("");
 	const [modal, setModal] = useState({
 		state: "",
 		text: "",
 		hash: "",
 	});
-	const [estimatedFee, setEstimatedFee] = useState(0);
-	const { Contracts, Account, Signer, initBlockchain }: any = useBlockchain();
+	const { Contracts, Account, Signer }: any = useBlockchain();
 	const { api }: any = useCENNZApi();
-	const { wallet, selectedAccount, bridgeBalances } = useWallet();
-	const { signer } = wallet;
+	const { wallet, bridgeBalances } = useWallet();
+	const signer = wallet?.signer;
 
-	const connectMetamask = async () => {
-		const { ethereum } = window as any;
-		try {
-			const accounts = await ethereum.request({
-				method: "eth_requestAccounts",
-			});
-			const ethChainId = await ethereum.request({ method: "eth_chainId" });
-
-			if (ETH_CHAIN_ID === "1" && ethChainId !== "0x1") {
-				await ethereum.request({
-					method: "wallet_switchEthereumChain",
-					params: [{ chainId: "0x1" }],
-				});
-			} else if (ETH_CHAIN_ID === "42" && ethChainId !== "0x2a") {
-				await ethereum.request({
-					method: "wallet_switchEthereumChain",
-					params: [{ chainId: "0x2a" }],
-				});
-			}
-
-			initBlockchain(ethereum, accounts);
-		} catch (err) {
-			console.log(err.message);
-			setModalState("noMetamask");
-			setErrorModalOpen(true);
-		}
-	};
-
-	//Estimate fee
 	useEffect(() => {
 		if (!selectedAccount || !Account) return;
 
@@ -86,14 +62,16 @@ const Withdraw: React.FC<{}> = () => {
 			const tokenId = tokenExist.isSome
 				? tokenExist.unwrap()
 				: await api.query.genericAsset.nextAssetId();
-
-			Object.values(bridgeBalances).map((token: any) => {
-				if (token.tokenId === tokenId.toString()) {
-					setTokenBalance(token.balance);
-				}
-			});
+			const foundToken = Object.values(bridgeBalances).find(
+				(token: any) => token.tokenId === tokenId.toString()
+			);
+			if (foundToken) {
+				setEnoughBalance(foundToken.balance >= Number(amount));
+			} else {
+				setEnoughBalance(false);
+			}
 		})();
-	}, [token, bridgeBalances, api]);
+	}, [token, bridgeBalances, api, amount]);
 
 	const resetModal = () => {
 		setModal({ state: "", text: "", hash: "" });
@@ -259,85 +237,15 @@ const Withdraw: React.FC<{}> = () => {
 				/>
 			)}
 			{errorModalOpen && (
-				<ErrorModal setModalOpen={setErrorModalOpen} modalState={modalState} />
+				<ErrorModal setModalOpen={setErrorModalOpen} modalState={modal.state} />
 			)}
-			<Box
-				component="form"
-				sx={{
-					width: "552px",
-					height: "auto",
-					margin: "0 auto",
-					background: "#FFFFFF",
-					border: "4px solid #1130FF",
-					display: "flex",
-					flexDirection: "column",
-					justifyContent: "center",
-					alignItems: "center",
-					padding: "0px",
-				}}
-			>
-				<TokenPicker setToken={setToken} />
-				<TextField
-					label="Amount"
-					variant="outlined"
-					required
-					sx={{
-						width: "80%",
-						m: "30px 0 30px",
-					}}
-					onChange={(e) => setAmount(e.target.value)}
-					helperText={
-						tokenBalance < Number(amount) ? "Account balance too low" : ""
-					}
-				/>
-				<Box sx={{ textAlign: "center" }}>
-					<Heading sx={{ textTransform: "uppercase", fontSize: "18px" }}>
-						estimated withdrawal fee:
-					</Heading>
-					{estimatedFee ? (
-						<SmallText>{estimatedFee} ETH</SmallText>
-					) : (
-						<CircularProgress size="1.5rem" sx={{ color: "black" }} />
-					)}
-				</Box>
-				{Account ? (
-					<Button
-						sx={{
-							fontFamily: "Teko",
-							fontWeight: "bold",
-							fontSize: "21px",
-							lineHeight: "124%",
-							color: "#1130FF",
-							m: "30px auto 50px",
-						}}
-						disabled={
-							token && amount && Number(amount) <= tokenBalance ? false : true
-						}
-						size="large"
-						variant="outlined"
-						onClick={withdraw}
-					>
-						Withdraw
-					</Button>
-				) : (
-					<Button
-						sx={{
-							fontFamily: "Teko",
-							fontWeight: "bold",
-							fontSize: "21px",
-							lineHeight: "124%",
-							color: "#1130FF",
-							mt: "30px",
-							mb: "50px",
-						}}
-						size="large"
-						variant="outlined"
-						onClick={connectMetamask}
-					>
-						connect metamask
-					</Button>
-				)}
-			</Box>
+			<ConnectWalletButton
+				disabled={disabled}
+				onClick={withdraw}
+				buttonText={"CONFIRM"}
+				requireCennznet={false}
+				requireMetamask={true}
+			/>
 		</>
 	);
 };
