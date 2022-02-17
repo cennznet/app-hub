@@ -1,5 +1,5 @@
 import { Api } from "@cennznet/api";
-import { Amount, AmountUnit } from "../utils/Amount";
+import { Amount, AmountUnit } from "../../utils/Amount";
 import {
 	calculateValues,
 	fetchAddLiquidityValues,
@@ -7,7 +7,7 @@ import {
 	fetchFeeEstimate,
 	fetchUserPoolShare,
 	fetchWithdrawLiquidityValues,
-} from "../utils/pool";
+} from "../../utils/pool";
 
 const testingAddress = "5FbMzsoEpd2mt8eyKpKUxwJ5S9W7nJVJkCer2Jk7tvSpB1vF";
 const assets = {

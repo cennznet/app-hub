@@ -1,6 +1,60 @@
 import { Api } from "@cennznet/api";
-import { AssetInfo, IExchangePool, IUserShareInPool } from "../../types";
+import {
+	AssetInfo,
+	IExchangePool,
+	IUserShareInPool,
+	PoolValues,
+} from "../../types";
 import { Amount, AmountUnit } from "../Amount";
+
+export const fetchCoreAmount = (
+	tradeAmount: number,
+	exchangePool: IExchangePool
+) => {
+	const coreAmount =
+		(tradeAmount * exchangePool.coreAssetBalance.toNumber()) /
+		exchangePool.assetBalance.toNumber();
+
+	if (coreAmount <= 0) return 0;
+	return coreAmount;
+};
+
+export const fetchTradeAmount = (
+	coreAmount: number,
+	exchangePool: IExchangePool
+) => {
+	const tradeAmount =
+		(coreAmount * exchangePool.assetBalance.toNumber()) /
+		exchangePool.coreAssetBalance.toNumber();
+
+	if (tradeAmount <= 0) return 0;
+	return tradeAmount;
+};
+
+export const checkLiquidityBalances = (
+	poolAction: string,
+	coreAmount: number,
+	tradeAmount: number,
+	userBalances: PoolValues
+) => {
+	if (poolAction === "Add") {
+		if (
+			coreAmount > userBalances.coreAsset &&
+			tradeAmount > userBalances.tradeAsset
+		)
+			return "coreAndTrade";
+		else if (coreAmount > userBalances.coreAsset) return "core";
+		else if (tradeAmount > userBalances.tradeAsset) return "trade";
+	} else {
+		if (
+			coreAmount > userBalances.coreLiquidity &&
+			tradeAmount > userBalances.tradeLiquidity
+		)
+			return "coreAndTrade";
+		else if (coreAmount > userBalances.coreLiquidity) return "core";
+		else if (tradeAmount > userBalances.tradeLiquidity) return "trade";
+	}
+};
 
 export const fetchExchangePool = async (
 	api: Api,

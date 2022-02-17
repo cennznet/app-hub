@@ -11,6 +11,11 @@ import styles from "../../styles/components/swap/swap.module.css";
 import { PoolSummaryProps } from "../../types";
 import PoolSummary from "./PoolSummary";
 import Settings from "./Settings";
+import {
+	checkLiquidityBalances,
+	fetchCoreAmount,
+	fetchTradeAmount,
+} from "../../utils/pool";
 
 const ROUND_UP = 1;
 
@@ -115,30 +120,19 @@ const PoolForm: React.FC<{}> = () => {
 	}, [coreAsset, tradeAsset, exchangePool]);
 
 	const checkBalances = (poolAction, coreAmount, tradeAmount) => {
-		if (poolAction === PoolAction.ADD) {
-			if (
-				coreAmount > userBalances.coreAsset &&
-				tradeAmount > userBalances.tradeAsset
-			) {
-				setCoreError("Balance Too Low");
-				setTradeError("Balance Too Low");
-			} else if (coreAmount > userBalances.coreAsset) {
-				setCoreError("Balance Too Low");
-			} else if (tradeAmount > userBalances.tradeAsset) {
-				setTradeError("Balance Too Low");
-			}
-		} else {
-			if (
-				coreAmount > userBalances.coreLiquidity &&
-				tradeAmount > userBalances.tradeLiquidity
-			) {
-				setCoreError("Balance Too Low");
-				setTradeError("Balance Too Low");
-			} else if (coreAmount > userBalances.coreLiquidity) {
-				setCoreError("Balance Too Low");
-			} else if (tradeAmount > userBalances.tradeLiquidity) {
-				setTradeError("Balance Too Low");
-			}
+		const error = checkLiquidityBalances(
+			poolAction,
+			coreAmount,
+			tradeAmount,
+			userBalances
+		);
+		if (error === "coreAndTrade") {
+			setCoreError("Balance Too Low");
+			setTradeError("Balance Too Low");
+		} else if (error === "core") {
+			setCoreError("Balance Too Low");
+		} else if (error === "trade") {
+			setTradeError("Balance Too Low");
 		}
 	};
 
@@ -164,9 +158,7 @@ const PoolForm: React.FC<{}> = () => {
 		if (whichAsset === "trade") {
 			const tradeAmount = amount;
 			setTradeAssetAmount(tradeAmount);
-			const coreAmount =
-				(tradeAmount * exchangePool.coreAssetBalance.toNumber()) /
-				exchangePool.assetBalance.toNumber();
+			const coreAmount = fetchCoreAmount(tradeAmount, exchangePool);
 
 			if (coreAmount <= 0) {
 				setCoreAmount(0);
@@ -186,9 +178,7 @@ const PoolForm: React.FC<{}> = () => {
 		} else {
 			setCoreAmount(amount);
 			const coreAmount = amount;
-			let tradeAmount =
-				(coreAmount * exchangePool.assetBalance.toNumber()) /
-				exchangePool.coreAssetBalance.toNumber();
+			const tradeAmount = fetchTradeAmount(coreAmount, exchangePool);
 
 			if (tradeAmount <= 0) {
 				setTradeAssetAmount(0);
