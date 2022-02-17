@@ -137,16 +137,18 @@ const TokenPicker: React.FC<{
 					const tokenExist = await api.query.erc20Peg.erc20ToAssetId(
 						tokens[selectedTokenIdx]?.address
 					);
+
 					const tokenId = tokenExist.isSome
 						? tokenExist.unwrap()
 						: await api.query.genericAsset.nextAssetId();
-					Object.values(bridgeBalances).map((token: any) => {
-						if (token.tokenId === tokenId.toString()) {
-							setSelectedTokenBalance(parseFloat(token.balance.toFixed(4)));
-						} else {
-							setSelectedTokenBalance(0);
-						}
-					});
+					const foundToken = Object.values(bridgeBalances).find(
+						(token: any) => token.tokenId === tokenId.toString()
+					);
+					if (foundToken) {
+						setSelectedTokenBalance(parseFloat(foundToken.balance.toFixed(4)));
+					} else {
+						setSelectedTokenBalance(0);
+					}
 				})();
 			} else {
 				if (!Account || !tokens[selectedTokenIdx]) return;
