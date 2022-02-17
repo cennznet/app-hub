@@ -42,10 +42,17 @@ describe("fetchExchangePool", () => {
 
 		const exchangeAddress = await api.derive.cennzx.exchangeAddress(CENNZ);
 
+		const expectedAssetBalance = new Amount(
+			await api.derive.cennzx.poolAssetBalance(CENNZ)
+		);
+
+		const expectedCoreAssetBalance = new Amount(
+			await api.derive.cennzx.poolCoreAssetBalance(CENNZ)
+		);
+
 		expect(address).toEqual(exchangeAddress);
-		expect(!assetBalance.isZero());
-		expect(!coreAssetBalance.isZero());
-		expect(assetId).toEqual(CENNZ);
+		expect(assetBalance).toEqual(expectedAssetBalance);
+		expect(coreAssetBalance).toEqual(expectedCoreAssetBalance);
 	});
 	it("amounts return 0 when assetId is not a registered asset", async () => {
 		const { assetBalance, coreAssetBalance } = await fetchExchangePool(api, 0);
@@ -60,9 +67,17 @@ describe("fetchUserPoolShare", () => {
 		const { assetBalance, coreAssetBalance, liquidity } =
 			await fetchUserPoolShare(api, testingAddress, assets.CENNZ.id);
 
-		expect(!assetBalance.isZero());
-		expect(!coreAssetBalance.isZero());
-		expect(!liquidity.isZero());
+		const liquidityValue = await api.rpc.cennzx.liquidityValue(
+			testingAddress,
+			assets.CENNZ.id
+		);
+		const userAssetShare = new Amount(liquidityValue.asset);
+		const userCoreShare = new Amount(liquidityValue.core);
+		const expectedLiquidity = new Amount(liquidityValue.liquidity);
+
+		expect(assetBalance).toEqual(userAssetShare);
+		expect(coreAssetBalance).toEqual(userCoreShare);
+		expect(liquidity).toEqual(expectedLiquidity);
 	});
 	it("throws invalid address error", async () => {
 		await fetchUserPoolShare(
