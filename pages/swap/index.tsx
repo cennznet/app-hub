@@ -4,13 +4,16 @@ import TokenPicker from "../../components/shared/TokenPicker";
 import ExchangeIcon from "../../components/swap/ExchangeIcon";
 import { useCENNZApi } from "../../providers/CENNZApiProvider";
 import { useAssets } from "../../providers/SupportedAssetsProvider";
-import { Amount, AmountUnit } from "../../utils/Amount";
 import { Asset } from "../../types";
-import BigNumber from "bignumber.js";
 
 import styles from "../../styles/components/swap/swap.module.css";
 import { useWallet } from "../../providers/SupportedWalletProvider";
 import { useDappModule } from "../../providers/DappModuleProvider";
+import {
+	fetchEstimatedTransactionFee,
+	fetchExchangeExtrinsic,
+	fetchTokenAmounts,
+} from "../../utils/swap";
 
 const Exchange: React.FC<{}> = () => {
 	const [exchangeToken, setExchangeToken] = useState<Asset>();
@@ -41,124 +44,76 @@ const Exchange: React.FC<{}> = () => {
 	}, [web3Enable, api]);
 
 	useEffect(() => {
-		const setReceivedTokenAmount = async () => {
-			try {
-				if (
-					parseInt(exchangeTokenValue) > 0 &&
-					api &&
-					exchangeToken &&
-					receivedToken
-				) {
-					setError(undefined);
-					setSuccess(undefined);
-					let exchangeAmount: any = new BigNumber(
-						exchangeTokenValue.toString()
-					);
-					exchangeAmount = exchangeAmount
-						.multipliedBy(Math.pow(10, exchangeToken.decimals))
-						.toString(10);
+		(async () => {
+			if (
+				parseInt(exchangeTokenValue) <= 0 ||
+				!api ||
+				!exchangeToken ||
+				!receivedToken ||
+				!balances
+			)
+				return;
 
-					//check if they own enough tokens to exchange
-					const exchangeTokenBalance = balances.find(
-						(token) => token.id === exchangeToken.id
-					);
-					if (parseInt(exchangeTokenValue) > exchangeTokenBalance.value) {
-						throw new Error("Account Balance is too low");
-					}
-					const sellPrice = await (api.rpc as any).cennzx.sellPrice(
-						exchangeToken.id,
-						exchangeAmount,
-						receivedToken.id
-					);
-					let receivedAmount: any = new Amount(
-						sellPrice.price.toString(),
-						AmountUnit.UN
-					);
-					receivedAmount = receivedAmount.toAmount(receivedToken.decimals);
-					setReceivedTokenValue(receivedAmount.toString());
-					const estimatedFee = await getEstimatedTransactionFee(
-						exchangeAmount,
-						exchangeToken.id,
-						receivedToken.id
-					);
-					setEstimatedFee(estimatedFee);
-				}
+			try {
+				setError(undefined);
+				setSuccess(undefined);
+
+				const { exchangeAmount, receivedAmount } = await fetchTokenAmounts(
+					api,
+					exchangeToken,
+					exchangeTokenValue,
+					balances,
+					receivedToken
+				);
+				setReceivedTokenValue(receivedAmount.toString());
+
+				const estimatedFee = await fetchEstimatedTransactionFee(
+					api,
+					exchangeAmount,
+					exchangeToken.id,
+					receivedToken.id
+				);
+				setEstimatedFee(estimatedFee);
 			} catch (e) {
 				setError(e.message);
 			}
-		};
-		setReceivedTokenAmount();
-	}, [api, exchangeTokenValue, assets, exchangeToken, receivedToken]);
-
-	const getEstimatedTransactionFee = async (
-		exchangeAmount: string,
-		exchangeTokenId: number,
-		receivedTokenId: number
-	) => {
-		//TODO calculate slippage here
-		const maxAmount = parseInt(exchangeAmount) * 2;
-		const extrinsic = api.tx.cennzx.buyAsset(
-			null,
-			exchangeTokenId,
-			receivedTokenId,
-			exchangeAmount,
-			maxAmount
-		);
-		const assetIds =
-			process.env.NEXT_PUBLIC_SUPPORTED_ASSETS &&
-			process.env.NEXT_PUBLIC_SUPPORTED_ASSETS.split(",");
-
-		const feeFromQuery = await api.derive.fees.estimateFee({
-			extrinsic,
-			userFeeAssetId: assetIds[1],
-		});
-		let estimatedFee: any = new Amount(feeFromQuery.toString(), AmountUnit.UN);
-		const CPAY_DECIMALS = 4;
-		estimatedFee = estimatedFee.toAmount(CPAY_DECIMALS);
-		return estimatedFee.toString();
-	};
+		})();
+	}, [api, exchangeTokenValue, assets, exchangeToken, receivedToken, balances]);
 
 	const exchangeTokens = useCallback(async () => {
-		if (!signer) return;
+		if (
+			parseInt(receivedTokenValue) <= 0 ||
+			!api ||
+			!exchangeToken ||
+			!receivedToken ||
+			!signer
+		)
+			return;
+
 		try {
-			if (
-				parseInt(receivedTokenValue) > 0 &&
-				api &&
-				exchangeToken &&
-				receivedToken
-			) {
-				let exchangeAmount: any = new BigNumber(exchangeTokenValue.toString());
-				exchangeAmount = exchangeAmount
-					.multipliedBy(Math.pow(10, exchangeToken.decimals))
-					.toString(10);
-				const maxAmount = parseInt(exchangeAmount) * 2;
-				let buyAmount: any = new BigNumber(receivedTokenValue);
-				buyAmount = buyAmount
-					.multipliedBy(Math.pow(10, receivedToken.decimals))
-					.toString(10);
-				const extrinsic = api.tx.cennzx.buyAsset(
-					null,
-					exchangeToken.id,
-					receivedToken.id,
-					buyAmount,
-					maxAmount
-				);
-				extrinsic.signAndSend(
-					selectedAccount.address,
-					{ signer },
-					async ({ status, events }: any) => {
-						if (status.isInBlock && events !== undefined) {
-							for (const { event } of events) {
-								if (event.method === "AssetBought") {
-									setError(undefined);
-									setSuccess(`Successfully Swapped Tokens!`);
-									fetchAssetBalances();
-								}
+			const extrinsic = await fetchExchangeExtrinsic(
+				api,
+				exchangeToken,
+				exchangeTokenValue,
+				receivedToken,
+				receivedTokenValue
+			);
+
+			extrinsic.signAndSend(
+				selectedAccount.address,
+				{ signer },
+				async ({ status, events }: any) => {
+					if (status.isInBlock && events !== undefined) {
+						for (const { event } of events) {
+							if (event.method === "AssetBought") {
+								setError(undefined);
+								setSuccess(`Successfully Swapped Tokens!`);
+								fetchAssetBalances();
 							}
 						}
 					}
-				);
-			}
+				}
+			);
 		} catch (e) {
 			setError(e.message);
 		}

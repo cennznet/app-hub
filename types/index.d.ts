@@ -220,7 +220,7 @@ export interface PoolValues {
 export interface PoolSummaryProps {
 	tradeAsset: AssetInfo;
 	poolLiquidity: PoolValues;
-	exchangeRate: number;
+	exchangeRate: number | string;
 }
 
 export interface PoolConfig {

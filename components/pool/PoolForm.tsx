@@ -5,14 +5,17 @@ import TokenPicker from "../../components/shared/TokenPicker";
 import { AssetInfo, PoolConfig, PoolValues } from "../../types";
 import { useWallet } from "../../providers/SupportedWalletProvider";
 import { PoolAction, usePool } from "../../providers/PoolProvider";
-import { Amount } from "../../utils/Amount";
 import SwapIconClass from "./SwapIcon";
 import styles from "../../styles/components/swap/swap.module.css";
 import { PoolSummaryProps } from "../../types";
 import PoolSummary from "./PoolSummary";
 import Settings from "./Settings";
-
-const ROUND_UP = 1;
+import {
+	checkLiquidityBalances,
+	fetchCoreAmount,
+	fetchExchangeRate,
+	fetchTradeAmount,
+} from "../../utils/pool";
 
 export enum PoolColors {
 	ADD = "#1130FF",
@@ -50,16 +53,12 @@ const PoolForm: React.FC<{}> = () => {
 	useEffect(() => {
 		if (!exchangePool) return;
 
-		let exchangeRate: any = new Amount(1);
-		exchangeRate = exchangeRate
-			.mul(exchangePool.assetBalance)
-			.div(exchangePool.coreAssetBalance)
-			.subn(ROUND_UP);
+		const exchangeRate = fetchExchangeRate(exchangePool);
 
 		setPoolSummaryProps({
 			tradeAsset,
 			poolLiquidity,
-			exchangeRate: exchangeRate.toNumber(),
+			exchangeRate,
 		});
 	}, [exchangePool, tradeAsset, poolLiquidity]);
 
@@ -115,30 +114,19 @@ const PoolForm: React.FC<{}> = () => {
 	}, [coreAsset, tradeAsset, exchangePool]);
 
 	const checkBalances = (poolAction, coreAmount, tradeAmount) => {
-		if (poolAction === PoolAction.ADD) {
-			if (
-				coreAmount.toNumber() > userBalances.coreAsset &&
-				tradeAmount.toNumber() > userBalances.tradeAsset
-			) {
-				setCoreError("Balance Too Low");
-				setTradeError("Balance Too Low");
-			} else if (coreAmount.toNumber() > userBalances.coreAsset) {
-				setCoreError("Balance Too Low");
-			} else if (tradeAmount.toNumber() > userBalances.tradeAsset) {
-				setTradeError("Balance Too Low");
-			}
-		} else {
-			if (
-				coreAmount.toNumber() > userBalances.coreLiquidity &&
-				tradeAmount.toNumber() > userBalances.tradeLiquidity
-			) {
-				setCoreError("Balance Too Low");
-				setTradeError("Balance Too Low");
-			} else if (coreAmount.toNumber() > userBalances.coreLiquidity) {
-				setCoreError("Balance Too Low");
-			} else if (tradeAmount.toNumber() > userBalances.tradeLiquidity) {
-				setTradeError("Balance Too Low");
-			}
+		const error = checkLiquidityBalances(
+			poolAction,
+			coreAmount,
+			tradeAmount,
+			userBalances
+		);
+		if (error === "coreAndTrade") {
+			setCoreError("Balance Too Low");
+			setTradeError("Balance Too Low");
+		} else if (error === "core") {
+			setCoreError("Balance Too Low");
+		} else if (error === "trade") {
+			setTradeError("Balance Too Low");
 		}
 	};
 
@@ -162,17 +150,14 @@ const PoolForm: React.FC<{}> = () => {
 		}
 
 		if (whichAsset === "trade") {
-			setTradeAssetAmount(amount);
-			const tradeAmount = new Amount(Math.round(Number(amount)));
-			const coreAmount = tradeAmount
-				.mul(exchangePool.coreAssetBalance)
-				.div(exchangePool.assetBalance)
-				.subn(ROUND_UP);
+			const tradeAmount = amount;
+			setTradeAssetAmount(tradeAmount);
+			const coreAmount = fetchCoreAmount(tradeAmount, exchangePool);
 
-			if (coreAmount.toNumber() <= 0) {
+			if (coreAmount <= 0) {
 				setCoreAmount(0);
 			} else {
-				setCoreAmount(coreAmount.toNumber());
+				setCoreAmount(coreAmount.toFixed(4));
 				checkBalances(poolAction, coreAmount, tradeAmount);
 				//define extrinsic & estimate fee
 				await defineExtrinsic(
@@ -186,16 +171,13 @@ const PoolForm: React.FC<{}> = () => {
 			}
 		} else {
 			setCoreAmount(amount);
-			const coreAmount = new Amount(Math.round(Number(amount)));
-			const tradeAmount = coreAmount
-				.mul(exchangePool.assetBalance)
-				.div(exchangePool.coreAssetBalance)
-				.subn(ROUND_UP);
+			const coreAmount = amount;
+			const tradeAmount = fetchTradeAmount(coreAmount, exchangePool);
 
-			if (tradeAmount.toNumber() <= 0) {
+			if (tradeAmount <= 0) {
 				setTradeAssetAmount(0);
 			} else {
-				setTradeAssetAmount(tradeAmount.toNumber());
+				setTradeAssetAmount(tradeAmount.toFixed(4));
 				checkBalances(poolAction, coreAmount, tradeAmount);
 				//define extrinsic & estimate fee
 				await defineExtrinsic(
@@ -212,15 +194,12 @@ const PoolForm: React.FC<{}> = () => {
 
 	const setMax = async (whichAsset: string) => {
 		if (poolAction === PoolAction.ADD) {
-			let amount;
 			if (whichAsset === "trade") {
-				amount = Math.floor(Number(userBalances.tradeAsset));
-				setTradeAssetAmount(amount);
-				setOtherAsset(amount, whichAsset);
+				setTradeAssetAmount(userBalances.tradeAsset);
+				setOtherAsset(userBalances.tradeAsset, whichAsset);
 			} else {
-				amount = Math.floor(Number(userBalances.coreAsset));
-				setCoreAmount(amount);
-				setOtherAsset(amount, whichAsset);
+				setCoreAmount(userBalances.coreAsset);
+				setOtherAsset(userBalances.coreAsset, whichAsset);
 			}
 		} else {
 			await defineExtrinsic(
