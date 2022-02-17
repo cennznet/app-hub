@@ -19,6 +19,13 @@ import {
 } from "react";
 import { useCENNZApi } from "./CENNZApiProvider";
 import { useWallet } from "./SupportedWalletProvider";
+import {
+	fetchAddLiquidityValues,
+	fetchExchangePool,
+	fetchFeeEstimate,
+	fetchUserPoolShare,
+	fetchWithdrawLiquidityValues,
+} from "../utils/pool";
 
 export enum PoolAction {
 	ADD = "Add",
@@ -80,22 +87,15 @@ export default function PoolProvider({
 	const updateExchangePool = useCallback(
 		async (asset) => {
 			if (!api) return;
-			const exchangeAddress = await api.derive.cennzx.exchangeAddress(asset.id);
 
-			const assetBalance = await api.derive.cennzx.poolAssetBalance(asset.id);
-
-			const coreAssetBalance = await api.derive.cennzx.poolCoreAssetBalance(
+			const exchangePool: IExchangePool = await fetchExchangePool(
+				api,
 				asset.id
 			);
 
 			setValue((value) => ({
 				...value,
-				exchangePool: {
-					address: exchangeAddress.toString(),
-					assetId: asset.id,
-					assetBalance: new Amount(assetBalance),
-					coreAssetBalance: new Amount(coreAssetBalance),
-				},
+				exchangePool,
 			}));
 		},
 		[api]
@@ -105,42 +105,15 @@ export default function PoolProvider({
 		async (asset) => {
 			if (!api || !selectedAccount || !value.coreAsset) return;
 
-			const liquidityValue = await (api.rpc as any).cennzx.liquidityValue(
+			const userPoolShare: IUserShareInPool = await fetchUserPoolShare(
+				api,
 				selectedAccount.address,
 				asset.id
 			);
-			const liquidity: Amount = new Amount(liquidityValue.liquidity);
-			const userAssetShare: Amount = new Amount(liquidityValue.asset);
-			const userCoreShare: Amount = new Amount(liquidityValue.core);
-			const userShare: IUserShareInPool = {
-				coreAssetBalance: userCoreShare,
-				assetBalance: userAssetShare,
-				address: selectedAccount.address,
-				liquidity: liquidity,
-				assetId: asset.id,
-			};
-			setValue({ ...value, userPoolShare: userShare });
+
+			setValue({ ...value, userPoolShare });
 		},
 		[api, selectedAccount, value]
-	);
-
-	const setEstimatedFee = useCallback(
-		async (extrinsic) => {
-			if (!api || !value.coreAsset) return;
-
-			const feeEstimate: any = await api.derive.fees.estimateFee({
-				extrinsic,
-				userFeeAssetId: value.coreAsset.id,
-				maxPayment: "50000000000000000",
-			});
-
-			setValue({
-				...value,
-				estimatedFee: new Amount(feeEstimate),
-				currentExtrinsic: extrinsic,
-			});
-		},
-		[api, value]
 	);
 
 	const defineExtrinsic = useCallback(
@@ -153,72 +126,39 @@ export default function PoolProvider({
 			buffer
 		) => {
 			if (!api || !signer || !selectedAccount || !value.exchangePool) return;
-			const totalLiquidity = await api.derive.cennzx.totalLiquidity(asset.id);
-
-			const assetAmountCal = new Amount(
-				assetAmount,
-				AmountUnit.DISPLAY,
-				asset.decimals
-			);
-			const coreAmountCal = new Amount(
-				coreAmount,
-				AmountUnit.DISPLAY,
-				value.coreAsset.decimals
-			);
 
 			let extrinsic;
 			if (poolAction === PoolAction.ADD) {
-				const minLiquidity = totalLiquidity.isZero()
-					? coreAmountCal
-					: new Amount(coreAmountCal).mul(
-							totalLiquidity.div(value.exchangePool.coreAssetBalance)
-					  );
-
-				const maxAssetAmount = totalLiquidity.isZero()
-					? assetAmountCal
-					: new Amount(assetAmountCal.muln(1 + buffer));
+				const { minLiquidity, maxAssetAmount, maxCoreAmount } =
+					await fetchAddLiquidityValues(
+						api,
+						asset,
+						assetAmount,
+						value.coreAsset,
+						coreAmount,
+						value.exchangePool,
+						buffer
+					);
 
 				extrinsic = api.tx.cennzx.addLiquidity(
 					asset.id,
 					minLiquidity,
 					maxAssetAmount,
-					coreAmountCal
+					maxCoreAmount
 				);
 			} else {
-				let liquidityAmount, assetToWithdraw;
-				if (withdrawMax) {
-					liquidityAmount = await api.derive.cennzx.liquidityBalance(
-						asset.id,
-						selectedAccount.address
+				const { liquidityAmount, minAssetWithdraw, minCoreWithdraw } =
+					await fetchWithdrawLiquidityValues(
+						api,
+						asset,
+						selectedAccount.address,
+						assetAmount,
+						value.coreAsset,
+						coreAmount,
+						value.exchangePool,
+						withdrawMax,
+						buffer
 					);
-					assetToWithdraw = await api.derive.cennzx.assetToWithdraw(
-						asset.id,
-						liquidityAmount
-					);
-				} else if (
-					value.exchangePool.assetBalance ===
-					value.exchangePool.coreAssetBalance
-				) {
-					liquidityAmount = assetAmountCal
-						.mul(totalLiquidity)
-						.div(value.exchangePool.assetBalance);
-				} else {
-					liquidityAmount = assetAmountCal
-						.mul(totalLiquidity)
-						.div(value.exchangePool.assetBalance)
-						.addn(1);
-				}
-
-				const coreWithdrawAmount = liquidityAmount
-					.mul(value.exchangePool.coreAssetBalance)
-					.div(totalLiquidity);
-
-				const minCoreWithdraw = withdrawMax
-					? assetToWithdraw.coreAmount
-					: new Amount(coreWithdrawAmount.muln(1 - buffer));
-				const minAssetWithdraw = withdrawMax
-					? assetToWithdraw.assetAmount
-					: new Amount(assetAmountCal.muln(1 - buffer));
 
 				extrinsic = api.tx.cennzx.removeLiquidity(
 					asset.id,
@@ -228,9 +168,20 @@ export default function PoolProvider({
 				);
 			}
 
-			setEstimatedFee(extrinsic);
+			const estimatedFee = await fetchFeeEstimate(
+				api,
+				extrinsic,
+				value.coreAsset.id,
+				"50000000000000000"
+			);
+
+			setValue({
+				...value,
+				estimatedFee,
+				currentExtrinsic: extrinsic,
+			});
 		},
-		[api, selectedAccount, value, signer, setEstimatedFee]
+		[api, selectedAccount, value, signer]
 	);
 
 	const sendExtrinsic = useCallback(async () => {
