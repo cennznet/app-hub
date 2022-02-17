@@ -5,7 +5,6 @@ import TokenPicker from "../../components/shared/TokenPicker";
 import { AssetInfo, PoolConfig, PoolValues } from "../../types";
 import { useWallet } from "../../providers/SupportedWalletProvider";
 import { PoolAction, usePool } from "../../providers/PoolProvider";
-import { Amount } from "../../utils/Amount";
 import SwapIconClass from "./SwapIcon";
 import styles from "../../styles/components/swap/swap.module.css";
 import { PoolSummaryProps } from "../../types";
@@ -14,10 +13,9 @@ import Settings from "./Settings";
 import {
 	checkLiquidityBalances,
 	fetchCoreAmount,
+	fetchExchangeRate,
 	fetchTradeAmount,
 } from "../../utils/pool";
-
-const ROUND_UP = 1;
 
 export enum PoolColors {
 	ADD = "#1130FF",
@@ -55,16 +53,12 @@ const PoolForm: React.FC<{}> = () => {
 	useEffect(() => {
 		if (!exchangePool) return;
 
-		let exchangeRate: any = new Amount(1);
-		exchangeRate = exchangeRate
-			.mul(exchangePool.assetBalance)
-			.div(exchangePool.coreAssetBalance)
-			.subn(ROUND_UP);
+		const exchangeRate = fetchExchangeRate(exchangePool);
 
 		setPoolSummaryProps({
 			tradeAsset,
 			poolLiquidity,
-			exchangeRate: exchangeRate.toNumber(),
+			exchangeRate,
 		});
 	}, [exchangePool, tradeAsset, poolLiquidity]);
 

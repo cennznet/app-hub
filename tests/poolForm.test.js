@@ -2,6 +2,7 @@ import {
 	fetchTradeAmount,
 	fetchCoreAmount,
 	checkLiquidityBalances,
+	fetchExchangeRate,
 } from "../utils/pool";
 import { Amount } from "../utils/Amount";
 
@@ -39,6 +40,17 @@ describe("fetchCoreAmount", () => {
 			exchangePool.assetBalance.toNumber();
 
 		expect(coreAmount).toEqual(expectedCoreAmount);
+	});
+});
+
+describe("fetchExchangeRate", () => {
+	it("returns correct value", () => {
+		const exchangeRate = fetchExchangeRate(exchangePool);
+
+		const expectedExchangeRate =
+			exchangePool.assetBalance.toNumber() / exchangePool.coreAssetBalance;
+
+		expect(exchangeRate).toEqual(expectedExchangeRate.toFixed(4));
 	});
 });
 

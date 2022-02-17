@@ -31,6 +31,13 @@ export const fetchTradeAmount = (
 	return tradeAmount;
 };
 
+export const fetchExchangeRate = (exchangePool) => {
+	const exchangeRate =
+		exchangePool.assetBalance.toNumber() / exchangePool.coreAssetBalance;
+
+	return exchangeRate.toFixed(4);
+};
+
 export const checkLiquidityBalances = (
 	poolAction: string,
 	coreAmount: number,
