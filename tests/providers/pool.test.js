@@ -37,8 +37,10 @@ afterAll(async () => {
 describe("fetchExchangePool", () => {
 	it("returns exchange pool values for CENNZ", async () => {
 		const CENNZ = assets.CENNZ.id;
-		const { address, assetBalance, coreAssetBalance, assetId } =
-			await fetchExchangePool(api, CENNZ);
+		const { address, assetBalance, coreAssetBalance } = await fetchExchangePool(
+			api,
+			CENNZ
+		);
 
 		const exchangeAddress = await api.derive.cennzx.exchangeAddress(CENNZ);
 
