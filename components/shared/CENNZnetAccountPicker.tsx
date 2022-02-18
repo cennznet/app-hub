@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Autocomplete, TextField } from "@mui/material";
-import { useWeb3Accounts } from "../../providers/Web3AccountsProvider";
-import styles from "../../styles/components/shared/cennznetaccountpicker.module.css";
+import { useWeb3Accounts } from "@/providers/Web3AccountsProvider";
+import styles from "@/styles/components/shared/cennznetaccountpicker.module.css";
 
 const CENNZnetAccountPicker: React.FC<{
 	updateSelectedAccount: Function;

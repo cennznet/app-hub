@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
-import GenericERC20TokenAbi from "../../artifacts/GenericERC20Token.json";
-import { Chain } from "../../types";
+import GenericERC20TokenAbi from "@/artifacts/GenericERC20Token.json";
+import { Chain } from "@/types";
 
 export const ETH = "0x0000000000000000000000000000000000000000";
 export const ETH_LOGO =

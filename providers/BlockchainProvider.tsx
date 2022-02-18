@@ -1,7 +1,7 @@
 import React, { createContext, useContext, ReactNode, useState } from "react";
 import { ethers } from "ethers";
-import CENNZnetBridge from "../artifacts/CENNZnetBridge.json";
-import ERC20Peg from "../artifacts/ERC20Peg.json";
+import CENNZnetBridge from "@/artifacts/CENNZnetBridge.json";
+import ERC20Peg from "@/artifacts/ERC20Peg.json";
 
 const ETH_CHAIN_ID = process.env.NEXT_PUBLIC_ETH_CHAIN_ID;
 

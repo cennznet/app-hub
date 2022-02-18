@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
-import { SettingsText } from "../../theme/StyledComponents";
+import { SettingsText } from "@/theme/StyledComponents";
 import PercentIcon from "@mui/icons-material/Percent";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import ClickAwayListener from "@mui/material/ClickAwayListener";

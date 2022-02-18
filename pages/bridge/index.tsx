@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { useBlockchain } from "../../providers/BlockchainProvider";
-import { useCENNZApi } from "../../providers/CENNZApiProvider";
-import Deposit from "../../components/bridge/Deposit";
-import Withdraw from "../../components/bridge/Withdraw";
-import CENNZnetAccountPicker from "../../components/shared/CENNZnetAccountPicker";
+import { useBlockchain } from "@/providers/BlockchainProvider";
+import { useCENNZApi } from "@/providers/CENNZApiProvider";
+import Deposit from "@/components/bridge/Deposit";
+import Withdraw from "@/components/bridge/Withdraw";
+import CENNZnetAccountPicker from "@/components/shared/CENNZnetAccountPicker";
 
-import styles from "../../styles/components/bridge/bridge.module.css";
-import ChainPicker from "../../components/bridge/ChainPicker";
-import { Chain, BridgeToken, CennznetAccount, BridgeState } from "../../types";
-import TokenPicker from "../../components/shared/TokenPicker";
-import { CHAINS, getMetamaskBalance } from "../../utils/bridge/helpers";
-import ExchangeIcon from "../../components/shared/ExchangeIcon";
-import { useWallet } from "../../providers/SupportedWalletProvider";
+import styles from "@/styles/components/bridge/bridge.module.css";
+import ChainPicker from "@/components/bridge/ChainPicker";
+import { Chain, BridgeToken, CennznetAccount, BridgeState } from "@/types";
+import TokenPicker from "@/components/shared/TokenPicker";
+import { CHAINS, getMetamaskBalance } from "@/utils/bridge/helpers";
+import ExchangeIcon from "@/components/shared/ExchangeIcon";
+import { useWallet } from "@/providers/SupportedWalletProvider";
 
 const Emery: React.FC<{}> = () => {
 	const [bridgeState, setBridgeState] = useState<BridgeState>("Deposit");

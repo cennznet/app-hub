@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Frame, Heading, SmallText } from "../theme/StyledComponents";
-import { useWallet } from "../providers/SupportedWalletProvider";
-import WalletModal from "./shared/WalletModal";
+import { Frame, Heading, SmallText } from "@/theme/StyledComponents";
+import { useWallet } from "@/providers/SupportedWalletProvider";
+import WalletModal from "@/components/shared/WalletModal";
 
 const Wallet: React.FC<{}> = () => {
 	const [modalOpen, setModalOpen] = useState<boolean>(false);

@@ -1,7 +1,7 @@
 import React from "react";
 import { useRouter } from "next/router";
 import { Box } from "@mui/material";
-import { SwitchButton } from "../theme/StyledComponents";
+import { SwitchButton } from "@/theme/StyledComponents";
 
 const Switch: React.FC<{ setLocation: Function }> = ({ setLocation }) => {
 	const router = useRouter();

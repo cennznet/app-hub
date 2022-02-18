@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Box, CircularProgress } from "@mui/material";
-import { PoolSummaryProps } from "../../types";
-import { usePool } from "../../providers/PoolProvider";
+import { PoolSummaryProps } from "@/types";
+import { usePool } from "@/providers/PoolProvider";
 import {
 	PoolSummaryBox,
 	PoolSummaryText,
 	PoolSummaryBoldText,
-} from "../../theme/StyledComponents";
+} from "@/theme/StyledComponents";
 
 interface FomattedBalances {
 	userTradeAsset: string;

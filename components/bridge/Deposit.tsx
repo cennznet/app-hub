@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import { ethers } from "ethers";
 import { decodeAddress } from "@polkadot/keyring";
-import GenericERC20TokenAbi from "../../artifacts/GenericERC20Token.json";
-import { defineTxModal } from "../../utils/bridge/modal";
-import { ETH } from "../../utils/bridge/helpers";
-import { useBlockchain } from "../../providers/BlockchainProvider";
-import { useCENNZApi } from "../../providers/CENNZApiProvider";
-import TxModal from "./TxModal";
-import ErrorModal from "./ErrorModal";
-import ConnectWalletButton from "../shared/ConnectWalletButton";
-import { BridgeToken, CennznetAccount } from "../../types";
+import GenericERC20TokenAbi from "@/artifacts/GenericERC20Token.json";
+import { defineTxModal } from "@/utils/bridge/modal";
+import { ETH } from "@/utils/bridge/helpers";
+import { useBlockchain } from "@/providers/BlockchainProvider";
+import { useCENNZApi } from "@/providers/CENNZApiProvider";
+import TxModal from "@/components/bridge/TxModal";
+import ErrorModal from "@/components/bridge/ErrorModal";
+import ConnectWalletButton from "@/components/shared/ConnectWalletButton";
+import { BridgeToken, CennznetAccount } from "@/types";
 
 const Deposit: React.FC<{
 	token: BridgeToken;

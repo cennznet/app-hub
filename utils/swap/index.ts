@@ -1,8 +1,8 @@
 import { Api } from "@cennznet/api";
-import { Amount, AmountUnit } from "../Amount";
+import { Amount, AmountUnit } from "@/utils/Amount";
 import BigNumber from "bignumber.js";
-import { Asset } from "../../types";
-import { BalanceInfo } from "../../providers/SupportedWalletProvider";
+import { Asset } from "@/types";
+import { BalanceInfo } from "@/providers/SupportedWalletProvider";
 
 const CPAY = {
 	id: 16001,

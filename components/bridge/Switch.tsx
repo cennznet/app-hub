@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Box } from "@mui/material";
-import { SwitchButton } from "../../theme/StyledComponents";
-import { useWallet } from "../../providers/SupportedWalletProvider";
-import ErrorModal from "./ErrorModal";
+import { SwitchButton } from "@/theme/StyledComponents";
+import { useWallet } from "@/providers/SupportedWalletProvider";
+import ErrorModal from "@/components/bridge/ErrorModal";
 
 const Switch: React.FC<{ isDeposit: Boolean; toggleIsDeposit: Function }> = ({
 	isDeposit,

@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
-import { defineTxModal } from "../../utils/bridge/modal";
-import { useBlockchain } from "../../providers/BlockchainProvider";
-import { useCENNZApi } from "../../providers/CENNZApiProvider";
-import { useWallet } from "../../providers/SupportedWalletProvider";
-import TxModal from "./TxModal";
-import ErrorModal from "./ErrorModal";
-import { BridgeToken, CennznetAccount } from "../../types";
-import ConnectWalletButton from "../shared/ConnectWalletButton";
+import { defineTxModal } from "@/utils/bridge/modal";
+import { useBlockchain } from "@/providers/BlockchainProvider";
+import { useCENNZApi } from "@/providers/CENNZApiProvider";
+import { useWallet } from "@/providers/SupportedWalletProvider";
+import TxModal from "@/components/bridge/TxModal";
+import ErrorModal from "@/components/bridge/ErrorModal";
+import { BridgeToken, CennznetAccount } from "@/types";
+import ConnectWalletButton from "@/components/shared/ConnectWalletButton";
 
 const Withdraw: React.FC<{
 	token: BridgeToken;

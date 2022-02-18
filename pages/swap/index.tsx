@@ -1,19 +1,19 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { Button } from "@mui/material";
-import TokenPicker from "../../components/shared/TokenPicker";
-import ExchangeIcon from "../../components/shared/ExchangeIcon";
-import { useCENNZApi } from "../../providers/CENNZApiProvider";
-import { useAssets } from "../../providers/SupportedAssetsProvider";
-import { Asset } from "../../types";
+import TokenPicker from "@/components/shared/TokenPicker";
+import ExchangeIcon from "@/components/shared/ExchangeIcon";
+import { useCENNZApi } from "@/providers/CENNZApiProvider";
+import { useAssets } from "@/providers/SupportedAssetsProvider";
+import { Asset } from "@/types";
 
-import styles from "../../styles/components/swap/swap.module.css";
-import { useWallet } from "../../providers/SupportedWalletProvider";
-import { useDappModule } from "../../providers/DappModuleProvider";
+import styles from "@/styles/components/swap/swap.module.css";
+import { useWallet } from "@/providers/SupportedWalletProvider";
+import { useDappModule } from "@/providers/DappModuleProvider";
 import {
 	fetchEstimatedTransactionFee,
 	fetchExchangeExtrinsic,
 	fetchTokenAmounts,
-} from "../../utils/swap";
+} from "@/utils/swap";
 
 const Exchange: React.FC<{}> = () => {
 	const [exchangeToken, setExchangeToken] = useState<Asset>();

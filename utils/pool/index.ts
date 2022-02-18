@@ -4,8 +4,8 @@ import {
 	IExchangePool,
 	IUserShareInPool,
 	PoolValues,
-} from "../../types";
-import { Amount, AmountUnit } from "../Amount";
+} from "@/types";
+import { Amount, AmountUnit } from "@/utils/Amount";
 
 export const fetchCoreAmount = (
 	tradeAmount: number,

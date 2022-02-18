@@ -3,8 +3,8 @@ import {
 	fetchCoreAmount,
 	checkLiquidityBalances,
 	fetchExchangeRate,
-} from "../utils/pool";
-import { Amount } from "../utils/Amount";
+} from "@/utils/pool";
+import { Amount } from "@/utils/Amount";
 
 const exchangePool = {
 	assetBalance: new Amount(20000),

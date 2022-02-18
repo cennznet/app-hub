@@ -8,8 +8,8 @@ import {
 	Link,
 	Modal,
 } from "@mui/material";
-import { Heading, SmallText, StyledModal } from "../../theme/StyledComponents";
-import { useCENNZApi } from "../../providers/CENNZApiProvider";
+import { Heading, SmallText, StyledModal } from "@/theme/StyledComponents";
+import { useCENNZApi } from "@/providers/CENNZApiProvider";
 
 const ETH_CHAIN_ID = process.env.NEXT_PUBLIC_ETH_CHAIN_ID;
 
