@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Box, Button, Typography } from "@mui/material";
-import { SmallText } from "@/theme/StyledComponents";
+import { SmallText } from "@/components/StyledComponents";
 import TokenPicker from "@/components/shared/TokenPicker";
 import { AssetInfo, PoolConfig, PoolValues } from "@/types";
 import { useWallet } from "@/providers/SupportedWalletProvider";

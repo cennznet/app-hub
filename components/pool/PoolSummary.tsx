@@ -6,7 +6,7 @@ import {
 	PoolSummaryBox,
 	PoolSummaryText,
 	PoolSummaryBoldText,
-} from "@/theme/StyledComponents";
+} from "@/components/StyledComponents";
 
 interface FomattedBalances {
 	userTradeAsset: string;

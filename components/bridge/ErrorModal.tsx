@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Box, Button, Link, Modal } from "@mui/material";
-import { StyledModal, Heading, SmallText } from "@/theme/StyledComponents";
+import { StyledModal, Heading, SmallText } from "@/components/StyledComponents";
 
 const ErrorModal: React.FC<{
 	setModalOpen: Function;

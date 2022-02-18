@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Box } from "@mui/material";
-import { SwitchButton } from "@/theme/StyledComponents";
+import { SwitchButton } from "@/components/StyledComponents";
 import { useWallet } from "@/providers/SupportedWalletProvider";
 import ErrorModal from "@/components/bridge/ErrorModal";
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Frame, Heading, SmallText } from "@/theme/StyledComponents";
+import { Frame, Heading, SmallText } from "@/components/StyledComponents";
 import { useWallet } from "@/providers/SupportedWalletProvider";
 import WalletModal from "@/components/shared/WalletModal";
 
