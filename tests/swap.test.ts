@@ -1,11 +1,11 @@
 import { Api } from "@cennznet/api";
 import BigNumber from "bignumber.js";
-import { Amount, AmountUnit } from "../utils/Amount";
+import { Amount, AmountUnit } from "@/utils/Amount";
 import {
 	fetchEstimatedTransactionFee,
 	fetchExchangeExtrinsic,
 	fetchTokenAmounts,
-} from "../utils/swap";
+} from "@/utils/swap";
 
 const testingAddress = "5FbMzsoEpd2mt8eyKpKUxwJ5S9W7nJVJkCer2Jk7tvSpB1vF";
 const assets = {

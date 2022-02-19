@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { Box, CircularProgress, Divider } from "@mui/material";
-import { Heading, SmallText } from "../../theme/StyledComponents";
-import { useWallet } from "../../providers/SupportedWalletProvider";
-import { ETH_LOGO } from "../../utils/bridge/helpers";
-import CENNZnetAccountPicker from "./CENNZnetAccountPicker";
-import ERC20Tokens from "../../artifacts/erc20tokens.json";
+import { Heading, SmallText } from "@/components/StyledComponents";
+import { useWallet } from "@/providers/SupportedWalletProvider";
+import { ETH_LOGO } from "@/utils/bridge/helpers";
+import CENNZnetAccountPicker from "@/components/shared/CENNZnetAccountPicker";
+import ERC20Tokens from "@/artifacts/erc20tokens.json";
 
 const AccountBalances: React.FC<{
 	updateSelectedAccount: Function;

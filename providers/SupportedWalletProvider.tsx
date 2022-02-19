@@ -11,14 +11,14 @@ import {
 	useState,
 } from "react";
 import store from "store";
-import { useDappModule } from "./DappModuleProvider";
-import { useUserAgent } from "./UserAgentProvider";
-import { useCENNZApi } from "./CENNZApiProvider";
-import { useAssets } from "./SupportedAssetsProvider";
-import { useWeb3Accounts } from "./Web3AccountsProvider";
+import { useDappModule } from "@/providers/DappModuleProvider";
+import { useUserAgent } from "@/providers/UserAgentProvider";
+import { useCENNZApi } from "@/providers/CENNZApiProvider";
+import { useAssets } from "@/providers/SupportedAssetsProvider";
+import { useWeb3Accounts } from "@/providers/Web3AccountsProvider";
 import { hexToString } from "@polkadot/util";
-import ERC20Tokens from "../artifacts/erc20tokens.json";
-import { AssetInfo } from "../types";
+import ERC20Tokens from "@/artifacts/erc20tokens.json";
+import { AssetInfo } from "@/types";
 
 export type BalanceInfo = AssetInfo & {
 	value: number;

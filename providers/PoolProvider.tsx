@@ -1,5 +1,5 @@
-import { Amount, AmountUnit } from "../utils/Amount";
-import { AssetInfo } from "../types";
+import { Amount, AmountUnit } from "@/utils/Amount";
+import { AssetInfo } from "@/types";
 import {
 	AmountParams,
 	Asset,
@@ -8,7 +8,7 @@ import {
 	IOption,
 	IUserShareInPool,
 	LiquidityFormData,
-} from "../types";
+} from "@/types";
 import {
 	createContext,
 	PropsWithChildren,
@@ -17,15 +17,15 @@ import {
 	useEffect,
 	useState,
 } from "react";
-import { useCENNZApi } from "./CENNZApiProvider";
-import { useWallet } from "./SupportedWalletProvider";
+import { useCENNZApi } from "@/providers/CENNZApiProvider";
+import { useWallet } from "@/providers/SupportedWalletProvider";
 import {
 	fetchAddLiquidityValues,
 	fetchExchangePool,
 	fetchFeeEstimate,
 	fetchUserPoolShare,
 	fetchWithdrawLiquidityValues,
-} from "../utils/pool";
+} from "@/utils/pool";
 
 export enum PoolAction {
 	ADD = "Add",

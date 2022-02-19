@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { useWallet } from "../../providers/SupportedWalletProvider";
+import { useWallet } from "@/providers/SupportedWalletProvider";
 import { Box, Button, Modal } from "@mui/material";
-import AccountBalances from "./AccountBalances";
+import AccountBalances from "@/components/shared/AccountBalances";
 
 const WalletModal: React.FC<{
 	setModalOpen: Function;

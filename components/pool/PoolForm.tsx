@@ -1,21 +1,21 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Box, Button, Typography } from "@mui/material";
-import { SmallText } from "../../theme/StyledComponents";
-import TokenPicker from "../../components/shared/TokenPicker";
-import { AssetInfo, PoolConfig, PoolValues } from "../../types";
-import { useWallet } from "../../providers/SupportedWalletProvider";
-import { PoolAction, usePool } from "../../providers/PoolProvider";
-import SwapIconClass from "./SwapIcon";
-import styles from "../../styles/components/swap/swap.module.css";
-import { PoolSummaryProps } from "../../types";
-import PoolSummary from "./PoolSummary";
-import Settings from "./Settings";
+import { SmallText } from "@/components/StyledComponents";
+import TokenPicker from "@/components/shared/TokenPicker";
+import { AssetInfo, PoolConfig, PoolValues } from "@/types";
+import { useWallet } from "@/providers/SupportedWalletProvider";
+import { PoolAction, usePool } from "@/providers/PoolProvider";
+import SwapIconClass from "@/components/pool/SwapIcon";
+import styles from "@/styles/components/swap/swap.module.css";
+import { PoolSummaryProps } from "@/types";
+import PoolSummary from "@/components/pool/PoolSummary";
+import Settings from "@/components/pool/Settings";
 import {
 	checkLiquidityBalances,
 	fetchCoreAmount,
 	fetchExchangeRate,
 	fetchTradeAmount,
-} from "../../utils/pool";
+} from "@/utils/pool";
 
 export enum PoolColors {
 	ADD = "#1130FF",

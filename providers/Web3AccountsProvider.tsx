@@ -6,8 +6,8 @@ import {
 	useState,
 } from "react";
 import { InjectedAccountWithMeta } from "@polkadot/extension-inject/types";
-import { useDappModule } from "./DappModuleProvider";
-import { useWallet } from "./SupportedWalletProvider";
+import { useDappModule } from "@/providers/DappModuleProvider";
+import { useWallet } from "@/providers/SupportedWalletProvider";
 
 const Web3AccountsContext = createContext<Array<InjectedAccountWithMeta>>(null);
 

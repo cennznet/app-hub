@@ -1,6 +1,6 @@
 import React, { FC, useState } from "react";
 import { Box } from "@mui/material";
-import { PoolColors } from "./PoolForm";
+import { PoolColors } from "@/components/pool/PoolForm";
 
 interface SwapIconProps {
 	onClick: () => void;

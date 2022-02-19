@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { Button, FormControl, CircularProgress } from "@mui/material";
-import ERC20Tokens from "../../artifacts/erc20tokens.json";
-import { ETH, ETH_LOGO, getMetamaskBalance } from "../../utils/bridge/helpers";
-import { useAssets } from "../../providers/SupportedAssetsProvider";
-import { Asset, PoolConfig, BridgeToken } from "../../types";
-import { useBlockchain } from "../../providers/BlockchainProvider";
+import ERC20Tokens from "@/artifacts/erc20tokens.json";
+import { ETH, ETH_LOGO, getMetamaskBalance } from "@/utils/bridge/helpers";
+import { useAssets } from "@/providers/SupportedAssetsProvider";
+import { Asset, PoolConfig, BridgeToken } from "@/types";
+import { useBlockchain } from "@/providers/BlockchainProvider";
 import { useRouter } from "next/router";
 
 const ETH_CHAIN_ID = process.env.NEXT_PUBLIC_ETH_CHAIN_ID;
 
-import styles from "../../styles/components/shared/tokenpicker.module.css";
-import { useWallet } from "../../providers/SupportedWalletProvider";
-import { PoolAction } from "../../providers/PoolProvider";
-import { useCENNZApi } from "../../providers/CENNZApiProvider";
+import styles from "@/styles/components/shared/tokenpicker.module.css";
+import { useWallet } from "@/providers/SupportedWalletProvider";
+import { PoolAction } from "@/providers/PoolProvider";
+import { useCENNZApi } from "@/providers/CENNZApiProvider";
 
 const TokenPicker: React.FC<{
 	setToken: Function;

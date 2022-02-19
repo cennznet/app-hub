@@ -1,5 +1,5 @@
 import React, { FC, useState } from "react";
-import styles from "../../styles/components/swap/swapicon.module.css";
+import styles from "@/styles/components/swap/swapicon.module.css";
 
 interface ExchangeIconProps {
 	onClick: () => void;

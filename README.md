@@ -1,1 +1,1 @@
-# app-hub
+# CENNZnet App Hub

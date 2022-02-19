@@ -5,10 +5,10 @@ import {
 	useEffect,
 	useState,
 } from "react";
-import { useCENNZApi } from "./CENNZApiProvider";
+import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import { u8aToString } from "@polkadot/util";
-import { AssetInfo } from "../types";
-import { ETH_LOGO } from "../utils/bridge/helpers";
+import { AssetInfo } from "@/types";
+import { ETH_LOGO } from "@/utils/bridge/helpers";
 
 const assetIds =
 	process.env.NEXT_PUBLIC_SUPPORTED_ASSETS &&

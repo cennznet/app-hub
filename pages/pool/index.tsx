@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 import { Box } from "@mui/material";
-import PoolProvider from "../../providers/PoolProvider";
-import PoolForm from "../../components/pool/PoolForm";
-import { useCENNZApi } from "../../providers/CENNZApiProvider";
+import PoolProvider from "@/providers/PoolProvider";
+import PoolForm from "@/components/pool/PoolForm";
+import { useCENNZApi } from "@/providers/CENNZApiProvider";
 
 const Pool: React.FC<{}> = () => {
 	const { api, initApi } = useCENNZApi();

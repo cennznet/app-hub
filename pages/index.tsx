@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
-import { useCENNZApi } from "../providers/CENNZApiProvider";
-import Swap from "./swap";
+import { useCENNZApi } from "@/providers/CENNZApiProvider";
+import Swap from "@/pages/swap";
 
 const Home: React.FC<{}> = () => {
 	const { api, initApi } = useCENNZApi();
