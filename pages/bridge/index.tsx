@@ -12,6 +12,15 @@ import TokenPicker from "@/components/shared/TokenPicker";
 import { CHAINS, getMetamaskBalance } from "@/utils/bridge/helpers";
 import ExchangeIcon from "@/components/shared/ExchangeIcon";
 import { useWallet } from "@/providers/SupportedWalletProvider";
+import generateGlobalProps from "@/utils/generateGlobalProps";
+
+export async function getStaticProps() {
+	return {
+		props: {
+			...(await generateGlobalProps()),
+		},
+	};
+}
 
 const Emery: React.FC<{}> = () => {
 	const [bridgeState, setBridgeState] = useState<BridgeState>("Deposit");
