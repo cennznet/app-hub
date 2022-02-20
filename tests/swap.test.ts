@@ -100,9 +100,9 @@ describe("fetchEstimatedTransactionFee", () => {
 			slippage
 		);
 
-		const maxAmount =
-			parseFloat(exchangeAmount) +
-			parseFloat(exchangeAmount) * (slippage / 100);
+		const maxAmount = Math.round(
+			parseFloat(exchangeAmount) + parseFloat(exchangeAmount) * (slippage / 100)
+		);
 		const extrinsic = api.tx.cennzx.buyAsset(
 			null,
 			exchangeTokenId,
@@ -150,9 +150,9 @@ describe("fetchExchangeExtrinsic", () => {
 			.multipliedBy(Math.pow(10, receivedToken.decimals))
 			.toString(10);
 
-		const maxAmount =
-			parseFloat(exchangeAmount) +
-			parseFloat(exchangeAmount) * (slippage / 100);
+		const maxAmount = Math.round(
+			parseFloat(exchangeAmount) + parseFloat(exchangeAmount) * (slippage / 100)
+		);
 		const expectedExtrinsic = await api.tx.cennzx.buyAsset(
 			null,
 			exchangeToken.id,

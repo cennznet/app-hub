@@ -58,7 +58,7 @@ const Exchange: React.FC<{}> = () => {
 	useEffect(() => {
 		(async () => {
 			if (
-				parseInt(exchangeTokenValue) <= 0 ||
+				parseFloat(exchangeTokenValue) <= 0 ||
 				!api ||
 				!exchangeToken ||
 				!receivedToken ||
@@ -78,7 +78,6 @@ const Exchange: React.FC<{}> = () => {
 					receivedToken
 				);
 				setReceivedTokenValue(receivedAmount.toString());
-
 				const estimatedFee = await fetchEstimatedTransactionFee(
 					api,
 					exchangeAmount,
@@ -88,6 +87,7 @@ const Exchange: React.FC<{}> = () => {
 				);
 				setEstimatedFee(estimatedFee);
 			} catch (e) {
+				console.info("error here..");
 				setError(e.message);
 			}
 		})();
@@ -95,7 +95,7 @@ const Exchange: React.FC<{}> = () => {
 
 	const exchangeTokens = useCallback(async () => {
 		if (
-			parseInt(receivedTokenValue) <= 0 ||
+			parseFloat(receivedTokenValue) <= 0 ||
 			!api ||
 			!exchangeToken ||
 			!receivedToken ||

@@ -27,7 +27,7 @@ export const fetchTokenAmounts = async (
 	const exchangeTokenBalance = balances.find(
 		(token) => token.id === exchangeToken.id
 	);
-	if (parseInt(exchangeTokenValue) > exchangeTokenBalance.value) {
+	if (parseFloat(exchangeTokenValue) > exchangeTokenBalance.value) {
 		throw new Error("Account balance is too low");
 	}
 	const sellPrice = await (api.rpc as any).cennzx.sellPrice(
@@ -51,8 +51,9 @@ export const fetchEstimatedTransactionFee = async (
 	receivedTokenId: number,
 	slippage: number
 ) => {
-	const maxAmount =
-		parseFloat(exchangeAmount) + parseFloat(exchangeAmount) * (slippage / 100);
+	const maxAmount = Math.round(
+		parseFloat(exchangeAmount) + parseFloat(exchangeAmount) * (slippage / 100)
+	);
 	const extrinsic = api.tx.cennzx.buyAsset(
 		null,
 		exchangeTokenId,
@@ -81,8 +82,9 @@ export const fetchExchangeExtrinsic = async (
 	exchangeAmount = exchangeAmount
 		.multipliedBy(Math.pow(10, exchangeToken.decimals))
 		.toString(10);
-	const maxAmount =
-		parseFloat(exchangeAmount) + parseFloat(exchangeAmount) * (slippage / 100);
+	const maxAmount = Math.round(
+		parseFloat(exchangeAmount) + parseFloat(exchangeAmount) * (slippage / 100)
+	);
 	let buyAmount: any = new BigNumber(receivedTokenValue);
 	buyAmount = buyAmount
 		.multipliedBy(Math.pow(10, receivedToken.decimals))
