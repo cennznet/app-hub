@@ -14,6 +14,7 @@ import {
 	fetchExchangeExtrinsic,
 	fetchTokenAmounts,
 } from "@/utils/swap";
+import ConnectWalletButton from "@/components/shared/ConnectWalletButton";
 import generateGlobalProps from "@/utils/generateGlobalProps";
 
 export async function getStaticProps() {
@@ -164,23 +165,13 @@ const Exchange: React.FC<{}> = () => {
 				/>
 			</div>
 			{estimatedFee && <p>Transaction fee (estimated): {estimatedFee} CPAY</p>}
-			<Button
-				sx={{
-					fontFamily: "Teko",
-					fontWeight: "bold",
-					fontSize: "21px",
-					lineHeight: "124%",
-					color: "#1130FF",
-					mt: "20px",
-					mb: "50px",
-				}}
-				size="large"
-				variant="outlined"
+			<ConnectWalletButton
 				onClick={exchangeTokens}
-				disabled={!signer}
-			>
-				{!!signer ? "Swap" : "Connect Wallet"}
-			</Button>
+				buttonText={"SWAP"}
+				requireMetamask={false}
+				requireCennznet={true}
+				width={89}
+			/>
 		</div>
 	);
 };

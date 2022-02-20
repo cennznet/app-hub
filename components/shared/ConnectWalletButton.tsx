@@ -11,6 +11,7 @@ interface ConnectWalletButtonProps {
 	requireMetamask: boolean;
 	requireCennznet: boolean;
 	disabled?: boolean;
+	width?: number;
 }
 
 const ConnectWalletButton: FC<ConnectWalletButtonProps> = ({
@@ -19,6 +20,7 @@ const ConnectWalletButton: FC<ConnectWalletButtonProps> = ({
 	requireMetamask,
 	requireCennznet,
 	disabled,
+	width,
 }) => {
 	const [metamaskConnected, setMetamaskConnected] = useState<boolean>(
 		!requireMetamask
@@ -118,7 +120,10 @@ const ConnectWalletButton: FC<ConnectWalletButtonProps> = ({
 	};
 
 	return (
-		<div className={styles.connectWalletButton}>
+		<div
+			className={styles.connectWalletButton}
+			style={{ width: width ? width : 216 }}
+		>
 			{metamaskConnected
 				? cennznetConnected
 					? defaultButtonComponent(onClick, buttonText, disabled)
