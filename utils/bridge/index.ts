@@ -19,7 +19,6 @@ export const CHAINS: Chain[] = [
 
 export const getMetamaskBalance = async (ethereum, tokenAddress, account) => {
 	const provider = new ethers.providers.Web3Provider(ethereum);
-	const signer = provider.getSigner();
 	let balance, decimals;
 
 	if (tokenAddress === ETH) {
@@ -28,7 +27,7 @@ export const getMetamaskBalance = async (ethereum, tokenAddress, account) => {
 		const token: ethers.Contract = new ethers.Contract(
 			tokenAddress,
 			GenericERC20TokenAbi,
-			signer
+			provider
 		);
 
 		decimals = await token.decimals();
