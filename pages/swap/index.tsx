@@ -8,7 +8,7 @@ import { Asset } from "@/types";
 
 import styles from "@/styles/components/swap/swap.module.css";
 import { useWallet } from "@/providers/SupportedWalletProvider";
-import { useDappModule } from "@/providers/DappModuleProvider";
+import { useCENNZExtension } from "@/providers/CENNZExtensionProvider";
 import {
 	fetchEstimatedTransactionFee,
 	fetchExchangeExtrinsic,
@@ -35,7 +35,7 @@ const Exchange: React.FC<{}> = () => {
 		fetchAssetBalances,
 	} = useWallet();
 	const signer = wallet?.signer;
-	const { web3Enable } = useDappModule();
+	const { web3Enable } = useCENNZExtension();
 
 	useEffect(() => {
 		if (!wallet) {
