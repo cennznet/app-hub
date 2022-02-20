@@ -8,7 +8,7 @@ import {
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import { u8aToString } from "@polkadot/util";
 import { AssetInfo } from "@/types";
-import { ETH_LOGO } from "@/utils/bridge/helpers";
+import { ETH_LOGO } from "@/utils/bridge";
 
 const assetIds =
 	process.env.NEXT_PUBLIC_SUPPORTED_ASSETS &&

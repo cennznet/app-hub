@@ -9,7 +9,7 @@ import styles from "@/styles/components/bridge/bridge.module.css";
 import ChainPicker from "@/components/bridge/ChainPicker";
 import { Chain, BridgeToken, CennznetAccount, BridgeState } from "@/types";
 import TokenPicker from "@/components/shared/TokenPicker";
-import { CHAINS, getMetamaskBalance } from "@/utils/bridge/helpers";
+import { CHAINS, getMetamaskBalance } from "@/utils/bridge";
 import ExchangeIcon from "@/components/shared/ExchangeIcon";
 import { useWallet } from "@/providers/SupportedWalletProvider";
 
