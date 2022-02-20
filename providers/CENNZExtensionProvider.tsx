@@ -40,7 +40,7 @@ export default function CENNZExtensionProvider({
 				: "https://chrome.google.com/webstore/detail/cennznet-extension/feckpephlmdcjnpoclagmaogngeffafk";
 
 		const confirmed = confirm(
-			"Please install a compatible CENNZnet Extension for your browser and create at least one account to continue."
+			"Please install CENNZnet Extension for your browser and create at least one account to continue."
 		);
 
 		if (!confirmed) return;
@@ -79,7 +79,7 @@ export default function CENNZExtensionProvider({
 			const accounts = (await web3Accounts()) || [];
 			if (!accounts.length)
 				return alert(
-					"Please create at least one account in the CENNZnet extension to continue."
+					"Please create at least one account in CENNZnet extension to continue."
 				);
 
 			setAccounts(accounts);
