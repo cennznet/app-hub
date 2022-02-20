@@ -48,10 +48,11 @@ export const fetchEstimatedTransactionFee = async (
 	api: Api,
 	exchangeAmount: string,
 	exchangeTokenId: number,
-	receivedTokenId: number
+	receivedTokenId: number,
+	slippage: number
 ) => {
-	//TODO calculate slippage here
-	const maxAmount = parseInt(exchangeAmount) * 2;
+	const maxAmount =
+		parseFloat(exchangeAmount) + parseFloat(exchangeAmount) * (slippage / 100);
 	const extrinsic = api.tx.cennzx.buyAsset(
 		null,
 		exchangeTokenId,
@@ -73,13 +74,15 @@ export const fetchExchangeExtrinsic = async (
 	exchangeToken: Asset,
 	exchangeTokenValue: string,
 	receivedToken: Asset,
-	receivedTokenValue: string
+	receivedTokenValue: string,
+	slippage: number
 ) => {
 	let exchangeAmount: any = new BigNumber(exchangeTokenValue.toString());
 	exchangeAmount = exchangeAmount
 		.multipliedBy(Math.pow(10, exchangeToken.decimals))
 		.toString(10);
-	const maxAmount = parseInt(exchangeAmount) * 2;
+	const maxAmount =
+		parseFloat(exchangeAmount) + parseFloat(exchangeAmount) * (slippage / 100);
 	let buyAmount: any = new BigNumber(receivedTokenValue);
 	buyAmount = buyAmount
 		.multipliedBy(Math.pow(10, receivedToken.decimals))

@@ -50,7 +50,7 @@ describe("fetchTokenAmounts", () => {
 			receivedToken
 		);
 
-		let expectedExchangeAmount: any = new BigNumber(
+		let expectedExchangeAmount: BigNumber | string = new BigNumber(
 			exchangeTokenValue.toString()
 		);
 		expectedExchangeAmount = expectedExchangeAmount
@@ -61,7 +61,7 @@ describe("fetchTokenAmounts", () => {
 			exchangeAmount,
 			receivedToken.id
 		);
-		let expectedReceivedAmount: any = new Amount(
+		let expectedReceivedAmount: BigNumber | Amount = new Amount(
 			sellPrice.price.toString(),
 			AmountUnit.UN
 		);
@@ -85,7 +85,8 @@ describe("fetchTokenAmounts", () => {
 
 describe("fetchEstimatedTransactionFee", () => {
 	it("estimates fee", async () => {
-		let exchangeAmount: any = new BigNumber("100");
+		let exchangeAmount: string | BigNumber = new BigNumber("100");
+		const slippage = 5;
 		exchangeAmount = exchangeAmount
 			.multipliedBy(Math.pow(10, assets.CENNZ.decimals))
 			.toString(10);
@@ -95,10 +96,13 @@ describe("fetchEstimatedTransactionFee", () => {
 			api,
 			exchangeAmount,
 			exchangeTokenId,
-			receivedTokenId
+			receivedTokenId,
+			slippage
 		);
 
-		const maxAmount = parseInt(exchangeAmount) * 2;
+		const maxAmount =
+			parseFloat(exchangeAmount) +
+			parseFloat(exchangeAmount) * (slippage / 100);
 		const extrinsic = api.tx.cennzx.buyAsset(
 			null,
 			exchangeTokenId,
@@ -110,7 +114,7 @@ describe("fetchEstimatedTransactionFee", () => {
 			extrinsic,
 			userFeeAssetId: assets.CPAY.id,
 		});
-		let expectedEstimatedFee: any = new Amount(
+		let expectedEstimatedFee: BigNumber | Amount = new Amount(
 			feeFromQuery.toString(),
 			AmountUnit.UN
 		);
@@ -124,6 +128,7 @@ describe("fetchExchangeExtrinsic", () => {
 	it("returns extrinsic", async () => {
 		const exchangeToken = assets.CENNZ;
 		const receivedToken = assets.CPAY;
+		const slippage = 5;
 		const { exchangeAmount, receivedAmount } = await fetchTokenAmounts(
 			api,
 			exchangeToken,
@@ -136,16 +141,18 @@ describe("fetchExchangeExtrinsic", () => {
 			exchangeToken,
 			exchangeAmount,
 			receivedToken,
-			receivedAmount
+			receivedAmount,
+			slippage
 		);
 
-		let buyAmount: any = new BigNumber(receivedAmount.toString());
+		let buyAmount = new BigNumber(receivedAmount.toString());
 		buyAmount = buyAmount
 			.multipliedBy(Math.pow(10, receivedToken.decimals))
 			.toString(10);
 
-		const maxAmount = parseInt(exchangeAmount) * 2;
-
+		const maxAmount =
+			parseFloat(exchangeAmount) +
+			parseFloat(exchangeAmount) * (slippage / 100);
 		const expectedExtrinsic = await api.tx.cennzx.buyAsset(
 			null,
 			exchangeToken.id,

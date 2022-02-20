@@ -83,7 +83,8 @@ const Exchange: React.FC<{}> = () => {
 					api,
 					exchangeAmount,
 					exchangeToken.id,
-					receivedToken.id
+					receivedToken.id,
+					slippage
 				);
 				setEstimatedFee(estimatedFee);
 			} catch (e) {
@@ -108,7 +109,8 @@ const Exchange: React.FC<{}> = () => {
 				exchangeToken,
 				exchangeTokenValue,
 				receivedToken,
-				receivedTokenValue
+				receivedTokenValue,
+				slippage
 			);
 
 			extrinsic.signAndSend(
