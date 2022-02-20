@@ -122,7 +122,7 @@ const ConnectWalletButton: FC<ConnectWalletButtonProps> = ({
 	return (
 		<div
 			className={styles.connectWalletButton}
-			style={{ width: width ? width : 216 }}
+			style={{ width: width ? width : 216, marginBottom: "45px" }}
 		>
 			{metamaskConnected
 				? cennznetConnected

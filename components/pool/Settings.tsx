@@ -9,7 +9,8 @@ const Settings: React.FC<{
 	slippage: number;
 	setSlippage: Function;
 	coreAmount: number | string;
-}> = ({ slippage, setSlippage, coreAmount }) => {
+	color?: string;
+}> = ({ slippage, setSlippage, coreAmount, color }) => {
 	const [open, setOpen] = useState<boolean>(false);
 	const [infoOpen, setInfoOpen] = useState<boolean>(false);
 	const [slippageValues, setSlippageValues] = useState({
@@ -27,13 +28,13 @@ const Settings: React.FC<{
 
 	return (
 		<>
-			<Box sx={{ mt: "30px", width: "468px", mb: open && "10px" }}>
+			<Box sx={{ mt: "30px", width: "468px", mb: open && "36px" }}>
 				<Box
 					sx={{
 						display: "flex",
 						flexDirection: "row",
 						cursor: "pointer",
-						mb: open ? "35px" : "10px",
+						mb: open ? "35px" : "36px",
 					}}
 					onClick={() => {
 						setOpen(!open);
@@ -151,7 +152,7 @@ const Settings: React.FC<{
 								width: "468px",
 								height: "auto",
 								mt: "30px",
-								backgroundColor: "#F5ECFF",
+								backgroundColor: color ? color : "#F5ECFF",
 								display: "flex",
 							}}
 						>

@@ -15,6 +15,7 @@ import {
 	fetchTokenAmounts,
 } from "@/utils/swap";
 import ConnectWalletButton from "@/components/shared/ConnectWalletButton";
+import Settings from "@/components/pool/Settings";
 import generateGlobalProps from "@/utils/generateGlobalProps";
 
 export async function getStaticProps() {
@@ -33,6 +34,7 @@ const Exchange: React.FC<{}> = () => {
 	const [exchangeTokenValue, setExchangeTokenValue] =
 		React.useState<string>("0");
 	const [estimatedFee, setEstimatedFee] = useState<string>();
+	const [slippage, setSlippage] = useState<number>(5);
 	const [error, setError] = useState<string>();
 	const [success, setSuccess] = useState<string>();
 	const { api }: any = useCENNZApi();
@@ -179,6 +181,12 @@ const Exchange: React.FC<{}> = () => {
 					</p>
 				</div>
 			)}
+			<Settings
+				slippage={slippage}
+				setSlippage={setSlippage}
+				coreAmount={exchangeTokenValue}
+				color={"#f5f6ff"}
+			/>
 			<ConnectWalletButton
 				onClick={exchangeTokens}
 				buttonText={"SWAP"}
