@@ -164,7 +164,21 @@ const Exchange: React.FC<{}> = () => {
 					removeToken={exchangeToken}
 				/>
 			</div>
-			{estimatedFee && <p>Transaction fee (estimated): {estimatedFee} CPAY</p>}
+			{estimatedFee && (
+				<div className={styles.infoBoxContainer}>
+					<p className={styles.infoBoxText}>
+						<div className={styles.feeContainer}>
+							<p>{"Exchange rate:"}</p>
+							{/*TODO Get calculation for this*/}
+							<span>{"1 CENNZ = 43.2166 CPAY"}</span>
+						</div>
+						<div className={styles.feeContainer}>
+							<p>{"Transaction fee (estimated):"}</p>
+							<span>{estimatedFee + " CPAY"}</span>
+						</div>
+					</p>
+				</div>
+			)}
 			<ConnectWalletButton
 				onClick={exchangeTokens}
 				buttonText={"SWAP"}
