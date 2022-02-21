@@ -19,24 +19,6 @@ beforeAll(async () => {
 			for: accounts[0],
 			return: ethers.utils.parseUnits("1000"),
 		},
-		// network: {
-		// 	switchTo: "0x2a",
-		// 	add: {
-		// 		id: "0x2a",
-		// 		name: "Kovan",
-		// 		networkId: 42,
-		// 		label: "Kovan",
-		// 		fullName: "Kovan Test Network",
-		// 		rpc: "https://kovan.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
-		// 		explorer: ["https://kovan.etherscan.io"],
-		// 		currency: {
-		// 			name: "Ether",
-		// 			symbol: "ETH",
-		// 			decimals: 18,
-		// 		},
-		// 		tokens: ERC20Tokens.tokens.filter((token) => token.chainId === 42),
-		// 	},
-		// },
 	});
 	provider = new ethers.providers.Web3Provider(global.ethereum);
 	api = await Api.create({ provider: "wss://nikau.centrality.me/public/ws" });
