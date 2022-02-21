@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Autocomplete, TextField } from "@mui/material";
-import { useWeb3Accounts } from "@/providers/Web3AccountsProvider";
+import { useCENNZExtension } from "@/providers/CENNZExtensionProvider";
 import styles from "@/styles/components/shared/cennznetaccountpicker.module.css";
 
 const CENNZnetAccountPicker: React.FC<{
@@ -9,7 +9,7 @@ const CENNZnetAccountPicker: React.FC<{
 	topText?: string;
 	forceAddress?: string;
 }> = ({ updateSelectedAccount, wallet, topText, forceAddress }) => {
-	const accounts = useWeb3Accounts();
+	const { accounts } = useCENNZExtension();
 	const [selectedAccount, setSelectedAccount] = useState<string>();
 	const [accountNames, setAccountNames] = useState<string[]>([]);
 	const [error, setError] = useState<string>();

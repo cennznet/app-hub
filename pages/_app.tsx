@@ -10,14 +10,22 @@ import "@/styles/global.css";
 import { Box } from "@mui/material";
 import CENNZApiProvider from "@/providers/CENNZApiProvider";
 import SupportedWalletProvider from "@/providers/SupportedWalletProvider";
-import DappModuleProvider from "@/providers/DappModuleProvider";
-import Web3AccountsProvider from "@/providers/Web3AccountsProvider";
 import Switch from "@/components/AppSwitch";
 import Wallet from "@/components/Wallet";
 import SupportedAssetsProvider from "@/providers/SupportedAssetsProvider";
 import BlockchainProvider from "@/providers/BlockchainProvider";
+import { GlobalProps } from "@/utils/generateGlobalProps";
+import UserAgentProvider from "@/providers/UserAgentProvider";
+import CENNZExtensionProvider from "@/providers/CENNZExtensionProvider";
 
-function MyApp({ Component, pageProps }: AppProps) {
+type MyAppProps = Omit<AppProps, "pageProps"> & {
+	pageProps: {} & GlobalProps;
+};
+
+function MyApp({
+	Component,
+	pageProps: { supportedAssets, ...pageProps },
+}: MyAppProps) {
 	const router = useRouter();
 	const [location, setLocation] = useState<string>();
 
@@ -35,11 +43,11 @@ function MyApp({ Component, pageProps }: AppProps) {
 			</Head>
 			<ThemeProvider theme={theme}>
 				<CssBaseline />
-				<CENNZApiProvider>
-					<DappModuleProvider>
-						<SupportedAssetsProvider>
-							<SupportedWalletProvider>
-								<Web3AccountsProvider>
+				<UserAgentProvider>
+					<CENNZExtensionProvider>
+						<CENNZApiProvider>
+							<SupportedAssetsProvider supportedAssets={supportedAssets}>
+								<SupportedWalletProvider>
 									<BlockchainProvider>
 										<Wallet />
 										<Box
@@ -60,11 +68,11 @@ function MyApp({ Component, pageProps }: AppProps) {
 										<Switch setLocation={setLocation} />
 										<Component {...pageProps} />
 									</BlockchainProvider>
-								</Web3AccountsProvider>
-							</SupportedWalletProvider>
-						</SupportedAssetsProvider>
-					</DappModuleProvider>
-				</CENNZApiProvider>
+								</SupportedWalletProvider>
+							</SupportedAssetsProvider>
+						</CENNZApiProvider>
+					</CENNZExtensionProvider>
+				</UserAgentProvider>
 			</ThemeProvider>
 		</>
 	);
