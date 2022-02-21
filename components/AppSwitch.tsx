@@ -37,12 +37,12 @@ const Switch: React.FC<{}> = () => {
 					>
 						swap
 					</ActiveSwitchButton>
-					<Link href="/pool" passHref={true}>
+					<Link href="/pool" passHref>
 						<SwitchButton>
 							<span>pool</span>
 						</SwitchButton>
 					</Link>
-					<Link href="/bridge" passHref={true}>
+					<Link href="/bridge" passHref>
 						<SwitchButton>
 							<span>bridge</span>
 						</SwitchButton>
@@ -51,7 +51,7 @@ const Switch: React.FC<{}> = () => {
 			)}
 			{location === "/pool" && (
 				<>
-					<Link href="/" passHref={true}>
+					<Link href="/" passHref>
 						<SwitchButton>
 							<span>swap</span>
 						</SwitchButton>
@@ -65,7 +65,7 @@ const Switch: React.FC<{}> = () => {
 					>
 						pool
 					</ActiveSwitchButton>
-					<Link href="/bridge" passHref={true}>
+					<Link href="/bridge" passHref>
 						<SwitchButton>
 							<span>bridge</span>
 						</SwitchButton>
@@ -74,12 +74,12 @@ const Switch: React.FC<{}> = () => {
 			)}
 			{location === "/bridge" && (
 				<>
-					<Link href="/" passHref={true}>
+					<Link href="/" passHref>
 						<SwitchButton>
 							<span>swap</span>
 						</SwitchButton>
 					</Link>
-					<Link href="/pool" passHref={true}>
+					<Link href="/pool" passHref>
 						<SwitchButton>
 							<span>pool</span>
 						</SwitchButton>
