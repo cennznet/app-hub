@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { ethers } from "ethers";
-import { decodeAddress } from "@polkadot/keyring";
 import GenericERC20TokenAbi from "@/artifacts/GenericERC20Token.json";
 import { defineTxModal } from "@/utils/bridge/modal";
-import { ETH } from "@/utils/bridge/helpers";
+import { checkDepositStatus, ETH, getDepositValues } from "@/utils/bridge";
 import { useBlockchain } from "@/providers/BlockchainProvider";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import TxModal from "@/components/bridge/TxModal";
@@ -34,14 +33,13 @@ const Deposit: React.FC<{
 	};
 
 	const depositEth = async () => {
-		let tx: any = await Contracts.peg.deposit(
-			ETH,
-			ethers.utils.parseUnits(amount),
-			decodeAddress(selectedAccount?.address),
-			{
-				value: ethers.utils.parseUnits(amount),
-			}
+		const { amountInWei, address } = getDepositValues(
+			amount,
+			selectedAccount.address
 		);
+		let tx: any = await Contracts.peg.deposit(ETH, amountInWei, address, {
+			value: amountInWei,
+		});
 
 		setModal(defineTxModal("deposit", tx.hash, setModalOpen));
 		await tx.wait();
@@ -55,17 +53,19 @@ const Deposit: React.FC<{
 			Signer
 		);
 
+		const { amountInWei, address } = getDepositValues(
+			amount,
+			selectedAccount.address
+		);
+
 		let tx: any = await tokenContract.approve(
 			Contracts.peg.address,
-			ethers.utils.parseEther(amount)
+			amountInWei
 		);
 		setModal(defineTxModal("approve", tx.hash, setModalOpen));
 		await tx.wait();
-		tx = await Contracts.peg.deposit(
-			token.address,
-			ethers.utils.parseUnits(amount),
-			decodeAddress(selectedAccount.address)
-		);
+
+		tx = await Contracts.peg.deposit(token.address, amountInWei, address);
 		setModal(defineTxModal("deposit", tx.hash, setModalOpen));
 		await tx.wait();
 		setModal(defineTxModal("relayer", tx.hash, setModalOpen));
@@ -73,14 +73,9 @@ const Deposit: React.FC<{
 
 	const deposit = async () => {
 		setModalOpen(false);
-		const bridgePaused = await api.query.ethBridge.bridgePaused();
-		const ETHdepositsActive = await Contracts.peg.depositsActive();
-		const CENNZdepositsActive = await api.query.erc20Peg.depositsActive();
-		if (
-			bridgePaused.isFalse &&
-			ETHdepositsActive &&
-			CENNZdepositsActive.isTrue
-		) {
+		const bridgeActive = await checkDepositStatus(api, Contracts.peg);
+
+		if (bridgeActive) {
 			if (token.address === ETH) {
 				depositEth();
 			} else {

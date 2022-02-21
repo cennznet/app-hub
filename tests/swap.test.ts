@@ -7,7 +7,6 @@ import {
 	fetchTokenAmounts,
 } from "@/utils/swap";
 
-const testingAddress = "5FbMzsoEpd2mt8eyKpKUxwJ5S9W7nJVJkCer2Jk7tvSpB1vF";
 const assets = {
 	CENNZ: { id: 16000, symbol: "CENNZ", decimals: 4, logo: "/images/cennz.svg" },
 	CPAY: { id: 16001, symbol: "CPAY", decimals: 4, logo: "/images/cpay.svg" },
@@ -51,7 +50,9 @@ describe("fetchTokenAmounts", () => {
 			receivedToken
 		);
 
-		let expectedExchangeAmount = new BigNumber(exchangeTokenValue.toString());
+		let expectedExchangeAmount: any = new BigNumber(
+			exchangeTokenValue.toString()
+		);
 		expectedExchangeAmount = expectedExchangeAmount
 			.multipliedBy(Math.pow(10, exchangeToken.decimals))
 			.toString(10);
@@ -60,7 +61,7 @@ describe("fetchTokenAmounts", () => {
 			exchangeAmount,
 			receivedToken.id
 		);
-		let expectedReceivedAmount = new Amount(
+		let expectedReceivedAmount: any = new Amount(
 			sellPrice.price.toString(),
 			AmountUnit.UN
 		);
@@ -84,7 +85,7 @@ describe("fetchTokenAmounts", () => {
 
 describe("fetchEstimatedTransactionFee", () => {
 	it("estimates fee", async () => {
-		let exchangeAmount = new BigNumber("100");
+		let exchangeAmount: any = new BigNumber("100");
 		exchangeAmount = exchangeAmount
 			.multipliedBy(Math.pow(10, assets.CENNZ.decimals))
 			.toString(10);
@@ -109,7 +110,7 @@ describe("fetchEstimatedTransactionFee", () => {
 			extrinsic,
 			userFeeAssetId: assets.CPAY.id,
 		});
-		let expectedEstimatedFee = new Amount(
+		let expectedEstimatedFee: any = new Amount(
 			feeFromQuery.toString(),
 			AmountUnit.UN
 		);
@@ -138,7 +139,7 @@ describe("fetchExchangeExtrinsic", () => {
 			receivedAmount
 		);
 
-		let buyAmount = new BigNumber(receivedAmount.toString());
+		let buyAmount: any = new BigNumber(receivedAmount.toString());
 		buyAmount = buyAmount
 			.multipliedBy(Math.pow(10, receivedToken.decimals))
 			.toString(10);
