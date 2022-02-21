@@ -168,7 +168,8 @@ const Settings: React.FC<{
 								<span style={{ fontWeight: "bold" }}>{slippage}%</span> <br />
 								{!!coreAmount && (
 									<span>
-										({slippageValues?.min}-{slippageValues?.max} CPAY),
+										(<b>{slippageValues?.min.toFixed(2)}</b>-
+										<b>{slippageValues?.max.toFixed(2)}</b> CPAY),
 									</span>
 								)}{" "}
 								<span style={{ fontWeight: "bold" }}>
