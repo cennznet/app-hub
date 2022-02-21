@@ -13,6 +13,7 @@ import {
 	checkWithdrawStatus,
 	fetchEstimatedFee,
 	fetchTokenId,
+	fetchWithdrawEthSideValues,
 } from "@/utils/bridge";
 
 const Withdraw: React.FC<{
@@ -160,18 +161,10 @@ const Withdraw: React.FC<{
 	) => {
 		setModalOpen(false);
 
-		let verificationFee = await Contracts.bridge.verificationFee();
-		const signatures = eventProof.signatures;
-		let v: any = [],
-			r: any = [],
-			s: any = []; // signature params
-		signatures.forEach((signature: any) => {
-			const hexifySignature = ethers.utils.hexlify(signature);
-			const sig = ethers.utils.splitSignature(hexifySignature);
-			v.push(sig.v);
-			r.push(sig.r);
-			s.push(sig.s);
-		});
+		const { verificationFee, v, r, s }: any = fetchWithdrawEthSideValues(
+			eventProof.signatures,
+			Contracts.bridge
+		);
 
 		let gasEstimate = await Contracts.peg.estimateGas.withdraw(
 			tokenAddress,

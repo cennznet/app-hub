@@ -114,3 +114,24 @@ export const checkWithdrawStatus = async (
 		ETHwithdrawalsActive
 	);
 };
+
+export const fetchWithdrawEthSideValues = async (
+	signatures: string[],
+	bridgeContract: ethers.Contract
+) => {
+	const verificationFee = await bridgeContract.verificationFee();
+
+	const v: any = [],
+		r: any = [],
+		s: any = [];
+
+	signatures.forEach((signature: any) => {
+		const hexifySignature = ethers.utils.hexlify(signature);
+		const sig = ethers.utils.splitSignature(hexifySignature);
+		v.push(sig.v);
+		r.push(sig.r);
+		s.push(sig.s);
+	});
+
+	return { verificationFee, v, r, s };
+};
