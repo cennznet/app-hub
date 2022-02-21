@@ -30,6 +30,10 @@
     "store": "^2.0.12",
     "styled-components": "^5.3.3"
   },
+  "resolutions": {
+    "@polkadot/util": "^8.4.1",
+    "@polkadot/util-crypto": "^8.4.1"
+  },
   "devDependencies": {
     "@depay/web3-blockchains": "^4.2.0",
     "@depay/web3-mock": "^11.6.2",
