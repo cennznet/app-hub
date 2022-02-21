@@ -30,6 +30,10 @@
     "store": "^2.0.12",
     "styled-components": "^5.3.3"
   },
+  "resolutions": {
+    "@polkadot/util": "^8.4.1",
+    "@polkadot/util-crypto": "^8.4.1"
+  },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^12.1.3",
