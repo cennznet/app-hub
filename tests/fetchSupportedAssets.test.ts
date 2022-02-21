@@ -17,7 +17,9 @@ describe("fetchSupportedAssets", () => {
 
 		assets.forEach((asset, index) => {
 			expect(asset.id).toStrictEqual(assetIds[index]);
-			expect(asset.logo).toStrictEqual(`images/${asset.symbol}.svg`);
+			expect(asset.logo).toStrictEqual(
+				`images/${asset.symbol.toLowerCase()}.svg`
+			);
 		});
 	});
 

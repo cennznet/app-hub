@@ -22,7 +22,7 @@ export default async function fetchSupportedAssets(
 				id: Number(tokenId),
 				symbol: symbolString,
 				decimals: decimalPlaces.toNumber(),
-				logo: `images/${symbolString}.svg`,
+				logo: `images/${symbolString.toLowerCase()}.svg`,
 			};
 		})
 		.filter(Boolean);
