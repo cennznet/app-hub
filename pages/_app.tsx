@@ -10,13 +10,13 @@ import "@/styles/global.css";
 import { Box } from "@mui/material";
 import CENNZApiProvider from "@/providers/CENNZApiProvider";
 import SupportedWalletProvider from "@/providers/SupportedWalletProvider";
-import DappModuleProvider from "@/providers/DappModuleProvider";
-import Web3AccountsProvider from "@/providers/Web3AccountsProvider";
 import Switch from "@/components/AppSwitch";
 import Wallet from "@/components/Wallet";
 import SupportedAssetsProvider from "@/providers/SupportedAssetsProvider";
 import BlockchainProvider from "@/providers/BlockchainProvider";
 import { GlobalProps } from "@/utils/generateGlobalProps";
+import UserAgentProvider from "@/providers/UserAgentProvider";
+import CENNZExtensionProvider from "@/providers/CENNZExtensionProvider";
 
 type MyAppProps = Omit<AppProps, "pageProps"> & {
 	pageProps: {} & GlobalProps;
@@ -43,11 +43,11 @@ function MyApp({
 			</Head>
 			<ThemeProvider theme={theme}>
 				<CssBaseline />
-				<CENNZApiProvider>
-					<DappModuleProvider>
-						<SupportedAssetsProvider supportedAssets={supportedAssets}>
-							<SupportedWalletProvider>
-								<Web3AccountsProvider>
+				<UserAgentProvider>
+					<CENNZExtensionProvider>
+						<CENNZApiProvider>
+							<SupportedAssetsProvider supportedAssets={supportedAssets}>
+								<SupportedWalletProvider>
 									<BlockchainProvider>
 										<Wallet />
 										<Box
@@ -68,11 +68,11 @@ function MyApp({
 										<Switch setLocation={setLocation} />
 										<Component {...pageProps} />
 									</BlockchainProvider>
-								</Web3AccountsProvider>
-							</SupportedWalletProvider>
-						</SupportedAssetsProvider>
-					</DappModuleProvider>
-				</CENNZApiProvider>
+								</SupportedWalletProvider>
+							</SupportedAssetsProvider>
+						</CENNZApiProvider>
+					</CENNZExtensionProvider>
+				</UserAgentProvider>
 			</ThemeProvider>
 		</>
 	);
