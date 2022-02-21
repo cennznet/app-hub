@@ -92,11 +92,8 @@ export const checkCENNZnetBalance = async (
 	const foundToken: any = Object.values(bridgeBalances).find(
 		(token: any) => token.tokenId === tokenId.toString()
 	);
-	if (foundToken) {
-		return foundToken.balance >= Number(amount);
-	} else {
-		return false;
-	}
+	if (!foundToken) return false;
+	return foundToken.balance >= Number(amount);
 };
 
 export const checkWithdrawStatus = async (
