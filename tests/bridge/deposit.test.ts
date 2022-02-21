@@ -1,7 +1,9 @@
 import { ethers } from "ethers";
-import { mock, connect } from "@depay/web3-mock";
-import { fetchDepositValues, checkDepositStatus } from "@/utils/bridge";
+import { mock, connect, anything } from "@depay/web3-mock";
+import { ETH, fetchDepositValues, checkDepositStatus } from "@/utils/bridge";
 import ERC20Peg from "@/artifacts/ERC20Peg.json";
+import GenericERC20TokenAbi from "@/artifacts/GenericERC20Token.json";
+import ERC20Tokens from "@/artifacts/erc20tokens.json";
 import { decodeAddress } from "@polkadot/keyring";
 import { Api } from "@cennznet/api";
 
@@ -92,106 +94,90 @@ describe("checkDepositStatus", () => {
 		expect(bridgeActive).toBe(false);
 	});
 });
-// *****************************
-// TODO: fix these tests
-// Transactions fail with error: TypeError: Cannot read properties of undefined (reading 'length')
-// *****************************
-// describe("deposit", () => {
-// 	it("deposit ETH works with values from fetchDepositValues", async () => {
-// 		const amount = "5";
-// 		const { amountInWei, address } = fetchDepositValues(
-// 			amount,
-// 			CENNZnetAccount
-// 		);
-// 		const peg: ethers.Contract = new ethers.Contract(
-// 			ERC20PegAddress,
-// 			ERC20Peg,
-// 			provider
-// 		);
+describe("deposit", () => {
+	it("deposit ETH works with values from fetchDepositValues", async () => {
+		const amount = "5";
+		const { amountInWei, address } = fetchDepositValues(
+			amount,
+			CENNZnetAccount
+		);
+		const peg: ethers.Contract = new ethers.Contract(
+			ERC20PegAddress,
+			ERC20Peg,
+			provider
+		);
 
-// 		const mockedTx = mock({
-// 			blockchain,
-// 			transaction: {
-// 				to: ERC20PegAddress,
-// 				api: ERC20Peg,
-// 				from: accounts[0],
-// 				method: "deposit",
-// 				params: {
-// 					tokenType: ETH,
-// 					amount: amountInWei,
-// 					cennznetAddress: address,
-// 				},
-// 				value: amountInWei,
-// 			},
-// 		});
+		const mockedTx = mock({
+			blockchain,
+			transaction: {
+				to: ERC20PegAddress,
+				api: ERC20Peg,
+				method: "deposit",
+				params: anything,
+			},
+		});
 
-// 		const signer = provider.getSigner();
-// 		const tx = await peg.connect(signer).deposit(ETH, amountInWei, address, {
-// 			value: amountInWei,
-// 		});
+		const signer = provider.getSigner(accounts[0]);
+		const tx = await peg.connect(signer).deposit(ETH, amountInWei, address, {
+			value: amountInWei,
+		});
 
-// 		expect(tx).toBeDefined();
-// 		expect(mockedTx).toHaveBeenCalled();
-// 	});
-// 	it("deposit ERC20 works with values from fetchDepositValues", async () => {
-// 		const DAI = ERC20Tokens.tokens.find(
-// 			(token) => token.chainId === 1 && token.symbol === "DAI"
-// 		);
-// 		const amount = "5";
-// 		const { amountInWei, address } = fetchDepositValues(
-// 			amount,
-// 			CENNZnetAccount
-// 		);
-// 		const tokenContract = new ethers.Contract(
-// 			DAI.address,
-// 			GenericERC20TokenAbi,
-// 			provider
-// 		);
-// 		const peg: ethers.Contract = new ethers.Contract(
-// 			ERC20PegAddress,
-// 			ERC20Peg,
-// 			provider
-// 		);
-// 		const mockedApproveTx = mock({
-// 			blockchain,
-// 			transaction: {
-// 				to: DAI.address,
-// 				api: GenericERC20TokenAbi,
-// 				from: accounts[0],
-// 				method: "approve",
-// 				params: { spender: ERC20PegAddress, amount: amountInWei },
-// 				return: true,
-// 			},
-// 		});
+		expect(tx).toBeDefined();
+		expect(mockedTx).toHaveBeenCalled();
+	});
+	it("deposit ERC20 works with values from fetchDepositValues", async () => {
+		const DAI = ERC20Tokens.tokens.find(
+			(token) => token.chainId === 1 && token.symbol === "DAI"
+		);
+		const amount = "5";
+		const { amountInWei, address } = fetchDepositValues(
+			amount,
+			CENNZnetAccount
+		);
+		const tokenContract = new ethers.Contract(
+			DAI.address,
+			GenericERC20TokenAbi,
+			provider
+		);
+		const peg: ethers.Contract = new ethers.Contract(
+			ERC20PegAddress,
+			ERC20Peg,
+			provider
+		);
+		const mockedApproveTx = mock({
+			blockchain,
+			transaction: {
+				to: DAI.address,
+				api: GenericERC20TokenAbi,
+				method: "approve",
+				params: anything,
+				return: true,
+			},
+		});
 
-// 		const signer = provider.getSigner();
-// 		const approveTx = await tokenContract
-// 			.connect(signer)
-// 			.approve(ERC20PegAddress, amountInWei);
+		const signer = provider.getSigner(accounts[0]);
+		const approveTx = await tokenContract
+			.connect(signer)
+			.approve(ERC20PegAddress, amountInWei);
 
-// 		expect(approveTx).toBeDefined();
-// 		expect(mockedApproveTx).toHaveBeenCalled();
+		expect(approveTx).toBeDefined();
+		expect(mockedApproveTx).toHaveBeenCalled();
 
-// 		const mockedTx = mock({
-// 			blockchain,
-// 			transaction: {
-// 				to: ERC20PegAddress,
-// 				api: ERC20Peg,
-// 				from: accounts[0],
-// 				method: "deposit",
-// 				params: {
-// 					tokenType: DAI.address,
-// 					amount: amountInWei,
-// 					cennznetAddress: address,
-// 				},
-// 			},
-// 		});
+		const mockedTx = mock({
+			blockchain,
+			transaction: {
+				to: ERC20PegAddress,
+				api: ERC20Peg,
+				method: "deposit",
+				params: anything,
+			},
+		});
 
-// 		const tx = await peg.deposit(DAI.address, amountInWei, address, {
-// 			value: amountInWei,
-// 		});
+		const tx = await peg
+			.connect(signer)
+			.deposit(DAI.address, amountInWei, address);
 
-// 		expect(tx).toBeDefined();
-// 		expect(mockedTx).toHaveBeenCalled();
-// 	});
-// });
+		expect(tx).toBeDefined();
+		expect(mockedTx).toHaveBeenCalled();
+	});
+});
