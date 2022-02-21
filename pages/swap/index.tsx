@@ -14,6 +14,15 @@ import {
 	fetchExchangeExtrinsic,
 	fetchTokenAmounts,
 } from "@/utils/swap";
+import generateGlobalProps from "@/utils/generateGlobalProps";
+
+export async function getStaticProps() {
+	return {
+		props: {
+			...(await generateGlobalProps()),
+		},
+	};
+}
 
 const Exchange: React.FC<{}> = () => {
 	const [exchangeToken, setExchangeToken] = useState<Asset>();

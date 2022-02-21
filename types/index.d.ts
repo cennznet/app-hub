@@ -207,7 +207,7 @@ export interface AssetInfo {
 	id: number;
 	symbol: string;
 	decimals: number;
-	existentialDeposit?: number;
+	logo: string;
 }
 
 export interface PoolValues {

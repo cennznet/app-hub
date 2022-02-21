@@ -3,8 +3,7 @@ import GenericERC20TokenAbi from "@/artifacts/GenericERC20Token.json";
 import { Chain } from "@/types";
 
 export const ETH = "0x0000000000000000000000000000000000000000";
-export const ETH_LOGO =
-	"https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png";
+export const ETH_LOGO = `images/eth.svg`;
 
 export const CHAINS: Chain[] = [
 	{
