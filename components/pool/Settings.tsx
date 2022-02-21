@@ -84,6 +84,8 @@ const Settings: React.FC<{
 									outline: "none",
 									padding: "15px",
 								}}
+								min={"1"}
+								max={"10"}
 								onChange={(e) => setSlippage(Number(e.target.value))}
 							/>
 							<Box
