@@ -8,6 +8,12 @@ import TxModal from "@/components/bridge/TxModal";
 import ErrorModal from "@/components/bridge/ErrorModal";
 import { BridgeToken, CennznetAccount } from "@/types";
 import ConnectWalletButton from "@/components/shared/ConnectWalletButton";
+import {
+	checkCENNZnetBalance,
+	checkWithdrawStatus,
+	fetchEstimatedFee,
+	fetchTokenId,
+} from "@/utils/bridge";
 
 const Withdraw: React.FC<{
 	token: BridgeToken;
@@ -40,15 +46,10 @@ const Withdraw: React.FC<{
 		if (!selectedAccount || !Account) return;
 
 		(async () => {
-			let gasPrice = (await Signer.getGasPrice()).toString();
-			gasPrice = ethers.utils.formatUnits(gasPrice);
-
-			const gasEstimate = Number(gasPrice) * 150000;
-
-			let verificationFee = await Contracts.bridge.verificationFee();
-			verificationFee = ethers.utils.formatUnits(verificationFee);
-
-			const totalFeeEstimate = gasEstimate + Number(verificationFee);
+			const totalFeeEstimate = await fetchEstimatedFee(
+				Signer,
+				Contracts.bridge
+			);
 
 			setEstimatedFee(Number(totalFeeEstimate.toFixed(6)));
 		})();
@@ -58,18 +59,13 @@ const Withdraw: React.FC<{
 	useEffect(() => {
 		if (!token || !bridgeBalances || !api) return;
 		(async () => {
-			const tokenExist = await api.query.erc20Peg.erc20ToAssetId(token.address);
-			const tokenId = tokenExist.isSome
-				? tokenExist.unwrap()
-				: await api.query.genericAsset.nextAssetId();
-			const foundToken = Object.values(bridgeBalances).find(
-				(token: any) => token.tokenId === tokenId.toString()
+			const enoughBalanceChecked = await checkCENNZnetBalance(
+				api,
+				token.address,
+				amount,
+				bridgeBalances
 			);
-			if (foundToken) {
-				setEnoughBalance(foundToken.balance >= Number(amount));
-			} else {
-				setEnoughBalance(false);
-			}
+			setEnoughBalance(enoughBalanceChecked);
 		})();
 	}, [token, bridgeBalances, api, amount]);
 
@@ -80,19 +76,13 @@ const Withdraw: React.FC<{
 
 	const withdraw = async () => {
 		setModalOpen(false);
-		const bridgePaused = await api.query.ethBridge.bridgePaused();
-		const CENNZwithdrawalsActive = await api.query.erc20Peg.withdrawalsActive();
-		const ETHwithdrawalsActive = await Contracts.peg.withdrawalsActive();
+		const bridgeActive = await checkWithdrawStatus(api, Contracts.peg);
 
-		if (
-			bridgePaused.isFalse &&
-			CENNZwithdrawalsActive.isTrue &&
-			ETHwithdrawalsActive
-		) {
+		if (bridgeActive) {
 			if (token.address !== "") {
 				setModal(defineTxModal("withdrawCENNZside", "", setModalOpen));
-				let withdrawAmount = ethers.utils.parseUnits(amount).toString();
 
+				const withdrawAmount = ethers.utils.parseUnits(amount).toString();
 				const eventProof = await withdrawCENNZside(
 					withdrawAmount,
 					Account,
@@ -118,10 +108,7 @@ const Withdraw: React.FC<{
 		tokenAddress: string
 	) => {
 		let eventProofId: any;
-		const tokenExist = await api.query.erc20Peg.erc20ToAssetId(tokenAddress);
-		const tokenId = tokenExist.isSome
-			? tokenExist.unwrap()
-			: await api.query.genericAsset.nextAssetId();
+		const tokenId = await fetchTokenId(api, tokenAddress);
 
 		await new Promise<void>((resolve) => {
 			api.tx.erc20Peg
