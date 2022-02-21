@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button, FormControl, CircularProgress } from "@mui/material";
 import ERC20Tokens from "@/artifacts/erc20tokens.json";
-import { ETH, ETH_LOGO, getMetamaskBalance } from "@/utils/bridge";
+import { ETH, ETH_LOGO, fetchMetamaskBalance } from "@/utils/bridge";
 import { useAssets } from "@/providers/SupportedAssetsProvider";
 import { Asset, PoolConfig, BridgeToken } from "@/types";
 import { useBlockchain } from "@/providers/BlockchainProvider";
@@ -154,7 +154,7 @@ const TokenPicker: React.FC<{
 				if (!Account || !tokens[selectedTokenIdx]) return;
 				const { ethereum }: any = window;
 				(async () => {
-					const balance = await getMetamaskBalance(
+					const balance = await fetchMetamaskBalance(
 						ethereum,
 						(tokens[selectedTokenIdx] as BridgeToken)?.address,
 						Account

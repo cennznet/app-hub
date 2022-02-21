@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import { mock, connect } from "@depay/web3-mock";
-import { getMetamaskBalance, ETH } from "@/utils/bridge";
+import { fetchMetamaskBalance, ETH } from "@/utils/bridge";
 import GenericERC20TokenAbi from "@/artifacts/GenericERC20Token.json";
 import ERC20Tokens from "@/artifacts/erc20tokens.json";
 import { Api } from "@cennznet/api";
@@ -47,9 +47,9 @@ afterAll(async () => {
 	await api.disconnect();
 });
 
-describe("getMetamaskBalance", () => {
+describe("fetchMetamaskBalance", () => {
 	it("returns ETH balance", async () => {
-		const balance: number = await getMetamaskBalance(
+		const balance: number = await fetchMetamaskBalance(
 			global.ethereum,
 			ETH,
 			accounts[0]
@@ -85,7 +85,7 @@ describe("getMetamaskBalance", () => {
 				return: ethers.utils.parseUnits("1000"),
 			},
 		});
-		const balance: number = await getMetamaskBalance(
+		const balance: number = await fetchMetamaskBalance(
 			global.ethereum,
 			DAI.address,
 			accounts[0]

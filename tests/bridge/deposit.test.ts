@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import { mock, connect, anything } from "@depay/web3-mock";
-import { ETH, fetchDepositValues, checkDepositStatus } from "@/utils/bridge";
+import { ETH, getDepositValues, checkDepositStatus } from "@/utils/bridge";
 import ERC20Peg from "@/artifacts/ERC20Peg.json";
 import GenericERC20TokenAbi from "@/artifacts/GenericERC20Token.json";
 import ERC20Tokens from "@/artifacts/erc20tokens.json";
@@ -33,13 +33,10 @@ afterAll(async () => {
 	await api.disconnect();
 });
 
-describe("fetchDepositValues", () => {
+describe("getDepositValues", () => {
 	it("returns correct values", async () => {
 		const amount = "500";
-		const { amountInWei, address } = fetchDepositValues(
-			amount,
-			CENNZnetAccount
-		);
+		const { amountInWei, address } = getDepositValues(amount, CENNZnetAccount);
 
 		const expectedAmountInWei = ethers.utils.parseUnits(amount);
 		const expectedAddress = decodeAddress(CENNZnetAccount);
@@ -95,12 +92,9 @@ describe("checkDepositStatus", () => {
 	});
 });
 describe("deposit", () => {
-	it("deposit ETH works with values from fetchDepositValues", async () => {
+	it("deposit ETH works with values from getDepositValues", async () => {
 		const amount = "5";
-		const { amountInWei, address } = fetchDepositValues(
-			amount,
-			CENNZnetAccount
-		);
+		const { amountInWei, address } = getDepositValues(amount, CENNZnetAccount);
 		const peg: ethers.Contract = new ethers.Contract(
 			ERC20PegAddress,
 			ERC20Peg,
@@ -125,15 +119,12 @@ describe("deposit", () => {
 		expect(tx).toBeDefined();
 		expect(mockedTx).toHaveBeenCalled();
 	});
-	it("deposit ERC20 works with values from fetchDepositValues", async () => {
+	it("deposit ERC20 works with values from getDepositValues", async () => {
 		const DAI = ERC20Tokens.tokens.find(
 			(token) => token.chainId === 1 && token.symbol === "DAI"
 		);
 		const amount = "5";
-		const { amountInWei, address } = fetchDepositValues(
-			amount,
-			CENNZnetAccount
-		);
+		const { amountInWei, address } = getDepositValues(amount, CENNZnetAccount);
 		const tokenContract = new ethers.Contract(
 			DAI.address,
 			GenericERC20TokenAbi,

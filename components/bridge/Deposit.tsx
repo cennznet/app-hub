@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { ethers } from "ethers";
 import GenericERC20TokenAbi from "@/artifacts/GenericERC20Token.json";
 import { defineTxModal } from "@/utils/bridge/modal";
-import { checkDepositStatus, ETH, fetchDepositValues } from "@/utils/bridge";
+import { checkDepositStatus, ETH, getDepositValues } from "@/utils/bridge";
 import { useBlockchain } from "@/providers/BlockchainProvider";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import TxModal from "@/components/bridge/TxModal";
@@ -33,7 +33,7 @@ const Deposit: React.FC<{
 	};
 
 	const depositEth = async () => {
-		const { amountInWei, address } = fetchDepositValues(
+		const { amountInWei, address } = getDepositValues(
 			amount,
 			selectedAccount.address
 		);
@@ -53,7 +53,7 @@ const Deposit: React.FC<{
 			Signer
 		);
 
-		const { amountInWei, address } = fetchDepositValues(
+		const { amountInWei, address } = getDepositValues(
 			amount,
 			selectedAccount.address
 		);

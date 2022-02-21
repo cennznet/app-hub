@@ -18,7 +18,7 @@ export const CHAINS: Chain[] = [
 	},
 ];
 
-export const getMetamaskBalance = async (ethereum, tokenAddress, account) => {
+export const fetchMetamaskBalance = async (ethereum, tokenAddress, account) => {
 	const provider = new ethers.providers.Web3Provider(ethereum);
 	let balance, decimals;
 
@@ -39,7 +39,7 @@ export const getMetamaskBalance = async (ethereum, tokenAddress, account) => {
 	return Number(ethers.utils.formatUnits(balance, decimals));
 };
 
-export const fetchDepositValues = (amount: string, selectedAccount: string) => {
+export const getDepositValues = (amount: string, selectedAccount: string) => {
 	const amountInWei = ethers.utils.parseUnits(amount);
 	const address = decodeAddress(selectedAccount);
 
