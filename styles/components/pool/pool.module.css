@@ -1,0 +1,12 @@
+.poolContainer {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
+	position: absolute;
+	top: 131px;
+	left: calc(50% - 552px / 2);
+	background: #ffffff;
+	box-shadow: 4px 8px 8px rgba(17, 48, 255, 0.1);
+	width: 552px;
+}
