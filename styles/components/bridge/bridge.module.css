@@ -1,87 +1,85 @@
-.bridgeContainer{
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    position: absolute;
-    top: 131px;
-    left: calc(50% - 552px/2);
-    background: #FFFFFF;
-    box-shadow: 4px 8px 8px rgba(17, 48, 255, 0.1);
-    width: 552px;
-    height: 746px;
-    padding: 26px 47px 50px 47px;
+.bridgeContainer {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
+	position: absolute;
+	top: 131px;
+	left: calc(50% - 552px / 2);
+	background: #ffffff;
+	box-shadow: 4px 8px 8px rgba(17, 48, 255, 0.1);
+	width: 552px;
+	padding: 26px 47px 50px 47px;
 }
 
 .pageHeader {
-    font-weight: bold;
-    font-size: 20px;
-    line-height: 125%;
-    text-align: center;
-    letter-spacing: 1.12428px;
-    text-transform: uppercase;
-    color: #1130FF;
+	font-weight: bold;
+	font-size: 20px;
+	line-height: 125%;
+	text-align: center;
+	letter-spacing: 1.12428px;
+	text-transform: uppercase;
+	color: #1130ff;
 }
 
 .chainPickerContainer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width:100%;
-    margin-top: 42px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
+	margin-top: 42px;
 }
-.tokenPickerTopContainer{
-    margin-bottom: 6px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.tokenPickerTopContainer {
+	margin-bottom: 6px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 }
 
 .tokenPickerTopText {
-    font-style: normal;
-    font-weight: bold;
-    font-size: 14px;
-    line-height: 125%;
-    letter-spacing: 1.12428px;
-    text-transform: uppercase;
-    text-align: left;
-    color: #020202;
+	font-style: normal;
+	font-weight: bold;
+	font-size: 14px;
+	line-height: 125%;
+	letter-spacing: 1.12428px;
+	text-transform: uppercase;
+	text-align: left;
+	color: #020202;
 }
 
 .infoBoxContainer {
-    width: 460px;
-    height: 95px;
-    min-height: 95px;
-    background: #e0f7f7;
-    padding: 19px;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    margin-bottom: 36px;
+	width: 460px;
+	height: 95px;
+	min-height: 95px;
+	background: #e0f7f7;
+	padding: 19px;
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	margin-bottom: 36px;
 }
 
 .infoBoxText {
-    font-style: normal;
-    font-weight: 600;
-    font-size: 16px;
-    line-height: 150%;
-    color: #020202;
-    text-align: left;
+	font-style: normal;
+	font-weight: 600;
+	font-size: 16px;
+	line-height: 150%;
+	color: #020202;
+	text-align: left;
 }
 
 .feeContainer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .feeContainer p {
-    color: #1130FF;
-    margin-right: 5px;
+	color: #1130ff;
+	margin-right: 5px;
 }
 
-
 .infoBoxText mark {
-    color: #1130FF;
-    background: transparent;
+	color: #1130ff;
+	background: transparent;
 }

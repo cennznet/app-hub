@@ -1,58 +1,57 @@
 .pageHeader {
-    font-family: "Roboto";
-    font-style: normal;
-    font-weight: bold;
-    font-size: 20px;
-    line-height: 125%;
-    text-align: center;
-    letter-spacing: 1.12428px;
-    text-transform: uppercase;
-    color: #1130FF;
-    padding-top:26px;
+	font-family: "Roboto";
+	font-style: normal;
+	font-weight: bold;
+	font-size: 20px;
+	line-height: 125%;
+	text-align: center;
+	letter-spacing: 1.12428px;
+	text-transform: uppercase;
+	color: #1130ff;
+	padding-top: 26px;
 }
 
-.secondaryText{
-    font-family: "Roboto";
-    font-style: normal;
-    font-weight: bold;
-    font-size: 14px;
-    line-height: 125%;
-    letter-spacing: 1.12428px;
-    text-transform: uppercase;
-    color: #020202;
-    margin-bottom: 27px;
+.secondaryText {
+	font-family: "Roboto";
+	font-style: normal;
+	font-weight: bold;
+	font-size: 14px;
+	line-height: 125%;
+	letter-spacing: 1.12428px;
+	text-transform: uppercase;
+	color: #020202;
+	margin-bottom: 27px;
 }
 
-.thirdText{
-    font-family: "Roboto";
-    font-style: normal;
-    font-weight: bold;
-    font-size: 14px;
-    line-height: 125%;
-    letter-spacing: 1.12428px;
-    text-transform: uppercase;
-    color: #020202;
-    margin: 0px;
-    margin-bottom: -20px;
+.thirdText {
+	font-family: "Roboto";
+	font-style: normal;
+	font-weight: bold;
+	font-size: 14px;
+	line-height: 125%;
+	letter-spacing: 1.12428px;
+	text-transform: uppercase;
+	color: #020202;
+	margin: 0px;
+	margin-bottom: -20px;
 }
 
 .swapContainer {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    position: absolute;
-    top: 131px;
-    left: calc(50% - 552px/2);
-    background: #FFFFFF;
-    box-shadow: 4px 8px 8px rgba(17, 48, 255, 0.1);
-    width: 552px;
-    height: 587px;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
+	position: absolute;
+	top: 131px;
+	left: calc(50% - 552px / 2);
+	background: #ffffff;
+	box-shadow: 4px 8px 8px rgba(17, 48, 255, 0.1);
+	width: 552px;
+	height: 587px;
 }
 
-.tokenPickerContainer{
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-
+.tokenPickerContainer {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
 }

@@ -1,168 +1,166 @@
-.tokenPickerContainer{
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    align-items: flex-start;
-    margin-bottom: 17px;
-    height: 94px;
+.tokenPickerContainer {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+	align-items: flex-start;
+	margin-bottom: 17px;
+	height: 94px;
 }
 
 .tokenPickerBox {
-    display: flex;
-    flex-direction: row;
-    border: 1px solid #979797;
-    width: 468px;
-    height: 60px;
-    margin-top: 50px;
-    justify-content: space-between;
-    align-items: center;
+	display: flex;
+	flex-direction: row;
+	border: 1px solid #979797;
+	width: 468px;
+	height: 60px;
+	margin-top: 50px;
+	justify-content: space-between;
+	align-items: center;
 }
 
 .amountContainer {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
 }
 
 .amountInput {
-    height: 60px;
-    width: 150px;
-    font-family: "Roboto";
-    font-style: normal;
-    font-weight: bold;
-    font-size: 16px;
-    line-height: 16px;
-    display: flex;
-    align-items: center;
-    text-align: right;
-    color: #020202;
-    margin-right: 12px;
-    border: 1px solid #979797;
-    border-left:none;
-    border-right:none;
+	height: 60px;
+	width: 150px;
+	font-family: "Roboto";
+	font-style: normal;
+	font-weight: bold;
+	font-size: 16px;
+	line-height: 16px;
+	display: flex;
+	align-items: center;
+	text-align: right;
+	color: #020202;
+	margin-right: 12px;
+	border: 1px solid #979797;
+	border-left: none;
+	border-right: none;
 }
-.amountInput:focus-visible{
-    outline: none;
+.amountInput:focus-visible {
+	outline: none;
 }
 
 .tokenSelector {
-    height: 60px;
-    border: 1px solid #979797;
-    border-left:none;
-    border-right:none;
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+	height: 60px;
+	border: 1px solid #979797;
+	border-left: none;
+	border-right: none;
+	position: relative;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .tokenSelectedImg {
-    margin-left:13px;
+	margin-left: 13px;
 }
 
-.tokenSelectedArrow{
-    margin-left: 15px;
+.tokenSelectedArrow {
+	margin-left: 15px;
 }
 
-.tokenSelectedArrowDown{
-    margin-left: 15px;
-    transform: rotate(-180deg);
-
+.tokenSelectedArrowDown {
+	margin-left: 15px;
+	transform: rotate(-180deg);
 }
-.tokenSelector:focus-visible{
-    outline: none;
+.tokenSelector:focus-visible {
+	outline: none;
 }
 
 .tokenButton {
-    cursor: pointer;
-    height: 60px;
-    width: 100px;
-    border: 1px solid #979797;
-    border-left:none;
-    border-right:none;
-    position: relative;
-    background-color: transparent;
-    font-family: "Roboto";
-    font-style: normal;
-    font-weight: bold;
-    font-size: 14px;
-    line-height: 125%;
-    text-align: left;
-    margin-left: 6px;
+	cursor: pointer;
+	height: 60px;
+	width: 100px;
+	border: 1px solid #979797;
+	border-left: none;
+	border-right: none;
+	position: relative;
+	background-color: transparent;
+	font-family: "Roboto";
+	font-style: normal;
+	font-weight: bold;
+	font-size: 14px;
+	line-height: 125%;
+	text-align: left;
+	margin-left: 6px;
 }
 
-.tokenDropdownContainer{
-    position: absolute;
-    top: 60px;
-    right: 3px;
-    background: #FFFFFF;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    z-index: 5;
-    width: 140px;
-    min-height: 165px;
-    height: 100%;
-    overflow: auto;
+.tokenDropdownContainer {
+	position: absolute;
+	top: 60px;
+	right: 3px;
+	background: #ffffff;
+	box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+	z-index: 5;
+	width: 140px;
+	min-height: 165px;
+	height: 100%;
+	overflow: auto;
 }
 
 .tokenDropdownContainer span {
-    padding: 12px 8px;
-    margin-top:5px;
-    text-decoration: none;
-    font-family: "Roboto";
-    font-style: normal;
-    font-weight: bold;
-    font-size: 14px;
-    line-height: 125%;
-    display: flex;
-    align-items: center;
-    letter-spacing: 1.12428px;
-    text-transform: uppercase;
-    color: #020202;
-    justify-content: center;
-    align-items: center;
+	padding: 12px 8px;
+	margin-top: 5px;
+	text-decoration: none;
+	font-family: "Roboto";
+	font-style: normal;
+	font-weight: bold;
+	font-size: 14px;
+	line-height: 125%;
+	display: flex;
+	align-items: center;
+	letter-spacing: 1.12428px;
+	text-transform: uppercase;
+	color: #020202;
+	justify-content: center;
+	align-items: center;
 }
 
 .tokenChoiceContainer {
-    cursor: pointer;
-    display: flex;
-    flex-direction: row;
+	cursor: pointer;
+	display: flex;
+	flex-direction: row;
 }
 
-.tokenChoiceContainer img{
-    margin-left: 11px;
-    margin-top: 7px;
-    margin-bottom: 7px;
+.tokenChoiceContainer img {
+	margin-left: 11px;
+	margin-top: 7px;
+	margin-bottom: 7px;
 }
 
-.tokenChoiceContainer:hover{
-    background: #E5E8FF;
+.tokenChoiceContainer:hover {
+	background: #e5e8ff;
 }
 
-.bottomTextContainer{
-    font-family: "Roboto";
-    font-style: normal;
-    font-weight: 600;
-    font-size: 16px;
-    line-height: 19px;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    width: 100%;
+.bottomTextContainer {
+	font-family: "Roboto";
+	font-style: normal;
+	font-weight: 600;
+	font-size: 16px;
+	line-height: 19px;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	width: 100%;
 }
-
 
 .balanceText {
-    margin-top: 12px;
-    font-weight: bold;
+	margin-top: 12px;
+	font-weight: bold;
 }
 
 .errorMsg {
-    margin-top: 12px;
-    color: #EC022C;
+	margin-top: 12px;
+	color: #ec022c;
 }
 
 .successMsg {
-    margin-top: 12px;
-    color: green;
+	margin-top: 12px;
+	color: green;
 }
