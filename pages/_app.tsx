@@ -14,10 +14,18 @@ import Switch from "@/components/AppSwitch";
 import Wallet from "@/components/Wallet";
 import SupportedAssetsProvider from "@/providers/SupportedAssetsProvider";
 import BlockchainProvider from "@/providers/BlockchainProvider";
+import { GlobalProps } from "@/utils/generateGlobalProps";
 import UserAgentProvider from "@/providers/UserAgentProvider";
 import CENNZExtensionProvider from "@/providers/CENNZExtensionProvider";
 
-function MyApp({ Component, pageProps }: AppProps) {
+type MyAppProps = Omit<AppProps, "pageProps"> & {
+	pageProps: {} & GlobalProps;
+};
+
+function MyApp({
+	Component,
+	pageProps: { supportedAssets, ...pageProps },
+}: MyAppProps) {
 	const router = useRouter();
 	const [location, setLocation] = useState<string>();
 
@@ -38,7 +46,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 				<UserAgentProvider>
 					<CENNZExtensionProvider>
 						<CENNZApiProvider>
-							<SupportedAssetsProvider>
+							<SupportedAssetsProvider supportedAssets={supportedAssets}>
 								<SupportedWalletProvider>
 									<BlockchainProvider>
 										<Wallet />
