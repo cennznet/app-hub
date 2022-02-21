@@ -5,7 +5,7 @@ import { Box } from "@mui/system";
 
 const CENNZnetHeader: React.FC<{}> = () => {
 	return (
-		<Link href="/" passHref={true}>
+		<Link href="/" passHref>
 			<Box sx={{ cursor: "pointer" }}>
 				<img
 					src="/cennznet-header.png"
