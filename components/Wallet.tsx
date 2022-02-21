@@ -40,7 +40,7 @@ const Wallet: React.FC<{}> = () => {
 					"height": "48px",
 					"display": "flex",
 					"alignItems": "center",
-					"justifyContent": "center",
+					"justifyContent": "flex-start",
 					"&:hover": {
 						backgroundColor: "#1130FF",
 					},
@@ -51,7 +51,7 @@ const Wallet: React.FC<{}> = () => {
 				onClick={walletClickHandler}
 			>
 				<img
-					style={{ marginRight: "10px" }}
+					style={{ marginLeft: "16px" }}
 					src="images/cennznet_blue.svg"
 					alt="CENNZnet-log"
 				/>
@@ -63,15 +63,11 @@ const Wallet: React.FC<{}> = () => {
 						whiteSpace: "nowrap",
 						textAlign: "center",
 						letterSpacing: "1.2px",
+						ml: "10px",
 					}}
 				>
 					{isWalletConnected
-						? selectedAccount?.address.slice(0, 9) +
-						  "..." +
-						  selectedAccount?.address.slice(
-								selectedAccount?.address.length - 4,
-								selectedAccount?.address.length
-						  )
+						? selectedAccount?.meta?.name.substring(0, 17)
 						: "CONNECT WALLET"}
 				</Heading>
 			</Frame>
