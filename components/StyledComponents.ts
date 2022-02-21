@@ -30,20 +30,19 @@ export const StyledModal = styled(Box)({
 	height: "auto",
 	left: "26%",
 	top: "20%",
-
-	background: "#FFFFFF",
+	background: "white",
 	border: "4px solid #1130FF",
 	boxSizing: "border-box",
 	boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
 });
 
 export const Option = styled(Button)({
-	background: "#FFFFFF",
+	background: "white",
 	border: "4px solid #1130FF",
 });
 
 export const SwitchButton = styled(Button)({
-	"backgroundColor": "#FFFFFF",
+	"backgroundColor": "white",
 	"position": "static",
 	"height": "48px",
 	"maxWidth": "120px",
@@ -61,7 +60,29 @@ export const SwitchButton = styled(Button)({
 	"color": "rgba(17,48,255,0.5)",
 	"&:hover": {
 		color: "white",
-		borderBottom: "2px solid #FFFFFF",
+		borderBottom: "2px solid white",
+	},
+});
+
+export const ActiveSwitchButton = styled(Button)({
+	"backgroundColor": "white",
+	"position": "static",
+	"height": "48px",
+	"maxWidth": "120px",
+	"top": "0%",
+	"bottom": "0%",
+	"flex": "none",
+	"order": 0,
+	"alignSelf": "stretch",
+	"flexGrow": 1,
+	"margin": "0px 0px",
+	"fontWeight": "500",
+	"fontSize": "14px",
+	"lineHeight": "16px",
+	"letterSpacing": "1.25px",
+	"cursor": "default",
+	"&:hover": {
+		backgroundColor: "white",
 	},
 });
 

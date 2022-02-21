@@ -1,13 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import type { AppProps } from "next/app";
 import Head from "next/head";
-import { useRouter } from "next/router";
-import { isBrowser, isTablet } from "react-device-detect";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "@/styles/theme";
 import CssBaseline from "@mui/material/CssBaseline";
 import "@/styles/global.css";
-import { Box } from "@mui/material";
 import CENNZApiProvider from "@/providers/CENNZApiProvider";
 import SupportedWalletProvider from "@/providers/SupportedWalletProvider";
 import Switch from "@/components/AppSwitch";
@@ -17,6 +14,7 @@ import BlockchainProvider from "@/providers/BlockchainProvider";
 import { GlobalProps } from "@/utils/generateGlobalProps";
 import UserAgentProvider from "@/providers/UserAgentProvider";
 import CENNZExtensionProvider from "@/providers/CENNZExtensionProvider";
+import CENNZnetHeader from "@/components/CENNZnetHeader";
 
 type MyAppProps = Omit<AppProps, "pageProps"> & {
 	pageProps: {} & GlobalProps;
@@ -26,14 +24,6 @@ function MyApp({
 	Component,
 	pageProps: { supportedAssets, ...pageProps },
 }: MyAppProps) {
-	const router = useRouter();
-	const [location, setLocation] = useState<string>();
-
-	useEffect(() => {
-		if (location !== undefined) router.push(`/${location}`);
-		//eslint-disable-next-line
-	}, [location]);
-
 	return (
 		<>
 			<Head>
@@ -50,22 +40,8 @@ function MyApp({
 								<SupportedWalletProvider>
 									<BlockchainProvider>
 										<Wallet />
-										<Box
-											onClick={() => router.push("/")}
-											sx={{ cursor: "pointer" }}
-										>
-											<img
-												src="/cennznet-header.png"
-												alt="CENNZnet header"
-												style={{
-													width: isBrowser || isTablet ? "90px" : "45px",
-													position: "absolute",
-													top: "5%",
-													left: "6%",
-												}}
-											/>
-										</Box>
-										<Switch setLocation={setLocation} />
+										<CENNZnetHeader />
+										<Switch />
 										<Component {...pageProps} />
 									</BlockchainProvider>
 								</SupportedWalletProvider>
