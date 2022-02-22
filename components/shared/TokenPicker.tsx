@@ -12,7 +12,7 @@ const ETH_CHAIN_ID = process.env.NEXT_PUBLIC_ETH_CHAIN_ID;
 import styles from "@/styles/components/shared/tokenpicker.module.css";
 import { useWallet } from "@/providers/SupportedWalletProvider";
 import { PoolAction } from "@/providers/PoolProvider";
-import { useCENNZApi } from "@/providers/CENNZApiProvider";
+import { formatBalance } from "@/utils";
 
 const TokenPicker: React.FC<{
 	setToken: Function;
@@ -41,7 +41,6 @@ const TokenPicker: React.FC<{
 	poolConfig,
 	whichAsset,
 	width,
-	wrappedERC20Balance,
 }) => {
 	const router = useRouter();
 	const [assetsLoading, setAssetsLoading] = useState<boolean>(true);
@@ -53,10 +52,9 @@ const TokenPicker: React.FC<{
 	const assets = useAssets();
 	const { Account } = useBlockchain();
 	const { balances } = useWallet();
-	const { api }: any = useCENNZApi();
-	const { bridgeBalances } = useWallet();
 
 	useEffect(() => {
+		if (!assets) return;
 		if (forceSelection) {
 			let newAssets: Asset[] = [...assets];
 			if (removeToken)
@@ -67,7 +65,7 @@ const TokenPicker: React.FC<{
 			setTokens(newAssets);
 			setSelectedTokenIdx(foundtokenIdx);
 		}
-	}, [forceSelection]);
+	}, [forceSelection, assets, removeToken]);
 
 	useEffect(() => {
 		if (cennznet && assets) {
@@ -120,7 +118,7 @@ const TokenPicker: React.FC<{
 				}
 			});
 		}
-	}, [cennznet, assets, selectedTokenIdx, tokens]);
+	}, [cennznet, assets, selectedTokenIdx, tokens, setToken]);
 
 	useEffect(() => {
 		if (!tokens) return;
@@ -129,48 +127,20 @@ const TokenPicker: React.FC<{
 			const foundTokenBalance = balances.find(
 				(asset) => asset.symbol === tokens[selectedTokenIdx]?.symbol
 			);
-			setSelectedTokenBalance(parseFloat(foundTokenBalance?.value.toFixed(4)));
+			setSelectedTokenBalance(formatBalance(foundTokenBalance?.value));
 		} else {
-			if (wrappedERC20Balance) {
-				if (!tokens[selectedTokenIdx] || !bridgeBalances || !api) return;
-				(async () => {
-					const tokenExist = await api.query.erc20Peg.erc20ToAssetId(
-						tokens[selectedTokenIdx]?.address
-					);
-
-					const tokenId = tokenExist.isSome
-						? tokenExist.unwrap()
-						: await api.query.genericAsset.nextAssetId();
-					const foundToken = Object.values(bridgeBalances).find(
-						(token: any) => token.tokenId === tokenId.toString()
-					);
-					if (foundToken) {
-						setSelectedTokenBalance(parseFloat(foundToken.balance.toFixed(4)));
-					} else {
-						setSelectedTokenBalance(0);
-					}
-				})();
-			} else {
-				if (!Account || !tokens[selectedTokenIdx]) return;
-				const { ethereum }: any = window;
-				(async () => {
-					const balance = await fetchMetamaskBalance(
-						ethereum,
-						(tokens[selectedTokenIdx] as BridgeToken)?.address,
-						Account
-					);
-					setSelectedTokenBalance(parseFloat(balance.toFixed(4)));
-				})();
-			}
+			if (!Account || !tokens[selectedTokenIdx]?.address) return;
+			const { ethereum }: any = window;
+			(async () => {
+				const balance = await fetchMetamaskBalance(
+					ethereum,
+					(tokens[selectedTokenIdx] as BridgeToken).address,
+					Account
+				);
+				setSelectedTokenBalance(formatBalance(balance));
+			})();
 		}
-	}, [
-		balances,
-		tokens,
-		selectedTokenIdx,
-		Account,
-		bridgeBalances,
-		wrappedERC20Balance,
-	]);
+	}, [balances, tokens, selectedTokenIdx, Account, cennznet]);
 
 	return (
 		<div className={styles.tokenPickerContainer}>

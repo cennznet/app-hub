@@ -9,6 +9,7 @@ import TxModal from "@/components/bridge/TxModal";
 import ErrorModal from "@/components/bridge/ErrorModal";
 import ConnectWalletButton from "@/components/shared/ConnectWalletButton";
 import { BridgeToken, CennznetAccount } from "@/types";
+import { useWallet } from "@/providers/SupportedWalletProvider";
 
 const Deposit: React.FC<{
 	token: BridgeToken;
@@ -26,6 +27,7 @@ const Deposit: React.FC<{
 	});
 	const { Contracts, Signer }: any = useBlockchain();
 	const { api }: any = useCENNZApi();
+	const { updateBalances } = useWallet();
 
 	const resetModal = () => {
 		setModal({ state: "", text: "", hash: "" });
@@ -77,10 +79,11 @@ const Deposit: React.FC<{
 
 		if (bridgeActive) {
 			if (token.address === ETH) {
-				depositEth();
+				await depositEth();
 			} else {
-				depositERC20();
+				await depositERC20();
 			}
+			updateBalances();
 		} else {
 			setModal(defineTxModal("bridgePaused", "", setModalOpen));
 		}

@@ -139,9 +139,7 @@ const ConnectWalletButton: FC<ConnectWalletButtonProps> = ({
 						backgroundColor: color,
 					},
 				}}
-				onClick={() => {
-					onClick;
-				}}
+				onClick={() => onClick()}
 				disabled={disabled}
 			>
 				{buttonText}

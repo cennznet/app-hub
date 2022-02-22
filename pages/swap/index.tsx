@@ -7,7 +7,6 @@ import { Asset } from "@/types";
 
 import styles from "@/styles/components/swap/swap.module.css";
 import { useWallet } from "@/providers/SupportedWalletProvider";
-import { useCENNZExtension } from "@/providers/CENNZExtensionProvider";
 import {
 	fetchEstimatedTransactionFee,
 	fetchExchangeExtrinsic,
@@ -40,21 +39,8 @@ const Exchange: React.FC<{}> = () => {
 	const [success, setSuccess] = useState<string>();
 	const { api }: any = useCENNZApi();
 	const assets = useAssets();
-	const {
-		wallet,
-		selectedAccount,
-		balances,
-		connectWallet,
-		fetchAssetBalances,
-	} = useWallet();
+	const { balances, updateBalances, wallet, selectedAccount } = useWallet();
 	const signer = wallet?.signer;
-	const { web3Enable } = useCENNZExtension();
-
-	useEffect(() => {
-		if (!wallet) {
-			connectWallet();
-		}
-	}, [web3Enable, api]);
 
 	useEffect(() => {
 		setError(undefined);
@@ -141,7 +127,7 @@ const Exchange: React.FC<{}> = () => {
 							if (event.method === "AssetBought") {
 								setError(undefined);
 								setSuccess(`Successfully Swapped Tokens!`);
-								fetchAssetBalances();
+								updateBalances();
 							}
 						}
 					}
@@ -150,7 +136,14 @@ const Exchange: React.FC<{}> = () => {
 		} catch (e) {
 			setError(e.message);
 		}
-	}, [signer, api, exchangeToken, receivedToken, receivedTokenValue]);
+	}, [
+		signer,
+		api,
+		exchangeToken,
+		receivedToken,
+		receivedTokenValue,
+		updateBalances,
+	]);
 
 	return (
 		<div className={styles.swapContainer}>
