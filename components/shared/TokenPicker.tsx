@@ -222,7 +222,7 @@ const TokenPicker: React.FC<{
 													: styles.tokenSelectedArrowDown
 											}
 											alt="arrow"
-											src={"/arrow_up.svg"}
+											src={"/images/arrow_up.svg"}
 										/>
 									)}
 								</button>

@@ -82,7 +82,7 @@ const CENNZnetAccountPicker: React.FC<{
 					setSelectedAccount(e.target.value);
 					updateAccount(e.target.value);
 				}}
-				clearIcon={!wallet && <img src={"blue_minus.svg"} alt={""} />}
+				clearIcon={!wallet && <img src={"/images/blue_minus.svg"} alt={""} />}
 				onChange={(event, value, reason) => {
 					if (reason === "clear") {
 						updateAccount("");

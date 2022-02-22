@@ -38,7 +38,7 @@ const Wallet: React.FC<{}> = () => {
 				}}
 				onClick={walletClickHandler}
 			>
-				<img src="wallet.svg" alt="CENNZnet-wallet" />
+				<img src="/images/wallet.svg" alt="CENNZnet-wallet" />
 				<Heading
 					sx={{
 						ml: isWalletConnected ? "5px" : 0,

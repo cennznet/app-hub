@@ -25,7 +25,7 @@ const ExchangeIconClass: FC<ExchangeIconProps> = ({
 			id={"swapIcon"}
 		>
 			<img
-				src={"arrows.svg"}
+				src={"/images/arrows.svg"}
 				alt={""}
 				width={40}
 				height={40}

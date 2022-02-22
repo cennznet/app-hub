@@ -72,7 +72,7 @@ const ChainPicker: React.FC<{
 										: styles.chainSelectedArrowDown
 								}
 								alt="arrow"
-								src={"/arrow_up.svg"}
+								src={"/images/arrow_up.svg"}
 							/>
 						</button>
 					</>

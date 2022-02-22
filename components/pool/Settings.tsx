@@ -43,7 +43,7 @@ const Settings: React.FC<{
 					<SettingsText>SETTINGS</SettingsText>
 					<img
 						alt="arrow"
-						src={"/arrow_up.svg"}
+						src={"/images/arrow_up.svg"}
 						style={{
 							marginLeft: "10px",
 							transform: !open && "rotate(180deg)",
