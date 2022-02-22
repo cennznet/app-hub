@@ -16,6 +16,7 @@ import { GlobalProps } from "@/utils/generateGlobalProps";
 import UserAgentProvider from "@/providers/UserAgentProvider";
 import CENNZExtensionProvider from "@/providers/CENNZExtensionProvider";
 import PageBackdrop from "@/components/shared/PageBackdrop";
+import PageFrame from "@/components/shared/PageFrame";
 
 type MyAppProps = Omit<AppProps, "pageProps"> & {
 	pageProps: {} & GlobalProps;
@@ -52,6 +53,7 @@ function MyApp({
 										<Wallet />
 										<Switch setLocation={setLocation} />
 										<Component {...pageProps} />
+										<PageFrame />
 									</BlockchainProvider>
 								</SupportedWalletProvider>
 							</SupportedAssetsProvider>

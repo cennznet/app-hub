@@ -1,0 +1,19 @@
+.container {
+	position: fixed;
+	inset: 0;
+	z-index: 1000;
+	pointer-events: none;
+	border: 8px solid #1130ff;
+
+	&--swap {
+		border-color: #1130ff;
+	}
+
+	&--pool {
+		border-color: #9847ff;
+	}
+
+	&--bridge {
+		border-color: #2dc8cb;
+	}
+}

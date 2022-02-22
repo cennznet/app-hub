@@ -6,14 +6,6 @@
 	background-color: #b3bdff;
 	transition: background-color 0.2s;
 
-	&:after {
-		content: "";
-		position: absolute;
-		inset: 0;
-		border: 8px solid #1130ff;
-		z-index: 3;
-	}
-
 	&--swap {
 		background-color: #b3bdff;
 		&:after {
@@ -23,16 +15,10 @@
 
 	&--pool {
 		background-color: #e4d1ff;
-		&:after {
-			border-color: #9847ff;
-		}
 	}
 
 	&--bridge {
 		background-color: #b1eaeb;
-		&:after {
-			border-color: #2dc8cb;
-		}
 	}
 }
 
@@ -45,6 +31,7 @@
 	position: absolute;
 	left: 0;
 	top: 0;
+	z-index: 10;
 
 	> img {
 		display: block;
