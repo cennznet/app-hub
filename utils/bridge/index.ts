@@ -82,20 +82,6 @@ export const fetchTokenId = async (api: Api, tokenAddress: string) => {
 		: await api.query.genericAsset.nextAssetId();
 };
 
-export const checkCENNZnetBalance = async (
-	api: Api,
-	tokenAddress: string,
-	amount: string,
-	bridgeBalances
-) => {
-	const tokenId = await fetchTokenId(api, tokenAddress);
-	const foundToken: any = Object.values(bridgeBalances).find(
-		(token: any) => token.tokenId === tokenId.toString()
-	);
-	if (!foundToken) return false;
-	return foundToken.balance >= Number(amount);
-};
-
 export const checkWithdrawStatus = async (
 	api: Api,
 	pegContract: ethers.Contract

@@ -3,7 +3,6 @@ import { mock, connect, anything } from "@depay/web3-mock";
 import {
 	ETH,
 	fetchEstimatedFee,
-	checkCENNZnetBalance,
 	checkWithdrawStatus,
 	fetchTokenId,
 	fetchWithdrawEthSideValues,
@@ -94,39 +93,6 @@ describe("fetchEstimatedFee", () => {
 
 		expect(mockVerificationFee).toHaveBeenCalled();
 		expect(totalFeeEstimate).toEqual(expectedFeeEstimate);
-	});
-});
-describe("checkCENNZnetBalance", () => {
-	it("returns true if user has enough balance", async () => {
-		const enoughBalanceChecked = await checkCENNZnetBalance(
-			api,
-			ETH,
-			"1",
-			bridgeBalances
-		);
-
-		expect(enoughBalanceChecked).toBe(true);
-	});
-	it("returns false if user doesn't have enough balance", async () => {
-		const enoughBalanceChecked = await checkCENNZnetBalance(
-			api,
-			ETH,
-			"10",
-			bridgeBalances
-		);
-
-		expect(enoughBalanceChecked).toBe(false);
-	});
-	it("returns false if token isn't supported", async () => {
-		const DAI = ERC20Tokens.tokens.find((token) => token.symbol === "DAI");
-		const enoughBalanceChecked = await checkCENNZnetBalance(
-			api,
-			DAI.address,
-			"0",
-			bridgeBalances
-		);
-
-		expect(enoughBalanceChecked).toBe(false);
 	});
 });
 describe("fetchTokenId", () => {

@@ -9,7 +9,6 @@ import ErrorModal from "@/components/bridge/ErrorModal";
 import { BridgeToken, CennznetAccount } from "@/types";
 import ConnectWalletButton from "@/components/shared/ConnectWalletButton";
 import {
-	checkCENNZnetBalance,
 	checkWithdrawStatus,
 	fetchEstimatedFee,
 	fetchTokenId,
@@ -40,7 +39,7 @@ const Withdraw: React.FC<{
 	});
 	const { Contracts, Account, Signer }: any = useBlockchain();
 	const { api }: any = useCENNZApi();
-	const { wallet, bridgeBalances } = useWallet();
+	const { wallet, balances } = useWallet();
 	const signer = wallet?.signer;
 
 	useEffect(() => {
@@ -54,21 +53,17 @@ const Withdraw: React.FC<{
 
 			setEstimatedFee(Number(totalFeeEstimate.toFixed(6)));
 		})();
-	}, [selectedAccount, Account, Contracts.bridge, Signer]);
+	}, [selectedAccount, Account, Contracts.bridge, Signer, setEstimatedFee]);
 
 	//Check CENNZnet account has enough tokens to withdraw
 	useEffect(() => {
-		if (!token || !bridgeBalances || !api) return;
-		(async () => {
-			const enoughBalanceChecked = await checkCENNZnetBalance(
-				api,
-				token.address,
-				amount,
-				bridgeBalances
-			);
-			setEnoughBalance(enoughBalanceChecked);
-		})();
-	}, [token, bridgeBalances, api, amount]);
+		if (!token || !balances || !api) return;
+		const foundToken = balances.find(
+			(balance) => balance.symbol === token.symbol
+		);
+
+		setEnoughBalance(foundToken.value >= Number(amount));
+	}, [token, balances, api, amount, setEnoughBalance]);
 
 	const resetModal = () => {
 		setModal({ state: "", text: "", hash: "" });
