@@ -6,30 +6,38 @@
 	background-color: #b3bdff;
 	transition: background-color 0.2s;
 
-	&:before {
+	&:after {
 		content: "";
 		position: absolute;
 		inset: 0;
 		border: 8px solid #1130ff;
 	}
 
+	&:before {
+		content: "";
+		position: absolute;
+		inset: 0;
+		background: url("/images/backdrop-sheer.svg") no-repeat center top;
+		background-size: cover;
+	}
+
 	&--swap {
 		background-color: #b3bdff;
-		&:before {
+		&:after {
 			border-color: #1130ff;
 		}
 	}
 
 	&--pool {
 		background-color: #e4d1ff;
-		&:before {
+		&:after {
 			border-color: #9847ff;
 		}
 	}
 
 	&--bridge {
 		background-color: #b1eaeb;
-		&:before {
+		&:after {
 			border-color: #2dc8cb;
 		}
 	}
@@ -61,4 +69,49 @@
 	&--bridge {
 		background-color: #2dc8cb;
 	}
+}
+
+.layer1 {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	z-index: 2;
+}
+
+.layer1Graphics {
+	margin: 0 auto;
+	margin-top: 200px;
+
+	path {
+		fill: #1130ff;
+	}
+
+	&--swap {
+		path {
+			fill: #1130ff;
+		}
+	}
+
+	&--pool {
+		path {
+			fill: #9847ff;
+		}
+	}
+
+	&--bridge {
+		path {
+			fill: #2dc8cb;
+		}
+	}
+}
+
+.layer2 {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	z-index: 2;
+}
+
+.layer2Graphics {
+	margin: auto;
 }
