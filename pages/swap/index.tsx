@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { Button } from "@mui/material";
 import TokenPicker from "@/components/shared/TokenPicker";
 import ExchangeIcon from "@/components/shared/ExchangeIcon";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
@@ -12,6 +11,7 @@ import { useCENNZExtension } from "@/providers/CENNZExtensionProvider";
 import {
 	fetchEstimatedTransactionFee,
 	fetchExchangeExtrinsic,
+	fetchExchangeRate,
 	fetchTokenAmounts,
 } from "@/utils/swap";
 import ConnectWalletButton from "@/components/shared/ConnectWalletButton";
@@ -34,6 +34,7 @@ const Exchange: React.FC<{}> = () => {
 	const [exchangeTokenValue, setExchangeTokenValue] =
 		React.useState<string>("0");
 	const [estimatedFee, setEstimatedFee] = useState<string>();
+	const [exchangeRate, setExchangeRate] = useState<number>();
 	const [slippage, setSlippage] = useState<number>(5);
 	const [error, setError] = useState<string>();
 	const [success, setSuccess] = useState<string>();
@@ -87,11 +88,21 @@ const Exchange: React.FC<{}> = () => {
 				);
 				setEstimatedFee(estimatedFee);
 			} catch (e) {
-				console.info("error here..");
 				setError(e.message);
 			}
 		})();
 	}, [api, exchangeTokenValue, assets, exchangeToken, receivedToken, balances]);
+
+	useEffect(() => {
+		(async () => {
+			const estimatedExchangeRate = await fetchExchangeRate(
+				api,
+				exchangeToken,
+				receivedToken
+			);
+			setExchangeRate(estimatedExchangeRate);
+		})();
+	}, [exchangeRate, exchangeToken, receivedToken]);
 
 	const exchangeTokens = useCallback(async () => {
 		if (
@@ -172,9 +183,8 @@ const Exchange: React.FC<{}> = () => {
 				<div className={styles.infoBoxContainer}>
 					<p className={styles.infoBoxText}>
 						<div className={styles.feeContainer}>
-							<p>{"Exchange rate:"}</p>
-							{/*TODO Get calculation for this*/}
-							<span>{"1 CENNZ = 43.2166 CPAY"}</span>
+							<p>{"Exchange rates:"}</p>
+							<span>{`1 ${exchangeToken.symbol} = ${exchangeRate} ${receivedToken.symbol}`}</span>
 						</div>
 						<div className={styles.feeContainer}>
 							<p>{"Transaction fee (estimated):"}</p>

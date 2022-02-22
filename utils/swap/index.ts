@@ -11,6 +11,29 @@ const CPAY = {
 	logo: "/images/cpay.svg",
 };
 
+export const fetchExchangeRate = async (
+	api: Api,
+	exchangeToken: Asset,
+	receivedToken: Asset
+) => {
+	let exchangeAmount: any = new BigNumber("1");
+	exchangeAmount = exchangeAmount
+		.multipliedBy(Math.pow(10, exchangeToken.decimals))
+		.toString(10);
+	const sellPrice = await (api.rpc as any).cennzx.sellPrice(
+		exchangeToken.id,
+		exchangeAmount,
+		receivedToken.id
+	);
+	let receivedAmount: any = new Amount(
+		sellPrice.price.toString(),
+		AmountUnit.UN
+	);
+	receivedAmount = receivedAmount.toAmount(receivedToken.decimals);
+
+	return receivedAmount;
+};
+
 export const fetchTokenAmounts = async (
 	api: Api,
 	exchangeToken: Asset,

@@ -145,7 +145,9 @@ describe("fetchExchangeExtrinsic", () => {
 			slippage
 		);
 
-		let buyAmount = new BigNumber(receivedAmount.toString());
+		let buyAmount: BigNumber | string = new BigNumber(
+			receivedAmount.toString()
+		);
 		buyAmount = buyAmount
 			.multipliedBy(Math.pow(10, receivedToken.decimals))
 			.toString(10);
