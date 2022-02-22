@@ -187,6 +187,7 @@ const Exchange: React.FC<{}> = () => {
 				slippage={slippage}
 				setSlippage={setSlippage}
 				coreAmount={exchangeTokenValue}
+				tokenName={exchangeToken?.symbol}
 				color={"#f5f6ff"}
 			/>
 			<ConnectWalletButton

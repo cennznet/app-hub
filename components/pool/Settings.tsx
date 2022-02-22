@@ -9,8 +9,9 @@ const Settings: React.FC<{
 	slippage: number;
 	setSlippage: Function;
 	coreAmount: number | string;
+	tokenName?: string;
 	color?: string;
-}> = ({ slippage, setSlippage, coreAmount, color }) => {
+}> = ({ slippage, setSlippage, coreAmount, color, tokenName = "CPAY" }) => {
 	const [open, setOpen] = useState<boolean>(false);
 	const [infoOpen, setInfoOpen] = useState<boolean>(false);
 	const [slippageValues, setSlippageValues] = useState({
@@ -166,12 +167,12 @@ const Settings: React.FC<{
 									m: "4% auto 4%",
 								}}
 							>
-								If the amount of CPAY used sits outside{" "}
+								If the amount of {tokenName} used sits outside{" "}
 								<span style={{ fontWeight: "bold" }}>{slippage}%</span> <br />
 								{!!coreAmount && (
 									<span>
 										(<b>{slippageValues?.min.toFixed(2)}</b>-
-										<b>{slippageValues?.max.toFixed(2)}</b> CPAY),
+										<b>{slippageValues?.max.toFixed(2)}</b> {tokenName}),
 									</span>
 								)}{" "}
 								<span style={{ fontWeight: "bold" }}>
