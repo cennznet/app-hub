@@ -2,6 +2,7 @@ import React, { FC, useEffect, useState } from "react";
 import styles from "@/styles/components/shared/connectwalletbutton.module.css";
 import { useWallet } from "@/providers/SupportedWalletProvider";
 import { useBlockchain } from "@/providers/BlockchainProvider";
+import { Button } from "@mui/material";
 
 const ETH_CHAIN_ID = process.env.NEXT_PUBLIC_ETH_CHAIN_ID;
 
@@ -12,6 +13,7 @@ interface ConnectWalletButtonProps {
 	requireCennznet: boolean;
 	disabled?: boolean;
 	width?: number;
+	color?: string;
 }
 
 const ConnectWalletButton: FC<ConnectWalletButtonProps> = ({
@@ -21,6 +23,7 @@ const ConnectWalletButton: FC<ConnectWalletButtonProps> = ({
 	requireCennznet,
 	disabled,
 	width,
+	color = "#1130FF",
 }) => {
 	const [metamaskConnected, setMetamaskConnected] = useState<boolean>(
 		!requireMetamask
@@ -78,7 +81,13 @@ const ConnectWalletButton: FC<ConnectWalletButtonProps> = ({
 				}}
 			>
 				<img src={"metamask_logo.svg"} alt={""} width={40} height={40} />
-				<h1>Connect Wallet</h1>
+				<h1
+					style={{
+						color: color,
+					}}
+				>
+					Connect Wallet
+				</h1>
 			</div>
 		);
 	};
@@ -92,7 +101,13 @@ const ConnectWalletButton: FC<ConnectWalletButtonProps> = ({
 				}}
 			>
 				<img src={"images/cennznet_blue.svg"} alt={""} />
-				<h1>Connect Wallet</h1>
+				<h1
+					style={{
+						color: color,
+					}}
+				>
+					Connect Wallet
+				</h1>
 			</div>
 		);
 	};
@@ -103,19 +118,34 @@ const ConnectWalletButton: FC<ConnectWalletButtonProps> = ({
 		disabled: boolean
 	) => {
 		return (
-			<button
-				style={{
-					opacity: disabled && "0.3",
-					cursor: disabled && "not-allowed",
+			<Button
+				sx={{
+					"opacity": disabled && "0.3",
+					"cursor": disabled && "not-allowed",
+					"border": `1px solid ${color}`,
+					"color": color,
+					"borderLeft": "transparent",
+					"borderRight": "transparent",
+					"fontWeight": "bold",
+					"fontSize": "16px",
+					"lineHeight": "125%",
+					"display": "flex",
+					"alignItems": "center",
+					"textAlign": "center",
+					"letterSpacing": "1.12px",
+					"textTransform": "uppercase",
+					"&:hover": {
+						color: "white",
+						backgroundColor: color,
+					},
 				}}
-				type={"button"}
 				onClick={() => {
-					onClick();
+					onClick;
 				}}
 				disabled={disabled}
 			>
 				{buttonText}
-			</button>
+			</Button>
 		);
 	};
 
@@ -125,6 +155,7 @@ const ConnectWalletButton: FC<ConnectWalletButtonProps> = ({
 			style={{
 				width: width && cennznetConnected ? width : 216,
 				marginBottom: "45px",
+				border: `1px solid ${color}`,
 			}}
 		>
 			{metamaskConnected

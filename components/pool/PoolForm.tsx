@@ -366,6 +366,7 @@ const PoolForm: React.FC<{}> = () => {
 			/>
 			<ConnectWalletButton
 				onClick={confirm}
+				color={poolAction === PoolAction.ADD ? "#1130FF" : "#9847FF"}
 				buttonText={
 					poolAction === PoolAction.ADD ? "add to pool" : "withdraw from pool"
 				}

@@ -64,11 +64,11 @@ const Wallet: React.FC<{}> = () => {
 						textAlign: "center",
 						letterSpacing: "1.2px",
 						ml: "10px",
+						textOverflow: "ellipsis",
+						overflow: "hidden",
 					}}
 				>
-					{isWalletConnected
-						? selectedAccount?.meta?.name.substring(0, 17)
-						: "CONNECT WALLET"}
+					{isWalletConnected ? selectedAccount?.meta?.name : "CONNECT WALLET"}
 				</Heading>
 			</Frame>
 		</>
