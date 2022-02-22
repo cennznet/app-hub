@@ -1,15 +1,11 @@
 import React from "react";
 import { useRouter } from "next/router";
 import { Box } from "@mui/material";
-import {
-	ActiveSwitchButton,
-	SwitchButton,
-} from "@/components/StyledComponents";
+import { SwitchButton } from "@/components/StyledComponents";
 import Link from "next/link";
 
 const Switch: React.FC<{}> = () => {
-	const router = useRouter();
-	const location = router.asPath;
+	const { asPath: location } = useRouter();
 
 	return (
 		<Box
@@ -26,75 +22,48 @@ const Switch: React.FC<{}> = () => {
 				filter: "drop-shadow(0px 3px 3px rgba(0, 0, 0, 0.12))",
 			}}
 		>
-			{location === "/" && (
-				<>
-					<ActiveSwitchButton
-						sx={{
+			<Link href="/" passHref={location !== "/"}>
+				<SwitchButton
+					sx={
+						location === "/" && {
 							color: "primary.swap",
 							borderBottom: (theme) =>
 								`2px solid ${theme.palette.primary.swap}`,
-						}}
-					>
-						swap
-					</ActiveSwitchButton>
-					<Link href="/pool" passHref>
-						<SwitchButton>
-							<span>pool</span>
-						</SwitchButton>
-					</Link>
-					<Link href="/bridge" passHref>
-						<SwitchButton>
-							<span>bridge</span>
-						</SwitchButton>
-					</Link>
-				</>
-			)}
-			{location === "/pool" && (
-				<>
-					<Link href="/" passHref>
-						<SwitchButton>
-							<span>swap</span>
-						</SwitchButton>
-					</Link>
-					<ActiveSwitchButton
-						sx={{
+						}
+					}
+					active={location === "/"}
+				>
+					swap
+				</SwitchButton>
+			</Link>
+			<Link href="/pool" passHref={location !== "/pool"}>
+				<SwitchButton
+					active={location === "/pool"}
+					sx={
+						location === "/pool" && {
 							color: "primary.pool",
 							borderBottom: (theme) =>
 								`2px solid ${theme.palette.primary.pool}`,
-						}}
-					>
-						pool
-					</ActiveSwitchButton>
-					<Link href="/bridge" passHref>
-						<SwitchButton>
-							<span>bridge</span>
-						</SwitchButton>
-					</Link>
-				</>
-			)}
-			{location === "/bridge" && (
-				<>
-					<Link href="/" passHref>
-						<SwitchButton>
-							<span>swap</span>
-						</SwitchButton>
-					</Link>
-					<Link href="/pool" passHref>
-						<SwitchButton>
-							<span>pool</span>
-						</SwitchButton>
-					</Link>
-					<ActiveSwitchButton
-						sx={{
+						}
+					}
+				>
+					<span>pool</span>
+				</SwitchButton>
+			</Link>
+			<Link href="/bridge" passHref={location !== "/bridge"}>
+				<SwitchButton
+					active={location === "/bridge"}
+					sx={
+						location === "/bridge" && {
 							color: "primary.bridge",
 							borderBottom: (theme) =>
 								`2px solid ${theme.palette.primary.bridge}`,
-						}}
-					>
-						bridge
-					</ActiveSwitchButton>
-				</>
-			)}
+						}
+					}
+				>
+					<span>bridge</span>
+				</SwitchButton>
+			</Link>
 		</Box>
 	);
 };
