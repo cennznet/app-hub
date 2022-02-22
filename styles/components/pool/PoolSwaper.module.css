@@ -113,7 +113,22 @@
 }
 
 .chainChoiceContainer:hover{
-    background: #E5E8FF;
+    background: #f5ecff;
+}
+
+.bottomText{
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 125%;
+    letter-spacing: 1.12428px;
+    text-transform: uppercase;
+    margin-top: 8px;
+    color: #020202;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
 }
 
 .upperText {

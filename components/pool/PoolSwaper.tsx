@@ -4,7 +4,9 @@ import styles from "@/styles/components/pool/PoolSwaper.module.css";
 const PoolSwaper: React.FC<{
 	options: string[];
 	topText: string;
-}> = ({ options, topText }) => {
+	bottomText?: string;
+	color?: string;
+}> = ({ options, bottomText, topText, color }) => {
 	const [itemDropDownActive, setItemDropDownActive] = useState<boolean>(false);
 	const [selectedItemIdx, setSelectedItemIdx] = useState<number>(0);
 
@@ -55,6 +57,7 @@ const PoolSwaper: React.FC<{
 					)}
 				</div>
 			</div>
+			<div className={styles.bottomText}>{bottomText}</div>
 		</div>
 	);
 };

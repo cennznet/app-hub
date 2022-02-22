@@ -257,7 +257,8 @@ const PoolForm: React.FC<{}> = () => {
 				flexDirection: "column",
 				justifyContent: "center",
 				alignItems: "center",
-				padding: "0px",
+				padding: "26px 42px 26px 42px",
+				boxShadow: "4px 8px 8px rgba(17, 48, 255, 0.1)"
 			}}
 		>
 			<h1 className={styles.pageHeader}>POOL</h1>
@@ -303,15 +304,21 @@ const PoolForm: React.FC<{}> = () => {
 			<div
 				style={{
 					display: "flex",
-					justifyContent: "center",
+					justifyContent: "space-between",
 					alignItems: "center",
 					width: "100%",
+					marginTop: "42px",
 				}}
 			>
-				<PoolSwaper topText={"From"} options={["Your Account"]} />
+				<PoolSwaper
+					topText={"From"}
+					bottomText={"Account"}
+					options={["Your Account"]}
+				/>
 				<ExchangeIcon onClick={() => {}} horizontal={true} />
 				<PoolSwaper
 					topText={"To"}
+					bottomText={"Action"}
 					options={["Add To Pool", "Withdraw From Pool"]}
 				/>
 			</div>
