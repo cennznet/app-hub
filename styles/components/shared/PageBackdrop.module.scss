@@ -1,0 +1,64 @@
+.container {
+	position: fixed;
+	inset: 0;
+	z-index: 0;
+
+	background-color: #b3bdff;
+	transition: background-color 0.2s;
+
+	&:before {
+		content: "";
+		position: absolute;
+		inset: 0;
+		border: 8px solid #1130ff;
+	}
+
+	&--swap {
+		background-color: #b3bdff;
+		&:before {
+			border-color: #1130ff;
+		}
+	}
+
+	&--pool {
+		background-color: #e4d1ff;
+		&:before {
+			border-color: #9847ff;
+		}
+	}
+
+	&--bridge {
+		background-color: #b1eaeb;
+		&:before {
+			border-color: #2dc8cb;
+		}
+	}
+}
+
+.logo {
+	width: 140px;
+	height: 140px;
+	display: flex;
+	background-color: #1130ff;
+	transition: background-color 0.2s;
+	position: absolute;
+	left: 0;
+	top: 0;
+
+	> img {
+		display: block;
+		margin: auto;
+	}
+
+	&--swap {
+		background-color: #1130ff;
+	}
+
+	&--pool {
+		background-color: #9847ff;
+	}
+
+	&--bridge {
+		background-color: #2dc8cb;
+	}
+}
