@@ -17,6 +17,8 @@ import {
 	fetchTradeAmount,
 } from "@/utils/pool";
 import ConnectWalletButton from "@/components/shared/ConnectWalletButton";
+import PoolSwaper from "@/components/pool/PoolSwaper";
+import ExchangeIcon from "@/components/shared/ExchangeIcon";
 
 export enum PoolColors {
 	ADD = "#1130FF",
@@ -259,45 +261,60 @@ const PoolForm: React.FC<{}> = () => {
 			}}
 		>
 			<h1 className={styles.pageHeader}>POOL</h1>
-			<Box
-				sx={{
+			{/*<Box*/}
+			{/*	sx={{*/}
+			{/*		display: "flex",*/}
+			{/*		flexDirection: "row",*/}
+			{/*		alignContent: "justify",*/}
+			{/*		width: "468px",*/}
+			{/*		boxSizing: "border-box",*/}
+			{/*		border: `1px solid ${poolColors}`,*/}
+			{/*		mt: "30px",*/}
+			{/*		cursor: "pointer",*/}
+			{/*	}}*/}
+			{/*	onClick={() => {*/}
+			{/*		setPoolAction(*/}
+			{/*			poolAction === PoolAction.ADD ? PoolAction.REMOVE : PoolAction.ADD*/}
+			{/*		);*/}
+			{/*		setPoolColors(*/}
+			{/*			poolColors === PoolColors.ADD ? PoolColors.REMOVE : PoolColors.ADD*/}
+			{/*		);*/}
+			{/*		setCoreAmount("");*/}
+			{/*		setTradeAssetAmount("");*/}
+			{/*		setCoreError(null);*/}
+			{/*		setTradeError(null);*/}
+			{/*	}}*/}
+			{/*>*/}
+			{/*	<SwapIconClass onClick={() => null} color={poolColors} />*/}
+			{/*	<Typography*/}
+			{/*		sx={{*/}
+			{/*			m: "17px 0 0 20px",*/}
+			{/*			fontSize: "17px",*/}
+			{/*			lineHeight: "125%",*/}
+			{/*			fontWeight: "bold",*/}
+			{/*			textTransform: "uppercase",*/}
+			{/*			color: poolColors,*/}
+			{/*			letterSpacing: "1.2px",*/}
+			{/*		}}*/}
+			{/*	>*/}
+			{/*		{poolAction === PoolAction.ADD ? "add to pool" : "withdraw from pool"}*/}
+			{/*	</Typography>*/}
+			{/*</Box>*/}
+			<div
+				style={{
 					display: "flex",
-					flexDirection: "row",
-					alignContent: "justify",
-					width: "468px",
-					boxSizing: "border-box",
-					border: `1px solid ${poolColors}`,
-					mt: "30px",
-					cursor: "pointer",
-				}}
-				onClick={() => {
-					setPoolAction(
-						poolAction === PoolAction.ADD ? PoolAction.REMOVE : PoolAction.ADD
-					);
-					setPoolColors(
-						poolColors === PoolColors.ADD ? PoolColors.REMOVE : PoolColors.ADD
-					);
-					setCoreAmount("");
-					setTradeAssetAmount("");
-					setCoreError(null);
-					setTradeError(null);
+					justifyContent: "center",
+					alignItems: "center",
+					width: "100%",
 				}}
 			>
-				<SwapIconClass onClick={() => null} color={poolColors} />
-				<Typography
-					sx={{
-						m: "17px 0 0 20px",
-						fontSize: "17px",
-						lineHeight: "125%",
-						fontWeight: "bold",
-						textTransform: "uppercase",
-						color: poolColors,
-						letterSpacing: "1.2px",
-					}}
-				>
-					{poolAction === PoolAction.ADD ? "add to pool" : "withdraw from pool"}
-				</Typography>
-			</Box>
+				<PoolSwaper topText={"From"} options={["Your Account"]} />
+				<ExchangeIcon onClick={() => {}} horizontal={true} />
+				<PoolSwaper
+					topText={"To"}
+					options={["Add To Pool", "Withdraw From Pool"]}
+				/>
+			</div>
 			<SmallText
 				sx={{
 					width: "468px",
