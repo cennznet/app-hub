@@ -11,6 +11,29 @@ const CPAY = {
 	logo: "/images/cpay.svg",
 };
 
+export const fetchExchangeRate = async (
+	api: Api,
+	exchangeToken: Asset,
+	receivedToken: Asset
+) => {
+	let exchangeAmount: any = new BigNumber("1");
+	exchangeAmount = exchangeAmount
+		.multipliedBy(Math.pow(10, exchangeToken.decimals))
+		.toString(10);
+	const sellPrice = await (api.rpc as any).cennzx.sellPrice(
+		exchangeToken.id,
+		exchangeAmount,
+		receivedToken.id
+	);
+	let receivedAmount: any = new Amount(
+		sellPrice.price.toString(),
+		AmountUnit.UN
+	);
+	receivedAmount = receivedAmount.toAmount(receivedToken.decimals);
+
+	return receivedAmount;
+};
+
 export const fetchTokenAmounts = async (
 	api: Api,
 	exchangeToken: Asset,
@@ -27,7 +50,7 @@ export const fetchTokenAmounts = async (
 	const exchangeTokenBalance = balances.find(
 		(token) => token.id === exchangeToken.id
 	);
-	if (parseInt(exchangeTokenValue) > exchangeTokenBalance.value) {
+	if (parseFloat(exchangeTokenValue) > exchangeTokenBalance.value) {
 		throw new Error("Account balance is too low");
 	}
 	const sellPrice = await (api.rpc as any).cennzx.sellPrice(
@@ -48,10 +71,12 @@ export const fetchEstimatedTransactionFee = async (
 	api: Api,
 	exchangeAmount: string,
 	exchangeTokenId: number,
-	receivedTokenId: number
+	receivedTokenId: number,
+	slippage: number
 ) => {
-	//TODO calculate slippage here
-	const maxAmount = parseInt(exchangeAmount) * 2;
+	const maxAmount = Math.round(
+		parseFloat(exchangeAmount) + parseFloat(exchangeAmount) * (slippage / 100)
+	);
 	const extrinsic = api.tx.cennzx.buyAsset(
 		null,
 		exchangeTokenId,
@@ -73,13 +98,16 @@ export const fetchExchangeExtrinsic = async (
 	exchangeToken: Asset,
 	exchangeTokenValue: string,
 	receivedToken: Asset,
-	receivedTokenValue: string
+	receivedTokenValue: string,
+	slippage: number
 ) => {
 	let exchangeAmount: any = new BigNumber(exchangeTokenValue.toString());
 	exchangeAmount = exchangeAmount
 		.multipliedBy(Math.pow(10, exchangeToken.decimals))
 		.toString(10);
-	const maxAmount = parseInt(exchangeAmount) * 2;
+	const maxAmount = Math.round(
+		parseFloat(exchangeAmount) + parseFloat(exchangeAmount) * (slippage / 100)
+	);
 	let buyAmount: any = new BigNumber(receivedTokenValue);
 	buyAmount = buyAmount
 		.multipliedBy(Math.pow(10, receivedToken.decimals))
