@@ -1,5 +1,4 @@
 import { createTheme } from "@mui/material/styles";
-import { red } from "@mui/material/colors";
 
 declare module "@mui/material/styles" {
 	interface PaletteColorOptions {
@@ -29,7 +28,7 @@ const theme = createTheme({
 			main: "#B3BDFF",
 		},
 		error: {
-			main: red.A400,
+			main: "#EC022C",
 		},
 		background: {
 			default: "#B3BDFF",
