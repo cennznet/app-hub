@@ -29,8 +29,8 @@ const Wallet: React.FC<{}> = () => {
 			{modalOpen && <WalletModal setModalOpen={setModalOpen} />}
 			<Frame
 				sx={{
-					"top": "4%",
-					"right": "5%",
+					"top": "3em",
+					"right": "3em",
 					"backgroundColor": modalOpen ? "#1130FF" : "#FFFFFF",
 					"cursor": "pointer",
 					"textAlign": "center",
@@ -47,6 +47,8 @@ const Wallet: React.FC<{}> = () => {
 					":hover .headerText": {
 						color: "#FFFFFF",
 					},
+					"borderRadius": "4px",
+					"overflow": "hidden",
 				}}
 				onClick={walletClickHandler}
 			>
