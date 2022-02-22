@@ -210,6 +210,15 @@ export interface AssetInfo {
 	logo: string;
 }
 
+export interface BalanceInfo {
+	id: number;
+	symbol: string;
+	decimals: number;
+	logo: string;
+	value: number;
+	tokenAddress?: string;
+}
+
 export interface PoolValues {
 	tradeAsset: number | string;
 	coreAsset: number | string;

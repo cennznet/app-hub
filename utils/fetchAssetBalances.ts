@@ -1,16 +1,11 @@
 import { Api } from "@cennznet/api";
-import { AssetInfo } from "@/types";
-
-export type BalanceInfo = AssetInfo & {
-	value: number;
-	tokenAddress?: string;
-};
+import { AssetInfo, BalanceInfo } from "@/types";
 
 export const fetchAssetBalances = async (
 	api: Api,
 	assets: AssetInfo[],
 	address: string
-) => {
+): Promise<Array<BalanceInfo>> => {
 	return Promise.all(
 		(
 			await api.query.genericAsset.freeBalance.multi(

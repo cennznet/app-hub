@@ -14,7 +14,8 @@ import store from "store";
 import { useCENNZExtension } from "@/providers/CENNZExtensionProvider";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import { useAssets } from "@/providers/SupportedAssetsProvider";
-import { fetchAssetBalances, BalanceInfo } from "@/utils/fetchAssetBalances";
+import { fetchAssetBalances } from "@/utils/fetchAssetBalances";
+import { BalanceInfo } from "@/types";
 
 type WalletContext = {
 	balances: Array<BalanceInfo>;
