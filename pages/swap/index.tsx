@@ -57,13 +57,16 @@ const Exchange: React.FC<{}> = () => {
 	}, [web3Enable, api]);
 
 	useEffect(() => {
+		setError(undefined);
+		setSuccess(undefined);
 		(async () => {
 			if (
-				parseFloat(exchangeTokenValue) <= 0 ||
+				parseInt(exchangeTokenValue) <= 0 ||
 				!api ||
 				!exchangeToken ||
 				!receivedToken ||
-				!balances
+				!balances ||
+				!exchangeTokenValue
 			)
 				return;
 
@@ -94,15 +97,20 @@ const Exchange: React.FC<{}> = () => {
 	}, [api, exchangeTokenValue, assets, exchangeToken, receivedToken, balances]);
 
 	useEffect(() => {
+		if (!api || !exchangeToken || !receivedToken) return;
 		(async () => {
-			const estimatedExchangeRate = await fetchExchangeRate(
-				api,
-				exchangeToken,
-				receivedToken
-			);
-			setExchangeRate(estimatedExchangeRate);
+			try {
+				const estimatedExchangeRate = await fetchExchangeRate(
+					api,
+					exchangeToken,
+					receivedToken
+				);
+				setExchangeRate(estimatedExchangeRate);
+			} catch (e) {
+				setError(e.message);
+			}
 		})();
-	}, [exchangeRate, exchangeToken, receivedToken]);
+	}, [exchangeToken, receivedToken]);
 
 	const exchangeTokens = useCallback(async () => {
 		if (
