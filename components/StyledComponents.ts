@@ -1,5 +1,5 @@
 import { styled } from "@mui/material/styles";
-import { Typography, Box, Button } from "@mui/material";
+import { Typography, Box, Button, ButtonProps } from "@mui/material";
 
 export const Frame = styled(Box)({
 	position: "absolute",
@@ -30,20 +30,25 @@ export const StyledModal = styled(Box)({
 	height: "auto",
 	left: "26%",
 	top: "20%",
-
-	background: "#FFFFFF",
+	background: "white",
 	border: "4px solid #1130FF",
 	boxSizing: "border-box",
 	boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
 });
 
 export const Option = styled(Button)({
-	background: "#FFFFFF",
+	background: "white",
 	border: "4px solid #1130FF",
 });
 
-export const SwitchButton = styled(Button)({
-	"backgroundColor": "#FFFFFF",
+interface SwitchButtonProps extends ButtonProps {
+	active?: boolean;
+}
+
+export const SwitchButton = styled(Button, {
+	shouldForwardProp: (prop) => prop !== "active",
+})<SwitchButtonProps>(({ active }) => ({
+	"backgroundColor": "white",
 	"position": "static",
 	"height": "48px",
 	"maxWidth": "120px",
@@ -59,11 +64,13 @@ export const SwitchButton = styled(Button)({
 	"lineHeight": "16px",
 	"letterSpacing": "1.25px",
 	"color": "rgba(17,48,255,0.5)",
+	"cursor": `${active && "default"}`,
 	"&:hover": {
-		color: "white",
-		borderBottom: "2px solid #FFFFFF",
+		color: !active && "white",
+		borderBottom: !active && "2px solid white",
+		backgroundColor: active && "white",
 	},
-});
+}));
 
 export const SettingsText = styled(Typography)({
 	fontSize: "14px",
