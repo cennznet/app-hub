@@ -1,14 +1,21 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useRouter } from "next/router";
 import { Box } from "@mui/material";
 import { SwitchButton } from "@/components/StyledComponents";
 import Link from "next/link";
+import { useTheme } from "@mui/material/styles";
 
 const Switch: React.FC<{}> = () => {
-	const { asPath: location } = useRouter();
-
+	const { pathname } = useRouter();
+	const theme = useTheme();
+	const section = useMemo(() => {
+		const section = pathname.replace("/", "").trim();
+		if (section === "") return "swap";
+		return section as "swap" | "pool" | "bridge";
+	}, [pathname]);
 	return (
 		<Box
+			style={{ "--section-color": theme.palette.primary[section] } as any}
 			sx={{
 				width: "360px",
 				display: "flex",
@@ -22,46 +29,19 @@ const Switch: React.FC<{}> = () => {
 				position: "relative",
 			}}
 		>
-			<Link href="/" passHref={location !== "/"}>
-				<SwitchButton
-					sx={
-						location === "/" && {
-							color: "primary.swap",
-							borderBottom: (theme) =>
-								`2px solid ${theme.palette.primary.swap}`,
-						}
-					}
-					active={location === "/"}
-				>
-					swap
+			<Link href="/" passHref={true}>
+				<SwitchButton active={section === "swap"} paletteKey={section}>
+					Swap
 				</SwitchButton>
 			</Link>
-			<Link href="/pool" passHref={location !== "/pool"}>
-				<SwitchButton
-					active={location === "/pool"}
-					sx={
-						location === "/pool" && {
-							color: "primary.pool",
-							borderBottom: (theme) =>
-								`2px solid ${theme.palette.primary.pool}`,
-						}
-					}
-				>
-					<span>pool</span>
+			<Link href="/pool" passHref={true}>
+				<SwitchButton active={section === "pool"} paletteKey={section}>
+					Pool
 				</SwitchButton>
 			</Link>
-			<Link href="/bridge" passHref={location !== "/bridge"}>
-				<SwitchButton
-					active={location === "/bridge"}
-					sx={
-						location === "/bridge" && {
-							color: "primary.bridge",
-							borderBottom: (theme) =>
-								`2px solid ${theme.palette.primary.bridge}`,
-						}
-					}
-				>
-					<span>bridge</span>
+			<Link href="/bridge" passHref={true}>
+				<SwitchButton active={section === "bridge"} paletteKey={section}>
+					Bridge
 				</SwitchButton>
 			</Link>
 		</Box>
