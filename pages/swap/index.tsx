@@ -166,7 +166,6 @@ const Exchange: React.FC<{}> = () => {
 			{estimatedFee && <p>Transaction fee (estimated): {estimatedFee} CPAY</p>}
 			<Button
 				sx={{
-					fontFamily: "Teko",
 					fontWeight: "bold",
 					fontSize: "21px",
 					lineHeight: "124%",
