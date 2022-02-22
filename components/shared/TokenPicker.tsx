@@ -9,7 +9,7 @@ import { useRouter } from "next/router";
 
 const ETH_CHAIN_ID = process.env.NEXT_PUBLIC_ETH_CHAIN_ID;
 
-import styles from "@/styles/components/shared/tokenpicker.module.css";
+import styles from "@/styles/components/shared/TokenPicker.module.css";
 import { useWallet } from "@/providers/SupportedWalletProvider";
 import { PoolAction } from "@/providers/PoolProvider";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
