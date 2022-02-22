@@ -1,5 +1,5 @@
 import React, { FC, useState } from "react";
-import styles from "@/styles/components/swap/swapicon.module.css";
+import styles from "@/styles/components/shared/ExchangeIcon.module.css";
 
 interface ExchangeIconProps {
 	onClick: () => void;
@@ -14,7 +14,9 @@ const ExchangeIconClass: FC<ExchangeIconProps> = ({
 	return (
 		<div
 			className={
-				horizontal ? `${styles.horizontal} ${styles.swapIcon}` : styles.swapIcon
+				horizontal
+					? `${styles.horizontal} ${styles.exchangeIcon}`
+					: styles.exchangeIcon
 			}
 			onClick={() => {
 				setRotations(rotations + 1);

@@ -3,7 +3,7 @@ import PoolProvider from "@/providers/PoolProvider";
 import PoolForm from "@/components/pool/PoolForm";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import generateGlobalProps from "@/utils/generateGlobalProps";
-import styles from "@/styles/components/pool/pool.module.css";
+import styles from "@/styles/pages/pool.module.css";
 
 export async function getStaticProps() {
 	return {

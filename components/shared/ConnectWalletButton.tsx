@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from "react";
-import styles from "@/styles/components/shared/connectwalletbutton.module.css";
+import styles from "@/styles/components/shared/ConnectWalletButton.module.css";
 import { useWallet } from "@/providers/SupportedWalletProvider";
 import { useBlockchain } from "@/providers/BlockchainProvider";
 

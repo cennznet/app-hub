@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Autocomplete, TextField } from "@mui/material";
 import { useCENNZExtension } from "@/providers/CENNZExtensionProvider";
-import styles from "@/styles/components/shared/cennznetaccountpicker.module.css";
+import styles from "@/styles/components/shared/CENNZnetAccountPicker.module.css";
 
 const CENNZnetAccountPicker: React.FC<{
 	updateSelectedAccount: Function;

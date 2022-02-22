@@ -6,7 +6,7 @@ import { AssetInfo, PoolConfig, PoolValues } from "@/types";
 import { useWallet } from "@/providers/SupportedWalletProvider";
 import { PoolAction, usePool } from "@/providers/PoolProvider";
 import SwapIconClass from "@/components/pool/SwapIcon";
-import styles from "@/styles/components/swap/swap.module.css";
+import styles from "@/styles/pages/swap.module.css";
 import { PoolSummaryProps } from "@/types";
 import PoolSummary from "@/components/pool/PoolSummary";
 import Settings from "@/components/pool/Settings";
