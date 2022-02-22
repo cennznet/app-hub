@@ -9,7 +9,9 @@ const Settings: React.FC<{
 	slippage: number;
 	setSlippage: Function;
 	coreAmount: number | string;
-}> = ({ slippage, setSlippage, coreAmount }) => {
+	tokenName?: string;
+	color?: string;
+}> = ({ slippage, setSlippage, coreAmount, color, tokenName = "CPAY" }) => {
 	const [open, setOpen] = useState<boolean>(false);
 	const [infoOpen, setInfoOpen] = useState<boolean>(false);
 	const [slippageValues, setSlippageValues] = useState({
@@ -27,13 +29,13 @@ const Settings: React.FC<{
 
 	return (
 		<>
-			<Box sx={{ mt: "30px", width: "468px", mb: open && "10px" }}>
+			<Box sx={{ mt: "30px", width: "468px", mb: open && "36px" }}>
 				<Box
 					sx={{
 						display: "flex",
 						flexDirection: "row",
 						cursor: "pointer",
-						mb: open ? "35px" : "10px",
+						mb: open ? "35px" : "36px",
 					}}
 					onClick={() => {
 						setOpen(!open);
@@ -83,6 +85,8 @@ const Settings: React.FC<{
 									outline: "none",
 									padding: "15px",
 								}}
+								min={"1"}
+								max={"10"}
 								onChange={(e) => setSlippage(Number(e.target.value))}
 							/>
 							<Box
@@ -151,7 +155,7 @@ const Settings: React.FC<{
 								width: "468px",
 								height: "auto",
 								mt: "30px",
-								backgroundColor: "#F5ECFF",
+								backgroundColor: color ? color : "#F5ECFF",
 								display: "flex",
 							}}
 						>
@@ -163,11 +167,12 @@ const Settings: React.FC<{
 									m: "4% auto 4%",
 								}}
 							>
-								If the amount of CPAY used sits outside{" "}
+								If the amount of {tokenName} used sits outside{" "}
 								<span style={{ fontWeight: "bold" }}>{slippage}%</span> <br />
 								{!!coreAmount && (
 									<span>
-										({slippageValues?.min}-{slippageValues?.max} CPAY),
+										(<b>{slippageValues?.min.toFixed(2)}</b>-
+										<b>{slippageValues?.max.toFixed(2)}</b> {tokenName}),
 									</span>
 								)}{" "}
 								<span style={{ fontWeight: "bold" }}>
