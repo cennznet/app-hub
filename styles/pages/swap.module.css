@@ -1,3 +1,16 @@
+.swapContainer {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
+	width: 550px;
+	border-radius: 4px;
+	margin: 0 auto 5em;
+	position: relative;
+	background-color: #ffffff;
+	box-shadow: 4px 8px 8px rgba(17, 48, 255, 0.1);
+}
+
 .pageHeader {
 	font-family: "Roboto";
 	font-style: normal;
@@ -34,20 +47,6 @@
 	color: #020202;
 	margin: 0px;
 	margin-bottom: -20px;
-}
-
-.swapContainer {
-	display: flex;
-	flex-direction: column;
-	justify-content: flex-start;
-	align-items: center;
-	position: absolute;
-	top: 130px;
-	left: calc(50% - 552px / 2);
-	background: #ffffff;
-	box-shadow: 4px 8px 8px rgba(17, 48, 255, 0.1);
-	width: 552px;
-	border-radius: 4px;
 }
 
 .tokenPickerContainer {

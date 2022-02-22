@@ -11,17 +11,15 @@ const Switch: React.FC<{ setLocation: Function }> = ({ setLocation }) => {
 		<Box
 			sx={{
 				width: "360px",
-				left: "calc(50% - 360px/2)",
 				display: "flex",
 				flexDirection: "row",
 				justifyContent: "center",
 				alignItems: "flex-start",
-				padding: 0,
-				position: "absolute",
-				top: "4%",
+				margin: "3em auto",
 				filter: "drop-shadow(0px 3px 3px rgba(0, 0, 0, 0.12))",
 				borderRadius: "4px",
 				overflow: "hidden",
+				position: "relative",
 			}}
 		>
 			{location === "/" && (
