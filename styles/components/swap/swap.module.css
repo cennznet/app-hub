@@ -47,7 +47,7 @@
 	background: #ffffff;
 	box-shadow: 4px 8px 8px rgba(17, 48, 255, 0.1);
 	width: 552px;
-	height: 587px;
+	border-radius: 4px;
 }
 
 .tokenPickerContainer {
