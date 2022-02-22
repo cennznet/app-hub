@@ -11,14 +11,7 @@
 		position: absolute;
 		inset: 0;
 		border: 8px solid #1130ff;
-	}
-
-	&:before {
-		content: "";
-		position: absolute;
-		inset: 0;
-		background: url("/images/backdrop-sheer.svg") no-repeat center top;
-		background-size: cover;
+		z-index: 3;
 	}
 
 	&--swap {
@@ -71,11 +64,22 @@
 	}
 }
 
+.layer0 {
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+	background: url("/images/backdrop-sheer.svg") no-repeat center top;
+	background-size: cover;
+	z-index: 0;
+}
+
 .layer1 {
 	position: absolute;
 	inset: 0;
 	display: flex;
 	z-index: 2;
+	transform-origin: 50% 50%;
+	z-index: 1;
 }
 
 .layer1Graphics {
@@ -109,6 +113,8 @@
 	position: absolute;
 	inset: 0;
 	display: flex;
+	z-index: 2;
+	transform-origin: 50% 50%;
 	z-index: 2;
 }
 

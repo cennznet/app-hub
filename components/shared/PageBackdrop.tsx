@@ -1,4 +1,4 @@
-import { FC, useMemo } from "react";
+import { FC, useEffect, useMemo, useRef } from "react";
 import styles from "@/styles/components/shared/PageBackdrop.module.scss";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -10,6 +10,40 @@ const PageBackdrop: FC<{}> = () => {
 		if (section === "") return "swap";
 		return section as "swap" | "pool" | "bridge";
 	}, [pathname]);
+	const ref0 = useRef<HTMLDivElement>();
+	const ref1 = useRef<HTMLDivElement>();
+	const ref2 = useRef<HTMLDivElement>();
+
+	useEffect(() => {
+		if (!ref0?.current || !ref1?.current || !ref2?.current) return;
+		const layer0 = ref0.current,
+			layer1 = ref1.current,
+			layer2 = ref2.current;
+
+		const onMouseMove = (event: PointerEvent) => {
+			const mouseX = event.clientX,
+				mouseY = event.clientY;
+
+			const deltaX = (mouseX / window.innerWidth - 0.5) * 2,
+				deltaY = (mouseY / window.innerHeight - 0.5) * 2;
+
+			layer0.style.transform = `translate3d(${deltaX * 2}px, ${
+				deltaY * 1
+			}px, 0px)`;
+
+			layer1.style.transform = `translate3d(${deltaX * 3}px, ${
+				deltaY * 3
+			}px, 0px)`;
+
+			layer2.style.transform = `translate3d(${deltaX * -5}px, ${
+				deltaY * -5
+			}px, 0px)`;
+		};
+
+		document.addEventListener("mousemove", onMouseMove);
+
+		return () => document.removeEventListener("mousemove", onMouseMove);
+	}, []);
 
 	return (
 		<div className={`${styles.container} ${styles[`container--${section}`]}`}>
@@ -19,11 +53,13 @@ const PageBackdrop: FC<{}> = () => {
 				</a>
 			</Link>
 
-			<div className={styles.layer1}>
+			<div className={styles.layer0} ref={ref0}></div>
+
+			<div className={styles.layer1} ref={ref1}>
 				<Layer1 section={section} />
 			</div>
 
-			<div className={styles.layer2}>
+			<div className={styles.layer2} ref={ref2}>
 				{section === "swap" && (
 					<img
 						src="/images/backdrop-swap-graphics.svg"
