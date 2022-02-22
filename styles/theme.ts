@@ -8,6 +8,13 @@ declare module "@mui/material/styles" {
 		pool?: string;
 		bridge?: string;
 	}
+
+	interface PaletteColor {
+		main: string;
+		swap?: string;
+		pool?: string;
+		bridge?: string;
+	}
 }
 
 const theme = createTheme({

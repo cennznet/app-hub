@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { Button } from "@mui/material";
 import TokenPicker from "@/components/shared/TokenPicker";
 import ExchangeIcon from "@/components/shared/ExchangeIcon";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
@@ -12,8 +11,11 @@ import { useCENNZExtension } from "@/providers/CENNZExtensionProvider";
 import {
 	fetchEstimatedTransactionFee,
 	fetchExchangeExtrinsic,
+	fetchExchangeRate,
 	fetchTokenAmounts,
 } from "@/utils/swap";
+import ConnectWalletButton from "@/components/shared/ConnectWalletButton";
+import Settings from "@/components/pool/Settings";
 import generateGlobalProps from "@/utils/generateGlobalProps";
 
 export async function getStaticProps() {
@@ -32,6 +34,8 @@ const Exchange: React.FC<{}> = () => {
 	const [exchangeTokenValue, setExchangeTokenValue] =
 		React.useState<string>("0");
 	const [estimatedFee, setEstimatedFee] = useState<string>();
+	const [exchangeRate, setExchangeRate] = useState<number>();
+	const [slippage, setSlippage] = useState<number>(5);
 	const [error, setError] = useState<string>();
 	const [success, setSuccess] = useState<string>();
 	const { api }: any = useCENNZApi();
@@ -53,13 +57,16 @@ const Exchange: React.FC<{}> = () => {
 	}, [web3Enable, api]);
 
 	useEffect(() => {
+		setError(undefined);
+		setSuccess(undefined);
 		(async () => {
 			if (
 				parseInt(exchangeTokenValue) <= 0 ||
 				!api ||
 				!exchangeToken ||
 				!receivedToken ||
-				!balances
+				!balances ||
+				!exchangeTokenValue
 			)
 				return;
 
@@ -75,12 +82,12 @@ const Exchange: React.FC<{}> = () => {
 					receivedToken
 				);
 				setReceivedTokenValue(receivedAmount.toString());
-
 				const estimatedFee = await fetchEstimatedTransactionFee(
 					api,
 					exchangeAmount,
 					exchangeToken.id,
-					receivedToken.id
+					receivedToken.id,
+					slippage
 				);
 				setEstimatedFee(estimatedFee);
 			} catch (e) {
@@ -89,9 +96,25 @@ const Exchange: React.FC<{}> = () => {
 		})();
 	}, [api, exchangeTokenValue, assets, exchangeToken, receivedToken, balances]);
 
+	useEffect(() => {
+		if (!api || !exchangeToken || !receivedToken) return;
+		(async () => {
+			try {
+				const estimatedExchangeRate = await fetchExchangeRate(
+					api,
+					exchangeToken,
+					receivedToken
+				);
+				setExchangeRate(estimatedExchangeRate);
+			} catch (e) {
+				setError(e.message);
+			}
+		})();
+	}, [exchangeToken, receivedToken]);
+
 	const exchangeTokens = useCallback(async () => {
 		if (
-			parseInt(receivedTokenValue) <= 0 ||
+			parseFloat(receivedTokenValue) <= 0 ||
 			!api ||
 			!exchangeToken ||
 			!receivedToken ||
@@ -105,7 +128,8 @@ const Exchange: React.FC<{}> = () => {
 				exchangeToken,
 				exchangeTokenValue,
 				receivedToken,
-				receivedTokenValue
+				receivedTokenValue,
+				slippage
 			);
 
 			extrinsic.signAndSend(
@@ -163,23 +187,34 @@ const Exchange: React.FC<{}> = () => {
 					removeToken={exchangeToken}
 				/>
 			</div>
-			{estimatedFee && <p>Transaction fee (estimated): {estimatedFee} CPAY</p>}
-			<Button
-				sx={{
-					fontWeight: "bold",
-					fontSize: "21px",
-					lineHeight: "124%",
-					color: "#1130FF",
-					mt: "20px",
-					mb: "50px",
-				}}
-				size="large"
-				variant="outlined"
+			{estimatedFee && (
+				<div className={styles.infoBoxContainer}>
+					<p className={styles.infoBoxText}>
+						<div className={styles.feeContainer}>
+							<p>{"Exchange rates:"}</p>
+							<span>{`1 ${exchangeToken.symbol} = ${exchangeRate} ${receivedToken.symbol}`}</span>
+						</div>
+						<div className={styles.feeContainer}>
+							<p>{"Transaction fee (estimated):"}</p>
+							<span>{estimatedFee + " CPAY"}</span>
+						</div>
+					</p>
+				</div>
+			)}
+			<Settings
+				slippage={slippage}
+				setSlippage={setSlippage}
+				coreAmount={exchangeTokenValue}
+				tokenName={exchangeToken?.symbol}
+				color={"#f5f6ff"}
+			/>
+			<ConnectWalletButton
 				onClick={exchangeTokens}
-				disabled={!signer}
-			>
-				{!!signer ? "Swap" : "Connect Wallet"}
-			</Button>
+				buttonText={"SWAP"}
+				requireMetamask={false}
+				requireCennznet={true}
+				width={89}
+			/>
 		</div>
 	);
 };

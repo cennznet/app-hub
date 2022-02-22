@@ -202,9 +202,9 @@ describe("fetchWithdrawLiquidityValues", () => {
 				api,
 				assets.CENNZ,
 				testingAddress,
-				0,
+				new Amount(0),
 				assets.CPAY,
-				0,
+				new Amount(0),
 				exchangePool,
 				true
 			);
@@ -262,7 +262,7 @@ describe("fetchFeeEstimate", () => {
 		expect(feeEstimate).toEqual(new Amount(expectedFeeEstimate));
 	});
 	it("estimates fee for withdrawLiquidity", async () => {
-		const { minLiquidity, maxAssetAmount, maxCoreAmount } =
+		const { liquidityAmount, minAssetWithdraw, minCoreWithdraw } =
 			await fetchWithdrawLiquidityValues(
 				api,
 				assets.CENNZ,
@@ -271,14 +271,14 @@ describe("fetchFeeEstimate", () => {
 				assets.CPAY,
 				coreAmount,
 				exchangePool,
-				0.05,
-				false
+				false,
+				0.05
 			);
-		const extrinsic = api.tx.cennzx.addLiquidity(
+		const extrinsic = api.tx.cennzx.removeLiquidity(
 			assets.CENNZ.id,
-			minLiquidity,
-			maxAssetAmount,
-			maxCoreAmount
+			liquidityAmount,
+			minAssetWithdraw,
+			minCoreWithdraw
 		);
 		const userFeeAssetId = assets.CPAY.id;
 		const maxPayment = "50000000000000000";

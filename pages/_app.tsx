@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import type { AppProps } from "next/app";
 import Head from "next/head";
-import { useRouter } from "next/router";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "@/styles/theme";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -26,14 +25,6 @@ function MyApp({
 	Component,
 	pageProps: { supportedAssets, ...pageProps },
 }: MyAppProps) {
-	const router = useRouter();
-	const [location, setLocation] = useState<string>();
-
-	useEffect(() => {
-		if (location !== undefined) router.push(`/${location}`);
-		//eslint-disable-next-line
-	}, [location]);
-
 	return (
 		<>
 			<Head>
@@ -51,7 +42,7 @@ function MyApp({
 									<BlockchainProvider>
 										<PageBackdrop />
 										<Wallet />
-										<Switch setLocation={setLocation} />
+										<Switch />
 										<Component {...pageProps} />
 										<PageFrame />
 									</BlockchainProvider>

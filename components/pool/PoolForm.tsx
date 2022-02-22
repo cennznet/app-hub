@@ -16,6 +16,7 @@ import {
 	fetchExchangeRate,
 	fetchTradeAmount,
 } from "@/utils/pool";
+import ConnectWalletButton from "@/components/shared/ConnectWalletButton";
 
 export enum PoolColors {
 	ADD = "#1130FF",
@@ -360,30 +361,21 @@ const PoolForm: React.FC<{}> = () => {
 				setSlippage={setSlippage}
 				coreAmount={coreAmount}
 			/>
-			<Button
-				sx={{
-					fontSize: "16px",
-					lineHeight: "125%",
-					color: poolColors,
-					mt: "30px",
-					mb: "50px",
-					borderColor: poolColors,
-					letterSpacing: "1.2px",
-				}}
-				size="large"
-				variant="outlined"
+			<ConnectWalletButton
 				onClick={confirm}
+				color={poolAction === PoolAction.ADD ? "#1130FF" : "#9847FF"}
+				buttonText={
+					poolAction === PoolAction.ADD ? "add to pool" : "withdraw from pool"
+				}
+				requireMetamask={false}
+				requireCennznet={true}
 				disabled={
 					tradeAssetAmount <= 0 ||
 					coreAmount <= 0 ||
 					!!coreError ||
 					!!tradeError
 				}
-			>
-				<Typography sx={{ m: "5px 3px 5px 3px", fontWeight: "bold" }}>
-					{poolAction === PoolAction.ADD ? "add to pool" : "withdraw from pool"}
-				</Typography>
-			</Button>
+			/>
 		</Box>
 	);
 };

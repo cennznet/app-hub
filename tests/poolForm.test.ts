@@ -5,11 +5,26 @@ import {
 	fetchExchangeRate,
 } from "@/utils/pool";
 import { Amount } from "@/utils/Amount";
+import { IExchangePool } from "@/types";
+import { Api } from "@cennznet/api";
 
-const exchangePool = {
-	assetBalance: new Amount(20000),
-	coreAssetBalance: new Amount(10000),
-};
+let api: Api, exchangePool: IExchangePool;
+beforeAll(async () => {
+	api = await Api.create({ provider: "wss://nikau.centrality.me/public/ws" });
+	const exchangeAddress = await api.derive.cennzx.exchangeAddress(16000);
+
+	exchangePool = {
+		assetBalance: new Amount(20000),
+		coreAssetBalance: new Amount(10000),
+		address: exchangeAddress,
+		assetId: 16000,
+	};
+});
+
+afterAll(async () => {
+	await api.disconnect();
+});
+
 const userBalances = {
 	coreAsset: 1000,
 	tradeAsset: 500,

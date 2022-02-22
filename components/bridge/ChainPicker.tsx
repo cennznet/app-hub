@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Chain, SupportedChain } from "@/types";
 
 import styles from "@/styles/components/bridge/ChainPicker.module.css";
-import { CHAINS } from "@/utils/bridge/helpers";
+import { CHAINS } from "@/utils/bridge";
 
 const ChainPicker: React.FC<{
 	setChain: Function;

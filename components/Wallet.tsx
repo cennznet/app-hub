@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Frame, Heading, SmallText } from "@/components/StyledComponents";
+import { Frame, Heading } from "@/components/StyledComponents";
 import { useWallet } from "@/providers/SupportedWalletProvider";
 import WalletModal from "@/components/shared/WalletModal";
 
 const Wallet: React.FC<{}> = () => {
 	const [modalOpen, setModalOpen] = useState<boolean>(false);
-	const [modalState, setModalState] = useState<string>("");
 	const [isWalletConnected, setIsWalletConnected] = useState<boolean>(false);
 	const { selectedAccount, connectWallet } = useWallet();
 
@@ -30,40 +29,47 @@ const Wallet: React.FC<{}> = () => {
 			{modalOpen && <WalletModal setModalOpen={setModalOpen} />}
 			<Frame
 				sx={{
-					top: "4%",
-					right: "5%",
-					backgroundColor: modalOpen ? "#1130FF" : "#FFFFFF",
-					cursor: "pointer",
-					textAlign: isWalletConnected ? null : "center",
+					"top": "4%",
+					"right": "5%",
+					"backgroundColor": modalOpen ? "#1130FF" : "#FFFFFF",
+					"cursor": "pointer",
+					"textAlign": "center",
+					"boxShadow": "4px 8px 8px rgba(17, 48, 255, 0.1)",
+					"border": "none",
+					"width": "228px",
+					"height": "48px",
+					"display": "flex",
+					"alignItems": "center",
+					"justifyContent": "flex-start",
+					"&:hover": {
+						backgroundColor: "#1130FF",
+					},
+					":hover .headerText": {
+						color: "#FFFFFF",
+					},
 				}}
 				onClick={walletClickHandler}
 			>
-				<img src="/images/wallet.svg" alt="CENNZnet-wallet" />
+				<img
+					style={{ marginLeft: "16px" }}
+					src="images/cennznet_blue.svg"
+					alt="CENNZnet-log"
+				/>
 				<Heading
+					className={"headerText"}
 					sx={{
-						ml: isWalletConnected ? "5px" : 0,
-						mt: "3px",
-						fontSize: "20px",
+						fontSize: "16px",
 						color: modalOpen ? "#FFFFFF" : "#1130FF",
-						flexGrow: 1,
 						whiteSpace: "nowrap",
+						textAlign: "center",
+						letterSpacing: "1.2px",
+						ml: "10px",
+						textOverflow: "ellipsis",
+						overflow: "hidden",
 					}}
 				>
-					{isWalletConnected ? "CENNZnet" : "CONNECT CENNZnet"}
+					{isWalletConnected ? selectedAccount?.meta?.name : "CONNECT WALLET"}
 				</Heading>
-				{selectedAccount && (
-					<SmallText
-						sx={{
-							whiteSpace: "nowrap",
-							overflow: "hidden",
-							ml: "1.5px",
-							fontSize: "15px",
-							color: modalOpen ? "#FFFFFF" : "black",
-						}}
-					>
-						{selectedAccount?.meta?.name}
-					</SmallText>
-				)}
 			</Frame>
 		</>
 	);
