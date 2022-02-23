@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from "react";
-import styles from "@/styles/components/shared/connectwalletbutton.module.css";
+import styles from "@/styles/components/shared/ConnectWalletButton.module.css";
 import { useWallet } from "@/providers/SupportedWalletProvider";
 import { useBlockchain } from "@/providers/BlockchainProvider";
 import { Button } from "@mui/material";
@@ -80,7 +80,7 @@ const ConnectWalletButton: FC<ConnectWalletButtonProps> = ({
 					onClick();
 				}}
 			>
-				<img src={"metamask_logo.svg"} alt={""} width={40} height={40} />
+				<img src={"/images/metamask_logo.svg"} alt={""} width={40} height={40} />
 				<h1
 					style={{
 						color: color,

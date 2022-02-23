@@ -42,7 +42,6 @@ const ErrorModal: React.FC<{
 						</SmallText>
 						<Button
 							sx={{
-								fontFamily: "Teko",
 								fontWeight: "bold",
 								fontSize: "21px",
 								lineHeight: "124%",
@@ -80,7 +79,6 @@ const ErrorModal: React.FC<{
 						</SmallText>
 						<Button
 							sx={{
-								fontFamily: "Teko",
 								fontWeight: "bold",
 								fontSize: "21px",
 								lineHeight: "124%",
@@ -129,7 +127,6 @@ const ErrorModal: React.FC<{
 				)}
 				<Button
 					sx={{
-						fontFamily: "Teko",
 						fontWeight: "bold",
 						fontSize: "21px",
 						lineHeight: "124%",

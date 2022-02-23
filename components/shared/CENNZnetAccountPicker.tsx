@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Autocomplete, TextField } from "@mui/material";
 import { useCENNZExtension } from "@/providers/CENNZExtensionProvider";
-import styles from "@/styles/components/shared/cennznetaccountpicker.module.css";
+import styles from "@/styles/components/shared/CENNZnetAccountPicker.module.css";
 
 const CENNZnetAccountPicker: React.FC<{
 	updateSelectedAccount: Function;
@@ -82,7 +82,7 @@ const CENNZnetAccountPicker: React.FC<{
 					setSelectedAccount(e.target.value);
 					updateAccount(e.target.value);
 				}}
-				clearIcon={!wallet && <img src={"blue_minus.svg"} alt={""} />}
+				clearIcon={!wallet && <img src={"/images/blue_minus.svg"} alt={""} />}
 				onChange={(event, value, reason) => {
 					if (reason === "clear") {
 						updateAccount("");

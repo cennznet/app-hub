@@ -32,8 +32,8 @@ const SwapIconClass: FC<SwapIconProps> = ({ onClick, color }) => {
 			<img
 				src={
 					color === PoolColors.ADD
-						? "poolArrowsADD.svg"
-						: "poolArrowsREMOVE.svg"
+						? "/images/poolArrowsADD.svg"
+						: "/images/poolArrowsREMOVE.svg"
 				}
 				alt={""}
 			/>

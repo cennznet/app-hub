@@ -5,7 +5,7 @@ import Deposit from "@/components/bridge/Deposit";
 import Withdraw from "@/components/bridge/Withdraw";
 import CENNZnetAccountPicker from "@/components/shared/CENNZnetAccountPicker";
 
-import styles from "@/styles/components/bridge/bridge.module.css";
+import styles from "@/styles/pages/bridge.module.css";
 import ChainPicker from "@/components/bridge/ChainPicker";
 import { Chain, BridgeToken, CennznetAccount, BridgeState } from "@/types";
 import TokenPicker from "@/components/shared/TokenPicker";
