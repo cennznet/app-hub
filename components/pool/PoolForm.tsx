@@ -1,11 +1,10 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { Box, Button, Typography } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Box, Typography } from "@mui/material";
 import { SmallText } from "@/components/StyledComponents";
 import TokenPicker from "@/components/shared/TokenPicker";
 import { AssetInfo, PoolConfig, PoolValues } from "@/types";
 import { useWallet } from "@/providers/SupportedWalletProvider";
 import { PoolAction, usePool } from "@/providers/PoolProvider";
-import SwapIconClass from "@/components/pool/SwapIcon";
 import styles from "@/styles/pages/swap.module.css";
 import { PoolSummaryProps } from "@/types";
 import PoolSummary from "@/components/pool/PoolSummary";
