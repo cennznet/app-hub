@@ -15,10 +15,4 @@ describe("formatBalance", () => {
 
 		expect(balance).toEqual(expectedBalance);
 	});
-	it("returns whole number if balance is whole number", () => {
-		const balance = formatBalance(1000);
-
-		const expectedBalance = "1000";
-		expect(balance).toEqual(expectedBalance);
-	});
 });
