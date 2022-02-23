@@ -14,7 +14,8 @@ import BlockchainProvider from "@/providers/BlockchainProvider";
 import { GlobalProps } from "@/utils/generateGlobalProps";
 import UserAgentProvider from "@/providers/UserAgentProvider";
 import CENNZExtensionProvider from "@/providers/CENNZExtensionProvider";
-import CENNZnetHeader from "@/components/CENNZnetHeader";
+import PageBackdrop from "@/components/shared/PageBackdrop";
+import PageFrame from "@/components/shared/PageFrame";
 
 type MyAppProps = Omit<AppProps, "pageProps"> & {
 	pageProps: {} & GlobalProps;
@@ -39,10 +40,11 @@ function MyApp({
 							<SupportedAssetsProvider supportedAssets={supportedAssets}>
 								<SupportedWalletProvider>
 									<BlockchainProvider>
+										<PageBackdrop />
 										<Wallet />
-										<CENNZnetHeader />
 										<Switch />
 										<Component {...pageProps} />
+										<PageFrame />
 									</BlockchainProvider>
 								</SupportedWalletProvider>
 							</SupportedAssetsProvider>

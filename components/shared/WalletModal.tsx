@@ -15,11 +15,13 @@ const WalletModal: React.FC<{
 				sx={{
 					position: "absolute",
 					top: "calc(4% + 45px + 20px)",
-					right: "5%",
+					right: "3em",
 					width: "300px",
 					height: "auto",
 					backgroundColor: "white",
 					boxShadow: "4px 8px 8px rgba(17, 48, 255, 0.1)",
+					borderRadius: "4px",
+					overflow: "hidden",
 				}}
 			>
 				{selectedAccount && (

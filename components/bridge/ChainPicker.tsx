@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Chain, SupportedChain } from "@/types";
 
-import styles from "@/styles/components/bridge/chainpicker.module.css";
+import styles from "@/styles/components/bridge/ChainPicker.module.css";
 import { CHAINS } from "@/utils/bridge";
 
 const ChainPicker: React.FC<{
@@ -72,7 +72,7 @@ const ChainPicker: React.FC<{
 										: styles.chainSelectedArrowDown
 								}
 								alt="arrow"
-								src={"/arrow_up.svg"}
+								src={"/images/arrow_up.svg"}
 							/>
 						</button>
 					</>

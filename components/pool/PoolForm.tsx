@@ -6,7 +6,7 @@ import { AssetInfo, PoolConfig, PoolValues } from "@/types";
 import { useWallet } from "@/providers/SupportedWalletProvider";
 import { PoolAction, usePool } from "@/providers/PoolProvider";
 import SwapIconClass from "@/components/pool/SwapIcon";
-import styles from "@/styles/components/swap/swap.module.css";
+import styles from "@/styles/pages/swap.module.css";
 import { PoolSummaryProps } from "@/types";
 import PoolSummary from "@/components/pool/PoolSummary";
 import Settings from "@/components/pool/Settings";
@@ -249,8 +249,6 @@ const PoolForm: React.FC<{}> = () => {
 		<Box
 			component="form"
 			sx={{
-				width: "552px",
-				height: "auto",
 				margin: "0 auto 5%",
 				background: "#FFFFFF",
 				display: "flex",
@@ -258,7 +256,6 @@ const PoolForm: React.FC<{}> = () => {
 				justifyContent: "center",
 				alignItems: "center",
 				padding: "0px",
-				boxShadow: "4px 8px 8px rgba(17, 48, 255, 0.1)",
 			}}
 		>
 			<h1 className={styles.pageHeader}>POOL</h1>

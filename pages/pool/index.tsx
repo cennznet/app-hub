@@ -1,8 +1,8 @@
-import React from "react";
-import { Box } from "@mui/material";
+import React, { useEffect } from "react";
 import PoolProvider from "@/providers/PoolProvider";
 import PoolForm from "@/components/pool/PoolForm";
 import generateGlobalProps from "@/utils/generateGlobalProps";
+import styles from "@/styles/pages/pool.module.css";
 
 export async function getStaticProps() {
 	return {
@@ -15,18 +15,9 @@ export async function getStaticProps() {
 const Pool: React.FC<{}> = () => {
 	return (
 		<PoolProvider>
-			<Box
-				sx={{
-					position: "absolute",
-					top: "131px",
-					left: "calc(50% - 552px/2)",
-					display: "flex",
-					justifyContent: "center",
-					alignItems: "center",
-				}}
-			>
+			<div className={styles.poolContainer}>
 				<PoolForm />
-			</Box>
+			</div>
 		</PoolProvider>
 	);
 };

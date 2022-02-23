@@ -5,7 +5,7 @@ import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import { useAssets } from "@/providers/SupportedAssetsProvider";
 import { Asset } from "@/types";
 
-import styles from "@/styles/components/swap/swap.module.css";
+import styles from "@/styles/pages/swap.module.css";
 import { useWallet } from "@/providers/SupportedWalletProvider";
 import {
 	fetchEstimatedTransactionFee,
