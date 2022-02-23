@@ -46,36 +46,36 @@ interface SwitchButtonProps extends ButtonProps {
 	paletteKey?: string;
 }
 
-export const SwitchButton = styled(Button)<SwitchButtonProps>(
-	({ active, paletteKey, theme }) => ({
-		"backgroundColor": "white",
-		"position": "static",
-		"height": "48px",
-		"maxWidth": "120px",
-		"top": "0%",
-		"bottom": "0%",
-		"flex": "none",
-		"order": 0,
-		"alignSelf": "stretch",
-		"flexGrow": 1,
-		"margin": "0px 0px",
-		"fontWeight": "500",
-		"fontSize": "14px",
-		"lineHeight": "16px",
-		"letterSpacing": "1.25px",
-		"color": active ? theme.palette.primary[paletteKey] : "rgba(17,48,255,0.5)",
-		"borderBottom": active
-			? `2px solid ${theme.palette.primary[paletteKey]}`
-			: "2px solid white",
-		"transition": "color 0.2s",
-		"cursor": active && "default",
-		"&:hover": {
-			color: "var(--section-color)",
-			borderBottom: "2px solid var(--section-color)",
-			backgroundColor: "white !important",
-		},
-	})
-);
+export const SwitchButton = styled(Button, {
+	shouldForwardProp: (prop) => prop !== "active" && prop !== "paletteKey",
+})<SwitchButtonProps>(({ active, paletteKey, theme }) => ({
+	"backgroundColor": "white",
+	"position": "static",
+	"height": "48px",
+	"maxWidth": "120px",
+	"top": "0%",
+	"bottom": "0%",
+	"flex": "none",
+	"order": 0,
+	"alignSelf": "stretch",
+	"flexGrow": 1,
+	"margin": "0px 0px",
+	"fontWeight": "500",
+	"fontSize": "14px",
+	"lineHeight": "16px",
+	"letterSpacing": "1.25px",
+	"color": active ? theme.palette.primary[paletteKey] : "rgba(17,48,255,0.5)",
+	"borderBottom": active
+		? `2px solid ${theme.palette.primary[paletteKey]}`
+		: "2px solid white",
+	"transition": "color 0.2s",
+	"cursor": active && "default",
+	"&:hover": {
+		color: "var(--section-color)",
+		borderBottom: "2px solid var(--section-color)",
+		backgroundColor: "white !important",
+	},
+}));
 
 export const SettingsText = styled(Typography)({
 	fontSize: "14px",
