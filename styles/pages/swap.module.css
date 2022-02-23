@@ -54,3 +54,38 @@
 	flex-direction: column;
 	justify-content: flex-start;
 }
+
+
+.infoBoxContainer {
+	width: 460px;
+	height: 95px;
+	min-height: 95px;
+	background: #f5f6ff;
+	padding: 24px;
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+}
+
+.infoBoxText {
+	font-style: normal;
+	font-weight: 600;
+	font-size: 16px;
+	line-height: 150%;
+	color: #020202;
+	text-align: left;
+}
+
+.feeContainer {
+	display: flex;
+	justify-content: flex-start;
+	align-items: flex-start;
+}
+
+.feeContainer p {
+	color: #1130FF;
+	margin: 0px 5px 3px 0px;
+}
+.feeContainer span {
+	font-weight: normal;
+}
