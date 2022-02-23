@@ -116,7 +116,9 @@ export default function SupportedWalletProvider({
 	}, [assets, selectedAccount, api]);
 
 	useEffect(() => {
-		updateBalances();
+		(async () => {
+			await updateBalances();
+		})();
 	}, [updateBalances]);
 
 	return (

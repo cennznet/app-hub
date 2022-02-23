@@ -85,7 +85,7 @@ const Deposit: React.FC<{
 			} else {
 				await depositERC20();
 			}
-			updateBalances();
+			await updateBalances();
 		} else {
 			setModal(defineTxModal("bridgePaused", "", setModalOpen));
 		}

@@ -188,7 +188,7 @@ export default function PoolProvider({
 					} of events) {
 						//TODO - format response for user
 						console.log({ method, section, data: data.toHuman() });
-						if (method === "ExtrinsicSuccess") updateBalances();
+						if (method === "ExtrinsicSuccess") await updateBalances();
 					}
 				}
 			}

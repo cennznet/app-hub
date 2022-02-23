@@ -80,7 +80,15 @@ const Exchange: React.FC<{}> = () => {
 				setError(e.message);
 			}
 		})();
-	}, [api, exchangeTokenValue, assets, exchangeToken, receivedToken, balances]);
+	}, [
+		api,
+		exchangeTokenValue,
+		assets,
+		exchangeToken,
+		receivedToken,
+		balances,
+		slippage,
+	]);
 
 	useEffect(() => {
 		if (!api || !exchangeToken || !receivedToken) return;
@@ -96,7 +104,7 @@ const Exchange: React.FC<{}> = () => {
 				setError(e.message);
 			}
 		})();
-	}, [exchangeToken, receivedToken]);
+	}, [exchangeToken, receivedToken, api]);
 
 	const exchangeTokens = useCallback(async () => {
 		if (
@@ -140,9 +148,12 @@ const Exchange: React.FC<{}> = () => {
 		signer,
 		api,
 		exchangeToken,
+		exchangeTokenValue,
 		receivedToken,
 		receivedTokenValue,
 		updateBalances,
+		selectedAccount,
+		slippage,
 	]);
 
 	return (
