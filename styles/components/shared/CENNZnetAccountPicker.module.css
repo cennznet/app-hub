@@ -1,7 +1,6 @@
 .accountPickerContainer {
 	display: flex;
 	flex-direction: column;
-	height: 200px;
 	margin-bottom: 32px;
 }
 
