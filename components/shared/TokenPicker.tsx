@@ -3,7 +3,7 @@ import { Button, FormControl, CircularProgress } from "@mui/material";
 import ERC20Tokens from "@/artifacts/erc20tokens.json";
 import { ETH, ETH_LOGO, fetchMetamaskBalance } from "@/utils/bridge";
 import { useAssets } from "@/providers/SupportedAssetsProvider";
-import { Asset, PoolConfig, BridgeToken } from "@/types";
+import { Asset, PoolConfig, BridgeToken, BalanceInfo } from "@/types";
 import { useBlockchain } from "@/providers/BlockchainProvider";
 import { useRouter } from "next/router";
 
@@ -19,6 +19,7 @@ const TokenPicker: React.FC<{
 	setAmount?: Function;
 	amount?: string;
 	cennznet?: boolean;
+	withdrawBridge?: boolean;
 	forceSelection?: Asset;
 	removeToken?: Asset;
 	showBalance?: boolean;
@@ -33,6 +34,7 @@ const TokenPicker: React.FC<{
 	setAmount,
 	amount,
 	cennznet = false,
+	withdrawBridge,
 	forceSelection,
 	removeToken,
 	showBalance,
@@ -49,6 +51,7 @@ const TokenPicker: React.FC<{
 		useState<boolean>(false);
 	const [selectedTokenIdx, setSelectedTokenIdx] = useState<number>(0);
 	const [selectedTokenBalance, setSelectedTokenBalance] = useState<number>();
+	const [displayTokenBalance, setDisplayTokenBalance] = useState<string>();
 	const assets = useAssets();
 	const { Account } = useBlockchain();
 	const { balances } = useWallet();
@@ -65,7 +68,7 @@ const TokenPicker: React.FC<{
 			setTokens(newAssets);
 			setSelectedTokenIdx(foundtokenIdx);
 		}
-	}, [forceSelection, assets, removeToken]);
+	}, [forceSelection, assets, removeToken, balances]);
 
 	useEffect(() => {
 		if (cennznet && assets) {
@@ -75,8 +78,18 @@ const TokenPicker: React.FC<{
 			setTokens(tokes);
 			setSelectedTokenIdx(0);
 			setAssetsLoading(false);
-		} else if (cennznet && !assets) setTokens([]);
-		else {
+		} else if (withdrawBridge && balances) {
+			const tokes = balances.filter(
+				(toke) =>
+					toke.symbol !== "CENNZ" && toke.symbol !== "CPAY" && toke.value !== 0
+			);
+			setTokens(tokes);
+			setSelectedTokenIdx(0);
+			setAssetsLoading(false);
+		} else if ((cennznet && !assets) || (withdrawBridge && !balances)) {
+			setTokens([]);
+			setAssetsLoading(true);
+		} else {
 			let tokes: Asset[] = [
 				{
 					symbol: "ETH",
@@ -100,10 +113,13 @@ const TokenPicker: React.FC<{
 			setSelectedTokenIdx(0);
 			setAssetsLoading(false);
 		}
-	}, [cennznet, assets, removeToken]);
+	}, [cennznet, removeToken, assets, balances, withdrawBridge]);
 
 	useEffect(() => {
-		if (cennznet && assets && tokens) {
+		if (
+			(cennznet && assets && tokens) ||
+			(withdrawBridge && balances && tokens)
+		) {
 			setToken(tokens[selectedTokenIdx]);
 		} else if (tokens) {
 			ERC20Tokens.tokens.map((token: BridgeToken) => {
@@ -118,16 +134,24 @@ const TokenPicker: React.FC<{
 				}
 			});
 		}
-	}, [cennznet, assets, selectedTokenIdx, tokens, setToken]);
+	}, [
+		cennznet,
+		assets,
+		selectedTokenIdx,
+		tokens,
+		setToken,
+		withdrawBridge,
+		balances,
+	]);
 
 	useEffect(() => {
 		if (!tokens) return;
-		if (cennznet) {
-			if (!balances) return;
+		if ((cennznet && balances) || (withdrawBridge && balances)) {
 			const foundTokenBalance = balances.find(
 				(asset) => asset.symbol === tokens[selectedTokenIdx]?.symbol
 			);
-			setSelectedTokenBalance(formatBalance(foundTokenBalance?.value));
+			setSelectedTokenBalance(foundTokenBalance?.value);
+			setDisplayTokenBalance(formatBalance(foundTokenBalance?.value));
 		} else {
 			if (!Account || !tokens[selectedTokenIdx]?.address) return;
 			const { ethereum }: any = window;
@@ -137,10 +161,11 @@ const TokenPicker: React.FC<{
 					(tokens[selectedTokenIdx] as BridgeToken).address,
 					Account
 				);
-				setSelectedTokenBalance(formatBalance(balance));
+				setSelectedTokenBalance(balance);
+				setDisplayTokenBalance(formatBalance(balance));
 			})();
 		}
-	}, [balances, tokens, selectedTokenIdx, Account, cennznet]);
+	}, [balances, tokens, selectedTokenIdx, Account, cennznet, withdrawBridge]);
 
 	return (
 		<div className={styles.tokenPickerContainer}>
@@ -263,7 +288,7 @@ const TokenPicker: React.FC<{
 										poolConfig?.coreAsset.decimals
 								  )}`
 							: `Balance: ${
-									selectedTokenBalance !== undefined ? selectedTokenBalance : ""
+									displayTokenBalance !== undefined ? displayTokenBalance : ""
 							  }`}
 					</p>
 				)}

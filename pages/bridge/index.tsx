@@ -108,7 +108,7 @@ const Emery: React.FC<{}> = () => {
 					amount={amount}
 					error={error}
 					showBalance={true}
-					cennznet={bridgeState === "Withdraw"}
+					withdrawBridge={bridgeState === "Withdraw"}
 					width={"460px"}
 				/>
 			</div>

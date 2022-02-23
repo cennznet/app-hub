@@ -8,12 +8,7 @@ import TxModal from "@/components/bridge/TxModal";
 import ErrorModal from "@/components/bridge/ErrorModal";
 import { BridgeToken, CennznetAccount } from "@/types";
 import ConnectWalletButton from "@/components/shared/ConnectWalletButton";
-import {
-	checkWithdrawStatus,
-	fetchEstimatedFee,
-	fetchTokenId,
-	fetchWithdrawEthSideValues,
-} from "@/utils/bridge";
+import { checkWithdrawStatus, fetchEstimatedFee } from "@/utils/bridge";
 
 const Withdraw: React.FC<{
 	token: BridgeToken;
@@ -39,7 +34,7 @@ const Withdraw: React.FC<{
 	});
 	const { Contracts, Account, Signer }: any = useBlockchain();
 	const { api }: any = useCENNZApi();
-	const { wallet, balances } = useWallet();
+	const { wallet, balances, updateBalances } = useWallet();
 	const signer = wallet?.signer;
 
 	useEffect(() => {
@@ -78,11 +73,13 @@ const Withdraw: React.FC<{
 			if (token.address !== "") {
 				setModal(defineTxModal("withdrawCENNZside", "", setModalOpen));
 
-				const withdrawAmount = ethers.utils.parseUnits(amount).toString();
+				const withdrawAmount = ethers.utils
+					.parseUnits(String(amount), token.decimals)
+					.toString();
 				const eventProof = await withdrawCENNZside(
 					withdrawAmount,
 					Account,
-					token.address
+					token.id
 				);
 				await withdrawEthSide(
 					withdrawAmount,
@@ -101,10 +98,9 @@ const Withdraw: React.FC<{
 	const withdrawCENNZside = async (
 		amount: any,
 		ethAddress: string,
-		tokenAddress: string
+		tokenId: number
 	) => {
 		let eventProofId: any;
-		const tokenId = await fetchTokenId(api, tokenAddress);
 
 		await new Promise<void>((resolve) => {
 			api.tx.erc20Peg
@@ -156,10 +152,19 @@ const Withdraw: React.FC<{
 	) => {
 		setModalOpen(false);
 
-		const { verificationFee, v, r, s }: any = fetchWithdrawEthSideValues(
-			eventProof.signatures,
-			Contracts.bridge
-		);
+		const verificationFee = await Contracts.bridge.verificationFee();
+
+		const v: any = [],
+			r: any = [],
+			s: any = [];
+
+		eventProof.signatures.forEach((signature: any) => {
+			const hexifySignature = ethers.utils.hexlify(signature);
+			const sig = ethers.utils.splitSignature(hexifySignature);
+			v.push(sig.v);
+			r.push(sig.r);
+			s.push(sig.s);
+		});
 
 		let gasEstimate = await Contracts.peg.estimateGas.withdraw(
 			tokenAddress,
@@ -199,6 +204,7 @@ const Withdraw: React.FC<{
 		setModal(defineTxModal("withdrawETHside", tx.hash, setModalOpen));
 		await tx.wait();
 		setModal(defineTxModal("finished", "", setModalOpen));
+		await updateBalances();
 	};
 
 	return (

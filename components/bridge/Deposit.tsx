@@ -37,7 +37,8 @@ const Deposit: React.FC<{
 	const depositEth = async () => {
 		const { amountInWei, address } = getDepositValues(
 			amount,
-			selectedAccount.address
+			selectedAccount.address,
+			token.decimals
 		);
 		let tx: any = await Contracts.peg.deposit(ETH, amountInWei, address, {
 			value: amountInWei,
@@ -57,7 +58,8 @@ const Deposit: React.FC<{
 
 		const { amountInWei, address } = getDepositValues(
 			amount,
-			selectedAccount.address
+			selectedAccount.address,
+			token.decimals
 		);
 
 		let tx: any = await tokenContract.approve(

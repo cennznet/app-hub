@@ -81,10 +81,9 @@ const AccountBalances: React.FC<{
 									}}
 								>
 									<Box sx={{ m: "10px 10px" }}>
-										<Image
-											width={40}
-											height={40}
-											src={`/${token.logo}`}
+										<img
+											style={{ width: "40px", height: "40px" }}
+											src={token.logo}
 											alt={`${token.symbol}-logo`}
 										/>
 									</Box>

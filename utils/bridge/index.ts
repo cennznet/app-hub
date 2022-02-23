@@ -39,8 +39,12 @@ export const fetchMetamaskBalance = async (ethereum, tokenAddress, account) => {
 	return Number(ethers.utils.formatUnits(balance, decimals));
 };
 
-export const getDepositValues = (amount: string, selectedAccount: string) => {
-	const amountInWei = ethers.utils.parseUnits(amount);
+export const getDepositValues = (
+	amount: string,
+	selectedAccount: string,
+	decimals: number
+) => {
+	const amountInWei = ethers.utils.parseUnits(amount, decimals);
 	const address = decodeAddress(selectedAccount);
 
 	return { amountInWei, address };
@@ -74,14 +78,6 @@ export const fetchEstimatedFee = async (
 	return gasEstimate + Number(verificationFee);
 };
 
-export const fetchTokenId = async (api: Api, tokenAddress: string) => {
-	const tokenExist: any = await api.query.erc20Peg.erc20ToAssetId(tokenAddress);
-
-	return tokenExist.isSome
-		? tokenExist.unwrap()
-		: await api.query.genericAsset.nextAssetId();
-};
-
 export const checkWithdrawStatus = async (
 	api: Api,
 	pegContract: ethers.Contract
@@ -96,25 +92,4 @@ export const checkWithdrawStatus = async (
 		CENNZwithdrawalsActive.isTrue &&
 		ETHwithdrawalsActive
 	);
-};
-
-export const fetchWithdrawEthSideValues = async (
-	signatures: string[],
-	bridgeContract: ethers.Contract
-) => {
-	const verificationFee = await bridgeContract.verificationFee();
-
-	const v: any = [],
-		r: any = [],
-		s: any = [];
-
-	signatures.forEach((signature: any) => {
-		const hexifySignature = ethers.utils.hexlify(signature);
-		const sig = ethers.utils.splitSignature(hexifySignature);
-		v.push(sig.v);
-		r.push(sig.r);
-		s.push(sig.s);
-	});
-
-	return { verificationFee, v, r, s };
 };
