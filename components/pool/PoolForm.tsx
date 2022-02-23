@@ -246,6 +246,19 @@ const PoolForm: React.FC<{}> = () => {
 		await sendExtrinsic();
 	}
 
+	const swapAndResetPool = () => {
+		setPoolAction(
+			poolAction === PoolAction.ADD ? PoolAction.REMOVE : PoolAction.ADD
+		);
+		setPoolColors(
+			poolColors === PoolColors.ADD ? PoolColors.REMOVE : PoolColors.ADD
+		);
+		setCoreAmount("");
+		setTradeAssetAmount("");
+		setCoreError(null);
+		setTradeError(null);
+	};
+
 	return (
 		<Box
 			component="form"
@@ -270,23 +283,15 @@ const PoolForm: React.FC<{}> = () => {
 			>
 				<PoolSwaper
 					topText={"From"}
-					bottomText={"Account"}
-					options={["Your Account"]}
+					bottomText={poolAction === PoolAction.ADD ? "Account" : "Action"}
+					options={["Your Account", "Liquidity Pool"]}
+					forceIndex={poolAction === PoolAction.ADD ? 0 : 1}
 					color={poolColors}
+					initialIndex={0}
+					onChange={swapAndResetPool}
 				/>
 				<ExchangeIcon
-					onClick={() => {
-						setPoolAction(
-							poolAction === PoolAction.ADD ? PoolAction.REMOVE : PoolAction.ADD
-						);
-						setPoolColors(
-							poolColors === PoolColors.ADD ? PoolColors.REMOVE : PoolColors.ADD
-						);
-						setCoreAmount("");
-						setTradeAssetAmount("");
-						setCoreError(null);
-						setTradeError(null);
-					}}
+					onClick={swapAndResetPool}
 					horizontal={true}
 					color={
 						poolColors !== PoolColors.ADD ? PoolColors.REMOVE : PoolColors.ADD
@@ -294,22 +299,12 @@ const PoolForm: React.FC<{}> = () => {
 				/>
 				<PoolSwaper
 					topText={"To"}
-					bottomText={"Action"}
-					options={["Add To Pool", "Withdraw From Pool"]}
+					bottomText={poolAction === PoolAction.ADD ? "Action" : "Account"}
+					options={["Your Account", "Liquidity Pool"]}
 					color={poolColors}
-					forceIndex={poolAction === PoolAction.ADD ? 0 : 1}
-					onChange={() => {
-						setPoolAction(
-							poolAction === PoolAction.ADD ? PoolAction.REMOVE : PoolAction.ADD
-						);
-						setPoolColors(
-							poolColors === PoolColors.ADD ? PoolColors.REMOVE : PoolColors.ADD
-						);
-						setCoreAmount("");
-						setTradeAssetAmount("");
-						setCoreError(null);
-						setTradeError(null);
-					}}
+					forceIndex={poolAction === PoolAction.ADD ? 1 : 0}
+					initialIndex={1}
+					onChange={swapAndResetPool}
 				/>
 			</div>
 			<SmallText

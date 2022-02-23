@@ -8,9 +8,22 @@ const PoolSwaper: React.FC<{
 	bottomText?: string;
 	color?: string;
 	forceIndex?: number;
-}> = ({ options, bottomText, topText, color, forceIndex, onChange }) => {
+	initialIndex: number;
+}> = ({
+	options,
+	bottomText,
+	topText,
+	color,
+	forceIndex,
+	initialIndex,
+	onChange,
+}) => {
 	const [itemDropDownActive, setItemDropDownActive] = useState<boolean>(false);
 	const [selectedItemIdx, setSelectedItemIdx] = useState<number>(0);
+
+	useEffect(() => {
+		setSelectedItemIdx(initialIndex);
+	}, []);
 
 	useEffect(() => {
 		if (forceIndex !== undefined) setSelectedItemIdx(forceIndex);
@@ -44,7 +57,7 @@ const PoolSwaper: React.FC<{
 											: styles.chainSelectedArrowDown
 									}
 									width="14"
-									height="10"
+									height="14"
 									viewBox="0 0 14 14"
 									fill="none"
 									xmlns="http://www.w3.org/2000/svg"
