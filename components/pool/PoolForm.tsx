@@ -286,7 +286,7 @@ const PoolForm: React.FC<{}> = () => {
 			{/*		setTradeError(null);*/}
 			{/*	}}*/}
 			{/*>*/}
-			{/*	<SwapIconClass onClick={() => null} color={poolColors} />*/}
+			{/*<SwapIconClass onClick={() => null} color={poolColors} />*/}
 			{/*	<Typography*/}
 			{/*		sx={{*/}
 			{/*			m: "17px 0 0 20px",*/}
@@ -314,12 +314,44 @@ const PoolForm: React.FC<{}> = () => {
 					topText={"From"}
 					bottomText={"Account"}
 					options={["Your Account"]}
+					color={poolColors}
 				/>
-				<ExchangeIcon onClick={() => {}} horizontal={true} />
+				<ExchangeIcon
+					onClick={() => {
+						setPoolAction(
+							poolAction === PoolAction.ADD ? PoolAction.REMOVE : PoolAction.ADD
+						);
+						setPoolColors(
+							poolColors === PoolColors.ADD ? PoolColors.REMOVE : PoolColors.ADD
+						);
+						setCoreAmount("");
+						setTradeAssetAmount("");
+						setCoreError(null);
+						setTradeError(null);
+					}}
+					horizontal={true}
+					color={
+						poolColors !== PoolColors.ADD ? PoolColors.REMOVE : PoolColors.ADD
+					}
+				/>
 				<PoolSwaper
 					topText={"To"}
 					bottomText={"Action"}
 					options={["Add To Pool", "Withdraw From Pool"]}
+					color={poolColors}
+					forceIndex={poolAction === PoolAction.ADD ? 0 : 1}
+					onChange={() => {
+						setPoolAction(
+							poolAction === PoolAction.ADD ? PoolAction.REMOVE : PoolAction.ADD
+						);
+						setPoolColors(
+							poolColors === PoolColors.ADD ? PoolColors.REMOVE : PoolColors.ADD
+						);
+						setCoreAmount("");
+						setTradeAssetAmount("");
+						setCoreError(null);
+						setTradeError(null);
+					}}
 				/>
 			</div>
 			<SmallText
