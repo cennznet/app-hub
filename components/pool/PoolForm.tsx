@@ -364,7 +364,7 @@ const PoolForm: React.FC<{}> = () => {
 				poolConfig={poolConfig}
 				whichAsset={"core"}
 			/>
-			<PoolSummary poolSummaryProps={poolSummaryProps} />
+			{balances && <PoolSummary poolSummaryProps={poolSummaryProps} />}
 			<Settings
 				slippage={slippage}
 				setSlippage={setSlippage}
