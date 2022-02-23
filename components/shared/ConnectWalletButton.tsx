@@ -129,8 +129,6 @@ const ConnectWalletButton: FC<ConnectWalletButtonProps> = ({
 					"cursor": disabled && "not-allowed",
 					"border": `1px solid ${color}`,
 					"color": color,
-					"borderLeft": "transparent",
-					"borderRight": "transparent",
 					"fontWeight": "bold",
 					"fontSize": "16px",
 					"lineHeight": "125%",
@@ -142,6 +140,7 @@ const ConnectWalletButton: FC<ConnectWalletButtonProps> = ({
 					"&:hover": {
 						color: "white",
 						backgroundColor: color,
+						opacity: "1",
 					},
 				}}
 				onClick={() => {
