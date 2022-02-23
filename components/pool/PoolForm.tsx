@@ -257,50 +257,9 @@ const PoolForm: React.FC<{}> = () => {
 				flexDirection: "column",
 				justifyContent: "center",
 				alignItems: "center",
-				padding: "26px 42px 26px 42px",
-				boxShadow: "4px 8px 8px rgba(17, 48, 255, 0.1)"
 			}}
 		>
 			<h1 className={styles.pageHeader}>POOL</h1>
-			{/*<Box*/}
-			{/*	sx={{*/}
-			{/*		display: "flex",*/}
-			{/*		flexDirection: "row",*/}
-			{/*		alignContent: "justify",*/}
-			{/*		width: "468px",*/}
-			{/*		boxSizing: "border-box",*/}
-			{/*		border: `1px solid ${poolColors}`,*/}
-			{/*		mt: "30px",*/}
-			{/*		cursor: "pointer",*/}
-			{/*	}}*/}
-			{/*	onClick={() => {*/}
-			{/*		setPoolAction(*/}
-			{/*			poolAction === PoolAction.ADD ? PoolAction.REMOVE : PoolAction.ADD*/}
-			{/*		);*/}
-			{/*		setPoolColors(*/}
-			{/*			poolColors === PoolColors.ADD ? PoolColors.REMOVE : PoolColors.ADD*/}
-			{/*		);*/}
-			{/*		setCoreAmount("");*/}
-			{/*		setTradeAssetAmount("");*/}
-			{/*		setCoreError(null);*/}
-			{/*		setTradeError(null);*/}
-			{/*	}}*/}
-			{/*>*/}
-			{/*<SwapIconClass onClick={() => null} color={poolColors} />*/}
-			{/*	<Typography*/}
-			{/*		sx={{*/}
-			{/*			m: "17px 0 0 20px",*/}
-			{/*			fontSize: "17px",*/}
-			{/*			lineHeight: "125%",*/}
-			{/*			fontWeight: "bold",*/}
-			{/*			textTransform: "uppercase",*/}
-			{/*			color: poolColors,*/}
-			{/*			letterSpacing: "1.2px",*/}
-			{/*		}}*/}
-			{/*	>*/}
-			{/*		{poolAction === PoolAction.ADD ? "add to pool" : "withdraw from pool"}*/}
-			{/*	</Typography>*/}
-			{/*</Box>*/}
 			<div
 				style={{
 					display: "flex",

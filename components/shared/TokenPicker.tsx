@@ -286,12 +286,20 @@ const TokenPicker: React.FC<{
 					<p className={styles.balanceText}>
 						{poolConfig?.poolAction === PoolAction.REMOVE
 							? whichAsset === "trade"
-								? `Withdrawable: ${poolConfig?.userPoolShare.assetBalance.asString(
-										poolConfig?.tradeAsset.decimals
-								  )}`
-								: `Withdrawable: ${poolConfig?.userPoolShare.coreAssetBalance.asString(
-										poolConfig?.coreAsset.decimals
-								  )}`
+								? `Withdrawable: ${
+										poolConfig?.userPoolShare
+											? poolConfig?.userPoolShare?.assetBalance?.asString(
+													poolConfig?.tradeAsset.decimals
+											  )
+											: ""
+								  }`
+								: `Withdrawable: ${
+										poolConfig?.userPoolShare
+											? poolConfig?.userPoolShare?.coreAssetBalance?.asString(
+													poolConfig?.coreAsset.decimals
+											  )
+											: ""
+								  }`
 							: `Balance: ${
 									selectedTokenBalance !== undefined ? selectedTokenBalance : ""
 							  }`}
