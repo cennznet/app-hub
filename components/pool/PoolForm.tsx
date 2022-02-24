@@ -18,6 +18,7 @@ import {
 import ConnectWalletButton from "@/components/shared/ConnectWalletButton";
 import PoolSwaper from "@/components/pool/PoolSwaper";
 import ExchangeIcon from "@/components/shared/ExchangeIcon";
+import { formatBalance } from "@/utils";
 
 export enum PoolColors {
 	ADD = "#1130FF",
@@ -159,7 +160,7 @@ const PoolForm: React.FC<{}> = () => {
 			if (coreAmount <= 0) {
 				setCoreAmount(0);
 			} else {
-				setCoreAmount(coreAmount.toFixed(4));
+				setCoreAmount(formatBalance(coreAmount));
 				checkBalances(poolAction, coreAmount, tradeAmount);
 				//define extrinsic & estimate fee
 				await defineExtrinsic(
@@ -179,7 +180,7 @@ const PoolForm: React.FC<{}> = () => {
 			if (tradeAmount <= 0) {
 				setTradeAssetAmount(0);
 			} else {
-				setTradeAssetAmount(tradeAmount.toFixed(4));
+				setTradeAssetAmount(formatBalance(tradeAmount));
 				checkBalances(poolAction, coreAmount, tradeAmount);
 				//define extrinsic & estimate fee
 				await defineExtrinsic(
