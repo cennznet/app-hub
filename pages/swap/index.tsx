@@ -29,10 +29,8 @@ export async function getStaticProps() {
 const Exchange: React.FC<{}> = () => {
 	const [exchangeToken, setExchangeToken] = useState<Asset>();
 	const [receivedToken, setReceivedToken] = useState<Asset>();
-	const [receivedTokenValue, setReceivedTokenValue] =
-		React.useState<string>("0");
-	const [exchangeTokenValue, setExchangeTokenValue] =
-		React.useState<string>("0");
+	const [receivedTokenValue, setReceivedTokenValue] = React.useState<string>();
+	const [exchangeTokenValue, setExchangeTokenValue] = React.useState<string>();
 	const [estimatedFee, setEstimatedFee] = useState<string>();
 	const [exchangeRate, setExchangeRate] = useState<number>();
 	const [slippage, setSlippage] = useState<number>(5);
