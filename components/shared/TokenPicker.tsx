@@ -79,7 +79,6 @@ const TokenPicker: React.FC<{
 					toke.id !== removeToken?.id &&
 					(toke.symbol === "CENNZ" || toke.symbol === "CPAY")
 			);
-			console.log("tokes", tokes);
 			setTokens(tokes);
 			setSelectedTokenIdx(0);
 			setAssetsLoading(false);
