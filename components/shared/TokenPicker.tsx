@@ -59,9 +59,12 @@ const TokenPicker: React.FC<{
 		if (!assets) return;
 		if (forceSelection) {
 			let newAssets: Asset[] = [...assets];
-			if (removeToken)
-				newAssets = assets.filter((toke) => toke.id !== removeToken.id);
-			let foundtokenIdx = newAssets?.findIndex(
+			newAssets = assets.filter(
+				(toke) =>
+					toke.id !== removeToken?.id &&
+					(toke.symbol === "CENNZ" || toke.symbol === "CPAY")
+			);
+			let foundtokenIdx = newAssets.findIndex(
 				(token) => forceSelection.symbol == token.symbol
 			);
 			setTokens(newAssets);
@@ -71,9 +74,12 @@ const TokenPicker: React.FC<{
 
 	useEffect(() => {
 		if (cennznet && assets) {
-			let tokes: Asset[] = [...assets];
-			if (removeToken)
-				tokes = tokes.filter((toke) => toke.id !== removeToken.id);
+			const tokes = assets.filter(
+				(toke) =>
+					toke.id !== removeToken?.id &&
+					(toke.symbol === "CENNZ" || toke.symbol === "CPAY")
+			);
+			console.log("tokes", tokes);
 			setTokens(tokes);
 			setSelectedTokenIdx(0);
 			setAssetsLoading(false);
@@ -89,6 +95,8 @@ const TokenPicker: React.FC<{
 			setTokens([]);
 			setAssetsLoading(true);
 		} else {
+			if (!Account) return;
+
 			let tokes: Asset[] = [
 				{
 					symbol: "ETH",
@@ -232,17 +240,17 @@ const TokenPicker: React.FC<{
 									type="button"
 									className={styles.tokenButton}
 									onClick={() =>
-										whichAsset !== "core"
+										!whichAsset
 											? setTokenDropDownActive(!tokenDropDownActive)
 											: null
 									}
 									disabled={router.asPath === "/bridge" && !Account}
 									style={{
-										cursor: whichAsset !== "core" ? "hover" : "default",
+										cursor: !!whichAsset ? "default" : "hover",
 									}}
 								>
 									{tokens[selectedTokenIdx]?.symbol}
-									{whichAsset !== "core" && (
+									{!whichAsset && (
 										<img
 											className={
 												tokenDropDownActive
