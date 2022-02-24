@@ -176,13 +176,13 @@ const TokenPicker: React.FC<{
 		let displayBalanceText = "";
 		if (poolConfig?.poolAction === PoolAction.REMOVE) {
 			displayBalanceText = "Withdrawable: ";
-			if (whichAsset === "trade" && poolConfig?.userPoolShare) {
+			if (whichAsset === "trade" && poolConfig.userPoolShare) {
 				displayBalanceText =
 					displayBalanceText +
 					poolConfig?.userPoolShare?.assetBalance?.asString(
 						poolConfig?.tradeAsset.decimals
 					);
-			} else {
+			} else if (poolConfig.userPoolShare) {
 				displayBalanceText =
 					displayBalanceText +
 					poolConfig?.userPoolShare?.coreAssetBalance?.asString(
