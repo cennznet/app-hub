@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Button, FormControl, CircularProgress } from "@mui/material";
+import {
+	Button,
+	FormControl,
+	CircularProgress,
+	ClickAwayListener,
+} from "@mui/material";
 import ERC20Tokens from "@/artifacts/erc20tokens.json";
 import { ETH, ETH_LOGO, fetchMetamaskBalance } from "@/utils/bridge";
 import { useAssets } from "@/providers/SupportedAssetsProvider";
-import { Asset, PoolConfig, BridgeToken, BalanceInfo } from "@/types";
+import { Asset, PoolConfig, BridgeToken } from "@/types";
 import { useBlockchain } from "@/providers/BlockchainProvider";
 import { useRouter } from "next/router";
 import styles from "@/styles/components/shared/TokenPicker.module.css";
@@ -264,23 +269,27 @@ const TokenPicker: React.FC<{
 							</>
 						)}
 						{tokenDropDownActive && (
-							<div className={styles.tokenDropdownContainer}>
-								{tokens.map((token: any, i) => {
-									return (
-										<div
-											key={i}
-											onClick={() => {
-												setSelectedTokenIdx(i);
-												setTokenDropDownActive(false);
-											}}
-											className={styles.tokenChoiceContainer}
-										>
-											<img alt="" src={token.logo} width={33} height={33} />
-											<span>{token.symbol}</span>
-										</div>
-									);
-								})}
-							</div>
+							<ClickAwayListener
+								onClickAway={() => setTokenDropDownActive(false)}
+							>
+								<div className={styles.tokenDropdownContainer}>
+									{tokens.map((token: any, i) => {
+										return (
+											<div
+												key={i}
+												onClick={() => {
+													setSelectedTokenIdx(i);
+													setTokenDropDownActive(false);
+												}}
+												className={styles.tokenChoiceContainer}
+											>
+												<img alt="" src={token.logo} width={33} height={33} />
+												<span>{token.symbol}</span>
+											</div>
+										);
+									})}
+								</div>
+							</ClickAwayListener>
 						)}
 					</div>
 				</FormControl>
