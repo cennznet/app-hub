@@ -7,7 +7,6 @@ import { Asset } from "@/types";
 
 import styles from "@/styles/pages/swap.module.css";
 import { useWallet } from "@/providers/SupportedWalletProvider";
-import { useCENNZExtension } from "@/providers/CENNZExtensionProvider";
 import {
 	fetchEstimatedTransactionFee,
 	fetchExchangeExtrinsic,
@@ -38,21 +37,8 @@ const Exchange: React.FC<{}> = () => {
 	const [success, setSuccess] = useState<string>();
 	const { api }: any = useCENNZApi();
 	const assets = useAssets();
-	const {
-		wallet,
-		selectedAccount,
-		balances,
-		connectWallet,
-		fetchAssetBalances,
-	} = useWallet();
+	const { balances, updateBalances, wallet, selectedAccount } = useWallet();
 	const signer = wallet?.signer;
-	const { web3Enable } = useCENNZExtension();
-
-	useEffect(() => {
-		if (!wallet) {
-			connectWallet();
-		}
-	}, [web3Enable, api]);
 
 	useEffect(() => {
 		setError(undefined);
@@ -92,7 +78,15 @@ const Exchange: React.FC<{}> = () => {
 				setError(e.message);
 			}
 		})();
-	}, [api, exchangeTokenValue, assets, exchangeToken, receivedToken, balances]);
+	}, [
+		api,
+		exchangeTokenValue,
+		assets,
+		exchangeToken,
+		receivedToken,
+		balances,
+		slippage,
+	]);
 
 	useEffect(() => {
 		if (!api || !exchangeToken || !receivedToken) return;
@@ -108,7 +102,7 @@ const Exchange: React.FC<{}> = () => {
 				setError(e.message);
 			}
 		})();
-	}, [exchangeToken, receivedToken]);
+	}, [exchangeToken, receivedToken, api]);
 
 	const exchangeTokens = useCallback(async () => {
 		if (
@@ -139,7 +133,7 @@ const Exchange: React.FC<{}> = () => {
 							if (event.method === "AssetBought") {
 								setError(undefined);
 								setSuccess(`Successfully Swapped Tokens!`);
-								fetchAssetBalances();
+								updateBalances();
 							}
 						}
 					}
@@ -148,7 +142,17 @@ const Exchange: React.FC<{}> = () => {
 		} catch (e) {
 			setError(e.message);
 		}
-	}, [signer, api, exchangeToken, receivedToken, receivedTokenValue]);
+	}, [
+		signer,
+		api,
+		exchangeToken,
+		exchangeTokenValue,
+		receivedToken,
+		receivedTokenValue,
+		updateBalances,
+		selectedAccount,
+		slippage,
+	]);
 
 	return (
 		<div className={styles.swapContainer}>

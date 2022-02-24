@@ -7,6 +7,7 @@ import {
 	PoolSummaryText,
 	PoolSummaryBoldText,
 } from "@/components/StyledComponents";
+import { formatBalance } from "@/utils";
 
 interface FomattedBalances {
 	userTradeAsset: string;
@@ -34,8 +35,8 @@ const PoolSummary: React.FC<{ poolSummaryProps: PoolSummaryProps }> = ({
 			userCoreAsset: userPoolShare?.coreAssetBalance.asString(
 				coreAsset?.decimals
 			),
-			poolTradeAsset: Number(poolLiquidity?.tradeAsset).toFixed(4),
-			poolCoreAsset: Number(poolLiquidity?.coreAsset).toFixed(4),
+			poolTradeAsset: formatBalance(Number(poolLiquidity?.tradeAsset)),
+			poolCoreAsset: formatBalance(Number(poolLiquidity?.coreAsset)),
 		});
 
 		setTimeout(() => setLoading(false), 2000);

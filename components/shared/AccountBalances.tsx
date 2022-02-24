@@ -1,20 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import dynamic from "next/dynamic";
+import Image from "next/image";
 import { Box, CircularProgress, Divider } from "@mui/material";
 import { Heading, SmallText } from "@/components/StyledComponents";
 import { useWallet } from "@/providers/SupportedWalletProvider";
-import { ETH_LOGO } from "@/utils/bridge";
 import CENNZnetAccountPicker from "@/components/shared/CENNZnetAccountPicker";
-import ERC20Tokens from "@/artifacts/erc20tokens.json";
+import { formatBalance } from "@/utils";
 
 const AccountBalances: React.FC<{
 	updateSelectedAccount: Function;
 }> = ({ updateSelectedAccount }) => {
-	const { getBridgeBalances, bridgeBalances, selectedAccount } = useWallet();
-
-	useEffect(() => {
-		getBridgeBalances(selectedAccount.address);
-	}, [getBridgeBalances, selectedAccount]);
+	const { balances, selectedAccount } = useWallet();
 
 	const Identicon = dynamic(() => import("@polkadot/react-identicon"), {
 		loading: () => <CircularProgress />,
@@ -71,53 +67,51 @@ const AccountBalances: React.FC<{
 			</Box>
 			<Divider sx={{ m: "15px 0 15px" }} />
 			<Heading sx={{ pl: "5%" }}>Balance</Heading>
-			{bridgeBalances ? (
+			{balances ? (
 				<Box sx={{ mt: "3%", pl: "5%", display: "block" }}>
-					{Object.values(bridgeBalances).map((token: any, i) => {
-						let logo;
-						ERC20Tokens.tokens.map((erc20token) => {
-							if (erc20token.symbol === token.symbol) {
-								logo = erc20token.logoURI;
-							}
-						});
-
-						return (
-							<Box
-								key={i}
-								sx={{
-									display: "flex",
-									height: "50px",
-									verticalAlign: "center",
-								}}
-							>
-								<Box sx={{ m: "10px 10px" }}>
-									<img
-										style={{ width: "40px", height: "40px" }}
-										src={
-											logo
-												? logo
-												: token.symbol === "ETH"
-												? ETH_LOGO
-												: `images/${token.symbol.toLowerCase()}.svg`
-										}
-										alt={`${token.symbol}-logo`}
-									/>
-								</Box>
-								<SmallText
+					{balances.map(
+						(token: any, i) =>
+							token.value > 0 && (
+								<Box
+									key={i}
 									sx={{
-										color: "black",
-										fontWeight: "bold",
-										fontSize: "18px",
-										display: "inline-flex",
-										mt: "18px",
+										display: "flex",
+										height: "50px",
+										verticalAlign: "center",
 									}}
 								>
-									{token.balance?.toFixed(4) || token.value?.toFixed(4)}
-								</SmallText>
-								<br />
-							</Box>
-						);
-					})}
+									<Box sx={{ m: "10px 10px" }}>
+										<img
+											style={{ width: "40px", height: "40px" }}
+											src={token.logo}
+											alt={`${token.symbol}-logo`}
+										/>
+									</Box>
+									<SmallText
+										sx={{
+											color: "black",
+											fontWeight: "bold",
+											fontSize: "18px",
+											display: "inline-flex",
+											mt: "18px",
+										}}
+									>
+										{formatBalance(token.value)}
+										&nbsp;
+										<span
+											style={{
+												fontWeight: "normal",
+												fontSize: "16px",
+												letterSpacing: "0.5px",
+											}}
+										>
+											{token.symbol}
+										</span>
+									</SmallText>
+									<br />
+								</Box>
+							)
+					)}
 				</Box>
 			) : (
 				<Box sx={{ m: "5% 0 0 calc(5% + 10px)" }}>

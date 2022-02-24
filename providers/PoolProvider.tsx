@@ -1,14 +1,6 @@
-import { Amount, AmountUnit } from "@/utils/Amount";
+import { Amount } from "@/utils/Amount";
 import { AssetInfo } from "@/types";
-import {
-	AmountParams,
-	Asset,
-	IExchangePool,
-	IFee,
-	IOption,
-	IUserShareInPool,
-	LiquidityFormData,
-} from "@/types";
+import { IExchangePool, IUserShareInPool } from "@/types";
 import {
 	createContext,
 	PropsWithChildren,
@@ -65,7 +57,7 @@ export default function PoolProvider({
 }: PropsWithChildren<ProviderProps>) {
 	const [value, setValue] = useState<PoolContextType>(poolContextDefaultValues);
 	const { api } = useCENNZApi();
-	const { wallet, selectedAccount, fetchAssetBalances } = useWallet();
+	const { wallet, selectedAccount, updateBalances } = useWallet();
 	const signer = wallet?.signer;
 
 	//set core asset
@@ -196,12 +188,12 @@ export default function PoolProvider({
 					} of events) {
 						//TODO - format response for user
 						console.log({ method, section, data: data.toHuman() });
-						if (method === "ExtrinsicSuccess") fetchAssetBalances();
+						if (method === "ExtrinsicSuccess") await updateBalances();
 					}
 				}
 			}
 		);
-	}, [api, value, selectedAccount, signer, fetchAssetBalances]);
+	}, [api, value, selectedAccount, signer, updateBalances]);
 
 	return (
 		<PoolContext.Provider

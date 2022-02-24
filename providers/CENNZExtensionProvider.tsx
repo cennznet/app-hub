@@ -35,7 +35,7 @@ export default function CENNZExtensionProvider({
 
 	const promptInstallExtension = useCallback(async () => {
 		const url =
-			browser.name === "Firefox"
+			browser?.name === "Firefox"
 				? "https://addons.mozilla.org/en-US/firefox/addon/cennznet-browser-extension/"
 				: "https://chrome.google.com/webstore/detail/cennznet-extension/feckpephlmdcjnpoclagmaogngeffafk";
 

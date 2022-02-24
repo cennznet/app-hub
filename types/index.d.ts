@@ -48,6 +48,7 @@ export type BridgeToken = {
 	symbol: string;
 	decimals: number;
 	logoURI: string;
+	id: number;
 };
 
 export interface AmountParams {
@@ -208,6 +209,16 @@ export interface AssetInfo {
 	symbol: string;
 	decimals: number;
 	logo: string;
+}
+
+export interface BalanceInfo {
+	id: number;
+	symbol: string;
+	decimals: number;
+	logo: string;
+	value: number;
+	rawValue: Codec;
+	tokenAddress?: string;
 }
 
 export interface PoolValues {

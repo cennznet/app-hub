@@ -6,6 +6,7 @@ import {
 	PoolValues,
 } from "@/types";
 import { Amount, AmountUnit } from "@/utils/Amount";
+import { formatBalance } from "@/utils";
 
 export const fetchCoreAmount = (
 	tradeAmount: number,
@@ -36,7 +37,7 @@ export const fetchExchangeRate = (exchangePool: IExchangePool) => {
 		exchangePool.assetBalance.toNumber() /
 		exchangePool.coreAssetBalance.toNumber();
 
-	return exchangeRate.toFixed(4);
+	return formatBalance(exchangeRate);
 };
 
 export const checkLiquidityBalances = (

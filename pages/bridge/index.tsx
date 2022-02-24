@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useBlockchain } from "@/providers/BlockchainProvider";
-import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import Deposit from "@/components/bridge/Deposit";
 import Withdraw from "@/components/bridge/Withdraw";
 import CENNZnetAccountPicker from "@/components/shared/CENNZnetAccountPicker";
@@ -11,7 +10,6 @@ import { Chain, BridgeToken, CennznetAccount, BridgeState } from "@/types";
 import TokenPicker from "@/components/shared/TokenPicker";
 import { CHAINS, fetchMetamaskBalance } from "@/utils/bridge";
 import ExchangeIcon from "@/components/shared/ExchangeIcon";
-import { useWallet } from "@/providers/SupportedWalletProvider";
 import generateGlobalProps from "@/utils/generateGlobalProps";
 
 export async function getStaticProps() {
@@ -27,9 +25,6 @@ const Emery: React.FC<{}> = () => {
 	const [toChain, setToChain] = useState<Chain>(CHAINS[0]);
 	const [fromChain, setFromChain] = useState<Chain>(CHAINS[1]);
 	const { Account } = useBlockchain();
-	const { api, initApi } = useCENNZApi();
-	const { selectedAccount } = useWallet();
-	const { getBridgeBalances } = useWallet();
 	const [amount, setAmount] = useState<string>("");
 	const [erc20Token, setErc20Token] = useState<BridgeToken>();
 	const [error, setError] = useState<string>();
@@ -40,16 +35,6 @@ const Emery: React.FC<{}> = () => {
 		});
 	const [enoughBalance, setEnoughBalance] = useState<boolean>(false);
 	const [estimatedFee, setEstimatedFee] = useState(0);
-
-	useEffect(() => {
-		if (!api?.isConnected) {
-			initApi();
-		}
-	}, [api, initApi]);
-
-	useEffect(() => {
-		getBridgeBalances(selectedAccount?.address);
-	}, [selectedAccount, api]);
 
 	useEffect(() => {
 		if (!toChain) return;
@@ -123,7 +108,7 @@ const Emery: React.FC<{}> = () => {
 					amount={amount}
 					error={error}
 					showBalance={true}
-					wrappedERC20Balance={bridgeState === "Withdraw"}
+					withdrawBridge={bridgeState === "Withdraw"}
 					width={"460px"}
 				/>
 			</div>
