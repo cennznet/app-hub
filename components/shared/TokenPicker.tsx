@@ -97,22 +97,31 @@ const TokenPicker: React.FC<{
 				},
 			];
 
-			ERC20Tokens.tokens.map((token: BridgeToken) => {
+			ERC20Tokens.tokens.map(async (token: BridgeToken) => {
+				const { ethereum }: any = window;
+
 				if (token.chainId === Number(ETH_CHAIN_ID)) {
-					tokes.push({
-						symbol: token.symbol,
-						logo: token.logoURI,
-						address: token.address,
-						decimals: token.decimals,
-						name: token.name,
-					});
+					const balance = await fetchMetamaskBalance(
+						ethereum,
+						token.address,
+						Account
+					);
+
+					if (balance > 0)
+						tokes.push({
+							symbol: token.symbol,
+							logo: token.logoURI,
+							address: token.address,
+							decimals: token.decimals,
+							name: token.name,
+						});
 				}
 			});
 			setTokens(tokes);
 			setSelectedTokenIdx(0);
 			setAssetsLoading(false);
 		}
-	}, [cennznet, removeToken, assets, balances, withdrawBridge]);
+	}, [cennznet, removeToken, assets, balances, withdrawBridge, Account]);
 
 	useEffect(() => {
 		if (
