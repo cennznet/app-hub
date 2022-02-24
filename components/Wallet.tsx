@@ -1,8 +1,10 @@
 import React, { useState, useMemo, useCallback } from "react";
-import { Frame, Heading } from "@/components/StyledComponents";
+import { css } from "@emotion/react";
+import { Frame } from "@/components/StyledComponents";
 import { useWallet } from "@/providers/SupportedWalletProvider";
 import WalletModal from "@/components/shared/WalletModal";
 import ThreeDots from "@/components/shared/ThreeDots";
+import AccountIdenticon from "@/components/shared/AccountIdenticon";
 
 type WalletState = "NotConnected" | "Connecting" | "Connected";
 
@@ -41,7 +43,7 @@ const Wallet: React.FC<{}> = () => {
 					"&:hover": {
 						backgroundColor: "#1130FF",
 					},
-					":hover .headerText": {
+					"&:hover .headerText": {
 						color: "#FFFFFF",
 					},
 					"borderRadius": "4px",
@@ -49,23 +51,54 @@ const Wallet: React.FC<{}> = () => {
 				}}
 				onClick={onWalletClick}
 			>
-				<img
-					style={{ marginLeft: "16px" }}
-					src="images/cennznet_blue.svg"
-					alt="CENNZnet-log"
-				/>
-				<Heading
+				<div
+					css={css`
+						width: 28px;
+						height: 28px;
+						margin-left: 16px;
+						position: relative;
+					`}
+				>
+					<img
+						src="images/cennznet_blue.svg"
+						alt="CENNZnet-log"
+						css={css`
+							display: block;
+							width: 28px;
+							height: 28px;
+							position: absolute;
+							top: 50%;
+							transform: translateY(-50%);
+						`}
+					/>
+
+					{walletState === "Connected" && (
+						<AccountIdenticon
+							css={css`
+								position: absolute;
+								top: 50%;
+								transform: translateY(-50%);
+							`}
+							fadeOnChange={true}
+							theme="beachball"
+							size={28}
+							value={selectedAccount.address}
+						/>
+					)}
+				</div>
+				<div
 					className={"headerText"}
-					sx={{
-						fontSize: "16px",
-						color: modalOpen ? "#FFFFFF" : "#1130FF",
-						whiteSpace: "nowrap",
-						marginLeft: "10px",
-						textOverflow: "ellipsis",
-						overflow: "hidden",
-						textTransform: "uppercase",
-						flex: 1,
-					}}
+					css={css`
+						font-size: 16px;
+						color: ${modalOpen ? "#FFFFFF" : "#1130FF"};
+						white-space: nowrap;
+						margin-left: 0.5em;
+						text-overflow: ellipsis;
+						overflow: hidden;
+						text-transform: uppercase;
+						flex: 1;
+						font-weight: bold;
+					`}
 				>
 					{walletState === "Connected" && (
 						<span>{selectedAccount?.meta.name}</span>
@@ -77,7 +110,7 @@ const Wallet: React.FC<{}> = () => {
 						</span>
 					)}
 					{walletState === "NotConnected" && <span>Connect Wallet</span>}
-				</Heading>
+				</div>
 			</Frame>
 		</>
 	);
