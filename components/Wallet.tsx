@@ -1,11 +1,26 @@
-import React, { useState } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import { Frame, Heading } from "@/components/StyledComponents";
 import { useWallet } from "@/providers/SupportedWalletProvider";
 import WalletModal from "@/components/shared/WalletModal";
+import ThreeDots from "@/components/shared/ThreeDots";
+
+type WalletState = "NotConnected" | "Connecting" | "Connected";
 
 const Wallet: React.FC<{}> = () => {
 	const [modalOpen, setModalOpen] = useState<boolean>(false);
-	const { selectedAccount } = useWallet();
+	const { selectedAccount, balances, connectWallet } = useWallet();
+	const walletState = useMemo<WalletState>(() => {
+		if (!selectedAccount) return "NotConnected";
+		if (selectedAccount && !balances?.length) return "Connecting";
+		return "Connected";
+	}, [selectedAccount, balances]);
+
+	const onWalletClick = useCallback(async () => {
+		if (walletState === "Connecting") return;
+		if (walletState === "Connected") return setModalOpen(true);
+
+		await connectWallet();
+	}, [walletState, connectWallet]);
 
 	return (
 		<>
@@ -16,10 +31,9 @@ const Wallet: React.FC<{}> = () => {
 					"right": "3em",
 					"backgroundColor": modalOpen ? "#1130FF" : "#FFFFFF",
 					"cursor": "pointer",
-					"textAlign": "center",
 					"boxShadow": "4px 8px 8px rgba(17, 48, 255, 0.1)",
 					"border": "none",
-					"width": "228px",
+					"width": "230px",
 					"height": "48px",
 					"display": "flex",
 					"alignItems": "center",
@@ -33,7 +47,7 @@ const Wallet: React.FC<{}> = () => {
 					"borderRadius": "4px",
 					"overflow": "hidden",
 				}}
-				onClick={() => setModalOpen(true)}
+				onClick={onWalletClick}
 			>
 				<img
 					style={{ marginLeft: "16px" }}
@@ -46,14 +60,23 @@ const Wallet: React.FC<{}> = () => {
 						fontSize: "16px",
 						color: modalOpen ? "#FFFFFF" : "#1130FF",
 						whiteSpace: "nowrap",
-						textAlign: "center",
-						letterSpacing: "1.2px",
-						ml: "10px",
+						marginLeft: "10px",
 						textOverflow: "ellipsis",
 						overflow: "hidden",
+						textTransform: "uppercase",
+						flex: 1,
 					}}
 				>
-					{selectedAccount?.meta.name || "CONNECT WALLET"}
+					{walletState === "Connected" && (
+						<span>{selectedAccount?.meta.name}</span>
+					)}
+					{walletState === "Connecting" && (
+						<span>
+							Connecting
+							<ThreeDots />
+						</span>
+					)}
+					{walletState === "NotConnected" && <span>Connect Wallet</span>}
 				</Heading>
 			</Frame>
 		</>
