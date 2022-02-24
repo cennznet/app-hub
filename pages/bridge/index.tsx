@@ -10,6 +10,7 @@ import TokenPicker from "@/components/shared/TokenPicker";
 import { CHAINS, fetchMetamaskBalance } from "@/utils/bridge";
 import ExchangeIcon from "@/components/shared/ExchangeIcon";
 import generateGlobalProps from "@/utils/generateGlobalProps";
+import GlobalModal from "@/components/shared/GlobalModal";
 
 export async function getStaticProps() {
 	return {
@@ -74,6 +75,7 @@ const Emery: React.FC<{}> = () => {
 
 	return (
 		<div css={styles.bridgeContainer}>
+			<GlobalModal />
 			<h1 css={styles.pageHeader}>BRIDGE</h1>
 			<div css={styles.chainPickerContainer}>
 				<ChainPicker
