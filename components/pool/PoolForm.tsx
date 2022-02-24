@@ -271,7 +271,9 @@ const PoolForm: React.FC<{}> = () => {
 				alignItems: "center",
 			}}
 		>
-			<h1 className={styles.pageHeader}>POOL</h1>
+			<h1 className={styles.pageHeader}>
+				{poolAction === PoolAction.ADD ? "Add to Pool" : "Withdraw from Pool"}
+			</h1>
 			<div
 				style={{
 					display: "flex",
@@ -286,22 +288,20 @@ const PoolForm: React.FC<{}> = () => {
 					bottomText={poolAction === PoolAction.ADD ? "Account" : "Action"}
 					options={["Your Account", "Liquidity Pool"]}
 					forceIndex={poolAction === PoolAction.ADD ? 0 : 1}
-					color={poolColors}
+					color={PoolColors.REMOVE}
 					initialIndex={0}
 					onChange={swapAndResetPool}
 				/>
 				<ExchangeIcon
 					onClick={swapAndResetPool}
 					horizontal={true}
-					color={
-						poolColors !== PoolColors.ADD ? PoolColors.REMOVE : PoolColors.ADD
-					}
+					color={PoolColors.REMOVE}
 				/>
 				<PoolSwaper
 					topText={"To"}
 					bottomText={poolAction === PoolAction.ADD ? "Action" : "Account"}
 					options={["Your Account", "Liquidity Pool"]}
-					color={poolColors}
+					color={PoolColors.REMOVE}
 					forceIndex={poolAction === PoolAction.ADD ? 1 : 0}
 					initialIndex={1}
 					onChange={swapAndResetPool}
@@ -310,7 +310,7 @@ const PoolForm: React.FC<{}> = () => {
 			<SmallText
 				sx={{
 					width: "468px",
-					m: "20px 0 40px",
+					m: "-15px 0 40px",
 				}}
 			>
 				<Typography sx={{ fontSize: "16px", lineHeight: "150%" }}>

@@ -93,7 +93,7 @@ const PoolSwaper: React.FC<{
 					)}
 				</div>
 			</div>
-			<div className={styles.bottomText}>{bottomText}</div>
+			<br />
 		</div>
 	);
 };
