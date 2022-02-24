@@ -80,7 +80,12 @@ const ConnectWalletButton: FC<ConnectWalletButtonProps> = ({
 					onClick();
 				}}
 			>
-				<img src={"/images/metamask_logo.svg"} alt={""} width={40} height={40} />
+				<img
+					src={"/images/metamask_logo.svg"}
+					alt={""}
+					width={40}
+					height={40}
+				/>
 				<h1
 					style={{
 						color: color,
@@ -139,7 +144,9 @@ const ConnectWalletButton: FC<ConnectWalletButtonProps> = ({
 						backgroundColor: color,
 					},
 				}}
-				onClick={() => onClick()}
+				onClick={() => {
+					onClick();
+				}}
 				disabled={disabled}
 			>
 				{buttonText}
