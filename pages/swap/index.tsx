@@ -29,10 +29,8 @@ export async function getStaticProps() {
 const Exchange: React.FC<{}> = () => {
 	const [exchangeToken, setExchangeToken] = useState<Asset>();
 	const [receivedToken, setReceivedToken] = useState<Asset>();
-	const [receivedTokenValue, setReceivedTokenValue] =
-		React.useState<string>("0");
-	const [exchangeTokenValue, setExchangeTokenValue] =
-		React.useState<string>("0");
+	const [receivedTokenValue, setReceivedTokenValue] = React.useState<string>();
+	const [exchangeTokenValue, setExchangeTokenValue] = React.useState<string>();
 	const [estimatedFee, setEstimatedFee] = useState<string>();
 	const [exchangeRate, setExchangeRate] = useState<number>();
 	const [slippage, setSlippage] = useState<number>(5);
@@ -168,14 +166,16 @@ const Exchange: React.FC<{}> = () => {
 					success={success}
 				/>
 			</div>
-			<ExchangeIcon
-				onClick={() => {
-					setReceivedToken(exchangeToken);
-					setExchangeToken(receivedToken);
-					setExchangeTokenValue(receivedTokenValue);
-					setReceivedTokenValue(exchangeTokenValue);
-				}}
-			/>
+			<div className={styles.exchangeIconContainer}>
+				<ExchangeIcon
+					onClick={() => {
+						setReceivedToken(exchangeToken);
+						setExchangeToken(receivedToken);
+						setExchangeTokenValue(receivedTokenValue);
+						setReceivedTokenValue(exchangeTokenValue);
+					}}
+				/>
+			</div>
 			<div className={styles.tokenPickerContainer}>
 				<p className={styles.thirdText}>YOU GET</p>
 				<TokenPicker

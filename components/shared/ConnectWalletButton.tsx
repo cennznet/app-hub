@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, MouseEventHandler, useEffect, useState } from "react";
 import styles from "@/styles/components/shared/ConnectWalletButton.module.css";
 import { useWallet } from "@/providers/SupportedWalletProvider";
 import { useBlockchain } from "@/providers/BlockchainProvider";
@@ -118,7 +118,7 @@ const ConnectWalletButton: FC<ConnectWalletButtonProps> = ({
 	};
 
 	const defaultButtonComponent = (
-		onClick: Function,
+		onClick: MouseEventHandler<HTMLButtonElement>,
 		buttonText: string,
 		disabled: boolean
 	) => {
@@ -129,8 +129,6 @@ const ConnectWalletButton: FC<ConnectWalletButtonProps> = ({
 					"cursor": disabled && "not-allowed",
 					"border": `1px solid ${color}`,
 					"color": color,
-					"borderLeft": "transparent",
-					"borderRight": "transparent",
 					"fontWeight": "bold",
 					"fontSize": "16px",
 					"lineHeight": "125%",
@@ -142,11 +140,10 @@ const ConnectWalletButton: FC<ConnectWalletButtonProps> = ({
 					"&:hover": {
 						color: "white",
 						backgroundColor: color,
+						opacity: "1",
 					},
 				}}
-				onClick={() => {
-					onClick();
-				}}
+				onClick={onClick}
 				disabled={disabled}
 			>
 				{buttonText}

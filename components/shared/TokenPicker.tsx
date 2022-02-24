@@ -172,6 +172,31 @@ const TokenPicker: React.FC<{
 		wrappedERC20Balance,
 	]);
 
+	const getBalanceDisplayText = () => {
+		let displayBalanceText = "";
+		if (poolConfig?.poolAction === PoolAction.REMOVE) {
+			displayBalanceText = "Withdrawable: ";
+			if (whichAsset === "trade" && poolConfig.userPoolShare) {
+				displayBalanceText =
+					displayBalanceText +
+					poolConfig?.userPoolShare?.assetBalance?.asString(
+						poolConfig?.tradeAsset.decimals
+					);
+			} else if (poolConfig.userPoolShare) {
+				displayBalanceText =
+					displayBalanceText +
+					poolConfig?.userPoolShare?.coreAssetBalance?.asString(
+						poolConfig?.coreAsset.decimals
+					);
+			}
+		} else {
+			displayBalanceText = "Balance: ";
+			if (selectedTokenBalance !== undefined)
+				displayBalanceText = displayBalanceText + selectedTokenBalance;
+		}
+		return displayBalanceText;
+	};
+
 	return (
 		<div className={styles.tokenPickerContainer}>
 			<div
@@ -283,19 +308,7 @@ const TokenPicker: React.FC<{
 			</div>
 			<div className={styles.bottomTextContainer}>
 				{showBalance && (
-					<p className={styles.balanceText}>
-						{poolConfig?.poolAction === PoolAction.REMOVE
-							? whichAsset === "trade"
-								? `Withdrawable: ${poolConfig?.userPoolShare.assetBalance.asString(
-										poolConfig?.tradeAsset.decimals
-								  )}`
-								: `Withdrawable: ${poolConfig?.userPoolShare.coreAssetBalance.asString(
-										poolConfig?.coreAsset.decimals
-								  )}`
-							: `Balance: ${
-									selectedTokenBalance !== undefined ? selectedTokenBalance : ""
-							  }`}
-					</p>
+					<p className={styles.balanceText}>{getBalanceDisplayText()}</p>
 				)}
 				{error && <p className={styles.errorMsg}>{error}</p>}
 				{success && <p className={styles.successMsg}>{success}</p>}
