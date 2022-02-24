@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
-import { SmallText } from "@/components/StyledComponents";
 import TokenPicker from "@/components/shared/TokenPicker";
 import { AssetInfo, PoolConfig, PoolValues } from "@/types";
 import { useWallet } from "@/providers/SupportedWalletProvider";
@@ -304,7 +303,7 @@ const PoolForm: React.FC<{}> = () => {
 					onChange={swapAndResetPool}
 				/>
 			</div>
-			<SmallText
+			<Box
 				sx={{
 					width: "468px",
 					m: "-15px 0 40px",
@@ -337,7 +336,7 @@ const PoolForm: React.FC<{}> = () => {
 					</span>
 					&nbsp;at the current exchange rate.
 				</Typography>
-			</SmallText>
+			</Box>
 			<TokenPicker
 				setToken={setTradeAsset}
 				setAmount={setTradeAssetAmount}
