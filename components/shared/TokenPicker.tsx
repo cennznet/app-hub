@@ -317,6 +317,7 @@ const TokenPicker: React.FC<{
 						type="number"
 						placeholder={"0.00"}
 						value={amount}
+						disabled={assetsLoading}
 						onChange={(event) => {
 							whichAsset
 								? poolConfig.setOtherAsset(event.target.value, whichAsset)
