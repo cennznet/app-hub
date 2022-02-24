@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styles from "@/styles/components/pool/PoolSwapper.module.css";
+import { ClickAwayListener } from "@mui/material";
 
 const PoolSwapper: React.FC<{
 	options: string[];
@@ -52,25 +53,27 @@ const PoolSwapper: React.FC<{
 						</button>
 					</>
 					{itemDropDownActive && options.length > 1 && (
-						<div className={styles.chainDropdownContainer}>
-							{options.map((option: string, i) => {
-								if (option !== options[selectedItemIdx]) {
-									return (
-										<div
-											key={i}
-											onClick={() => {
-												setSelectedItemIdx(i);
-												setItemDropDownActive(false);
-												onChange();
-											}}
-											className={styles.chainChoiceContainer}
-										>
-											<span>{option}</span>
-										</div>
-									);
-								}
-							})}
-						</div>
+						<ClickAwayListener onClickAway={() => setItemDropDownActive(false)}>
+							<div className={styles.chainDropdownContainer}>
+								{options.map((option: string, i) => {
+									if (option !== options[selectedItemIdx]) {
+										return (
+											<div
+												key={i}
+												onClick={() => {
+													setSelectedItemIdx(i);
+													setItemDropDownActive(false);
+													onChange();
+												}}
+												className={styles.chainChoiceContainer}
+											>
+												<span>{option}</span>
+											</div>
+										);
+									}
+								})}
+							</div>
+						</ClickAwayListener>
 					)}
 				</div>
 			</div>
