@@ -1,25 +1,20 @@
 import React from "react";
-import dynamic from "next/dynamic";
-import Image from "next/image";
 import { Box, CircularProgress, Divider } from "@mui/material";
 import { Heading, SmallText } from "@/components/StyledComponents";
 import { useWallet } from "@/providers/SupportedWalletProvider";
 import CENNZnetAccountPicker from "@/components/shared/CENNZnetAccountPicker";
 import { formatBalance } from "@/utils";
+import AccountIdenticon from "@/components/shared/AccountIdenticon";
 
 const AccountBalances: React.FC<{
 	updateSelectedAccount: Function;
 }> = ({ updateSelectedAccount }) => {
 	const { balances, selectedAccount } = useWallet();
 
-	const Identicon = dynamic(() => import("@polkadot/react-identicon"), {
-		loading: () => <CircularProgress />,
-	});
-
 	return (
 		<>
 			<Box sx={{ mt: "5%", pl: "5%", display: "flex", flexDirection: "row" }}>
-				<Identicon
+				<AccountIdenticon
 					value={selectedAccount.address}
 					theme="beachball"
 					size={50}
