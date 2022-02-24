@@ -16,7 +16,7 @@ import {
 	fetchTradeAmount,
 } from "@/utils/pool";
 import ConnectWalletButton from "@/components/shared/ConnectWalletButton";
-import PoolSwaper from "@/components/pool/PoolSwaper";
+import PoolSwapper from "@/components/pool/PoolSwapper";
 import ExchangeIcon from "@/components/shared/ExchangeIcon";
 import { formatBalance } from "@/utils";
 
@@ -284,7 +284,7 @@ const PoolForm: React.FC<{}> = () => {
 					marginTop: "42px",
 				}}
 			>
-				<PoolSwaper
+				<PoolSwapper
 					topText={"From"}
 					options={["Your Account", "Liquidity Pool"]}
 					forceIndex={poolAction === PoolAction.ADD ? 0 : 1}
@@ -296,7 +296,7 @@ const PoolForm: React.FC<{}> = () => {
 					horizontal={true}
 					color={PoolColors.REMOVE}
 				/>
-				<PoolSwaper
+				<PoolSwapper
 					topText={"To"}
 					options={["Your Account", "Liquidity Pool"]}
 					forceIndex={poolAction === PoolAction.ADD ? 1 : 0}

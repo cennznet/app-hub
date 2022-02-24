@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import styles from "@/styles/components/pool/PoolSwaper.module.css";
+import styles from "@/styles/components/pool/PoolSwapper.module.css";
 
-const PoolSwaper: React.FC<{
+const PoolSwapper: React.FC<{
 	options: string[];
 	topText: string;
 	onChange?: Function;
@@ -14,11 +14,9 @@ const PoolSwaper: React.FC<{
 
 	useEffect(() => {
 		setSelectedItemIdx(initialIndex);
-	}, []);
-
-	useEffect(() => {
-		if (forceIndex !== undefined) setSelectedItemIdx(forceIndex);
-	}, [forceIndex]);
+		if (!forceIndex) return;
+		setSelectedItemIdx(forceIndex);
+	}, [forceIndex, initialIndex]);
 
 	return (
 		<div className={styles.chainPickerContainer}>
@@ -81,4 +79,4 @@ const PoolSwaper: React.FC<{
 	);
 };
 
-export default PoolSwaper;
+export default PoolSwapper;

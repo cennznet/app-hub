@@ -26,12 +26,11 @@ const CENNZnetAccountPicker: React.FC<{
 	}, [accounts, forceAddress]);
 
 	useEffect(() => {
-		if (forceAddress) {
-			setAccountNames([]);
-			//set to default cennznet account
-			updateSelectedAccount(accounts[0]);
-		}
-	}, [forceAddress]);
+		if (!forceAddress || !accounts) return;
+		setAccountNames([]);
+		//set to default cennznet account
+		updateSelectedAccount(accounts[0]);
+	}, [forceAddress, accounts, updateSelectedAccount]);
 
 	const updateAccount = (accountName: string) => {
 		setError("");

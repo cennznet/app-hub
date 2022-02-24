@@ -50,7 +50,8 @@ const Exchange: React.FC<{}> = () => {
 				!exchangeToken ||
 				!receivedToken ||
 				!balances ||
-				!exchangeTokenValue
+				!exchangeTokenValue ||
+				!assets
 			)
 				return;
 

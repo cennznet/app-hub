@@ -24,7 +24,10 @@ const ChainPicker: React.FC<{
 		if (foundChainIdx === selectedChainIdx) return;
 		setSelectedChainIdx(foundChainIdx);
 		setChain(initialChain);
-	}, []);
+
+		//FIXME: adding 'selectedChainIdx' causes infinite loop
+		//eslint-disable-next-line
+	}, [initialChain, setChain]);
 
 	useEffect(() => {
 		if (initialChain === forceChain && !initialRenderComplete) {
@@ -36,7 +39,7 @@ const ChainPicker: React.FC<{
 		);
 		if (foundChainIdx === selectedChainIdx) return;
 		setSelectedChainIdx(foundChainIdx);
-	}, [forceChain]);
+	}, [forceChain, initialChain, initialRenderComplete, selectedChainIdx]);
 
 	useEffect(() => {
 		setChain(CHAINS[selectedChainIdx]);
@@ -44,7 +47,7 @@ const ChainPicker: React.FC<{
 			(chain) => chain.name !== CHAINS[selectedChainIdx].name
 		);
 		setOppositeChain(CHAINS[foundOppositeChainIdx]);
-	}, [selectedChainIdx]);
+	}, [selectedChainIdx, setChain, setOppositeChain]);
 
 	return (
 		<div className={styles.chainPickerContainer}>

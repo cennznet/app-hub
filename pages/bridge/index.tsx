@@ -65,7 +65,7 @@ const Emery: React.FC<{}> = () => {
 				}
 			})();
 		}
-	}, [erc20Token, Account, amount]);
+	}, [erc20Token, Account, amount, bridgeState]);
 
 	useEffect(() => {
 		if (!enoughBalance && parseFloat(amount) > 0)
