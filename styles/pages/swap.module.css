@@ -89,3 +89,8 @@
 .feeContainer span {
 	font-weight: normal;
 }
+
+.exchangeIconContainer{
+	margin-top: -27px;
+	margin-bottom: 8px;
+}

@@ -168,14 +168,16 @@ const Exchange: React.FC<{}> = () => {
 					success={success}
 				/>
 			</div>
-			<ExchangeIcon
-				onClick={() => {
-					setReceivedToken(exchangeToken);
-					setExchangeToken(receivedToken);
-					setExchangeTokenValue(receivedTokenValue);
-					setReceivedTokenValue(exchangeTokenValue);
-				}}
-			/>
+			<div className={styles.exchangeIconContainer}>
+				<ExchangeIcon
+					onClick={() => {
+						setReceivedToken(exchangeToken);
+						setExchangeToken(receivedToken);
+						setExchangeTokenValue(receivedTokenValue);
+						setReceivedTokenValue(exchangeTokenValue);
+					}}
+				/>
+			</div>
 			<div className={styles.tokenPickerContainer}>
 				<p className={styles.thirdText}>YOU GET</p>
 				<TokenPicker
