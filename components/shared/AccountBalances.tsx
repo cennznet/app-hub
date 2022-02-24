@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, CircularProgress, Divider } from "@mui/material";
+import { Box, Divider } from "@mui/material";
 import { Heading, SmallText } from "@/components/StyledComponents";
 import { useWallet } from "@/providers/SupportedWalletProvider";
 import CENNZnetAccountPicker from "@/components/shared/CENNZnetAccountPicker";
@@ -62,7 +62,7 @@ const AccountBalances: React.FC<{
 			</Box>
 			<Divider sx={{ m: "15px 0 15px" }} />
 			<Heading sx={{ pl: "5%" }}>Balance</Heading>
-			{balances ? (
+			{balances?.length && (
 				<Box sx={{ mt: "3%", pl: "5%", display: "block" }}>
 					{balances.map(
 						(token: any, i) =>
@@ -107,10 +107,6 @@ const AccountBalances: React.FC<{
 								</Box>
 							)
 					)}
-				</Box>
-			) : (
-				<Box sx={{ m: "5% 0 0 calc(5% + 10px)" }}>
-					<CircularProgress />
 				</Box>
 			)}
 		</>
