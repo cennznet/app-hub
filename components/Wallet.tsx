@@ -53,34 +53,16 @@ const Wallet: React.FC<{}> = () => {
 				}}
 				onClick={onWalletClick}
 			>
-				<div
-					css={css`
-						width: 28px;
-						height: 28px;
-						margin-left: 16px;
-						position: relative;
-					`}
-				>
+				<div css={styles.walletIcon}>
 					<img
 						src="images/cennznet_blue.svg"
 						alt="CENNZnet-log"
-						css={css`
-							display: block;
-							width: 28px;
-							height: 28px;
-							position: absolute;
-							top: 50%;
-							transform: translateY(-50%);
-						`}
+						css={styles.walletIconImg}
 					/>
 
 					{walletState === "Connected" && (
 						<AccountIdenticon
-							css={css`
-								position: absolute;
-								top: 50%;
-								transform: translateY(-50%);
-							`}
+							css={styles.walletIconIdenticon}
 							theme="beachball"
 							size={28}
 							value={selectedAccount.address}
@@ -118,3 +100,27 @@ const Wallet: React.FC<{}> = () => {
 };
 
 export default Wallet;
+
+export const styles = {
+	walletIcon: css`
+		width: 28px;
+		height: 28px;
+		margin-left: 16px;
+		position: relative;
+	`,
+
+	walletIconImg: css`
+		display: block;
+		width: 28px;
+		height: 28px;
+		position: absolute;
+		top: 50%;
+		transform: translateY(-50%);
+	`,
+
+	walletIconIdenticon: css`
+		position: absolute;
+		top: 50%;
+		transform: translateY(-50%);
+	`,
+};
