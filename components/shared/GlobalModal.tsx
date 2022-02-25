@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Backdrop, Modal } from "@mui/material";
 import { Heading, StyledModal } from "@/components/StyledComponents";
+import styles from "@/styles/components/shared/GlobalModal.module.scss";
 
 const GlobalModal: React.FC<{}> = ({}) => {
 	const [open] = useState(true);
@@ -31,17 +32,15 @@ const GlobalModal: React.FC<{}> = ({}) => {
 							"0px 16px 24px rgba(0, 0, 0, 0.14), 0px 6px 30px rgba(0, 0, 0, 0.12), 0px 8px 10px rgba(0, 0, 0, 0.2);",
 					}}
 				>
-					<Heading
-						sx={{
-							color: "black",
-							fontSize: "24px",
-							letterSpacing: "1px",
-							m: "50px auto 15px",
-							maxWidth: "70%",
-						}}
-					>
-						This is the Head
-					</Heading>
+					<div className={styles.contentContainer}>
+						<h1 className={styles.header}>TITLE</h1>
+						<p className={styles.infoText}>
+							Message here. Lorem ipsum dolor sit amet, consectetur adipiscing
+							elit, sed do eiusmod tempor incididunt ut labore et dolore magna
+							aliqua. Ut enim ad minim veniam
+						</p>
+						<button className={styles.confirmButton}>Confirm</button>
+					</div>
 				</StyledModal>
 			</Modal>
 		</Backdrop>
