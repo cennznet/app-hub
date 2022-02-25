@@ -1,5 +1,6 @@
 import React from "react";
-import { Box, Button, Modal } from "@mui/material";
+import { css } from "@emotion/react";
+import { Modal } from "@mui/material";
 import AccountBalances from "@/components/shared/AccountBalances";
 
 const WalletModal: React.FC<{
@@ -9,45 +10,31 @@ const WalletModal: React.FC<{
 	return (
 		<Modal
 			open={modalOpen}
-			sx={{ outline: "none" }}
+			css={styles.modalRoot}
 			onClose={() => setModalOpen(false)}
 		>
-			<Box
-				sx={{
-					position: "absolute",
-					top: "calc(4% + 45px + 20px)",
-					right: "3em",
-					width: "300px",
-					height: "auto",
-					backgroundColor: "white",
-					boxShadow: "4px 8px 8px rgba(17, 48, 255, 0.1)",
-					borderRadius: "4px",
-					overflow: "hidden",
-				}}
-			>
-				<AccountBalances />
-				<Button
-					sx={{
-						letterSpacing: "1.2px",
-						fontWeight: "bold",
-						fontSize: "16",
-						lineHeight: "125%",
-						color: "primary.main",
-						width: "40%",
-						m: "15px auto 30px",
-						display: "flex",
-					}}
-					size="large"
-					variant="outlined"
-					onClick={() => {
-						setModalOpen(false);
-					}}
-				>
-					CLOSE
-				</Button>
-			</Box>
+			<div css={styles.modalContent}>
+				<AccountBalances setModalOpen={setModalOpen} />
+			</div>
 		</Modal>
 	);
 };
 
 export default WalletModal;
+
+export const styles = {
+	modalRoot: css`
+		outline: none;
+	`,
+
+	modalContent: css`
+		position: absolute;
+		top: calc(4em + 48px);
+		right: 3em;
+		width: 400px;
+		background-color: white;
+		box-shadow: 4px 8px 8px rgba(17, 48, 255, 0.1);
+		border-radius: 4px;
+		outline: none;
+	`,
+};

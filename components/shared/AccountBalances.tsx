@@ -1,15 +1,17 @@
 import React, { useCallback } from "react";
 import { css } from "@emotion/react";
-import { Box, Divider } from "@mui/material";
-import { Heading, SmallText } from "@/components/StyledComponents";
+import { Divider, CircularProgress } from "@mui/material";
 import { useWallet } from "@/providers/SupportedWalletProvider";
 import { formatBalance } from "@/utils";
 import AccountIdenticon from "@/components/shared/AccountIdenticon";
 import { useCENNZExtension } from "@/providers/CENNZExtensionProvider";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
-const AccountBalances: React.FC<{}> = ({}) => {
-	const { balances, selectedAccount, selectAccount } = useWallet();
+const AccountBalances: React.FC<{ setModalOpen: Function }> = ({
+	setModalOpen,
+}) => {
+	const { balances, selectedAccount, selectAccount, disconnectWallet } =
+		useWallet();
 	const { accounts } = useCENNZExtension();
 	const onAccountSelect = useCallback(
 		(event) => {
@@ -20,32 +22,23 @@ const AccountBalances: React.FC<{}> = ({}) => {
 		[accounts, selectAccount]
 	);
 
+	const onWalletDisconnect = useCallback(() => {
+		setModalOpen(false);
+		disconnectWallet();
+	}, [disconnectWallet, setModalOpen]);
+
 	return (
 		<>
-			<Box sx={{ mt: "5%", pl: "5%", display: "flex", flexDirection: "row" }}>
+			<div css={styles.accountHeader}>
 				<AccountIdenticon
 					value={selectedAccount.address}
 					theme="beachball"
 					size={50}
 				/>
-				<Box
-					sx={{
-						display: "flex",
-						flexDirection: "column",
-						ml: "1em",
-					}}
-				>
-					<Heading
-						sx={{
-							color: "primary.main",
-							fontSize: "16px",
-							textTransform: "uppercase",
-						}}
-					>
-						{selectedAccount?.meta?.name}
-					</Heading>
-					<SmallText
-						sx={{ opacity: "70%", cursor: "copy", fontSize: "14px" }}
+				<div css={styles.accountDetails}>
+					<div css={styles.accountName}>{selectedAccount?.meta?.name}</div>
+					<div
+						css={styles.accountAddress}
 						onClick={() =>
 							navigator.clipboard.writeText(selectedAccount.address)
 						}
@@ -59,8 +52,7 @@ const AccountBalances: React.FC<{}> = ({}) => {
 									selectedAccount.address.length
 								)
 							)}
-					</SmallText>
-
+					</div>
 					{accounts?.length > 1 && (
 						<div css={styles.switchAccount}>
 							<select
@@ -80,57 +72,38 @@ const AccountBalances: React.FC<{}> = ({}) => {
 							</label>
 						</div>
 					)}
-				</Box>
-			</Box>
-			<Divider sx={{ m: "15px 0 15px" }} />
-			<Heading sx={{ pl: "5%" }}>Balance</Heading>
-			{balances?.length && (
-				<Box sx={{ mt: "3%", pl: "5%", display: "block" }}>
-					{balances.map(
-						(token: any, i) =>
-							token.value > 0 && (
-								<Box
-									key={i}
-									sx={{
-										display: "flex",
-										height: "50px",
-										verticalAlign: "center",
-									}}
-								>
-									<Box sx={{ m: "10px 10px" }}>
-										<img
-											style={{ width: "40px", height: "40px" }}
-											src={token.logo}
-											alt={`${token.symbol}-logo`}
-										/>
-									</Box>
-									<SmallText
-										sx={{
-											color: "black",
-											fontWeight: "bold",
-											fontSize: "18px",
-											display: "inline-flex",
-											mt: "18px",
-										}}
-									>
-										{formatBalance(token.value)}
-										&nbsp;
-										<span
-											style={{
-												fontWeight: "normal",
-												fontSize: "16px",
-												letterSpacing: "0.5px",
-											}}
-										>
-											{token.symbol}
-										</span>
-									</SmallText>
-									<br />
-								</Box>
-							)
-					)}
-				</Box>
+				</div>
+			</div>
+			<Divider />
+			{!!balances?.length && (
+				<div css={styles.accountBalances}>
+					<div css={styles.balanceHeading}>Balance</div>
+
+					<ul css={styles.balanceList}>
+						{balances
+							.filter((token) => token.value > 0)
+							.map((token) => (
+								<li key={token.id} css={styles.balanceItem}>
+									<figure>
+										<img src={token.logo} alt={`${token.symbol}-logo`} />
+									</figure>
+									<span>{formatBalance(token.value)}</span>
+									<label>{token.symbol}</label>
+								</li>
+							))}
+					</ul>
+				</div>
 			)}
+
+			{!balances?.length && (
+				<div css={styles.balanceFetchProgress}>
+					<CircularProgress size={24} />
+				</div>
+			)}
+			<Divider />
+			<nav css={styles.walletActions}>
+				<span onClick={onWalletDisconnect}>Disconnect</span>
+			</nav>
 		</>
 	);
 };
@@ -138,6 +111,31 @@ const AccountBalances: React.FC<{}> = ({}) => {
 export default AccountBalances;
 
 export const styles = {
+	accountHeader: css`
+		padding: 1.5em;
+		display: flex;
+		flex-direction: "row";
+	`,
+
+	accountDetails: css`
+		margin-left: 1em;
+		flex: 1;0
+	`,
+
+	accountName: ({ palette }: any) => css`
+		color: ${palette.primary.main};
+		font-weight: bold;
+		font-size: 24px;
+		text-transform: uppercase;
+	`,
+
+	accountAddress: css`
+		font-size: 14px;
+		line-height: 1;
+		opacity: 0.7;
+		cursor: copy;
+	`,
+
 	switchAccount: ({ palette }: any) => css`
 		font-size: 14px;
 		position: relative;
@@ -165,5 +163,70 @@ export const styles = {
 		display: inline-block;
 		width: 18px;
 		height: 18px;
+	`,
+
+	accountBalances: css`
+		padding: 1em 1.5em 1.5em;
+	`,
+
+	balanceHeading: css`
+		font-weight: bold;
+		margin-bottom: 0.5em;
+	`,
+
+	balanceList: css`
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	`,
+
+	balanceItem: css`
+		margin-bottom: 0.75em;
+		display: flex;
+		align-items: center;
+
+		&:last-child {
+			margin-bottom: 0;
+		}
+
+		> figure {
+			margin: 0 0.5em 0 0;
+			width: 40px;
+			height: 40px;
+			padding: 8px;
+			background-color: rgba(59, 59, 59, 0.1);
+			display: block;
+			border-radius: 3px;
+
+			> img {
+				width: 100%;
+				height: 100%;
+				object-fit: contain;
+			}
+		}
+
+		> span {
+			font-weight: bold;
+			display: inline-block;
+			margin-right: 0.5em;
+		}
+	`,
+
+	balanceFetchProgress: css`
+		padding: 1.5em;
+		text-align: center;
+	`,
+
+	walletActions: ({ palette }) => css`
+		padding: 1em 1.5em 1.5em;
+		color: rgba(59, 59, 59, 0.75);
+
+		> span {
+			transition: color 0.2s;
+			cursor: pointer;
+			&:hover {
+				color: ${palette.primary.main};
+			}
+		}
 	`,
 };

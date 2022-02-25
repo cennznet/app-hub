@@ -1,6 +1,5 @@
 import React, { useState, useMemo, useCallback } from "react";
 import { css } from "@emotion/react";
-import { Frame } from "@/components/StyledComponents";
 import { useWallet } from "@/providers/SupportedWalletProvider";
 import WalletModal from "@/components/shared/WalletModal";
 import ThreeDots from "@/components/shared/ThreeDots";
@@ -22,35 +21,19 @@ const Wallet: React.FC<{}> = () => {
 		if (walletState === "Connected") return setModalOpen(true);
 
 		await connectWallet();
+		setModalOpen(true);
 	}, [walletState, connectWallet]);
 
 	return (
 		<>
-			{modalOpen && (
-				<WalletModal setModalOpen={setModalOpen} modalOpen={modalOpen} />
-			)}
-			<Frame
-				sx={{
-					"top": "3em",
-					"right": "3em",
-					"backgroundColor": modalOpen ? "#1130FF" : "#FFFFFF",
-					"cursor": "pointer",
-					"boxShadow": "4px 8px 8px rgba(17, 48, 255, 0.1)",
-					"border": "none",
-					"width": "230px",
-					"height": "48px",
-					"display": "flex",
-					"alignItems": "center",
-					"justifyContent": "flex-start",
-					"&:hover": {
-						backgroundColor: "#1130FF",
-					},
-					"&:hover .headerText": {
-						color: "#FFFFFF",
-					},
-					"borderRadius": "4px",
-					"overflow": "hidden",
-				}}
+			<div
+				css={[
+					styles.walletButton,
+					css`
+						background-color: ${modalOpen ? "#1130FF" : "#FFFFFF"};
+						color: ${modalOpen ? "#FFFFFF !important" : "#1130FF"};
+					`,
+				]}
 				onClick={onWalletClick}
 			>
 				<div css={styles.walletIcon}>
@@ -60,7 +43,7 @@ const Wallet: React.FC<{}> = () => {
 						css={styles.walletIconImg}
 					/>
 
-					{walletState === "Connected" && (
+					{!!selectedAccount?.address && (
 						<AccountIdenticon
 							css={styles.walletIconIdenticon}
 							theme="beachball"
@@ -69,20 +52,7 @@ const Wallet: React.FC<{}> = () => {
 						/>
 					)}
 				</div>
-				<div
-					className={"headerText"}
-					css={css`
-						font-size: 16px;
-						color: ${modalOpen ? "#FFFFFF" : "#1130FF"};
-						white-space: nowrap;
-						margin-left: 0.5em;
-						text-overflow: ellipsis;
-						overflow: hidden;
-						text-transform: uppercase;
-						flex: 1;
-						font-weight: bold;
-					`}
-				>
+				<div css={styles.walletState}>
 					{walletState === "Connected" && (
 						<span>{selectedAccount?.meta.name}</span>
 					)}
@@ -94,7 +64,8 @@ const Wallet: React.FC<{}> = () => {
 					)}
 					{walletState === "NotConnected" && <span>Connect Wallet</span>}
 				</div>
-			</Frame>
+			</div>
+			<WalletModal setModalOpen={setModalOpen} modalOpen={modalOpen} />
 		</>
 	);
 };
@@ -102,10 +73,32 @@ const Wallet: React.FC<{}> = () => {
 export default Wallet;
 
 export const styles = {
+	walletButton: ({ palette }) => css`
+		position: absolute;
+		top: 3em;
+		right: 3em;
+		cursor: pointer;
+		box-shadow: 4px 8px 8px rgba(17, 48, 255, 0.1);
+		height: 48px;
+		display: flex;
+		align-items: center;
+		transition: background-color 0.2s;
+		background-color: white;
+		border-radius: 4px;
+		overflow: hidden;
+		padding: 1em;
+		max-width: 240px;
+
+		&:hover {
+			background-color: ${palette.primary.main};
+			color: white;
+		}
+	`,
+
 	walletIcon: css`
 		width: 28px;
 		height: 28px;
-		margin-left: 16px;
+		margin-right: 0.5em;
 		position: relative;
 	`,
 
@@ -122,5 +115,15 @@ export const styles = {
 		position: absolute;
 		top: 50%;
 		transform: translateY(-50%);
+	`,
+
+	walletState: css`
+		font-size: 16px;
+		white-space: nowrap;
+		text-overflow: ellipisis;
+		overflow: hidden;
+		text-transform: uppercase;
+		flex: 1;
+		font-weight: bold;
 	`,
 };
