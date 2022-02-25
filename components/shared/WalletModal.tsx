@@ -1,16 +1,17 @@
-import React, { useState } from "react";
-import { useWallet } from "@/providers/SupportedWalletProvider";
+import React from "react";
 import { Box, Button, Modal } from "@mui/material";
 import AccountBalances from "@/components/shared/AccountBalances";
 
 const WalletModal: React.FC<{
+	modalOpen: boolean;
 	setModalOpen: Function;
-}> = ({ setModalOpen }) => {
-	const [open] = useState(true);
-	const { selectAccount, selectedAccount } = useWallet();
-
+}> = ({ setModalOpen, modalOpen }) => {
 	return (
-		<Modal open={open} sx={{ outline: 0 }} onClose={() => setModalOpen(false)}>
+		<Modal
+			open={modalOpen}
+			sx={{ outline: "none" }}
+			onClose={() => setModalOpen(false)}
+		>
 			<Box
 				sx={{
 					position: "absolute",
@@ -24,9 +25,7 @@ const WalletModal: React.FC<{
 					overflow: "hidden",
 				}}
 			>
-				{selectedAccount && (
-					<AccountBalances updateSelectedAccount={selectAccount} />
-				)}
+				<AccountBalances />
 				<Button
 					sx={{
 						letterSpacing: "1.2px",

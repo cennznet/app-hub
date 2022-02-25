@@ -26,7 +26,9 @@ const Wallet: React.FC<{}> = () => {
 
 	return (
 		<>
-			{modalOpen && <WalletModal setModalOpen={setModalOpen} />}
+			{modalOpen && (
+				<WalletModal setModalOpen={setModalOpen} modalOpen={modalOpen} />
+			)}
 			<Frame
 				sx={{
 					"top": "3em",
@@ -79,7 +81,6 @@ const Wallet: React.FC<{}> = () => {
 								top: 50%;
 								transform: translateY(-50%);
 							`}
-							fadeOnChange={true}
 							theme="beachball"
 							size={28}
 							value={selectedAccount.address}
