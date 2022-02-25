@@ -62,7 +62,7 @@ const Wallet: React.FC<{}> = () => {
 							<ThreeDots />
 						</span>
 					)}
-					{walletState === "NotConnected" && <span>Connect Wallet</span>}
+					{walletState === "NotConnected" && <span>Connect CENNZNET</span>}
 				</div>
 			</div>
 			<WalletModal setModalOpen={setModalOpen} modalOpen={modalOpen} />
