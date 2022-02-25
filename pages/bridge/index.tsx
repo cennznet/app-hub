@@ -121,15 +121,12 @@ const Emery: React.FC<{}> = () => {
 				<p className={styles.infoBoxText}>
 					{bridgeState === "Withdraw" ? (
 						<span className={styles.feeContainer}>
-							<p>{"Estimated Withdrawal Fee:"}</p>
-							{estimatedFee + " ETH"}
+							Estimated Withdrawal Fee: {estimatedFee + " ETH"}
 						</span>
 					) : (
 						<span>
-							<p>
-								You will be awarded with <mark>5 CPAY</mark> on your first
-								transaction through the bridge!
-							</p>
+							You will be awarded with <mark>5 CPAY</mark> on your first
+							transaction through the bridge!
 						</span>
 					)}
 				</p>
