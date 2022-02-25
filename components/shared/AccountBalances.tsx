@@ -1,15 +1,24 @@
-import React from "react";
+import React, { useCallback } from "react";
+import { css } from "@emotion/react";
 import { Box, Divider } from "@mui/material";
 import { Heading, SmallText } from "@/components/StyledComponents";
 import { useWallet } from "@/providers/SupportedWalletProvider";
-import CENNZnetAccountPicker from "@/components/shared/CENNZnetAccountPicker";
 import { formatBalance } from "@/utils";
 import AccountIdenticon from "@/components/shared/AccountIdenticon";
+import { useCENNZExtension } from "@/providers/CENNZExtensionProvider";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
-const AccountBalances: React.FC<{
-	updateSelectedAccount: Function;
-}> = ({ updateSelectedAccount }) => {
-	const { balances, selectedAccount } = useWallet();
+const AccountBalances: React.FC<{}> = ({}) => {
+	const { balances, selectedAccount, selectAccount } = useWallet();
+	const { accounts } = useCENNZExtension();
+	const onAccountSelect = useCallback(
+		(event) => {
+			selectAccount(
+				accounts.find(({ address }) => event.target.value === address)
+			);
+		},
+		[accounts, selectAccount]
+	);
 
 	return (
 		<>
@@ -23,8 +32,7 @@ const AccountBalances: React.FC<{
 					sx={{
 						display: "flex",
 						flexDirection: "column",
-						mt: "10px",
-						ml: "10px",
+						ml: "1em",
 					}}
 				>
 					<Heading
@@ -52,13 +60,27 @@ const AccountBalances: React.FC<{
 								)
 							)}
 					</SmallText>
+
+					{accounts?.length > 1 && (
+						<div css={styles.switchAccount}>
+							<select
+								onChange={onAccountSelect}
+								value={selectedAccount.address}
+								css={styles.swtichAccountSelect}
+							>
+								{accounts.map((acc, index) => (
+									<option value={acc.address} key={index}>
+										{acc.meta.name}
+									</option>
+								))}
+							</select>
+							<label css={styles.switchAccountLabel}>
+								Switch account{" "}
+								<KeyboardArrowDownIcon css={styles.keyboardDownIcon} />
+							</label>
+						</div>
+					)}
 				</Box>
-			</Box>
-			<Box sx={{ m: "15px 5% 0 5%" }}>
-				<CENNZnetAccountPicker
-					updateSelectedAccount={updateSelectedAccount}
-					wallet={true}
-				/>
 			</Box>
 			<Divider sx={{ m: "15px 0 15px" }} />
 			<Heading sx={{ pl: "5%" }}>Balance</Heading>
@@ -114,3 +136,34 @@ const AccountBalances: React.FC<{
 };
 
 export default AccountBalances;
+
+export const styles = {
+	switchAccount: ({ palette }: any) => css`
+		font-size: 14px;
+		position: relative;
+		margin-top: 0.25em;
+		color: ${palette.primary.main};
+	`,
+
+	swtichAccountSelect: css`
+		cursor: pointer;
+		position: absolute;
+		opacity: 0;
+		width: 100%;
+		height: 100%;
+		left: 0;
+		right: 0;
+		z-index: 2;
+	`,
+
+	switchAccountLabel: css`
+		display: flex;
+		align-items: center;
+	`,
+
+	keyboardDownIcon: css`
+		display: inline-block;
+		width: 18px;
+		height: 18px;
+	`,
+};

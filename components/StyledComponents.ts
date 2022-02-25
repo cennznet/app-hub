@@ -15,7 +15,6 @@ export const Heading = styled(Typography)({
 	fontStyle: "normal",
 	fontWeight: "bold",
 	lineHeight: "125%",
-	letterSpacing: "0.5px",
 });
 
 export const SmallText = styled(Typography)({
