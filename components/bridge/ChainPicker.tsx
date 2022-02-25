@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Chain, SupportedChain } from "@/types";
+import { SupportedChain } from "@/types";
+import { ClickAwayListener } from "@mui/material";
 
 import styles from "@/styles/components/bridge/ChainPicker.module.css";
 import { CHAINS } from "@/utils/bridge";
@@ -24,7 +25,10 @@ const ChainPicker: React.FC<{
 		if (foundChainIdx === selectedChainIdx) return;
 		setSelectedChainIdx(foundChainIdx);
 		setChain(initialChain);
-	}, []);
+
+		//FIXME: adding 'selectedChainIdx' causes infinite loop
+		//eslint-disable-next-line
+	}, [initialChain, setChain]);
 
 	useEffect(() => {
 		if (initialChain === forceChain && !initialRenderComplete) {
@@ -36,7 +40,7 @@ const ChainPicker: React.FC<{
 		);
 		if (foundChainIdx === selectedChainIdx) return;
 		setSelectedChainIdx(foundChainIdx);
-	}, [forceChain]);
+	}, [forceChain, initialChain, initialRenderComplete, selectedChainIdx]);
 
 	useEffect(() => {
 		setChain(CHAINS[selectedChainIdx]);
@@ -44,7 +48,7 @@ const ChainPicker: React.FC<{
 			(chain) => chain.name !== CHAINS[selectedChainIdx].name
 		);
 		setOppositeChain(CHAINS[foundOppositeChainIdx]);
-	}, [selectedChainIdx]);
+	}, [selectedChainIdx, setChain, setOppositeChain]);
 
 	return (
 		<div className={styles.chainPickerContainer}>
@@ -77,25 +81,29 @@ const ChainPicker: React.FC<{
 						</button>
 					</>
 					{chainDropDownActive && (
-						<div className={styles.chainDropdownContainer}>
-							{CHAINS.map((chain: any, i) => {
-								if (chain.name !== CHAINS[selectedChainIdx].name) {
-									return (
-										<div
-											key={i}
-											onClick={() => {
-												setSelectedChainIdx(i);
-												setChainDropDownActive(false);
-											}}
-											className={styles.chainChoiceContainer}
-										>
-											<img alt="" src={chain.logo} width={33} height={33} />
-											<span>{chain.name}</span>
-										</div>
-									);
-								}
-							})}
-						</div>
+						<ClickAwayListener
+							onClickAway={() => setChainDropDownActive(false)}
+						>
+							<div className={styles.chainDropdownContainer}>
+								{CHAINS.map((chain: any, i) => {
+									if (chain.name !== CHAINS[selectedChainIdx].name) {
+										return (
+											<div
+												key={i}
+												onClick={() => {
+													setSelectedChainIdx(i);
+													setChainDropDownActive(false);
+												}}
+												className={styles.chainChoiceContainer}
+											>
+												<img alt="" src={chain.logo} width={33} height={33} />
+												<span>{chain.name}</span>
+											</div>
+										);
+									}
+								})}
+							</div>
+						</ClickAwayListener>
 					)}
 				</div>
 			</div>

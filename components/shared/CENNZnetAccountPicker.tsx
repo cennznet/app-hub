@@ -10,6 +10,7 @@ const CENNZnetAccountPicker: React.FC<{
 	forceAddress?: string;
 }> = ({ updateSelectedAccount, wallet, topText, forceAddress }) => {
 	const { accounts } = useCENNZExtension();
+	const [open, setOpen] = useState<boolean>(false);
 	const [selectedAccount, setSelectedAccount] = useState<string>();
 	const [accountNames, setAccountNames] = useState<string[]>([]);
 	const [error, setError] = useState<string>();
@@ -26,12 +27,11 @@ const CENNZnetAccountPicker: React.FC<{
 	}, [accounts, forceAddress]);
 
 	useEffect(() => {
-		if (forceAddress) {
-			setAccountNames([]);
-			//set to default cennznet account
-			updateSelectedAccount(accounts[0]);
-		}
-	}, [forceAddress]);
+		if (!forceAddress || !accounts) return;
+		setAccountNames([]);
+		//set to default cennznet account
+		updateSelectedAccount(accounts[0]);
+	}, [forceAddress, accounts, updateSelectedAccount]);
 
 	const updateAccount = (accountName: string) => {
 		setError("");
@@ -77,7 +77,11 @@ const CENNZnetAccountPicker: React.FC<{
 			<p className={styles.topText}>{topText}</p>
 			<Autocomplete
 				disablePortal
+				open={open}
 				options={accountNames}
+				forcePopupIcon={!!!forceAddress}
+				onOpen={!!forceAddress ? null : () => setOpen(true)}
+				onClose={() => setOpen(false)}
 				onSelect={(e: any) => {
 					setSelectedAccount(e.target.value);
 					updateAccount(e.target.value);

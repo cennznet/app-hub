@@ -36,12 +36,14 @@ const ConnectWalletButton: FC<ConnectWalletButtonProps> = ({
 	const { initBlockchain, Account }: any = useBlockchain();
 
 	useEffect(() => {
-		if (Account) setMetamaskConnected(true);
-	}, []);
+		if (!Account) return;
+		setMetamaskConnected(true);
+	}, [Account]);
 
 	useEffect(() => {
-		if (wallet?.signer) setCennznetConnected(true);
-	}, [wallet?.signer]);
+		if (!wallet?.signer) return;
+		setCennznetConnected(true);
+	}, [wallet]);
 
 	const connectMetamask = async () => {
 		const { ethereum } = window as any;
