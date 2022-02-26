@@ -1,6 +1,5 @@
 import { FC, useEffect, useMemo, useRef } from "react";
 import { css } from "@emotion/react";
-// import styles from "@/styles/components/shared/PageBackdrop.module.scss";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
