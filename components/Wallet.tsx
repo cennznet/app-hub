@@ -26,16 +26,7 @@ const Wallet: React.FC<{}> = () => {
 
 	return (
 		<>
-			<div
-				css={[
-					styles.walletButton,
-					css`
-						background-color: ${modalOpen ? "#1130FF" : "#FFFFFF"};
-						color: ${modalOpen ? "#FFFFFF !important" : "#1130FF"};
-					`,
-				]}
-				onClick={onWalletClick}
-			>
+			<div css={styles.walletButton(modalOpen)} onClick={onWalletClick}>
 				<div css={styles.walletIcon}>
 					<img
 						src="images/cennznet_blue.svg"
@@ -73,27 +64,31 @@ const Wallet: React.FC<{}> = () => {
 export default Wallet;
 
 export const styles = {
-	walletButton: ({ palette }) => css`
-		position: absolute;
-		top: 3em;
-		right: 3em;
-		cursor: pointer;
-		box-shadow: 4px 8px 8px rgba(17, 48, 255, 0.1);
-		height: 48px;
-		display: flex;
-		align-items: center;
-		transition: background-color 0.2s;
-		background-color: white;
-		border-radius: 4px;
-		overflow: hidden;
-		padding: 1em;
-		max-width: 240px;
+	walletButton:
+		(modalOpen: boolean) =>
+		({ palette }) =>
+			css`
+				position: absolute;
+				top: 3em;
+				right: 3em;
+				cursor: pointer;
+				box-shadow: 4px 8px 8px rgba(17, 48, 255, 0.1);
+				height: 48px;
+				display: flex;
+				align-items: center;
+				background-color: ${modalOpen ? palette.primary.main : "#FFFFFF"};
+				color: ${modalOpen ? "#FFFFFF !important" : palette.primary.main};
+				transition: background-color 0.2s;
+				border-radius: 4px;
+				overflow: hidden;
+				padding: 1em;
+				max-width: 240px;
 
-		&:hover {
-			background-color: ${palette.primary.main};
-			color: white;
-		}
-	`,
+				&:hover {
+					background-color: ${palette.primary.main};
+					color: white;
+				}
+			`,
 
 	walletIcon: css`
 		width: 28px;
