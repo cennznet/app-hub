@@ -115,7 +115,7 @@ export const styles = {
 	walletState: css`
 		font-size: 16px;
 		white-space: nowrap;
-		text-overflow: ellipisis;
+		text-overflow: ellipsis;
 		overflow: hidden;
 		text-transform: uppercase;
 		flex: 1;
