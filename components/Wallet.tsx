@@ -45,15 +45,15 @@ const Wallet: React.FC<{}> = () => {
 				</div>
 				<div css={styles.walletState}>
 					{walletState === "Connected" && (
-						<span>{selectedAccount?.meta.name}</span>
+						<span>{selectedAccount?.meta?.name?.toUpperCase?.()}</span>
 					)}
 					{walletState === "Connecting" && (
 						<span>
-							Connecting
+							CONNECTING
 							<ThreeDots />
 						</span>
 					)}
-					{walletState === "NotConnected" && <span>Connect CENNZNET</span>}
+					{walletState === "NotConnected" && <span>CONNECT CENNZnet</span>}
 				</div>
 			</div>
 			<WalletModal setModalOpen={setModalOpen} modalOpen={modalOpen} />
@@ -117,7 +117,6 @@ export const styles = {
 		white-space: nowrap;
 		text-overflow: ellipsis;
 		overflow: hidden;
-		text-transform: uppercase;
 		flex: 1;
 		font-weight: bold;
 	`,
