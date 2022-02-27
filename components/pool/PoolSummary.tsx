@@ -14,6 +14,7 @@ interface FomattedBalances {
 	userCoreAsset: string;
 	poolTradeAsset: string;
 	poolCoreAsset: string;
+	userPercentageShare: string;
 }
 
 const PoolSummary: React.FC<{ poolSummaryProps: PoolSummaryProps }> = ({
@@ -27,16 +28,24 @@ const PoolSummary: React.FC<{ poolSummaryProps: PoolSummaryProps }> = ({
 
 	useEffect(() => {
 		setLoading(true);
+		if (!userPoolShare || !poolLiquidity || !tradeAsset || !coreAsset) return;
+
+		const userTradeAsset = userPoolShare.assetBalance.asString(
+			tradeAsset.decimals
+		);
+		const userCoreAsset = userPoolShare.coreAssetBalance.asString(
+			coreAsset.decimals
+		);
+
+		const userPercentageShare =
+			Number(userCoreAsset) / Number(poolLiquidity.coreAsset);
 
 		setFormattedBalances({
-			userTradeAsset: userPoolShare?.assetBalance.asString(
-				tradeAsset?.decimals
-			),
-			userCoreAsset: userPoolShare?.coreAssetBalance.asString(
-				coreAsset?.decimals
-			),
-			poolTradeAsset: formatBalance(Number(poolLiquidity?.tradeAsset)),
-			poolCoreAsset: formatBalance(Number(poolLiquidity?.coreAsset)),
+			userTradeAsset: formatBalance(Number(userTradeAsset)),
+			userCoreAsset: formatBalance(Number(userCoreAsset)),
+			poolTradeAsset: formatBalance(Number(poolLiquidity.tradeAsset)),
+			poolCoreAsset: formatBalance(Number(poolLiquidity.coreAsset)),
+			userPercentageShare: formatBalance(userPercentageShare * 100),
 		});
 
 		setTimeout(() => setLoading(false), 2000);
@@ -65,31 +74,36 @@ const PoolSummary: React.FC<{ poolSummaryProps: PoolSummaryProps }> = ({
 							</PoolSummaryText>
 						</PoolSummaryBox>
 					)}
-					{!!userPoolShare && (
-						<PoolSummaryBox>
-							<PoolSummaryBoldText>Your Liquidity:</PoolSummaryBoldText>
-							&nbsp;
-							{!!formattedBalances && (
-								<PoolSummaryText
-									sx={{
-										fontSize: "16px",
-										lineHeight: "175%",
-									}}
-								>
-									{formattedBalances.userTradeAsset} {tradeAsset?.symbol}{" "}
-									+&nbsp;
-									{formattedBalances.userCoreAsset} {coreAsset?.symbol}
-								</PoolSummaryText>
-							)}
-						</PoolSummaryBox>
-					)}
 					{!!poolLiquidity && (
 						<PoolSummaryBox>
 							<PoolSummaryBoldText>Pool Liquidity:</PoolSummaryBoldText>
 							&nbsp;
 							<PoolSummaryText>
-								{formattedBalances.poolTradeAsset} {tradeAsset.symbol} +&nbsp;
+								{formattedBalances.poolTradeAsset} {tradeAsset.symbol}
+								{" + "}
 								{formattedBalances.poolCoreAsset} {coreAsset.symbol}
+							</PoolSummaryText>
+						</PoolSummaryBox>
+					)}
+					{!!userPoolShare && (
+						<PoolSummaryBox>
+							<PoolSummaryBoldText>Your Liquidity:</PoolSummaryBoldText>
+							&nbsp;
+							{!!formattedBalances && (
+								<PoolSummaryText>
+									{formattedBalances.userTradeAsset} {tradeAsset?.symbol}
+									{" + "}
+									{formattedBalances.userCoreAsset} {coreAsset?.symbol}
+								</PoolSummaryText>
+							)}
+						</PoolSummaryBox>
+					)}
+					{!!formattedBalances && (
+						<PoolSummaryBox>
+							<PoolSummaryBoldText>Your Pool Share:</PoolSummaryBoldText>
+							&nbsp;
+							<PoolSummaryText>
+								{formattedBalances?.userPercentageShare}%
 							</PoolSummaryText>
 						</PoolSummaryBox>
 					)}
