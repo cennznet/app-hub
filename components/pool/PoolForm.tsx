@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
-import { SmallText } from "@/components/StyledComponents";
 import TokenPicker from "@/components/shared/TokenPicker";
 import { AssetInfo, PoolConfig, PoolValues } from "@/types";
 import { useWallet } from "@/providers/SupportedWalletProvider";
@@ -16,7 +15,7 @@ import {
 	fetchTradeAmount,
 } from "@/utils/pool";
 import ConnectWalletButton from "@/components/shared/ConnectWalletButton";
-import PoolSwaper from "@/components/pool/PoolSwaper";
+import PoolSwapper from "@/components/pool/PoolSwapper";
 import ExchangeIcon from "@/components/shared/ExchangeIcon";
 import { formatBalance } from "@/utils";
 
@@ -285,7 +284,7 @@ const PoolForm: React.FC<{}> = () => {
 					marginTop: "42px",
 				}}
 			>
-				<PoolSwaper
+				<PoolSwapper
 					topText={"From"}
 					options={["Your Account", "Liquidity Pool"]}
 					forceIndex={poolAction === PoolAction.ADD ? 0 : 1}
@@ -297,7 +296,7 @@ const PoolForm: React.FC<{}> = () => {
 					horizontal={true}
 					color={PoolColors.REMOVE}
 				/>
-				<PoolSwaper
+				<PoolSwapper
 					topText={"To"}
 					options={["Your Account", "Liquidity Pool"]}
 					forceIndex={poolAction === PoolAction.ADD ? 1 : 0}
@@ -305,7 +304,7 @@ const PoolForm: React.FC<{}> = () => {
 					onChange={swapAndResetPool}
 				/>
 			</div>
-			<SmallText
+			<Box
 				sx={{
 					width: "468px",
 					m: "-15px 0 40px",
@@ -338,7 +337,7 @@ const PoolForm: React.FC<{}> = () => {
 					</span>
 					&nbsp;at the current exchange rate.
 				</Typography>
-			</SmallText>
+			</Box>
 			<TokenPicker
 				setToken={setTradeAsset}
 				setAmount={setTradeAssetAmount}

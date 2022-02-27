@@ -65,7 +65,7 @@ const Emery: React.FC<{}> = () => {
 				}
 			})();
 		}
-	}, [erc20Token, Account, amount]);
+	}, [erc20Token, Account, amount, bridgeState]);
 
 	useEffect(() => {
 		if (!enoughBalance && parseFloat(amount) > 0)
@@ -120,17 +120,14 @@ const Emery: React.FC<{}> = () => {
 			<div className={styles.infoBoxContainer}>
 				<p className={styles.infoBoxText}>
 					{bridgeState === "Withdraw" ? (
-						<div className={styles.feeContainer}>
-							<p>{"Estimated Withdrawal Fee:"}</p>
-							{estimatedFee + " ETH"}
-						</div>
+						<span className={styles.feeContainer}>
+							Estimated Withdrawal Fee: {estimatedFee + " ETH"}
+						</span>
 					) : (
-						<div>
-							<p>
-								You will be awarded with <mark>5 CPAY</mark> on your first
-								transaction through the bridge!
-							</p>
-						</div>
+						<span>
+							You will be awarded with <mark>5 CPAY</mark> on your first
+							transaction through the bridge!
+						</span>
 					)}
 				</p>
 			</div>

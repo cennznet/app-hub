@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import styles from "@/styles/components/pool/PoolSwaper.module.css";
+import styles from "@/styles/components/pool/PoolSwapper.module.css";
+import { ClickAwayListener } from "@mui/material";
 
-const PoolSwaper: React.FC<{
+const PoolSwapper: React.FC<{
 	options: string[];
 	topText: string;
 	onChange?: Function;
@@ -14,11 +15,9 @@ const PoolSwaper: React.FC<{
 
 	useEffect(() => {
 		setSelectedItemIdx(initialIndex);
-	}, []);
-
-	useEffect(() => {
-		if (forceIndex !== undefined) setSelectedItemIdx(forceIndex);
-	}, [forceIndex]);
+		if (!forceIndex) return;
+		setSelectedItemIdx(forceIndex);
+	}, [forceIndex, initialIndex]);
 
 	return (
 		<div className={styles.chainPickerContainer}>
@@ -54,25 +53,27 @@ const PoolSwaper: React.FC<{
 						</button>
 					</>
 					{itemDropDownActive && options.length > 1 && (
-						<div className={styles.chainDropdownContainer}>
-							{options.map((option: string, i) => {
-								if (option !== options[selectedItemIdx]) {
-									return (
-										<div
-											key={i}
-											onClick={() => {
-												setSelectedItemIdx(i);
-												setItemDropDownActive(false);
-												onChange();
-											}}
-											className={styles.chainChoiceContainer}
-										>
-											<span>{option}</span>
-										</div>
-									);
-								}
-							})}
-						</div>
+						<ClickAwayListener onClickAway={() => setItemDropDownActive(false)}>
+							<div className={styles.chainDropdownContainer}>
+								{options.map((option: string, i) => {
+									if (option !== options[selectedItemIdx]) {
+										return (
+											<div
+												key={i}
+												onClick={() => {
+													setSelectedItemIdx(i);
+													setItemDropDownActive(false);
+													onChange();
+												}}
+												className={styles.chainChoiceContainer}
+											>
+												<span>{option}</span>
+											</div>
+										);
+									}
+								})}
+							</div>
+						</ClickAwayListener>
 					)}
 				</div>
 			</div>
@@ -81,4 +82,4 @@ const PoolSwaper: React.FC<{
 	);
 };
 
-export default PoolSwaper;
+export default PoolSwapper;
