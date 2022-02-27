@@ -1,4 +1,4 @@
-import React, { createContext, useContext, ReactNode, useState } from "react";
+import { FC, createContext, useContext, useState } from "react";
 import { ethers } from "ethers";
 import CENNZnetBridge from "@/artifacts/CENNZnetBridge.json";
 import ERC20Peg from "@/artifacts/ERC20Peg.json";
@@ -23,7 +23,7 @@ export function useBridge() {
 	return useContext(BridgeContext);
 }
 
-const BridgeProvider: React.FC<{ ethChainId: string }> = ({
+const BridgeProvider: FC<{ ethChainId: string }> = ({
 	children,
 	ethChainId,
 }) => {
