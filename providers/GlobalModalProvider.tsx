@@ -9,59 +9,62 @@ import {
 
 import GlobalModal from "@/components/shared/GlobalModal";
 
-type DialogContent = {
+type GlobalModalContent = {
 	title: string;
 	message: string | JSX.Element;
 	action?: JSX.Element;
 };
 
-type DialogContext = {
-	showDialog: (content: DialogContent) => Promise<void>;
+type GlobalModalContext = {
+	showDialog: (content: GlobalModalContent) => Promise<void>;
 	closeDialog: () => void;
 };
 
-const DialogContext = createContext<DialogContext>({} as DialogContext);
+const GlobalModalContext = createContext<GlobalModalContext>(
+	{} as GlobalModalContext
+);
 
 type ProviderProps = {};
 
-export default function DialogProvider({
+export default function GlobalModalProvider({
 	children,
 }: PropsWithChildren<ProviderProps>) {
-	const [modalOpened, setModalOpened] = useState<{ resolve: () => void }>();
+	const [modalOpened, setModalOpened] = useState<boolean>(false);
 	const onModalRequestClose = useCallback(() => {
-		setModalOpened((previous) => {
-			previous?.resolve?.();
-			return null;
-		});
+		setModalOpened(false);
 	}, []);
 	const defaultAction = useMemo(() => {
 		return <div onClick={onModalRequestClose}>Okay</div>;
 	}, [onModalRequestClose]);
 
-	const [content, setContent] = useState<DialogContent>({} as DialogContent);
+	const [content, setContent] = useState<GlobalModalContent>(
+		{} as GlobalModalContent
+	);
 
 	const showDialog = useCallback(
 		async (content) => {
 			setContent({ ...content, action: content.action || defaultAction });
-			return new Promise<void>((resolve) => {
-				setModalOpened({ resolve });
-			});
+			setModalOpened(true);
 		},
 		[defaultAction]
 	);
 
 	return (
 		<>
-			<DialogContext.Provider
+			<GlobalModalContext.Provider
 				value={{ showDialog, closeDialog: onModalRequestClose }}
 			>
 				{children}
-			</DialogContext.Provider>
-			<GlobalModal />
+			</GlobalModalContext.Provider>
+			<GlobalModal
+				isOpen={modalOpened}
+				title={content.title}
+				message={content.message}
+			/>
 		</>
 	);
 }
 
-export function useDialog(): DialogContext {
-	return useContext(DialogContext);
+export function useGlobalModal(): GlobalModalContext {
+	return useContext(GlobalModalContext);
 }

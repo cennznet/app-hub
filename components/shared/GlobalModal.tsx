@@ -1,13 +1,28 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Backdrop, Modal } from "@mui/material";
 import { css } from "@emotion/react";
 import { useTheme } from "@mui/material/styles";
 import { useRouter } from "next/router";
 
-const GlobalModal: React.FC<{}> = ({}) => {
-	const [open] = useState(true);
+interface GlobalModalProps {
+	isOpen: boolean;
+	title: string;
+	message: string | JSX.Element;
+	action?: JSX.Element;
+}
+
+const GlobalModal: React.FC<GlobalModalProps> = ({
+	isOpen,
+	title,
+	message,
+}) => {
+	const [open, setOpen] = useState<boolean>(isOpen);
 	const theme = useTheme();
 	const router = useRouter();
+
+	useEffect(() => {
+		setOpen(isOpen);
+	}, [isOpen]);
 
 	return (
 		<Backdrop
@@ -21,12 +36,8 @@ const GlobalModal: React.FC<{}> = ({}) => {
 			<Modal open={open}>
 				<div css={styles.styledModal}>
 					<div css={styles.contentContainer}>
-						<h1 css={styles.header}>TITLE</h1>
-						<p css={styles.infoText}>
-							Message here. Lorem ipsum dolor sit amet, consectetur adipiscing
-							elit, sed do eiusmod tempor incididunt ut labore et dolore magna
-							aliqua. Ut enim ad minim veniam
-						</p>
+						<h1 css={styles.header}>{title}</h1>
+						<p css={styles.infoText}>{message}</p>
 						<button css={styles.confirmButton}>Confirm</button>
 					</div>
 				</div>
@@ -92,6 +103,7 @@ export const styles = {
 		align-self: flex-end;
 		border: 1px solid #1130ff;
 		background: transparent;
+		margin-top: 18px;
 		&:hover {
 			background: #1130ff;
 			color: white;
