@@ -1,7 +1,7 @@
 import React, { FC, MouseEventHandler, useEffect, useState } from "react";
 import styles from "@/styles/components/shared/ConnectWalletButton.module.css";
 import { useWallet } from "@/providers/SupportedWalletProvider";
-import { useBlockchain } from "@/providers/BlockchainProvider";
+import { useBridge } from "@/providers/BridgeProvider";
 import { Button } from "@mui/material";
 
 const ETH_CHAIN_ID = process.env.NEXT_PUBLIC_ETH_CHAIN_ID;
@@ -33,7 +33,7 @@ const ConnectWalletButton: FC<ConnectWalletButtonProps> = ({
 	);
 
 	const { wallet, connectWallet } = useWallet();
-	const { initBlockchain, Account }: any = useBlockchain();
+	const { initBlockchain, Account }: any = useBridge();
 
 	useEffect(() => {
 		if (!Account) return;

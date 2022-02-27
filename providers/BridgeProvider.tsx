@@ -5,31 +5,31 @@ import ERC20Peg from "@/artifacts/ERC20Peg.json";
 
 const ETH_CHAIN_ID = process.env.NEXT_PUBLIC_ETH_CHAIN_ID;
 
-type blockchainContextType = {
+type bridgeContextType = {
 	Contracts: object;
 	Account: string;
-	initBlockchain: Function;
+	initBridge: Function;
 };
 
-const blockchainContextDefaultValues: blockchainContextType = {
+const bridgeContextDefaultValues: bridgeContextType = {
 	Contracts: null,
 	Account: null,
-	initBlockchain: null,
+	initBridge: null,
 };
 
-const BlockchainContext = createContext<blockchainContextType>(
-	blockchainContextDefaultValues
+const BridgeContext = createContext<bridgeContextType>(
+	bridgeContextDefaultValues
 );
 
-export function useBlockchain() {
-	return useContext(BlockchainContext);
+export function useBridge() {
+	return useContext(BridgeContext);
 }
 
 type Props = {
 	children?: ReactNode;
 };
 
-const BlockchainProvider: React.FC<React.PropsWithChildren<{}>> = ({
+const BridgeProvider: React.FC<React.PropsWithChildren<{}>> = ({
 	children,
 }: Props) => {
 	const [value, setValue] = useState({
@@ -41,7 +41,7 @@ const BlockchainProvider: React.FC<React.PropsWithChildren<{}>> = ({
 		Signer: {} as ethers.providers.JsonRpcSigner,
 	});
 
-	const initBlockchain = (ethereum: any, accounts: string[]) => {
+	const initBridge = (ethereum: any, accounts: string[]) => {
 		return new Promise(async (resolve, reject) => {
 			try {
 				const provider = new ethers.providers.Web3Provider(ethereum);
@@ -90,11 +90,11 @@ const BlockchainProvider: React.FC<React.PropsWithChildren<{}>> = ({
 
 	return (
 		<>
-			<BlockchainContext.Provider value={{ ...value, initBlockchain }}>
+			<BridgeContext.Provider value={{ ...value, initBridge }}>
 				{children}
-			</BlockchainContext.Provider>
+			</BridgeContext.Provider>
 		</>
 	);
 };
 
-export default BlockchainProvider;
+export default BridgeProvider;
