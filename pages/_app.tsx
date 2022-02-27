@@ -39,7 +39,9 @@ function MyApp({
 						<CENNZApiProvider>
 							<SupportedAssetsProvider supportedAssets={supportedAssets}>
 								<SupportedWalletProvider>
-									<BridgeProvider>
+									<BridgeProvider
+										ethChainId={process.env.NEXT_PUBLIC_ETH_CHAIN_ID}
+									>
 										<PageBackdrop />
 										<Wallet />
 										<Switch />

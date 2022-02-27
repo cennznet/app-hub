@@ -3,8 +3,6 @@ import { ethers } from "ethers";
 import CENNZnetBridge from "@/artifacts/CENNZnetBridge.json";
 import ERC20Peg from "@/artifacts/ERC20Peg.json";
 
-const ETH_CHAIN_ID = process.env.NEXT_PUBLIC_ETH_CHAIN_ID;
-
 type bridgeContextType = {
 	Contracts: object;
 	Account: string;
@@ -25,13 +23,10 @@ export function useBridge() {
 	return useContext(BridgeContext);
 }
 
-type Props = {
-	children?: ReactNode;
-};
-
-const BridgeProvider: React.FC<React.PropsWithChildren<{}>> = ({
+const BridgeProvider: React.FC<{ ethChainId: string }> = ({
 	children,
-}: Props) => {
+	ethChainId,
+}) => {
 	const [value, setValue] = useState({
 		Contracts: {
 			bridge: {} as ethers.Contract,
@@ -48,7 +43,7 @@ const BridgeProvider: React.FC<React.PropsWithChildren<{}>> = ({
 				const signer = provider.getSigner();
 				let BridgeAddress: string, ERC20PegAddress: string;
 
-				switch (ETH_CHAIN_ID) {
+				switch (ethChainId) {
 					default:
 					case "1":
 						BridgeAddress = "0x369e2285CCf43483e76746cebbf3d1d6060913EC";
