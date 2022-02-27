@@ -1,13 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Backdrop, Modal } from "@mui/material";
 import { css } from "@emotion/react";
+import { useTheme } from "@mui/material/styles";
+import { useRouter } from "next/router";
 
 const GlobalModal: React.FC<{}> = ({}) => {
 	const [open] = useState(true);
+	const theme = useTheme();
+	const router = useRouter();
+
 	return (
 		<Backdrop
 			sx={{
-				backgroundColor: "rgba(45, 200, 203, 0.35)",
+				backgroundColor:
+					theme.palette.secondary[router.asPath.replace("/", "")],
 				zIndex: (theme) => theme.zIndex.drawer + 1,
 			}}
 			open={open}
@@ -73,7 +79,7 @@ export const styles = {
 	`,
 	confirmButton: css`
 		cursor: pointer;
-		height: 30px;
+		height: 40px;
 		width: 120px;
 		font-family: Roboto;
 		font-style: normal;
