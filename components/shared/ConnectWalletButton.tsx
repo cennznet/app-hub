@@ -159,7 +159,7 @@ const ConnectWalletButton: FC<ConnectWalletButtonProps> = ({
 			{metamaskConnected
 				? cennznetConnected
 					? defaultButtonComponent(onClick, buttonText, disabled)
-					: cennznetButtonComponent(() => connectWallet())
+					: cennznetButtonComponent(async () => await connectWallet())
 				: metamaskButtonComponent(connectMetamask)}
 		</div>
 	);
