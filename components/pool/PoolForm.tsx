@@ -159,6 +159,10 @@ const PoolForm: React.FC<{}> = () => {
 			if (coreAmount <= 0) {
 				setCoreAmount(0);
 			} else {
+				if (formatBalance(coreAmount) === "<0.0001") {
+					setCoreError("Amount too low");
+					return;
+				}
 				setCoreAmount(formatBalance(coreAmount));
 				checkBalances(poolAction, coreAmount, tradeAmount);
 				//define extrinsic & estimate fee
@@ -179,6 +183,10 @@ const PoolForm: React.FC<{}> = () => {
 			if (tradeAmount <= 0) {
 				setTradeAssetAmount(0);
 			} else {
+				if (formatBalance(coreAmount) === "<0.0001") {
+					setTradeError("Amount too low");
+					return;
+				}
 				setTradeAssetAmount(formatBalance(tradeAmount));
 				checkBalances(poolAction, coreAmount, tradeAmount);
 				//define extrinsic & estimate fee
