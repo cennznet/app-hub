@@ -33,7 +33,7 @@ const ConnectWalletButton: FC<ConnectWalletButtonProps> = ({
 	);
 
 	const { wallet, connectWallet } = useWallet();
-	const { initBlockchain, Account }: any = useBridge();
+	const { initBridge, Account }: any = useBridge();
 
 	useEffect(() => {
 		if (!Account) return;
@@ -65,7 +65,7 @@ const ConnectWalletButton: FC<ConnectWalletButtonProps> = ({
 				});
 			}
 
-			initBlockchain(ethereum, accounts);
+			initBridge(ethereum, accounts);
 
 			if (!wallet) connectWallet();
 			setMetamaskConnected(true);
