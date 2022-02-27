@@ -74,14 +74,11 @@ const ConnectWalletButton: FC<ConnectWalletButtonProps> = ({
 		}
 	};
 
-	const metamaskButtonComponent = (onClick: Function) => {
+	const metamaskButtonComponent = (
+		onClick: MouseEventHandler<HTMLDivElement>
+	) => {
 		return (
-			<div
-				className={styles.connectWalletButtonInner}
-				onClick={() => {
-					onClick();
-				}}
-			>
+			<div className={styles.connectWalletButtonInner} onClick={onClick}>
 				<img
 					src={"/images/metamask_logo.svg"}
 					alt={""}
@@ -99,14 +96,11 @@ const ConnectWalletButton: FC<ConnectWalletButtonProps> = ({
 		);
 	};
 
-	const cennznetButtonComponent = (onClick: Function) => {
+	const cennznetButtonComponent = (
+		onClick: MouseEventHandler<HTMLDivElement>
+	) => {
 		return (
-			<div
-				className={styles.connectWalletButtonInner}
-				onClick={() => {
-					onClick();
-				}}
-			>
+			<div className={styles.connectWalletButtonInner} onClick={onClick}>
 				<img src={"images/cennznet_blue.svg"} alt={""} />
 				<h1
 					style={{
@@ -165,7 +159,7 @@ const ConnectWalletButton: FC<ConnectWalletButtonProps> = ({
 			{metamaskConnected
 				? cennznetConnected
 					? defaultButtonComponent(onClick, buttonText, disabled)
-					: cennznetButtonComponent(connectWallet)
+					: cennznetButtonComponent(() => connectWallet())
 				: metamaskButtonComponent(connectMetamask)}
 		</div>
 	);
