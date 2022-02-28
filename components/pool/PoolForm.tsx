@@ -160,21 +160,23 @@ const PoolForm: React.FC<{}> = () => {
 			if (coreAmount <= 0) {
 				setCoreAmount(0);
 			} else {
-				if (formatBalance(coreAmount) === "<0.0001") {
-					setCoreError("Amount too low");
-					return;
+				try {
+					setCoreAmount(formatBalance(coreAmount));
+					checkBalances(poolAction, coreAmount, tradeAmount);
+					//define extrinsic & estimate fee
+					await defineExtrinsic(
+						tradeAsset,
+						tradeAmount,
+						coreAmount,
+						poolAction,
+						false,
+						slippage / 100
+					);
+				} catch (err) {
+					if (err.message.includes("Negative number"))
+						setTradeError("Amount is too low");
+					else setTradeError(err.message);
 				}
-				setCoreAmount(formatBalance(coreAmount));
-				checkBalances(poolAction, coreAmount, tradeAmount);
-				//define extrinsic & estimate fee
-				await defineExtrinsic(
-					tradeAsset,
-					tradeAmount,
-					coreAmount,
-					poolAction,
-					false,
-					slippage / 100
-				);
 			}
 		} else {
 			setCoreAmount(amount);
@@ -184,21 +186,23 @@ const PoolForm: React.FC<{}> = () => {
 			if (tradeAmount <= 0) {
 				setTradeAssetAmount(0);
 			} else {
-				if (formatBalance(coreAmount) === "<0.0001") {
-					setTradeError("Amount too low");
-					return;
+				try {
+					setTradeAssetAmount(formatBalance(tradeAmount));
+					checkBalances(poolAction, coreAmount, tradeAmount);
+					//define extrinsic & estimate fee
+					await defineExtrinsic(
+						tradeAsset,
+						tradeAmount,
+						coreAmount,
+						poolAction,
+						false,
+						slippage / 100
+					);
+				} catch (err) {
+					if (err.message.includes("Negative number"))
+						setCoreError("Amount is too low");
+					else setCoreError(err.message);
 				}
-				setTradeAssetAmount(formatBalance(tradeAmount));
-				checkBalances(poolAction, coreAmount, tradeAmount);
-				//define extrinsic & estimate fee
-				await defineExtrinsic(
-					tradeAsset,
-					tradeAmount,
-					coreAmount,
-					poolAction,
-					false,
-					slippage / 100
-				);
 			}
 		}
 	};
