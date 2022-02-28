@@ -1,14 +1,5 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import {
-	Backdrop,
-	Box,
-	Button,
-	CircularProgress,
-	Link,
-	Modal,
-} from "@mui/material";
-import { Heading, SmallText, StyledModal } from "@/components/StyledComponents";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import { useGlobalModal } from "@/providers/GlobalModalProvider";
 
@@ -18,12 +9,14 @@ interface Props {
 	modalState: string;
 	modalOpen: boolean;
 	modalText: string;
+	modalTitle: string;
 	etherscanHash: string;
 	resetModal: Function;
 }
 
 const TxModal: React.FC<Props> = ({
 	modalText,
+	modalTitle,
 	modalOpen,
 	etherscanHash,
 	modalState,
@@ -103,146 +96,24 @@ const TxModal: React.FC<Props> = ({
 				etherscanLink !== ""
 			) {
 				showDialog({
-					title: "Transaction Submitted to Ethereum",
+					title: modalTitle,
 					message: modalText,
 					buttonText: "View on Etherscan",
 					link: etherscanLink,
 					disabled: false,
 				});
-			} else if (modalState === "finished") {
-				showDialog({
-					title: "Transaction Successful!",
-					message: modalText,
-					disabled: false,
-				});
 			} else {
 				showDialog({
-					title: "Withdrawing in Progress...",
+					title: modalTitle,
 					message: modalText,
-					disabled: !(modalState === "finished"),
+					disabled: modalState === "withdrawCENNZside",
+					callback: resetModal,
 				});
 			}
 		}
 	}, [modalOpen, modalText, modalState, etherscanLink]);
 
-	return (
-		<></>
-		// <Backdrop
-		// 	sx={{
-		// 		backgroundColor: "rgba(17,48,255,0.5)",
-		// 		opacity: "0.3",
-		// 		zIndex: (theme) => theme.zIndex.drawer + 1,
-		// 	}}
-		// 	open={open}
-		// >
-		// 	<Modal open={open}>
-		// 		<StyledModal
-		// 			sx={{
-		// 				justifyContent: "center",
-		// 				display: "flex",
-		// 				flexDirection: "column",
-		// 				border: "4px solid black",
-		// 				textAlign: "center",
-		// 			}}
-		// 		>
-		// 			<Heading
-		// 				sx={{
-		// 					color: "black",
-		// 					fontSize: "24px",
-		// 					letterSpacing: "1px",
-		// 					m: "50px auto 15px",
-		// 					maxWidth: "70%",
-		// 				}}
-		// 			>
-		// 				{relayerStatus === "Successful"
-		// 					? "DONE! YOU MAY NOW CLOSE THIS WINDOW."
-		// 					: modalText}
-		// 			</Heading>
-		// 			{modalState !== "relayer" &&
-		// 				modalState !== "bridgePaused" &&
-		// 				modalState !== "error" &&
-		// 				modalState !== "finished" && (
-		// 					<Box sx={{ margin: "10px auto 50px" }}>
-		// 						<CircularProgress size="3rem" sx={{ color: "black" }} />
-		// 					</Box>
-		// 				)}
-		// 			{modalState === "relayer" && relayerStatus !== "Successful" && (
-		// 				<Box sx={{ margin: "10px auto 20px" }}>
-		// 					<CircularProgress size="3rem" sx={{ color: "black" }} />
-		// 					<SmallText
-		// 						sx={{
-		// 							color: "black",
-		// 							fontSize: "14",
-		// 							margin: "10px auto 0",
-		// 						}}
-		// 					>
-		// 						Confirmations: {confirms} / {eventConfirmations}
-		// 					</SmallText>
-		// 				</Box>
-		// 			)}
-		// 			{etherscanHash !== "" &&
-		// 				etherscanHash !== "noTokenSelected" &&
-		// 				modalState !== "relayer" && (
-		// 					<Button
-		// 						size="large"
-		// 						variant="contained"
-		// 						sx={{
-		// 							backgroundColor: "primary.main",
-		// 							width: "50%",
-		// 							margin: "20px auto 50px",
-		// 						}}
-		// 					>
-		// 						<Link
-		// 							href={etherscanLink}
-		// 							target="_blank"
-		// 							rel="noopener noreferrer"
-		// 						>
-		// 							<Heading sx={{ color: "#FFFFFF", fontSize: "24px" }}>
-		// 								View on Etherscan
-		// 							</Heading>
-		// 						</Link>
-		// 					</Button>
-		// 				)}
-		// 			{(modalState === "bridgePaused" ||
-		// 				modalState === "error" ||
-		// 				modalState === "finished") && (
-		// 				<Button
-		// 					variant="contained"
-		// 					sx={{
-		// 						backgroundColor: "primary.main",
-		// 						width: "50%",
-		// 						margin: "50px auto 50px",
-		// 					}}
-		// 					onClick={() => resetModal()}
-		// 				>
-		// 					<Heading sx={{ color: "#FFFFFF", fontSize: "24px" }}>
-		// 						close
-		// 					</Heading>
-		// 				</Button>
-		// 			)}
-		// 			{modalState === "relayer" && (
-		// 				<Button
-		// 					variant="contained"
-		// 					sx={{
-		// 						backgroundColor: "primary.main",
-		// 						width: "50%",
-		// 						margin: "50px auto 50px",
-		// 					}}
-		// 					onClick={() => {
-		// 						updateRelayerStatus("");
-		// 						resetModal();
-		// 					}}
-		// 					disabled={relayerStatus === "Successful" ? false : true}
-		// 				>
-		// 					<Heading sx={{ color: "#FFFFFF", fontSize: "24px" }}>
-		// 						close
-		// 					</Heading>
-		// 				</Button>
-		// 			)}
-		// 		</StyledModal>
-		// 	</Modal>
-		// </Backdrop>
-	);
+	return <></>;
 };
 
 export default TxModal;

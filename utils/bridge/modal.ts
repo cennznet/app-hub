@@ -3,33 +3,42 @@ function defineTxModal(state: string, hash: string, setModalOpen: Function) {
 	const modal = {
 		state: state,
 		text: "",
+		title: "",
 		hash: hash,
 	};
 	switch (state) {
 		case "approve":
+			modal.title = "Approval in Progress...";
 			modal.text = "APPROVING YOUR TRANSACTION...";
 			break;
 		case "deposit":
+			modal.title = "Deposit in Progress...";
 			modal.text = "DEPOSITING YOUR TOKENS...";
 			break;
 		case "relayer":
+			modal.title = "Claim in Progress...";
 			modal.text = "CLAIMING YOUR TOKENS ON CENNZnet. PLEASE WAIT...";
 			break;
 		case "withdrawCENNZside":
+			modal.title = "CENNZnet Withdrawing in Progress...";
 			modal.text =
 				"CLAIMING YOUR TOKENS FOR WITHDRAWAL FROM CENNZnet. PLEASE STAY ON THIS PAGE";
 			break;
 		case "withdrawETHside":
+			modal.title = "ETH Withdrawing in Progress...";
 			modal.text = "WITHDRAWING YOUR TOKENS...";
 			break;
 		case "finished":
+			modal.title = "Transaction Successful!";
 			modal.text = "DONE! YOU MAY NOW CLOSE THIS WINDOW.";
 			break;
 		case "bridgePaused":
+			modal.title = "Error Bridge Paused!";
 			modal.text =
 				"TOKEN BRIDGE IS PAUSED FOR MAINTENANCE. PLEASE TRY AGAIN LATER.";
 			break;
 		default:
+			modal.title = "Error";
 			modal.text = "WHOOPS! PLEASE TRY AGAIN";
 			break;
 	}

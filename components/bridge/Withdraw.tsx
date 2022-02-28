@@ -30,6 +30,7 @@ const Withdraw: React.FC<{
 	const [modal, setModal] = useState({
 		state: "",
 		text: "",
+		title: "",
 		hash: "",
 	});
 	const { Contracts, Account, Signer }: any = useBridge();
@@ -61,7 +62,7 @@ const Withdraw: React.FC<{
 	}, [token, balances, api, amount, setEnoughBalance]);
 
 	const resetModal = () => {
-		setModal({ state: "", text: "", hash: "" });
+		setModal({ state: "", text: "", hash: "", title: "" });
 		setModalOpen(false);
 	};
 
@@ -231,6 +232,7 @@ const Withdraw: React.FC<{
 					modalState={modal.state}
 					modalOpen={modalOpen}
 					modalText={modal.text}
+					modalTitle={modal.title}
 					etherscanHash={modal.hash}
 					resetModal={resetModal}
 				/>

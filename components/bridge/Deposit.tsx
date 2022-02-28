@@ -22,6 +22,7 @@ const Deposit: React.FC<{
 	const [modalState, _] = useState("");
 	const [modal, setModal] = useState({
 		state: "",
+		title: "",
 		text: "",
 		hash: "",
 	});
@@ -30,7 +31,7 @@ const Deposit: React.FC<{
 	const { updateBalances } = useCENNZWallet();
 
 	const resetModal = () => {
-		setModal({ state: "", text: "", hash: "" });
+		setModal({ state: "", text: "", hash: "", title: "" });
 		setModalOpen(false);
 	};
 
@@ -95,8 +96,10 @@ const Deposit: React.FC<{
 		<>
 			{modalOpen && (
 				<TxModal
+					modalOpen={modalOpen}
 					modalState={modal.state}
 					modalText={modal.text}
+					modalTitle={modal.title}
 					etherscanHash={modal.hash}
 					resetModal={resetModal}
 				/>
