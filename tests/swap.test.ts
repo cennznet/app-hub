@@ -18,6 +18,7 @@ const balances = [
 		decimals: 4,
 		logo: "/images/cennz.svg",
 		value: 5000,
+		rawValue: null,
 	},
 	{
 		id: 16001,
@@ -25,6 +26,7 @@ const balances = [
 		decimals: 4,
 		logo: "/images/cpay.svg",
 		value: 5000,
+		rawValue: null,
 	},
 ];
 

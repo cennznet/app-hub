@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Box, Typography } from "@mui/material";
+import { css } from "@emotion/react";
 import TokenPicker from "@/components/shared/TokenPicker";
 import { AssetInfo, PoolConfig, PoolValues } from "@/types";
 import { useWallet } from "@/providers/SupportedWalletProvider";
 import { PoolAction, usePool } from "@/providers/PoolProvider";
-import styles from "@/styles/pages/swap.module.css";
 import { PoolSummaryProps } from "@/types";
 import PoolSummary from "@/components/pool/PoolSummary";
 import Settings from "@/components/pool/Settings";
@@ -160,17 +159,23 @@ const PoolForm: React.FC<{}> = () => {
 			if (coreAmount <= 0) {
 				setCoreAmount(0);
 			} else {
-				setCoreAmount(formatBalance(coreAmount));
-				checkBalances(poolAction, coreAmount, tradeAmount);
-				//define extrinsic & estimate fee
-				await defineExtrinsic(
-					tradeAsset,
-					tradeAmount,
-					coreAmount,
-					poolAction,
-					false,
-					slippage / 100
-				);
+				try {
+					setCoreAmount(formatBalance(coreAmount));
+					checkBalances(poolAction, coreAmount, tradeAmount);
+					//define extrinsic & estimate fee
+					await defineExtrinsic(
+						tradeAsset,
+						tradeAmount,
+						coreAmount,
+						poolAction,
+						false,
+						slippage / 100
+					);
+				} catch (err) {
+					if (err.message.includes("Negative number"))
+						setTradeError("Amount is too low");
+					else setTradeError(err.message);
+				}
 			}
 		} else {
 			setCoreAmount(amount);
@@ -180,17 +185,23 @@ const PoolForm: React.FC<{}> = () => {
 			if (tradeAmount <= 0) {
 				setTradeAssetAmount(0);
 			} else {
-				setTradeAssetAmount(formatBalance(tradeAmount));
-				checkBalances(poolAction, coreAmount, tradeAmount);
-				//define extrinsic & estimate fee
-				await defineExtrinsic(
-					tradeAsset,
-					tradeAmount,
-					coreAmount,
-					poolAction,
-					false,
-					slippage / 100
-				);
+				try {
+					setTradeAssetAmount(formatBalance(tradeAmount));
+					checkBalances(poolAction, coreAmount, tradeAmount);
+					//define extrinsic & estimate fee
+					await defineExtrinsic(
+						tradeAsset,
+						tradeAmount,
+						coreAmount,
+						poolAction,
+						false,
+						slippage / 100
+					);
+				} catch (err) {
+					if (err.message.includes("Negative number"))
+						setCoreError("Amount is too low");
+					else setCoreError(err.message);
+				}
 			}
 		}
 	};
@@ -261,29 +272,11 @@ const PoolForm: React.FC<{}> = () => {
 	};
 
 	return (
-		<Box
-			component="form"
-			sx={{
-				margin: "0 auto 5%",
-				background: "#FFFFFF",
-				display: "flex",
-				flexDirection: "column",
-				justifyContent: "center",
-				alignItems: "center",
-			}}
-		>
-			<h1 className={styles.pageHeader}>
+		<div css={styles.poolBox}>
+			<h1 css={styles.pageHeader}>
 				{poolAction === PoolAction.ADD ? "Add to Pool" : "Withdraw from Pool"}
 			</h1>
-			<div
-				style={{
-					display: "flex",
-					justifyContent: "space-between",
-					alignItems: "center",
-					width: "100%",
-					marginTop: "42px",
-				}}
-			>
+			<div css={styles.poolForm}>
 				<PoolSwapper
 					topText={"From"}
 					options={["Your Account", "Liquidity Pool"]}
@@ -304,40 +297,31 @@ const PoolForm: React.FC<{}> = () => {
 					onChange={swapAndResetPool}
 				/>
 			</div>
-			<Box
-				sx={{
-					width: "468px",
-					m: "-15px 0 40px",
-				}}
-			>
-				<Typography sx={{ fontSize: "16px", lineHeight: "150%" }}>
+			<div css={styles.copyBox}>
+				<div css={styles.copy}>
 					{poolAction === PoolAction.ADD
 						? "To keep the liquidity pool functional, deposits require an equal value of "
 						: "To keep the liquidity pool functional, withdrawals will return an equal value of "}
-					<span
-						style={{
-							color: "#6200EE",
-							fontSize: "16px",
-							fontWeight: "bold",
-							lineHeight: "150%",
-						}}
-					>
+					<span css={styles.boldCopy}>
 						{tradeAsset?.symbol || "your token"}
 					</span>
 					&nbsp;and&nbsp;
-					<span
-						style={{
-							color: "#6200EE",
-							fontSize: "16px",
-							fontWeight: "bold",
-							lineHeight: "150%",
-						}}
-					>
-						CPAY
-					</span>
+					<span css={styles.boldCopy}>CPAY</span>
 					&nbsp;at the current exchange rate.
-				</Typography>
-			</Box>
+				</div>
+				{poolAction === PoolAction.ADD ? (
+					<div css={styles.copy}>
+						By adding liquidity you will earn{" "}
+						<span css={styles.boldCopy}>0.3%</span> of all trades on this pair
+						proportional to your share of the pool.
+					</div>
+				) : (
+					<div css={styles.copy}>
+						Accrued fees can be claimed at any time by withdrawing your
+						liquidity.
+					</div>
+				)}
+			</div>
 			<TokenPicker
 				setToken={setTradeAsset}
 				setAmount={setTradeAssetAmount}
@@ -382,8 +366,50 @@ const PoolForm: React.FC<{}> = () => {
 					!!tradeError
 				}
 			/>
-		</Box>
+		</div>
 	);
+};
+
+export const styles = {
+	pageHeader: css`
+		font-family: "Roboto";
+		font-style: normal;
+		font-weight: bold;
+		font-size: 20px;
+		line-height: 125%;
+		text-align: center;
+		letter-spacing: 1.12428px;
+		text-transform: uppercase;
+		color: #1130ff;
+		padding-top: 26px;
+	`,
+	poolBox: css`
+		margin: 0 auto 5%;
+		background-color: #ffffff;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+	`,
+	poolForm: css`
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		width: 100%;
+		margin-top: 42px;
+	`,
+	copyBox: css`
+		width: 468px;
+		margin: -15px 0 40px;
+	`,
+	copy: css`
+		font-size: 16px;
+		line-height: 150%;
+	`,
+	boldCopy: css`
+		font-weight: bold;
+		color: #6200ee;
+	`,
 };
 
 export default PoolForm;

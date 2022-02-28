@@ -1,7 +1,7 @@
 import React, { FC, MouseEventHandler, useEffect, useState } from "react";
 import styles from "@/styles/components/shared/ConnectWalletButton.module.css";
 import { useWallet } from "@/providers/SupportedWalletProvider";
-import { useBlockchain } from "@/providers/BlockchainProvider";
+import { useBridge } from "@/providers/BridgeProvider";
 import { Button } from "@mui/material";
 
 const ETH_CHAIN_ID = process.env.NEXT_PUBLIC_ETH_CHAIN_ID;
@@ -33,7 +33,7 @@ const ConnectWalletButton: FC<ConnectWalletButtonProps> = ({
 	);
 
 	const { wallet, connectWallet } = useWallet();
-	const { initBlockchain, Account }: any = useBlockchain();
+	const { initBridge, Account }: any = useBridge();
 
 	useEffect(() => {
 		if (!Account) return;
@@ -65,7 +65,7 @@ const ConnectWalletButton: FC<ConnectWalletButtonProps> = ({
 				});
 			}
 
-			initBlockchain(ethereum, accounts);
+			initBridge(ethereum, accounts);
 
 			if (!wallet) connectWallet();
 			setMetamaskConnected(true);
@@ -74,14 +74,11 @@ const ConnectWalletButton: FC<ConnectWalletButtonProps> = ({
 		}
 	};
 
-	const metamaskButtonComponent = (onClick: Function) => {
+	const metamaskButtonComponent = (
+		onClick: MouseEventHandler<HTMLDivElement>
+	) => {
 		return (
-			<div
-				className={styles.connectWalletButtonInner}
-				onClick={() => {
-					onClick();
-				}}
-			>
+			<div className={styles.connectWalletButtonInner} onClick={onClick}>
 				<img
 					src={"/images/metamask_logo.svg"}
 					alt={""}
@@ -99,14 +96,11 @@ const ConnectWalletButton: FC<ConnectWalletButtonProps> = ({
 		);
 	};
 
-	const cennznetButtonComponent = (onClick: Function) => {
+	const cennznetButtonComponent = (
+		onClick: MouseEventHandler<HTMLDivElement>
+	) => {
 		return (
-			<div
-				className={styles.connectWalletButtonInner}
-				onClick={() => {
-					onClick();
-				}}
-			>
+			<div className={styles.connectWalletButtonInner} onClick={onClick}>
 				<img src={"images/cennznet_blue.svg"} alt={""} />
 				<h1
 					style={{
@@ -165,7 +159,7 @@ const ConnectWalletButton: FC<ConnectWalletButtonProps> = ({
 			{metamaskConnected
 				? cennznetConnected
 					? defaultButtonComponent(onClick, buttonText, disabled)
-					: cennznetButtonComponent(connectWallet)
+					: cennznetButtonComponent(async () => await connectWallet())
 				: metamaskButtonComponent(connectMetamask)}
 		</div>
 	);

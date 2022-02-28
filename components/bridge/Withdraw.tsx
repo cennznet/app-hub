@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { defineTxModal } from "@/utils/bridge/modal";
-import { useBlockchain } from "@/providers/BlockchainProvider";
+import { useBridge } from "@/providers/BridgeProvider";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import { useWallet } from "@/providers/SupportedWalletProvider";
 import TxModal from "@/components/bridge/TxModal";
@@ -32,7 +32,7 @@ const Withdraw: React.FC<{
 		text: "",
 		hash: "",
 	});
-	const { Contracts, Account, Signer }: any = useBlockchain();
+	const { Contracts, Account, Signer }: any = useBridge();
 	const { api }: any = useCENNZApi();
 	const { wallet, balances, updateBalances } = useWallet();
 	const signer = wallet?.signer;

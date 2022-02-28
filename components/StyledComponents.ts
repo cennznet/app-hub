@@ -75,28 +75,3 @@ export const SwitchButton = styled(Button, {
 		backgroundColor: "white !important",
 	},
 }));
-
-export const SettingsText = styled(Typography)({
-	fontSize: "14px",
-	lineHeight: "17.5px",
-	fontWeight: "500",
-	letterSpacing: "1.2px",
-});
-
-export const PoolSummaryBox = styled(Box)({
-	display: "flex",
-	flexDirection: "row",
-	marginLeft: "30px",
-});
-
-export const PoolSummaryText = styled(Typography)({
-	fontSize: "16px",
-	lineHeight: "175%",
-});
-
-export const PoolSummaryBoldText = styled(Typography)({
-	color: "#6200EE",
-	fontSize: "16px",
-	lineHeight: "175%",
-	fontWeight: "bold",
-});
