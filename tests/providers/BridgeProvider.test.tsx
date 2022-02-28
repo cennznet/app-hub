@@ -30,8 +30,8 @@ test("initBridge should set expected Contracts, Account & Signer", async () => {
 	const { bridge, peg }: any = result.current.Contracts;
 	const { Account, Signer }: any = result.current;
 
-	expect(bridge.address).toEqual("0x369e2285CCf43483e76746cebbf3d1d6060913EC");
-	expect(peg.address).toEqual("0x8F68fe02884b2B05e056aF72E4F2D2313E9900eC");
+	expect(bridge.address).toEqual("0xf7997B93437d5d2AC226f362EBF0573ce7a53930");
+	expect(peg.address).toEqual("0x76BAc85e1E82cd677faa2b3f00C4a2626C4c6E32");
 	expect(Account).toEqual(accounts[0]);
 	expect(Signer).toBeDefined();
 });
