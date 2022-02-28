@@ -45,7 +45,7 @@ export default function SupportedWalletProvider({
 	const { api } = useCENNZApi();
 	const { promptInstallExtension, extension, accounts } = useCENNZExtension();
 	const assets = useAssets();
-	const [balances, setBalances] = useState<Array<BalanceInfo>>();
+	const [balances, setBalances] = useState<Array<BalanceInfo>>(null);
 	const [wallet, setWallet] = useState<InjectedExtension>(null);
 	const [selectedAccount, setAccount] = useState<InjectedAccountWithMeta>(null);
 
@@ -105,6 +105,7 @@ export default function SupportedWalletProvider({
 	const updateBalances = useCallback(async () => {
 		if (!assets || !selectedAccount?.address || !api) return;
 		(async () => {
+			setBalances([]);
 			const balances = await fetchAssetBalances(
 				api,
 				assets,

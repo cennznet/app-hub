@@ -26,12 +26,12 @@ const theme = createTheme({
 		},
 		secondary: {
 			main: "#B3BDFF",
+			swap: "#B3BDFF",
+			pool: "#E4D1FF",
+			bridge: "#B1EAEB",
 		},
 		error: {
 			main: "#EC022C",
-		},
-		background: {
-			default: "#B3BDFF",
 		},
 	},
 	typography: {

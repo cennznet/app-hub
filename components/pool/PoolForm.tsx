@@ -75,7 +75,8 @@ const PoolForm: React.FC<{}> = () => {
 
 	//set user balances
 	useEffect(() => {
-		if (!balances || !tradeAsset || !coreAsset || !userPoolShare) return;
+		if (!balances?.length || !tradeAsset || !coreAsset || !userPoolShare)
+			return;
 		const userTradeAsset = balances.find(
 			(asset) => asset.symbol === tradeAsset.symbol
 		);
