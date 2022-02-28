@@ -15,7 +15,6 @@ const ERC20PegAddress = "0x8F68fe02884b2B05e056aF72E4F2D2313E9900eC";
 
 let provider: ethers.providers.Web3Provider, api: Api;
 beforeAll(async () => {
-	jest.setTimeout(10000);
 	mock({
 		blockchain,
 		wallet,

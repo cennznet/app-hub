@@ -32,7 +32,6 @@ const balances = [
 
 let api;
 beforeAll(async () => {
-	jest.setTimeout(10000);
 	api = await Api.create({ provider: "wss://nikau.centrality.me/public/ws" });
 });
 
