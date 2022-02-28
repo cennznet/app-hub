@@ -4,6 +4,14 @@ import { InjectedWindowProvider } from "@polkadot/extension-inject/types";
 import { Observable } from "rxjs/internal/Observable";
 import { Amount } from "@/utils/Amount";
 
+declare global {
+	interface Window {
+		injectedWeb3: Record<string, InjectedWindowProvider>;
+		config: IAppConfig;
+		__REDUX_DEVTOOLS_EXTENSION__?: any;
+	}
+}
+
 export interface FeeExchangeResult {
 	amount: Amount;
 	assetId: number;
@@ -62,14 +70,6 @@ export interface IOption {
 	value: number | string;
 }
 
-declare global {
-	interface Window {
-		injectedWeb3: Record<string, InjectedWindowProvider>;
-		config: IAppConfig;
-		__REDUX_DEVTOOLS_EXTENSION__?: any;
-	}
-}
-
 export interface IEpicDependency {
 	api$: Observable<ApiRx>;
 }
@@ -79,11 +79,6 @@ export interface IExtrinsic {
 	params: any[];
 	price: Amount;
 }
-
-// export interface AssetOutputExtrinsic extends IExtrinsic {
-//     method: 'AssetOutput';
-//     params: {};
-// }
 
 export interface IExchangePool {
 	coreAssetBalance: Amount;
