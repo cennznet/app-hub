@@ -84,11 +84,9 @@ const BridgeProvider: FC<{ ethChainId: string }> = ({
 	};
 
 	return (
-		<>
-			<BridgeContext.Provider value={{ ...value, initBridge }}>
-				{children}
-			</BridgeContext.Provider>
-		</>
+		<BridgeContext.Provider value={{ ...value, initBridge }}>
+			{children}
+		</BridgeContext.Provider>
 	);
 };
 
