@@ -250,7 +250,7 @@ export interface Chain {
 	logo: string;
 }
 
-export interface CennznetAccount {
+export interface CENNZnetAccount {
 	name: string;
 	address: string;
 }
