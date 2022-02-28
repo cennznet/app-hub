@@ -57,7 +57,7 @@ const Withdraw: React.FC<{
 			(balance) => balance.symbol === token.symbol
 		);
 
-		setEnoughBalance(foundToken.value >= Number(amount));
+		setEnoughBalance(foundToken?.value >= Number(amount));
 	}, [token, balances, api, amount, setEnoughBalance]);
 
 	const resetModal = () => {
@@ -229,6 +229,7 @@ const Withdraw: React.FC<{
 			{modalOpen && (
 				<TxModal
 					modalState={modal.state}
+					modalOpen={modalOpen}
 					modalText={modal.text}
 					etherscanHash={modal.hash}
 					resetModal={resetModal}

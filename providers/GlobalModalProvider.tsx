@@ -12,7 +12,9 @@ import GlobalModal from "@/components/shared/GlobalModal";
 type GlobalModalContent = {
 	title: string;
 	message: string | JSX.Element;
-	action?: JSX.Element;
+	buttonText?: string;
+	disabled?: boolean;
+	callback?: Function;
 };
 
 type GlobalModalContext = {
@@ -33,21 +35,15 @@ export default function GlobalModalProvider({
 	const onModalRequestClose = useCallback(() => {
 		setModalOpened(false);
 	}, []);
-	const defaultAction = useMemo(() => {
-		return <div onClick={onModalRequestClose}>Okay</div>;
-	}, [onModalRequestClose]);
 
 	const [content, setContent] = useState<GlobalModalContent>(
 		{} as GlobalModalContent
 	);
 
-	const showDialog = useCallback(
-		async (content) => {
-			setContent({ ...content, action: content.action || defaultAction });
-			setModalOpened(true);
-		},
-		[defaultAction]
-	);
+	const showDialog = useCallback(async (content) => {
+		setContent({ ...content });
+		setModalOpened(true);
+	}, []);
 
 	return (
 		<>
@@ -58,8 +54,12 @@ export default function GlobalModalProvider({
 			</GlobalModalContext.Provider>
 			<GlobalModal
 				isOpen={modalOpened}
+				disableButton={content.disabled}
+				setModalOpened={setModalOpened}
 				title={content.title}
 				message={content.message}
+				buttonText={content.buttonText}
+				callback={content.callback}
 			/>
 		</>
 	);

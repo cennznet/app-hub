@@ -6,23 +6,25 @@ import { useRouter } from "next/router";
 
 interface GlobalModalProps {
 	isOpen: boolean;
+	setModalOpened: Function;
 	title: string;
+	buttonText: string;
+	disableButton: boolean;
 	message: string | JSX.Element;
-	action?: JSX.Element;
+	callback?: Function;
 }
 
 const GlobalModal: React.FC<GlobalModalProps> = ({
 	isOpen,
+	setModalOpened,
 	title,
+	buttonText,
 	message,
+	callback,
+	disableButton = false,
 }) => {
-	const [open, setOpen] = useState<boolean>(isOpen);
 	const theme = useTheme();
 	const router = useRouter();
-
-	useEffect(() => {
-		setOpen(isOpen);
-	}, [isOpen]);
 
 	return (
 		<Backdrop
@@ -31,14 +33,26 @@ const GlobalModal: React.FC<GlobalModalProps> = ({
 					theme.palette.secondary[router.asPath.replace("/", "")],
 				zIndex: (theme) => theme.zIndex.drawer + 1,
 			}}
-			open={open}
+			open={isOpen}
+			onClick={() => {
+				if (!disableButton) setModalOpened(false);
+			}}
 		>
-			<Modal open={open}>
+			<Modal open={isOpen}>
 				<div css={styles.styledModal}>
 					<div css={styles.contentContainer}>
 						<h1 css={styles.header}>{title}</h1>
 						<p css={styles.infoText}>{message}</p>
-						<button css={styles.confirmButton}>Confirm</button>
+						<button
+							disabled={disableButton}
+							onClick={() => {
+								if (callback) callback();
+								else setModalOpened(false);
+							}}
+							css={styles.confirmButton}
+						>
+							{buttonText ? buttonText : "Close"}
+						</button>
 					</div>
 				</div>
 			</Modal>
@@ -107,6 +121,10 @@ export const styles = {
 		&:hover {
 			background: #1130ff;
 			color: white;
+		}
+		&:disabled {
+			cursor: not-allowed;
+			opacity: 0.3;
 		}
 	`,
 };
