@@ -13,6 +13,7 @@ type GlobalModalContent = {
 	title: string;
 	message: string | JSX.Element;
 	buttonText?: string;
+	link?: string;
 	disabled?: boolean;
 	callback?: Function;
 };
@@ -58,6 +59,7 @@ export default function GlobalModalProvider({
 				setModalOpened={setModalOpened}
 				title={content.title}
 				message={content.message}
+				buttonLink={content.link}
 				buttonText={content.buttonText}
 				callback={content.callback}
 			/>

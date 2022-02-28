@@ -29,7 +29,6 @@ const TxModal: React.FC<Props> = ({
 	modalState,
 	resetModal,
 }) => {
-	const [open] = useState(true);
 	const [etherscanLink, setEtherscanLink] = useState("");
 	const [relayerStatus, updateRelayerStatus] = useState("");
 	const [intervalId, setIntervalId] = useState<NodeJS.Timer>(null);
@@ -97,13 +96,34 @@ const TxModal: React.FC<Props> = ({
 
 	useEffect(() => {
 		if (modalOpen) {
-			showDialog({
-				title: "Withdrawal From CENNZnet",
-				message: modalText,
-				disabled: true,
-			});
+			if (
+				etherscanHash !== "" &&
+				etherscanHash !== "noTokenSelected" &&
+				modalState !== "relayer" &&
+				etherscanLink !== ""
+			) {
+				showDialog({
+					title: "Transaction Submitted to Ethereum",
+					message: modalText,
+					buttonText: "View on Etherscan",
+					link: etherscanLink,
+					disabled: false,
+				});
+			} else if (modalState === "finished") {
+				showDialog({
+					title: "Transaction Successful!",
+					message: modalText,
+					disabled: false,
+				});
+			} else {
+				showDialog({
+					title: "Withdrawing in Progress...",
+					message: modalText,
+					disabled: !(modalState === "finished"),
+				});
+			}
 		}
-	}, [modalOpen, modalText]);
+	}, [modalOpen, modalText, modalState, etherscanLink]);
 
 	return (
 		<></>

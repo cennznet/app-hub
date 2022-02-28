@@ -3,14 +3,15 @@ import { Backdrop, Modal } from "@mui/material";
 import { css } from "@emotion/react";
 import { useTheme } from "@mui/material/styles";
 import { useRouter } from "next/router";
-
+import { Link } from "@mui/material";
 interface GlobalModalProps {
 	isOpen: boolean;
 	setModalOpened: Function;
 	title: string;
-	buttonText: string;
-	disableButton: boolean;
 	message: string | JSX.Element;
+	disableButton?: boolean;
+	buttonLink?: string;
+	buttonText?: string;
 	callback?: Function;
 }
 
@@ -19,12 +20,14 @@ const GlobalModal: React.FC<GlobalModalProps> = ({
 	setModalOpened,
 	title,
 	buttonText,
+	buttonLink,
 	message,
 	callback,
 	disableButton = false,
 }) => {
 	const theme = useTheme();
 	const router = useRouter();
+	//TODO add loader element and param
 
 	return (
 		<Backdrop
@@ -43,16 +46,35 @@ const GlobalModal: React.FC<GlobalModalProps> = ({
 					<div css={styles.contentContainer}>
 						<h1 css={styles.header}>{title}</h1>
 						<p css={styles.infoText}>{message}</p>
-						<button
-							disabled={disableButton}
-							onClick={() => {
-								if (callback) callback();
-								else setModalOpened(false);
-							}}
-							css={styles.confirmButton}
-						>
-							{buttonText ? buttonText : "Close"}
-						</button>
+						{buttonLink ? (
+							<Link
+								css={styles.linkedButton}
+								href={buttonLink}
+								target="_blank"
+								rel="noopener noreferrer"
+							>
+								<button
+									disabled={disableButton}
+									onClick={() => {
+										if (callback) callback();
+									}}
+									css={styles.confirmButton}
+								>
+									{buttonText ? buttonText : "Close"}
+								</button>
+							</Link>
+						) : (
+							<button
+								disabled={disableButton}
+								onClick={() => {
+									if (callback) callback();
+									setModalOpened(false);
+								}}
+								css={styles.confirmButton}
+							>
+								{buttonText ? buttonText : "Close"}
+							</button>
+						)}
 					</div>
 				</div>
 			</Modal>
@@ -102,10 +124,13 @@ export const styles = {
 		text-align: left;
 		margin: 0;
 	`,
+	linkedButton: css`
+		align-self: flex-end;
+	`,
 	confirmButton: css`
 		cursor: pointer;
 		height: 40px;
-		width: 120px;
+		width: auto;
 		font-family: Roboto;
 		font-style: normal;
 		font-weight: 500;
