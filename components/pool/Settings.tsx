@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { css } from "@emotion/react";
-import { Box, Typography, ClickAwayListener } from "@mui/material";
+import { ClickAwayListener } from "@mui/material";
 import PercentIcon from "@mui/icons-material/Percent";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
@@ -28,26 +28,26 @@ const Settings: React.FC<{
 
 	return (
 		<>
-			<Box css={styles.settingsBox(open)}>
-				<Box
+			<div css={styles.settingsBox(open)}>
+				<div
 					css={styles.settings(open)}
 					onClick={() => {
 						setOpen(!open);
 						setInfoOpen(false);
 					}}
 				>
-					<Typography css={styles.settingsHeader}>SETTINGS</Typography>
+					<div css={styles.settingsHeader}>SETTINGS</div>
 					<img
 						alt="arrow"
 						src={"/images/arrow_up.svg"}
 						css={styles.settingsArrow(open)}
 					/>
-				</Box>
+				</div>
 
 				{open && (
-					<Box css={styles.openSettingsBox}>
-						<Typography css={styles.settingsHeader}>SLIPPAGE</Typography>
-						<Box css={styles.openSettings}>
+					<div css={styles.openSettingsBox}>
+						<div css={styles.settingsHeader}>SLIPPAGE</div>
+						<div css={styles.openSettings}>
 							<input
 								type="number"
 								placeholder={String(slippage)}
@@ -56,30 +56,30 @@ const Settings: React.FC<{
 								max={"10"}
 								onChange={(e) => setSlippage(Number(e.target.value))}
 							/>
-							<Box css={styles.percentIconBox}>
+							<div css={styles.percentIconBox}>
 								<PercentIcon css={styles.percentIcon} />
-							</Box>
+							</div>
 							<ClickAwayListener onClickAway={() => setInfoOpen(false)}>
-								<Box
+								<div
 									css={styles.infoIconBox}
 									onClick={() => setInfoOpen(!infoOpen)}
 								>
 									<InfoOutlinedIcon css={styles.infoIcon(infoOpen)} />
-								</Box>
+								</div>
 							</ClickAwayListener>
 							{infoOpen && (
-								<Box css={styles.infoOpenBox}>
-									<Typography css={styles.infoOpenText}>
+								<div css={styles.infoOpenBox}>
+									<div css={styles.infoOpenText}>
 										<span style={{ fontWeight: "bold" }}>Slippage</span>
 										&nbsp;is the difference between the price you expect to get
 										on the crypto you have ordered and the price you actually
 										get when the transaction is sent.
-									</Typography>
-								</Box>
+									</div>
+								</div>
 							)}
-						</Box>
-						<Box css={styles.slippageTextBox(color)}>
-							<Typography css={styles.slippageText}>
+						</div>
+						<div css={styles.slippageTextBox(color)}>
+							<div css={styles.slippageText}>
 								If the amount of {tokenName} used sits outside{" "}
 								<span style={{ fontWeight: "bold" }}>{slippage}%</span> <br />
 								{!!coreAmount && (
@@ -91,11 +91,11 @@ const Settings: React.FC<{
 								<span style={{ fontWeight: "bold" }}>
 									the transaction will fail.
 								</span>
-							</Typography>
-						</Box>
-					</Box>
+							</div>
+						</div>
+					</div>
 				)}
-			</Box>
+			</div>
 		</>
 	);
 };

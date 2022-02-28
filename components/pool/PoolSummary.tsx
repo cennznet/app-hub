@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { css } from "@emotion/react";
-import { Box, CircularProgress, Typography } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 import { PoolSummaryProps } from "@/types";
 import { usePool } from "@/providers/PoolProvider";
 import { formatBalance } from "@/utils";
@@ -48,77 +48,67 @@ const PoolSummary: React.FC<{ poolSummaryProps: PoolSummaryProps }> = ({
 	}, [coreAsset, tradeAsset, userPoolShare, poolLiquidity]);
 
 	return (
-		<Box css={styles.summaryBox}>
+		<div css={styles.summaryBox}>
 			{loading ? (
-				<Box css={styles.loadingBox}>
+				<div css={styles.loadingBox}>
 					<CircularProgress css={styles.loading} />
-				</Box>
+				</div>
 			) : (
-				<Box css={styles.summary}>
+				<div css={styles.summary}>
 					{!!exchangeRate && !!tradeAsset && (
 						<div css={styles.summaryTextWrapper}>
-							<Typography css={styles.summaryBoldText}>
-								Exchange Rate:
-							</Typography>
+							<div css={styles.summaryBoldText}>Exchange Rate:</div>
 							&nbsp;
-							<Typography css={styles.summaryText}>
+							<div css={styles.summaryText}>
 								1 {coreAsset?.symbol} = {exchangeRate} {tradeAsset?.symbol}
-							</Typography>
+							</div>
 						</div>
 					)}
 					{!!poolLiquidity && (
 						<div css={styles.summaryTextWrapper}>
-							<Typography css={styles.summaryBoldText}>
-								Pool Liquidity:
-							</Typography>
+							<div css={styles.summaryBoldText}>Pool Liquidity:</div>
 							&nbsp;
-							<Typography css={styles.summaryText}>
+							<div css={styles.summaryText}>
 								{formattedBalances.poolTradeAsset} {tradeAsset.symbol}
 								{" + "}
 								{formattedBalances.poolCoreAsset} {coreAsset.symbol}
-							</Typography>
+							</div>
 						</div>
 					)}
 					{!!userPoolShare && (
 						<div css={styles.summaryTextWrapper}>
-							<Typography css={styles.summaryBoldText}>
-								Your Liquidity:
-							</Typography>
+							<div css={styles.summaryBoldText}>Your Liquidity:</div>
 							&nbsp;
 							{!!formattedBalances && (
-								<Typography css={styles.summaryText}>
+								<div css={styles.summaryText}>
 									{formattedBalances.userTradeAsset} {tradeAsset?.symbol}
 									{" + "}
 									{formattedBalances.userCoreAsset} {coreAsset?.symbol}
-								</Typography>
+								</div>
 							)}
 						</div>
 					)}
 					{!!formattedBalances && (
 						<div css={styles.summaryTextWrapper}>
-							<Typography css={styles.summaryBoldText}>
-								Your Pool Share:
-							</Typography>
+							<div css={styles.summaryBoldText}>Your Pool Share:</div>
 							&nbsp;
-							<Typography css={styles.summaryText}>
+							<div css={styles.summaryText}>
 								{formattedBalances?.userPercentageShare}%
-							</Typography>
+							</div>
 						</div>
 					)}
 					{!!estimatedFee && (
 						<div css={styles.summaryTextWrapper}>
-							<Typography css={styles.summaryBoldText}>
-								Estimated Fee:
-							</Typography>
+							<div css={styles.summaryBoldText}>Estimated Fee:</div>
 							&nbsp;
-							<Typography css={styles.summaryText}>
+							<div css={styles.summaryText}>
 								{estimatedFee.asString(coreAsset?.decimals)} {coreAsset?.symbol}
-							</Typography>
+							</div>
 						</div>
 					)}
-				</Box>
+				</div>
 			)}
-		</Box>
+		</div>
 	);
 };
 

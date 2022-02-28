@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { css } from "@emotion/react";
-import { Box, Typography } from "@mui/material";
 import TokenPicker from "@/components/shared/TokenPicker";
 import { AssetInfo, PoolConfig, PoolValues } from "@/types";
 import { useWallet } from "@/providers/SupportedWalletProvider";
@@ -273,7 +272,7 @@ const PoolForm: React.FC<{}> = () => {
 	};
 
 	return (
-		<Box component="form" css={styles.poolBox}>
+		<div css={styles.poolBox}>
 			<h1 css={styles.pageHeader}>
 				{poolAction === PoolAction.ADD ? "Add to Pool" : "Withdraw from Pool"}
 			</h1>
@@ -298,8 +297,8 @@ const PoolForm: React.FC<{}> = () => {
 					onChange={swapAndResetPool}
 				/>
 			</div>
-			<Box css={styles.copyBox}>
-				<Typography css={styles.copy}>
+			<div css={styles.copyBox}>
+				<div css={styles.copy}>
 					{poolAction === PoolAction.ADD
 						? "To keep the liquidity pool functional, deposits require an equal value of "
 						: "To keep the liquidity pool functional, withdrawals will return an equal value of "}
@@ -309,20 +308,20 @@ const PoolForm: React.FC<{}> = () => {
 					&nbsp;and&nbsp;
 					<span css={styles.boldCopy}>CPAY</span>
 					&nbsp;at the current exchange rate.
-				</Typography>
+				</div>
 				{poolAction === PoolAction.ADD ? (
-					<Typography css={styles.copy}>
+					<div css={styles.copy}>
 						By adding liquidity you will earn{" "}
 						<span css={styles.boldCopy}>0.3%</span> of all trades on this pair
 						proportional to your share of the pool.
-					</Typography>
+					</div>
 				) : (
-					<Typography css={styles.copy}>
+					<div css={styles.copy}>
 						Accrued fees can be claimed at any time by withdrawing your
 						liquidity.
-					</Typography>
+					</div>
 				)}
-			</Box>
+			</div>
 			<TokenPicker
 				setToken={setTradeAsset}
 				setAmount={setTradeAssetAmount}
@@ -367,7 +366,7 @@ const PoolForm: React.FC<{}> = () => {
 					!!tradeError
 				}
 			/>
-		</Box>
+		</div>
 	);
 };
 
