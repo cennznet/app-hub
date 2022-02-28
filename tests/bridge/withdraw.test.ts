@@ -20,6 +20,7 @@ const eventProofSignatures = [
 
 let provider: ethers.providers.Web3Provider, api: Api;
 beforeAll(async () => {
+	jest.setTimeout(10000);
 	mock({
 		blockchain,
 		wallet,

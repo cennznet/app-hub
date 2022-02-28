@@ -10,6 +10,7 @@ import { Api } from "@cennznet/api";
 
 let api: Api, exchangePool: IExchangePool;
 beforeAll(async () => {
+	jest.setTimeout(10000);
 	api = await Api.create({ provider: "wss://nikau.centrality.me/public/ws" });
 	const exchangeAddress = await api.derive.cennzx.exchangeAddress(16000);
 
