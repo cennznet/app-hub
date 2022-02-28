@@ -1,6 +1,7 @@
 import { act, renderHook } from "@testing-library/react-hooks";
 import PoolProvider, { usePool } from "@/providers/PoolProvider";
 import { Api } from "@cennznet/api";
+import { AssetInfo, IExchangePool, IUserShareInPool } from "@/types";
 
 const selectedAccount = {
 	address: "5FbMzsoEpd2mt8eyKpKUxwJ5S9W7nJVJkCer2Jk7tvSpB1vF",
@@ -51,7 +52,6 @@ test("should define functions, and fetch exchangePool & userPoolShare", async ()
 		updateExchangePool,
 		defineExtrinsic,
 		sendExtrinsic,
-		coreAsset,
 	}: any = result.current;
 
 	expect(getUserPoolShare).toBeDefined();
@@ -59,12 +59,13 @@ test("should define functions, and fetch exchangePool & userPoolShare", async ()
 	expect(defineExtrinsic).toBeDefined();
 	expect(sendExtrinsic).toBeDefined();
 
+	const coreAsset: AssetInfo = result.current.coreAsset;
 	expect(coreAsset).toEqual(assets.CPAY);
 
 	await act(async () => {
 		await updateExchangePool(assets.CENNZ);
 	});
-	const { exchangePool }: any = result.current;
+	const exchangePool: IExchangePool = result.current.exchangePool;
 	expect(exchangePool.address).toEqual(
 		"5DwJXhQP4W9VLR3RoPNLX6mGdtFtJyd7zaWUDf89fS8cP2eg"
 	);
@@ -75,7 +76,7 @@ test("should define functions, and fetch exchangePool & userPoolShare", async ()
 	await act(async () => {
 		await getUserPoolShare(assets.CENNZ);
 	});
-	const { userPoolShare }: any = result.current;
+	const userPoolShare: IUserShareInPool = result.current.userPoolShare;
 	expect(userPoolShare.address).toEqual(selectedAccount.address);
 	expect(userPoolShare.assetId).toEqual(assets.CENNZ.id);
 	expect(userPoolShare.assetBalance).toBeDefined();
