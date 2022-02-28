@@ -1,15 +1,15 @@
+import { Api } from "@cennznet/api";
 import { Amount } from "@/utils/Amount";
-import { AssetInfo } from "@/types";
-import { IExchangePool, IUserShareInPool } from "@/types";
+import { InjectedAccountWithMeta } from "@polkadot/extension-inject/types";
+import { AssetInfo, IExchangePool, IUserShareInPool } from "@/types";
 import {
+	FC,
 	createContext,
-	PropsWithChildren,
 	useCallback,
 	useContext,
 	useEffect,
 	useState,
 } from "react";
-import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import { useWallet } from "@/providers/SupportedWalletProvider";
 import {
 	fetchAddLiquidityValues,
@@ -50,14 +50,12 @@ const poolContextDefaultValues = {
 
 const PoolContext = createContext<PoolContextType>(poolContextDefaultValues);
 
-type ProviderProps = {};
-
-export default function PoolProvider({
-	children,
-}: PropsWithChildren<ProviderProps>) {
+const PoolProvider: FC<{
+	api: Api;
+	selectedAccount: InjectedAccountWithMeta;
+}> = ({ children, api, selectedAccount }) => {
 	const [value, setValue] = useState<PoolContextType>(poolContextDefaultValues);
-	const { api } = useCENNZApi();
-	const { wallet, selectedAccount, updateBalances } = useWallet();
+	const { wallet, updateBalances } = useWallet();
 	const signer = wallet?.signer;
 
 	//set core asset
@@ -208,7 +206,9 @@ export default function PoolProvider({
 			{children}
 		</PoolContext.Provider>
 	);
-}
+};
+
+export default PoolProvider;
 
 export function usePool(): PoolContextType {
 	return useContext(PoolContext);
