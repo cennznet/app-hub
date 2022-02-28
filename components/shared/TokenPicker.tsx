@@ -9,7 +9,7 @@ import ERC20Tokens from "@/artifacts/erc20tokens.json";
 import { ETH, ETH_LOGO, fetchMetamaskBalance } from "@/utils/bridge";
 import { useAssets } from "@/providers/SupportedAssetsProvider";
 import { Asset, PoolConfig, BridgeToken } from "@/types";
-import { useBlockchain } from "@/providers/BlockchainProvider";
+import { useBridge } from "@/providers/BridgeProvider";
 import { useRouter } from "next/router";
 import styles from "@/styles/components/shared/TokenPicker.module.css";
 import { useWallet } from "@/providers/SupportedWalletProvider";
@@ -57,7 +57,7 @@ const TokenPicker: React.FC<{
 	const [selectedTokenBalance, setSelectedTokenBalance] = useState<number>();
 	const [displayTokenBalance, setDisplayTokenBalance] = useState<string>();
 	const assets = useAssets();
-	const { Account } = useBlockchain();
+	const { Account } = useBridge();
 	const { balances } = useWallet();
 
 	useEffect(() => {

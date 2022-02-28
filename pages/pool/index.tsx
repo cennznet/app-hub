@@ -3,6 +3,8 @@ import { css } from "@emotion/react";
 import PoolProvider from "@/providers/PoolProvider";
 import PoolForm from "@/components/pool/PoolForm";
 import generateGlobalProps from "@/utils/generateGlobalProps";
+import { useCENNZApi } from "@/providers/CENNZApiProvider";
+import { useWallet } from "@/providers/SupportedWalletProvider";
 
 export async function getStaticProps() {
 	return {
@@ -13,8 +15,11 @@ export async function getStaticProps() {
 }
 
 const Pool: React.FC<{}> = () => {
+	const { api } = useCENNZApi();
+	const { selectedAccount } = useWallet();
+
 	return (
-		<PoolProvider>
+		<PoolProvider api={api} selectedAccount={selectedAccount}>
 			<div css={styles.poolContainer}>
 				<PoolForm />
 			</div>

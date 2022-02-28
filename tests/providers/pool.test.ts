@@ -82,6 +82,7 @@ describe("fetchUserPoolShare", () => {
 		expect(liquidity).toEqual(expectedLiquidity);
 	});
 	it("throws invalid address error", async () => {
+		jest.spyOn(console, "error").mockImplementation(() => {});
 		await fetchUserPoolShare(
 			api,
 			"5FbMzsoEpd2mt8eyfakeAddress7nJVJkCer2Jk7tvSpB1vF",
