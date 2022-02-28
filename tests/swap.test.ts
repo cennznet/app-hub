@@ -18,6 +18,7 @@ const balances = [
 		decimals: 4,
 		logo: "/images/cennz.svg",
 		value: 5000,
+		rawValue: null,
 	},
 	{
 		id: 16001,
@@ -25,11 +26,13 @@ const balances = [
 		decimals: 4,
 		logo: "/images/cpay.svg",
 		value: 5000,
+		rawValue: null,
 	},
 ];
 
 let api;
 beforeAll(async () => {
+	jest.setTimeout(10000);
 	api = await Api.create({ provider: "wss://nikau.centrality.me/public/ws" });
 });
 

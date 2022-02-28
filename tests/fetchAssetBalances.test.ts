@@ -6,6 +6,7 @@ const testingAccount = "5FbMzsoEpd2mt8eyKpKUxwJ5S9W7nJVJkCer2Jk7tvSpB1vF";
 
 let api: Api;
 beforeAll(async () => {
+	jest.setTimeout(10000);
 	api = await Api.create({ provider: "wss://nikau.centrality.me/public/ws" });
 });
 

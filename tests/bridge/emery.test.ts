@@ -11,6 +11,7 @@ const accounts = ["0x699aC2aedF058e76eD900FCc8cB31aB316B35bF2"];
 
 let provider: ethers.providers.Web3Provider, api: Api;
 beforeAll(async () => {
+	jest.setTimeout(10000);
 	mock({
 		blockchain,
 		wallet,
