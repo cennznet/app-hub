@@ -1,6 +1,6 @@
 import { FC, useMemo } from "react";
+import { css } from "@emotion/react";
 import { useRouter } from "next/router";
-import styles from "@/styles/components/shared/PageFrame.module.scss";
 
 const PageFrame: FC<{}> = () => {
 	const { pathname } = useRouter();
@@ -9,9 +9,20 @@ const PageFrame: FC<{}> = () => {
 		if (section === "") return "swap";
 		return section as "swap" | "pool" | "bridge";
 	}, [pathname]);
-	return (
-		<div className={`${styles.container} ${styles[`container--${section}`]}`} />
-	);
+	return <div css={styles.container(section)} />;
 };
 
 export default PageFrame;
+
+export const styles = {
+	container:
+		(section: string) =>
+		({ palette }) =>
+			css`
+				position: fixed;
+				inset: 0;
+				z-index: 1000;
+				pointer-events: none;
+				border: 8px solid ${palette.primary[section]};
+			`,
+};
