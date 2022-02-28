@@ -10,7 +10,7 @@ import SupportedWalletProvider from "@/providers/SupportedWalletProvider";
 import Switch from "@/components/AppSwitch";
 import Wallet from "@/components/Wallet";
 import SupportedAssetsProvider from "@/providers/SupportedAssetsProvider";
-import BlockchainProvider from "@/providers/BlockchainProvider";
+import BridgeProvider from "@/providers/BridgeProvider";
 import { GlobalProps } from "@/utils/generateGlobalProps";
 import UserAgentProvider from "@/providers/UserAgentProvider";
 import CENNZExtensionProvider from "@/providers/CENNZExtensionProvider";
@@ -39,13 +39,15 @@ function MyApp({
 						<CENNZApiProvider endpoint={process.env.NEXT_PUBLIC_API_URL}>
 							<SupportedAssetsProvider supportedAssets={supportedAssets}>
 								<SupportedWalletProvider>
-									<BlockchainProvider>
+									<BridgeProvider
+										ethChainId={process.env.NEXT_PUBLIC_ETH_CHAIN_ID}
+									>
 										<PageBackdrop />
 										<Wallet />
 										<Switch />
 										<Component {...pageProps} />
 										<PageFrame />
-									</BlockchainProvider>
+									</BridgeProvider>
 								</SupportedWalletProvider>
 							</SupportedAssetsProvider>
 						</CENNZApiProvider>

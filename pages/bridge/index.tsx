@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useBlockchain } from "@/providers/BlockchainProvider";
+import { useBridge } from "@/providers/BridgeProvider";
 import Deposit from "@/components/bridge/Deposit";
 import Withdraw from "@/components/bridge/Withdraw";
 import CENNZnetAccountPicker from "@/components/shared/CENNZnetAccountPicker";
@@ -24,7 +24,7 @@ const Emery: React.FC<{}> = () => {
 	const [bridgeState, setBridgeState] = useState<BridgeState>("Deposit");
 	const [toChain, setToChain] = useState<Chain>(CHAINS[0]);
 	const [fromChain, setFromChain] = useState<Chain>(CHAINS[1]);
-	const { Account } = useBlockchain();
+	const { Account } = useBridge();
 	const [amount, setAmount] = useState<string>("");
 	const [erc20Token, setErc20Token] = useState<BridgeToken>();
 	const [error, setError] = useState<string>();
