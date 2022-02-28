@@ -1,12 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Box, CircularProgress } from "@mui/material";
+import { css } from "@emotion/react";
+import { Box, CircularProgress, Typography } from "@mui/material";
 import { PoolSummaryProps } from "@/types";
 import { usePool } from "@/providers/PoolProvider";
-import {
-	PoolSummaryBox,
-	PoolSummaryText,
-	PoolSummaryBoldText,
-} from "@/components/StyledComponents";
 import { formatBalance } from "@/utils";
 
 interface FomattedBalances {
@@ -52,69 +48,73 @@ const PoolSummary: React.FC<{ poolSummaryProps: PoolSummaryProps }> = ({
 	}, [coreAsset, tradeAsset, userPoolShare, poolLiquidity]);
 
 	return (
-		<Box
-			sx={{
-				backgroundColor: "#F5ECFF",
-				width: "468px",
-				height: "auto",
-			}}
-		>
+		<Box css={styles.summaryBox}>
 			{loading ? (
-				<Box sx={{ alignContent: "center", display: "flex" }}>
-					<CircularProgress sx={{ margin: "30px auto", color: "#6200EE" }} />
+				<Box css={styles.loadingBox}>
+					<CircularProgress css={styles.loading} />
 				</Box>
 			) : (
-				<Box sx={{ m: "4% auto 4%" }}>
+				<Box css={styles.summary}>
 					{!!exchangeRate && !!tradeAsset && (
-						<PoolSummaryBox>
-							<PoolSummaryBoldText>Exchange Rate:</PoolSummaryBoldText>
+						<div css={styles.summaryTextWrapper}>
+							<Typography css={styles.summaryBoldText}>
+								Exchange Rate:
+							</Typography>
 							&nbsp;
-							<PoolSummaryText>
+							<Typography css={styles.summaryText}>
 								1 {coreAsset?.symbol} = {exchangeRate} {tradeAsset?.symbol}
-							</PoolSummaryText>
-						</PoolSummaryBox>
+							</Typography>
+						</div>
 					)}
 					{!!poolLiquidity && (
-						<PoolSummaryBox>
-							<PoolSummaryBoldText>Pool Liquidity:</PoolSummaryBoldText>
+						<div css={styles.summaryTextWrapper}>
+							<Typography css={styles.summaryBoldText}>
+								Pool Liquidity:
+							</Typography>
 							&nbsp;
-							<PoolSummaryText>
+							<Typography css={styles.summaryText}>
 								{formattedBalances.poolTradeAsset} {tradeAsset.symbol}
 								{" + "}
 								{formattedBalances.poolCoreAsset} {coreAsset.symbol}
-							</PoolSummaryText>
-						</PoolSummaryBox>
+							</Typography>
+						</div>
 					)}
 					{!!userPoolShare && (
-						<PoolSummaryBox>
-							<PoolSummaryBoldText>Your Liquidity:</PoolSummaryBoldText>
+						<div css={styles.summaryTextWrapper}>
+							<Typography css={styles.summaryBoldText}>
+								Your Liquidity:
+							</Typography>
 							&nbsp;
 							{!!formattedBalances && (
-								<PoolSummaryText>
+								<Typography css={styles.summaryText}>
 									{formattedBalances.userTradeAsset} {tradeAsset?.symbol}
 									{" + "}
 									{formattedBalances.userCoreAsset} {coreAsset?.symbol}
-								</PoolSummaryText>
+								</Typography>
 							)}
-						</PoolSummaryBox>
+						</div>
 					)}
 					{!!formattedBalances && (
-						<PoolSummaryBox>
-							<PoolSummaryBoldText>Your Pool Share:</PoolSummaryBoldText>
+						<div css={styles.summaryTextWrapper}>
+							<Typography css={styles.summaryBoldText}>
+								Your Pool Share:
+							</Typography>
 							&nbsp;
-							<PoolSummaryText>
+							<Typography css={styles.summaryText}>
 								{formattedBalances?.userPercentageShare}%
-							</PoolSummaryText>
-						</PoolSummaryBox>
+							</Typography>
+						</div>
 					)}
 					{!!estimatedFee && (
-						<PoolSummaryBox>
-							<PoolSummaryBoldText>Estimated Fee:</PoolSummaryBoldText>
+						<div css={styles.summaryTextWrapper}>
+							<Typography css={styles.summaryBoldText}>
+								Estimated Fee:
+							</Typography>
 							&nbsp;
-							<PoolSummaryText>
+							<Typography css={styles.summaryText}>
 								{estimatedFee.asString(coreAsset?.decimals)} {coreAsset?.symbol}
-							</PoolSummaryText>
-						</PoolSummaryBox>
+							</Typography>
+						</div>
 					)}
 				</Box>
 			)}
@@ -123,3 +123,37 @@ const PoolSummary: React.FC<{ poolSummaryProps: PoolSummaryProps }> = ({
 };
 
 export default PoolSummary;
+
+export const styles = {
+	summaryBox: css`
+		background-color: #f5ecff;
+		width: 468px;
+		height: auto;
+	`,
+	summary: css`
+		margin: 4% auto 4%;
+	`,
+	loadingBox: css`
+		display: flex;
+		align-content: center;
+	`,
+	loading: css`
+		margin: 30px auto;
+		color: #6200ee;
+	`,
+	summaryTextWrapper: css`
+		display: flex;
+		flex-direction: row;
+		margin-left: 30px;
+	`,
+	summaryText: css`
+		font-size: 16px;
+		line-height: 175%;
+	`,
+	summaryBoldText: css`
+		font-size: 16px;
+		line-height: 175%;
+		font-weight: bold;
+		color: #6200ee;
+	`,
+};

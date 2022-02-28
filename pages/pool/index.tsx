@@ -1,8 +1,8 @@
-import React, { useEffect } from "react";
+import React from "react";
+import { css } from "@emotion/react";
 import PoolProvider from "@/providers/PoolProvider";
 import PoolForm from "@/components/pool/PoolForm";
 import generateGlobalProps from "@/utils/generateGlobalProps";
-import styles from "@/styles/pages/pool.module.css";
 
 export async function getStaticProps() {
 	return {
@@ -15,7 +15,7 @@ export async function getStaticProps() {
 const Pool: React.FC<{}> = () => {
 	return (
 		<PoolProvider>
-			<div className={styles.poolContainer}>
+			<div css={styles.poolContainer}>
 				<PoolForm />
 			</div>
 		</PoolProvider>
@@ -23,3 +23,18 @@ const Pool: React.FC<{}> = () => {
 };
 
 export default Pool;
+
+export const styles = {
+	poolContainer: css`
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-start;
+		align-items: center;
+		width: 550px;
+		border-radius: 4px;
+		margin: 0 auto 5em;
+		position: relative;
+		background-color: #ffffff;
+		box-shadow: 4px 8px 8px rgba(17, 48, 255, 0.1);
+	`,
+};
