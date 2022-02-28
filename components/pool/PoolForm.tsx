@@ -349,6 +349,28 @@ const PoolForm: React.FC<{}> = () => {
 					</span>
 					&nbsp;at the current exchange rate.
 				</Typography>
+				{poolAction === PoolAction.ADD ? (
+					<Typography
+						sx={{
+							fontSize: "16px",
+							lineHeight: "150%",
+						}}
+					>
+						By adding liquidity you will earn{" "}
+						<span style={{ fontWeight: "bold", color: "#6200EE" }}>0.3%</span>{" "}
+						of all trades on this pair proportional to your share of the pool.
+					</Typography>
+				) : (
+					<Typography
+						sx={{
+							fontSize: "16px",
+							lineHeight: "150%",
+						}}
+					>
+						Accrued fees can be claimed at any time by withdrawing your
+						liquidity.
+					</Typography>
+				)}
 			</Box>
 			<TokenPicker
 				setToken={setTradeAsset}
