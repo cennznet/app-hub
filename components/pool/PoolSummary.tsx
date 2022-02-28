@@ -1,12 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Box, CircularProgress } from "@mui/material";
+import { css } from "@emotion/react";
+import { CircularProgress } from "@mui/material";
 import { PoolSummaryProps } from "@/types";
 import { usePool } from "@/providers/PoolProvider";
-import {
-	PoolSummaryBox,
-	PoolSummaryText,
-	PoolSummaryBoldText,
-} from "@/components/StyledComponents";
 import { formatBalance } from "@/utils";
 
 interface FomattedBalances {
@@ -14,6 +10,7 @@ interface FomattedBalances {
 	userCoreAsset: string;
 	poolTradeAsset: string;
 	poolCoreAsset: string;
+	userPercentageShare: string;
 }
 
 const PoolSummary: React.FC<{ poolSummaryProps: PoolSummaryProps }> = ({
@@ -27,85 +24,126 @@ const PoolSummary: React.FC<{ poolSummaryProps: PoolSummaryProps }> = ({
 
 	useEffect(() => {
 		setLoading(true);
+		if (!userPoolShare || !poolLiquidity || !tradeAsset || !coreAsset) return;
+
+		const userTradeAsset = userPoolShare.assetBalance.asString(
+			tradeAsset.decimals
+		);
+		const userCoreAsset = userPoolShare.coreAssetBalance.asString(
+			coreAsset.decimals
+		);
+
+		const userPercentageShare =
+			Number(userCoreAsset) / Number(poolLiquidity.coreAsset);
 
 		setFormattedBalances({
-			userTradeAsset: userPoolShare?.assetBalance.asString(
-				tradeAsset?.decimals
-			),
-			userCoreAsset: userPoolShare?.coreAssetBalance.asString(
-				coreAsset?.decimals
-			),
-			poolTradeAsset: formatBalance(Number(poolLiquidity?.tradeAsset)),
-			poolCoreAsset: formatBalance(Number(poolLiquidity?.coreAsset)),
+			userTradeAsset: formatBalance(Number(userTradeAsset)),
+			userCoreAsset: formatBalance(Number(userCoreAsset)),
+			poolTradeAsset: formatBalance(Number(poolLiquidity.tradeAsset)),
+			poolCoreAsset: formatBalance(Number(poolLiquidity.coreAsset)),
+			userPercentageShare: formatBalance(userPercentageShare * 100),
 		});
 
 		setTimeout(() => setLoading(false), 2000);
 	}, [coreAsset, tradeAsset, userPoolShare, poolLiquidity]);
 
 	return (
-		<Box
-			sx={{
-				backgroundColor: "#F5ECFF",
-				width: "468px",
-				height: "auto",
-			}}
-		>
+		<div css={styles.summaryBox}>
 			{loading ? (
-				<Box sx={{ alignContent: "center", display: "flex" }}>
-					<CircularProgress sx={{ margin: "30px auto", color: "#6200EE" }} />
-				</Box>
+				<div css={styles.loadingBox}>
+					<CircularProgress css={styles.loading} />
+				</div>
 			) : (
-				<Box sx={{ m: "4% auto 4%" }}>
+				<div css={styles.summary}>
 					{!!exchangeRate && !!tradeAsset && (
-						<PoolSummaryBox>
-							<PoolSummaryBoldText>Exchange Rate:</PoolSummaryBoldText>
+						<div css={styles.summaryTextWrapper}>
+							<div css={styles.summaryBoldText}>Exchange Rate:</div>
 							&nbsp;
-							<PoolSummaryText>
+							<div css={styles.summaryText}>
 								1 {coreAsset?.symbol} = {exchangeRate} {tradeAsset?.symbol}
-							</PoolSummaryText>
-						</PoolSummaryBox>
-					)}
-					{!!userPoolShare && (
-						<PoolSummaryBox>
-							<PoolSummaryBoldText>Your Liquidity:</PoolSummaryBoldText>
-							&nbsp;
-							{!!formattedBalances && (
-								<PoolSummaryText
-									sx={{
-										fontSize: "16px",
-										lineHeight: "175%",
-									}}
-								>
-									{formattedBalances.userTradeAsset} {tradeAsset?.symbol}{" "}
-									+&nbsp;
-									{formattedBalances.userCoreAsset} {coreAsset?.symbol}
-								</PoolSummaryText>
-							)}
-						</PoolSummaryBox>
+							</div>
+						</div>
 					)}
 					{!!poolLiquidity && (
-						<PoolSummaryBox>
-							<PoolSummaryBoldText>Pool Liquidity:</PoolSummaryBoldText>
+						<div css={styles.summaryTextWrapper}>
+							<div css={styles.summaryBoldText}>Pool Liquidity:</div>
 							&nbsp;
-							<PoolSummaryText>
-								{formattedBalances.poolTradeAsset} {tradeAsset.symbol} +&nbsp;
+							<div css={styles.summaryText}>
+								{formattedBalances.poolTradeAsset} {tradeAsset.symbol}
+								{" + "}
 								{formattedBalances.poolCoreAsset} {coreAsset.symbol}
-							</PoolSummaryText>
-						</PoolSummaryBox>
+							</div>
+						</div>
+					)}
+					{!!userPoolShare && (
+						<div css={styles.summaryTextWrapper}>
+							<div css={styles.summaryBoldText}>Your Liquidity:</div>
+							&nbsp;
+							{!!formattedBalances && (
+								<div css={styles.summaryText}>
+									{formattedBalances.userTradeAsset} {tradeAsset?.symbol}
+									{" + "}
+									{formattedBalances.userCoreAsset} {coreAsset?.symbol}
+								</div>
+							)}
+						</div>
+					)}
+					{!!formattedBalances && (
+						<div css={styles.summaryTextWrapper}>
+							<div css={styles.summaryBoldText}>Your Pool Share:</div>
+							&nbsp;
+							<div css={styles.summaryText}>
+								{formattedBalances?.userPercentageShare}%
+							</div>
+						</div>
 					)}
 					{!!estimatedFee && (
-						<PoolSummaryBox>
-							<PoolSummaryBoldText>Estimated Fee:</PoolSummaryBoldText>
+						<div css={styles.summaryTextWrapper}>
+							<div css={styles.summaryBoldText}>Estimated Fee:</div>
 							&nbsp;
-							<PoolSummaryText>
+							<div css={styles.summaryText}>
 								{estimatedFee.asString(coreAsset?.decimals)} {coreAsset?.symbol}
-							</PoolSummaryText>
-						</PoolSummaryBox>
+							</div>
+						</div>
 					)}
-				</Box>
+				</div>
 			)}
-		</Box>
+		</div>
 	);
 };
 
 export default PoolSummary;
+
+export const styles = {
+	summaryBox: css`
+		background-color: #f5ecff;
+		width: 468px;
+		height: auto;
+	`,
+	summary: css`
+		margin: 4% auto 4%;
+	`,
+	loadingBox: css`
+		display: flex;
+		align-content: center;
+	`,
+	loading: css`
+		margin: 30px auto;
+		color: #6200ee;
+	`,
+	summaryTextWrapper: css`
+		display: flex;
+		flex-direction: row;
+		margin-left: 30px;
+	`,
+	summaryText: css`
+		font-size: 16px;
+		line-height: 175%;
+	`,
+	summaryBoldText: css`
+		font-size: 16px;
+		line-height: 175%;
+		font-weight: bold;
+		color: #6200ee;
+	`,
+};
