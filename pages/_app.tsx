@@ -36,7 +36,7 @@ function MyApp({
 				<CssBaseline />
 				<UserAgentProvider>
 					<CENNZExtensionProvider>
-						<CENNZApiProvider>
+						<CENNZApiProvider endpoint={process.env.NEXT_PUBLIC_API_URL}>
 							<SupportedAssetsProvider supportedAssets={supportedAssets}>
 								<SupportedWalletProvider>
 									<BridgeProvider
