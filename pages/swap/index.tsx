@@ -194,7 +194,7 @@ const Exchange: React.FC<{}> = () => {
 			</div>
 			{estimatedFee && (
 				<div className={styles.infoBoxContainer}>
-					<p className={styles.infoBoxText}>
+					<div className={styles.infoBoxText}>
 						<div className={styles.feeContainer}>
 							<p>{"Exchange rates:"}</p>
 							<span>{`1 ${exchangeToken.symbol} = ${exchangeRate} ${receivedToken.symbol}`}</span>
@@ -203,7 +203,7 @@ const Exchange: React.FC<{}> = () => {
 							<p>{"Transaction fee (estimated):"}</p>
 							<span>{estimatedFee + " CPAY"}</span>
 						</div>
-					</p>
+					</div>
 				</div>
 			)}
 			<Settings
