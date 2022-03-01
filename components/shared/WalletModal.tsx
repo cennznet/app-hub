@@ -6,6 +6,7 @@ import { formatBalance } from "@/utils";
 import AccountIdenticon from "@/components/shared/AccountIdenticon";
 import { useCENNZExtension } from "@/providers/CENNZExtensionProvider";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import getTokenLogo from "@/utils/getTokenLogo";
 
 const WalletModal: React.FC<{
 	modalOpen: boolean;
@@ -89,16 +90,22 @@ const WalletModal: React.FC<{
 
 						<ul css={styles.balanceList}>
 							{balances
-								.filter((token) => token.value > 0)
-								.map((token) => (
-									<li key={token.id} css={styles.balanceItem}>
-										<figure>
-											<img src={token.logo} alt={`${token.symbol}-logo`} />
-										</figure>
-										<span>{formatBalance(token.value)}</span>
-										<label>{token.symbol}</label>
-									</li>
-								))}
+								.filter((asset) => asset.value > 0)
+								.map((asset) => {
+									const logo = getTokenLogo(asset.symbol);
+
+									return (
+										<li key={asset.assetId} css={styles.balanceItem}>
+											<figure>
+												{logo && (
+													<img src={logo.src} alt={`${asset.symbol}-logo`} />
+												)}
+											</figure>
+											<span>{formatBalance(asset.value)}</span>
+											<label>{asset.symbol}</label>
+										</li>
+									);
+								})}
 						</ul>
 					</div>
 				)}
