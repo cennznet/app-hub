@@ -16,6 +16,7 @@ type GlobalModalContent = {
 	link?: string;
 	disabled?: boolean;
 	callback?: Function;
+	loading?: boolean;
 };
 
 type GlobalModalContext = {
@@ -62,6 +63,7 @@ export default function GlobalModalProvider({
 				buttonLink={content.link}
 				buttonText={content.buttonText}
 				callback={content.callback}
+				loading={content.loading}
 			/>
 		</>
 	);

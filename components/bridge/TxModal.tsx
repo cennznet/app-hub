@@ -99,6 +99,7 @@ const TxModal: React.FC<Props> = ({
 					buttonText: "View on Etherscan",
 					link: etherscanLink,
 					disabled: false,
+					loading: true,
 				});
 			} else {
 				showDialog({
@@ -106,6 +107,7 @@ const TxModal: React.FC<Props> = ({
 					message: modalAttributes.text,
 					disabled: modalAttributes.state === "withdrawCENNZside",
 					callback: resetModal,
+					loading: modalAttributes.state !== "finished",
 				});
 			}
 		}

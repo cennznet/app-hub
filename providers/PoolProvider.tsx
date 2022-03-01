@@ -180,8 +180,9 @@ const PoolProvider: FC<{
 	const sendExtrinsic = useCallback(async () => {
 		if (!api || !value.currentExtrinsic || !selectedAccount || !signer) return;
 		await showDialog({
-			title: "Pool Transaction in Progress...",
+			title: "Pool Transaction in Progress",
 			message: "Please sign transaction to continue.",
+			loading: true,
 		});
 		value.currentExtrinsic.signAndSend(
 			selectedAccount.address,

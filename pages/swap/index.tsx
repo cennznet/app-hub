@@ -115,8 +115,9 @@ const Exchange: React.FC<{}> = () => {
 				slippage
 			);
 			await showDialog({
-				title: "Swap in Progress...",
+				title: "Swap in Progress",
 				message: "Please sign transaction to continue with the token swap.",
+				loading: true,
 			});
 
 			extrinsic.signAndSend(

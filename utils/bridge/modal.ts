@@ -1,6 +1,8 @@
+import { TxModalAttributes } from "@/types";
+
 function defineTxModal(state: string, hash: string, setModalOpen: Function) {
 	setModalOpen(true);
-	const modal = {
+	const modal: TxModalAttributes = {
 		state: state,
 		text: "",
 		title: "",
@@ -8,25 +10,25 @@ function defineTxModal(state: string, hash: string, setModalOpen: Function) {
 	};
 	switch (state) {
 		case "approve":
-			modal.title = "Approval in Progress...";
-			modal.text = "APPROVING YOUR TRANSACTION...";
+			modal.title = "Approval in Progress";
+			modal.text = "APPROVING YOUR TRANSACTION";
 			break;
 		case "deposit":
-			modal.title = "Deposit in Progress...";
-			modal.text = "DEPOSITING YOUR TOKENS...";
+			modal.title = "Deposit in Progress";
+			modal.text = "DEPOSITING YOUR TOKENS";
 			break;
 		case "relayer":
-			modal.title = "Claim in Progress...";
-			modal.text = "CLAIMING YOUR TOKENS ON CENNZnet. PLEASE WAIT...";
+			modal.title = "Claim in Progress";
+			modal.text = "CLAIMING YOUR TOKENS ON CENNZnet. PLEASE WAIT";
 			break;
 		case "withdrawCENNZside":
-			modal.title = "CENNZnet Withdrawing in Progress...";
+			modal.title = "CENNZnet Withdrawing in Progress";
 			modal.text =
 				"CLAIMING YOUR TOKENS FOR WITHDRAWAL FROM CENNZnet. PLEASE STAY ON THIS PAGE";
 			break;
 		case "withdrawETHside":
-			modal.title = "ETH Withdrawing in Progress...";
-			modal.text = "WITHDRAWING YOUR TOKENS...";
+			modal.title = "ETH Withdrawing in Progress";
+			modal.text = "WITHDRAWING YOUR TOKENS";
 			break;
 		case "finished":
 			modal.title = "Transaction Successful!";

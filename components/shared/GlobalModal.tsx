@@ -4,6 +4,7 @@ import { css } from "@emotion/react";
 import { useTheme } from "@mui/material/styles";
 import { useRouter } from "next/router";
 import { Link } from "@mui/material";
+import ThreeDots from "@/components/shared/ThreeDots";
 interface GlobalModalProps {
 	isOpen: boolean;
 	setModalOpened: Function;
@@ -13,6 +14,7 @@ interface GlobalModalProps {
 	buttonLink?: string;
 	buttonText?: string;
 	callback?: Function;
+	loading?: boolean;
 }
 
 const GlobalModal: React.FC<GlobalModalProps> = ({
@@ -23,11 +25,11 @@ const GlobalModal: React.FC<GlobalModalProps> = ({
 	buttonLink,
 	message,
 	callback,
+	loading,
 	disableButton = false,
 }) => {
 	const theme = useTheme();
 	const router = useRouter();
-	//TODO add loader element and param
 
 	return (
 		<Backdrop
@@ -44,7 +46,10 @@ const GlobalModal: React.FC<GlobalModalProps> = ({
 			<Modal open={isOpen}>
 				<div css={styles.styledModal}>
 					<div css={styles.contentContainer}>
-						<h1 css={styles.header}>{title}</h1>
+						<div css={styles.headerContainer}>
+							<h1 css={styles.header}>{title}</h1>
+							{loading && <ThreeDots fontSize={24} />}
+						</div>
 						<p css={styles.infoText}>{message}</p>
 						{buttonLink ? (
 							<Link
@@ -111,6 +116,11 @@ export const styles = {
 		width: 100%;
 		height: 100%;
 		padding: 18px 24px 18px 24px;
+	`,
+	headerContainer: css`
+		display: flex;
+		justify-content: center;
+		align-items: center;
 	`,
 	header: css`
 		font-style: normal;
