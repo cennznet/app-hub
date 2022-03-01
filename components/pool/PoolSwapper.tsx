@@ -134,7 +134,6 @@ export const styles = {
 		border: none;
 		position: relative;
 		background-color: transparent;
-		font-family: "Roboto";
 		font-style: normal;
 		font-weight: bold;
 		font-size: 14px;
@@ -164,7 +163,6 @@ export const styles = {
 			padding: 12px 8px;
 			margin-top: 5px;
 			text-decoration: none;
-			font-family: "Roboto";
 			font-style: normal;
 			font-weight: bold;
 			font-size: 14px;

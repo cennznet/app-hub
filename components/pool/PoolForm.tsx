@@ -368,7 +368,6 @@ const PoolForm: React.FC<{}> = () => {
 
 export const styles = {
 	pageHeader: css`
-		font-family: "Roboto";
 		font-style: normal;
 		font-weight: bold;
 		font-size: 20px;
