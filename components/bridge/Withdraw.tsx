@@ -6,14 +6,14 @@ import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import TxModal from "@/components/bridge/TxModal";
 import ErrorModal from "@/components/bridge/ErrorModal";
-import { BridgeToken, CENNZnetAccount } from "@/types";
+import { BridgeToken, CENNZAccount } from "@/types";
 import ConnectWalletButton from "@/components/shared/ConnectWalletButton";
 import { checkWithdrawStatus, fetchEstimatedFee } from "@/utils/bridge";
 
 const Withdraw: React.FC<{
 	token: BridgeToken;
 	amount: string;
-	selectedAccount: CENNZnetAccount;
+	selectedAccount: CENNZAccount;
 	disabled: boolean;
 	setEnoughBalance: Function;
 	setEstimatedFee: Function;

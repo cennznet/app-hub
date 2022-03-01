@@ -245,7 +245,7 @@ export interface Chain {
 	logo: string;
 }
 
-export interface CENNZnetAccount {
+export interface CENNZAccount {
 	name: string;
 	address: string;
 }

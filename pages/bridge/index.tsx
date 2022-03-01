@@ -6,7 +6,7 @@ import CENNZnetAccountPicker from "@/components/shared/CENNZnetAccountPicker";
 
 import styles from "@/styles/pages/bridge.module.css";
 import ChainPicker from "@/components/bridge/ChainPicker";
-import { Chain, BridgeToken, CENNZnetAccount, BridgeState } from "@/types";
+import { Chain, BridgeToken, CENNZAccount, BridgeState } from "@/types";
 import TokenPicker from "@/components/shared/TokenPicker";
 import { CHAINS, fetchMetamaskBalance } from "@/utils/bridge";
 import ExchangeIcon from "@/components/shared/ExchangeIcon";
@@ -29,7 +29,7 @@ const Emery: React.FC<{}> = () => {
 	const [erc20Token, setErc20Token] = useState<BridgeToken>();
 	const [error, setError] = useState<string>();
 	const [selectedAccountCustom, updateSelectedAccountCustom] =
-		useState<CENNZnetAccount>({
+		useState<CENNZAccount>({
 			address: "",
 			name: "",
 		});
