@@ -32,15 +32,15 @@ export const styles = {
 			opacity: 0;
 			animation: dot 1s infinite;
 
-			&:nth-child(1) {
+			&:nth-of-type(1) {
 				animation-delay: 0s;
 			}
 
-			&:nth-child(2) {
+			&:nth-of-type(2) {
 				animation-delay: 0.1s;
 			}
 
-			&:nth-child(3) {
+			&:nth-of-type(3) {
 				animation-delay: 0.2s;
 			}
 		}

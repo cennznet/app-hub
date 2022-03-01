@@ -316,7 +316,7 @@ const TokenPicker: React.FC<{
 						className={styles.amountInput}
 						type="number"
 						placeholder={"0.00"}
-						value={amount}
+						value={!!amount ? amount : ""}
 						disabled={assetsLoading}
 						onChange={(event) => {
 							whichAsset
