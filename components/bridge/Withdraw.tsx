@@ -176,9 +176,8 @@ const Withdraw: React.FC<{
 					)
 				) {
 					return ethers.constants.AddressZero;
-				} else {
-					return ethers.utils.computeAddress(validator);
 				}
+				return ethers.utils.computeAddress(validator);
 			}
 		);
 

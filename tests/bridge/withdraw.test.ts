@@ -143,7 +143,7 @@ describe("withdrawEthSide", () => {
 			r.push(sig.r);
 			s.push(sig.s);
 		});
-		const validators = (await api.query.ethBridge.notaryKeys() as any).map(
+		const validators = ((await api.query.ethBridge.notaryKeys()) as any).map(
 			(validator: ethers.utils.BytesLike) => {
 				// session key is not set
 				if (
@@ -153,9 +153,8 @@ describe("withdrawEthSide", () => {
 					)
 				) {
 					return ethers.constants.AddressZero;
-				} else {
-					return ethers.utils.computeAddress(validator);
 				}
+				return ethers.utils.computeAddress(validator);
 			}
 		);
 		const signer = provider.getSigner(accounts[0]);
@@ -167,7 +166,7 @@ describe("withdrawEthSide", () => {
 				v,
 				r,
 				s,
-				validators
+				validators,
 			});
 
 		expect(tx).toBeDefined();
