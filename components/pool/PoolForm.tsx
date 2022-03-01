@@ -123,12 +123,12 @@ const PoolForm: React.FC<{}> = () => {
 			userBalances
 		);
 		if (error === "coreAndTrade") {
-			setCoreError("Balance Too Low");
-			setTradeError("Balance Too Low");
+			setCoreError("Balance Is Too Low");
+			setTradeError("Balance Is Too Low");
 		} else if (error === "core") {
-			setCoreError("Balance Too Low");
+			setCoreError("Balance Is Too Low");
 		} else if (error === "trade") {
-			setTradeError("Balance Too Low");
+			setTradeError("Balance Is Too Low");
 		}
 	};
 
