@@ -1,6 +1,5 @@
 import { Api } from "@cennznet/api";
-import { fetchAssetBalances } from "@/utils/fetchAssetBalances";
-import fetchSupportedAssets from "@/utils/fetchSupportedAssets";
+import fetchCENNZAssetBalances from "@/utils/fetchCENNZAssetBalances";
 
 const testingAccount = "5FbMzsoEpd2mt8eyKpKUxwJ5S9W7nJVJkCer2Jk7tvSpB1vF";
 
@@ -15,22 +14,14 @@ afterAll(async () => {
 
 describe("fetchAssetBalances", () => {
 	it("returns correct values", async () => {
-		const assetIds = [16000, 16001, 17001, 17002, 17003];
-		const assets = await fetchSupportedAssets(api, assetIds);
-		const balances = await fetchAssetBalances(api, assets, testingAccount);
+		const balances = await fetchCENNZAssetBalances(api, testingAccount);
 
 		balances.forEach(async (balance) => {
 			const expectedBalance = await api.query.genericAsset.freeBalance(
-				balance.id,
+				balance.assetId,
 				testingAccount
 			);
-			let expectedTokenAddress: any = await api.query.erc20Peg.assetIdToErc20(
-				balance.id
-			);
-			expectedTokenAddress = expectedTokenAddress.toJSON();
-
 			expect(balance.rawValue).toEqual(expectedBalance);
-			expect(balance.tokenAddress).toEqual(expectedTokenAddress);
 		});
 	});
 });
