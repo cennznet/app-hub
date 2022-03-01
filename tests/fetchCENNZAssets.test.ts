@@ -1,5 +1,5 @@
 import { Api } from "@cennznet/api";
-import fetchCENNZnetAssets from "@/utils/fetchCENNZnetAssets";
+import fetchCENNZAssets from "@/utils/fetchCENNZAssets";
 
 let api: Api;
 beforeAll(async () => {
@@ -12,7 +12,7 @@ afterAll(async () => {
 
 describe("fetchCENNZnetAssets", () => {
 	it("returns expected result", async () => {
-		const assets = await fetchCENNZnetAssets(api);
+		const assets = await fetchCENNZAssets(api);
 		assets.forEach((asset) => {
 			const { assetId, symbol } = asset;
 			expect(Object.keys(asset)).toEqual(["assetId", "symbol", "decimals"]);

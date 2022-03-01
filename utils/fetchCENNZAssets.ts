@@ -3,7 +3,7 @@ import { AssetId, AssetInfoV41 as AssetInfo } from "@cennznet/types";
 import { hexToString } from "@polkadot/util";
 import { CENNZAsset } from "@/types";
 
-export default async function fetchCENNZnetAssets(
+export default async function fetchCENNZAssets(
 	api: Api
 ): Promise<CENNZAsset[]> {
 	const registeredAssets = await (

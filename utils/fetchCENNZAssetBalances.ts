@@ -1,6 +1,6 @@
 import { Api } from "@cennznet/api";
 import { CENNZAssetBalance } from "@/types";
-import fetchCENNZnetAssets from "@/utils/fetchCENNZnetAssets";
+import fetchCENNZAssets from "@/utils/fetchCENNZAssets";
 
 /**
  * Fetch balances of all registered CENNZ assets from a wallet address
@@ -13,7 +13,7 @@ export default async function fetchCENNZAssetBalances(
 	api: Api,
 	address: string
 ): Promise<CENNZAssetBalance[]> {
-	const assets = await fetchCENNZnetAssets(api);
+	const assets = await fetchCENNZAssets(api);
 
 	return await Promise.all(
 		(

@@ -1,6 +1,6 @@
 import { Api } from "@cennznet/api";
 import { CENNZAsset } from "@/types";
-import fetchCENNZnetAssets from "@/utils/fetchCENNZnetAssets";
+import fetchCENNZAssets from "@/utils/fetchCENNZAssets";
 
 /**
  * Fetch and returns array of CENNZnetAsset that can be used in Pool
@@ -9,6 +9,6 @@ import fetchCENNZnetAssets from "@/utils/fetchCENNZnetAssets";
  * @return {Promise<CENNZAsset[]>} The pool assets.
  */
 export default async function fetchPoolAssets(api: Api): Promise<CENNZAsset[]> {
-  const assets = await fetchCENNZnetAssets(api);
+  const assets = await fetchCENNZAssets(api);
   return assets.filter(({ symbol }) => symbol !== "CPAY");
 }
