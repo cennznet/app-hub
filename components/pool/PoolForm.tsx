@@ -279,9 +279,7 @@ const PoolForm: React.FC<{}> = () => {
 			<div css={styles.poolForm}>
 				<PoolSwapper
 					topText={"From"}
-					options={["Your Account", "Liquidity Pool"]}
-					forceIndex={poolAction === PoolAction.ADD ? 0 : 1}
-					initialIndex={0}
+					poolAction={poolAction}
 					onChange={swapAndResetPool}
 				/>
 				<ExchangeIcon
@@ -291,9 +289,7 @@ const PoolForm: React.FC<{}> = () => {
 				/>
 				<PoolSwapper
 					topText={"To"}
-					options={["Your Account", "Liquidity Pool"]}
-					forceIndex={poolAction === PoolAction.ADD ? 1 : 0}
-					initialIndex={1}
+					poolAction={poolAction}
 					onChange={swapAndResetPool}
 				/>
 			</div>
