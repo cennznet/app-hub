@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { defineTxModal } from "@/utils/bridge/modal";
-import { useBlockchain } from "@/providers/BlockchainProvider";
+import { useBridge } from "@/providers/BridgeProvider";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import TxModal from "@/components/bridge/TxModal";
@@ -32,7 +32,7 @@ const Withdraw: React.FC<{
 		text: "",
 		hash: "",
 	});
-	const { Contracts, Account, Signer }: any = useBlockchain();
+	const { Contracts, Account, Signer }: any = useBridge();
 	const { api }: any = useCENNZApi();
 	const { wallet, balances, updateBalances } = useCENNZWallet();
 	const signer = wallet?.signer;
@@ -166,6 +166,21 @@ const Withdraw: React.FC<{
 			s.push(sig.s);
 		});
 
+		const validators = (await api.query.ethBridge.notaryKeys()).map(
+			(validator: ethers.utils.BytesLike) => {
+				// session key is not set
+				if (
+					ethers.utils.hexlify(validator) ===
+					ethers.utils.hexlify(
+						"0x000000000000000000000000000000000000000000000000000000000000000000"
+					)
+				) {
+					return ethers.constants.AddressZero;
+				}
+				return ethers.utils.computeAddress(validator);
+			}
+		);
+
 		let gasEstimate = await Contracts.peg.estimateGas.withdraw(
 			tokenAddress,
 			withdrawAmount,
@@ -176,6 +191,7 @@ const Withdraw: React.FC<{
 				v,
 				r,
 				s,
+				validators,
 			},
 			{
 				value: verificationFee,
@@ -194,6 +210,7 @@ const Withdraw: React.FC<{
 				v,
 				r,
 				s,
+				validators,
 			},
 			{
 				value: verificationFee,

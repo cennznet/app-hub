@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { useBlockchain } from "@/providers/BlockchainProvider";
+import { css } from "@emotion/react";
+import { useBridge } from "@/providers/BridgeProvider";
 import Deposit from "@/components/bridge/Deposit";
 import Withdraw from "@/components/bridge/Withdraw";
 import CENNZnetAccountPicker from "@/components/shared/CENNZnetAccountPicker";
-
-import styles from "@/styles/pages/bridge.module.css";
 import ChainPicker from "@/components/bridge/ChainPicker";
 import { Chain, BridgeToken, CENNZAccount, BridgeState } from "@/types";
 import TokenPicker from "@/components/shared/TokenPicker";
@@ -24,7 +23,7 @@ const Emery: React.FC<{}> = () => {
 	const [bridgeState, setBridgeState] = useState<BridgeState>("Deposit");
 	const [toChain, setToChain] = useState<Chain>(CHAINS[0]);
 	const [fromChain, setFromChain] = useState<Chain>(CHAINS[1]);
-	const { Account } = useBlockchain();
+	const { Account } = useBridge();
 	const [amount, setAmount] = useState<string>("");
 	const [erc20Token, setErc20Token] = useState<BridgeToken>();
 	const [error, setError] = useState<string>();
@@ -74,9 +73,9 @@ const Emery: React.FC<{}> = () => {
 	}, [enoughBalance, amount]);
 
 	return (
-		<div className={styles.bridgeContainer}>
-			<h1 className={styles.pageHeader}>BRIDGE</h1>
-			<div className={styles.chainPickerContainer}>
+		<div css={styles.bridgeContainer}>
+			<h1 css={styles.pageHeader}>BRIDGE</h1>
+			<div css={styles.chainPickerContainer}>
 				<ChainPicker
 					setChain={setFromChain}
 					setOppositeChain={setToChain}
@@ -99,8 +98,8 @@ const Emery: React.FC<{}> = () => {
 				/>
 			</div>
 			<div>
-				<div className={styles.tokenPickerTopContainer}>
-					<p className={styles.tokenPickerTopText}>Select Token</p>
+				<div css={styles.tokenPickerTopContainer}>
+					<p css={styles.tokenPickerTopText}>Select Token</p>
 				</div>
 				<TokenPicker
 					setToken={setErc20Token}
@@ -117,10 +116,10 @@ const Emery: React.FC<{}> = () => {
 				topText={"DESTINATION"}
 				forceAddress={bridgeState === "Withdraw" && Account}
 			/>
-			<div className={styles.infoBoxContainer}>
-				<p className={styles.infoBoxText}>
+			<div css={styles.infoBoxContainer}>
+				<p css={styles.infoBoxText}>
 					{bridgeState === "Withdraw" ? (
-						<span className={styles.feeContainer}>
+						<span css={styles.feeContainer}>
 							Estimated Withdrawal Fee: {estimatedFee + " ETH"}
 						</span>
 					) : (
@@ -157,3 +156,84 @@ const Emery: React.FC<{}> = () => {
 };
 
 export default Emery;
+
+export const styles = {
+	bridgeContainer: css`
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-start;
+		align-items: center;
+		width: 550px;
+		border-radius: 4px;
+		margin: 0 auto 5em;
+		position: relative;
+		background-color: #ffffff;
+		box-shadow: 4px 8px 8px rgba(17, 48, 255, 0.1);
+		padding: 26px;
+	`,
+	pageHeader: css`
+		font-weight: bold;
+		font-size: 20px;
+		line-height: 125%;
+		text-align: center;
+		letter-spacing: 1.12428px;
+		text-transform: uppercase;
+		color: #1130ff;
+	`,
+	chainPickerContainer: css`
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-top: 42px;
+	`,
+	tokenPickerTopContainer: css`
+		margin-bottom: 6px;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	`,
+	tokenPickerTopText: css`
+		font-style: normal;
+		font-weight: bold;
+		font-size: 14px;
+		line-height: 125%;
+		letter-spacing: 1.12428px;
+		text-transform: uppercase;
+		text-align: left;
+		color: #020202;
+	`,
+	infoBoxContainer: css`
+		width: 460px;
+		height: 95px;
+		min-height: 95px;
+		background: #e0f7f7;
+		padding: 19px;
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
+		margin-bottom: 36px;
+	`,
+	infoBoxText: css`
+		font-style: normal;
+		font-weight: 600;
+		font-size: 16px;
+		line-height: 150%;
+		color: #020202;
+		text-align: left;
+
+		mark {
+			color: #1130ff;
+			background: transparent;
+		}
+	`,
+	feeContainer: css`
+		display: flex;
+		justify-content: center;
+		align-items: center;
+
+		p {
+			color: #1130ff;
+			margin-right: 5px;
+		}
+	`,
+};

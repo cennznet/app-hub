@@ -1,37 +1,32 @@
-import React, { createContext, useContext, ReactNode, useState } from "react";
+import { FC, createContext, useContext, useState } from "react";
 import { ethers } from "ethers";
 import CENNZnetBridge from "@/artifacts/CENNZnetBridge.json";
 import ERC20Peg from "@/artifacts/ERC20Peg.json";
 
-const ETH_CHAIN_ID = process.env.NEXT_PUBLIC_ETH_CHAIN_ID;
-
-type blockchainContextType = {
+type bridgeContextType = {
 	Contracts: object;
 	Account: string;
-	initBlockchain: Function;
+	initBridge: Function;
 };
 
-const blockchainContextDefaultValues: blockchainContextType = {
+const bridgeContextDefaultValues: bridgeContextType = {
 	Contracts: null,
 	Account: null,
-	initBlockchain: null,
+	initBridge: null,
 };
 
-const BlockchainContext = createContext<blockchainContextType>(
-	blockchainContextDefaultValues
+const BridgeContext = createContext<bridgeContextType>(
+	bridgeContextDefaultValues
 );
 
-export function useBlockchain() {
-	return useContext(BlockchainContext);
+export function useBridge() {
+	return useContext(BridgeContext);
 }
 
-type Props = {
-	children?: ReactNode;
-};
-
-const BlockchainProvider: React.FC<React.PropsWithChildren<{}>> = ({
+const BridgeProvider: FC<{ ethChainId: string }> = ({
 	children,
-}: Props) => {
+	ethChainId,
+}) => {
 	const [value, setValue] = useState({
 		Contracts: {
 			bridge: {} as ethers.Contract,
@@ -41,22 +36,22 @@ const BlockchainProvider: React.FC<React.PropsWithChildren<{}>> = ({
 		Signer: {} as ethers.providers.JsonRpcSigner,
 	});
 
-	const initBlockchain = (ethereum: any, accounts: string[]) => {
+	const initBridge = (ethereum: any, accounts: string[]) => {
 		return new Promise(async (resolve, reject) => {
 			try {
 				const provider = new ethers.providers.Web3Provider(ethereum);
 				const signer = provider.getSigner();
 				let BridgeAddress: string, ERC20PegAddress: string;
 
-				switch (ETH_CHAIN_ID) {
+				switch (ethChainId) {
 					default:
 					case "1":
-						BridgeAddress = "0x369e2285CCf43483e76746cebbf3d1d6060913EC";
-						ERC20PegAddress = "0x8F68fe02884b2B05e056aF72E4F2D2313E9900eC";
+						BridgeAddress = "0xf7997B93437d5d2AC226f362EBF0573ce7a53930";
+						ERC20PegAddress = "0x76BAc85e1E82cd677faa2b3f00C4a2626C4c6E32";
 						break;
 					case "42":
-						BridgeAddress = "0x9AFe4E42d8ab681d402e8548Ee860635BaA952C5";
-						ERC20PegAddress = "0x5Ff2f9582FcA1e11d47e4e623BEf4594EB12b30d";
+						BridgeAddress = "0x6484A31Df401792c784cD93aAAb3E933B406DdB3";
+						ERC20PegAddress = "0xa39E871e6e24f2d1Dd6AdA830538aBBE7b30F78F";
 						break;
 				}
 
@@ -89,12 +84,10 @@ const BlockchainProvider: React.FC<React.PropsWithChildren<{}>> = ({
 	};
 
 	return (
-		<>
-			<BlockchainContext.Provider value={{ ...value, initBlockchain }}>
-				{children}
-			</BlockchainContext.Provider>
-		</>
+		<BridgeContext.Provider value={{ ...value, initBridge }}>
+			{children}
+		</BridgeContext.Provider>
 	);
 };
 
-export default BlockchainProvider;
+export default BridgeProvider;

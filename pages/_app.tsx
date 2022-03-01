@@ -1,3 +1,4 @@
+import React from "react";
 import type { AppProps } from "next/app";
 import Head from "next/head";
 import { ThemeProvider } from "@mui/material/styles";
@@ -9,7 +10,7 @@ import CENNZWalletProvider from "@/providers/CENNZWalletProvider";
 import Switch from "@/components/AppSwitch";
 import Wallet from "@/components/Wallet";
 import SupportedAssetsProvider from "@/providers/SupportedAssetsProvider";
-import BlockchainProvider from "@/providers/BlockchainProvider";
+import BridgeProvider from "@/providers/BridgeProvider";
 import { GlobalProps } from "@/utils/generateGlobalProps";
 import UserAgentProvider from "@/providers/UserAgentProvider";
 import CENNZExtensionProvider from "@/providers/CENNZExtensionProvider";
@@ -35,16 +36,18 @@ function MyApp({
 				<CssBaseline />
 				<UserAgentProvider>
 					<CENNZExtensionProvider>
-						<CENNZApiProvider>
+						<CENNZApiProvider endpoint={process.env.NEXT_PUBLIC_API_URL}>
 							<SupportedAssetsProvider supportedAssets={supportedAssets}>
 								<CENNZWalletProvider>
-									<BlockchainProvider>
+									<BridgeProvider
+										ethChainId={process.env.NEXT_PUBLIC_ETH_CHAIN_ID}
+									>
 										<PageBackdrop />
 										<Wallet />
 										<Switch />
 										<Component {...pageProps} />
 										<PageFrame />
-									</BlockchainProvider>
+									</BridgeProvider>
 								</CENNZWalletProvider>
 							</SupportedAssetsProvider>
 						</CENNZApiProvider>

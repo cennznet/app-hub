@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import GenericERC20TokenAbi from "@/artifacts/GenericERC20Token.json";
 import { defineTxModal } from "@/utils/bridge/modal";
 import { checkDepositStatus, ETH, getDepositValues } from "@/utils/bridge";
-import { useBlockchain } from "@/providers/BlockchainProvider";
+import { useBridge } from "@/providers/BridgeProvider";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import TxModal from "@/components/bridge/TxModal";
 import ErrorModal from "@/components/bridge/ErrorModal";
@@ -25,7 +25,7 @@ const Deposit: React.FC<{
 		text: "",
 		hash: "",
 	});
-	const { Contracts, Signer }: any = useBlockchain();
+	const { Contracts, Signer }: any = useBridge();
 	const { api }: any = useCENNZApi();
 	const { updateBalances } = useCENNZWallet();
 
