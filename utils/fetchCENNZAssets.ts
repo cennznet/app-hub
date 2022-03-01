@@ -21,5 +21,6 @@ export default async function fetchCENNZAssets(
 				decimals: decimalPlaces.toNumber(),
 			};
 		})
-		.filter(({ assetId, symbol }) => !!assetId && !!symbol);
+		.filter(({ assetId, symbol }) => !!assetId && !!symbol)
+		.sort((a: CENNZAsset, b: CENNZAsset) => a.assetId - b.assetId);
 }
