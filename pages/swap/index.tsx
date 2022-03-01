@@ -43,22 +43,19 @@ const Exchange: React.FC<{}> = () => {
 	useEffect(() => {
 		setError(undefined);
 		setSuccess(undefined);
+		if (
+			parseInt(exchangeTokenValue) <= 0 ||
+			!api ||
+			!exchangeToken ||
+			!receivedToken ||
+			!balances ||
+			!exchangeTokenValue ||
+			!assets
+		)
+			return;
+
 		(async () => {
-			if (
-				parseInt(exchangeTokenValue) <= 0 ||
-				!api ||
-				!exchangeToken ||
-				!receivedToken ||
-				!balances ||
-				!exchangeTokenValue ||
-				!assets
-			)
-				return;
-
 			try {
-				setError(undefined);
-				setSuccess(undefined);
-
 				const { exchangeAmount, receivedAmount } = await fetchTokenAmounts(
 					api,
 					exchangeToken,
@@ -67,6 +64,12 @@ const Exchange: React.FC<{}> = () => {
 					receivedToken
 				);
 				setReceivedTokenValue(receivedAmount.toString());
+				const estimatedExchangeRate = await fetchExchangeRate(
+					api,
+					exchangeToken,
+					receivedToken
+				);
+				setExchangeRate(estimatedExchangeRate);
 				const estimatedFee = await fetchEstimatedTransactionFee(
 					api,
 					exchangeAmount,
@@ -88,22 +91,6 @@ const Exchange: React.FC<{}> = () => {
 		balances,
 		slippage,
 	]);
-
-	useEffect(() => {
-		if (!api || !exchangeToken || !receivedToken) return;
-		(async () => {
-			try {
-				const estimatedExchangeRate = await fetchExchangeRate(
-					api,
-					exchangeToken,
-					receivedToken
-				);
-				setExchangeRate(estimatedExchangeRate);
-			} catch (e) {
-				setError(e.message);
-			}
-		})();
-	}, [exchangeToken, receivedToken, api]);
 
 	const exchangeTokens = useCallback(async () => {
 		if (
