@@ -2,7 +2,7 @@ import { Api } from "@cennznet/api";
 import { Amount, AmountUnit } from "@/utils/Amount";
 import BigNumber from "bignumber.js";
 import { Asset } from "@/types";
-import { BalanceInfo } from "@/types";
+import { CENNZAssetBalance } from "@/types";
 
 const CPAY = {
 	id: 16001,
@@ -38,7 +38,7 @@ export const fetchTokenAmounts = async (
 	api: Api,
 	exchangeToken: Asset,
 	exchangeTokenValue: string,
-	balances: BalanceInfo[],
+	balances: CENNZAssetBalance[],
 	receivedToken: Asset
 ) => {
 	let exchangeAmount: any = new BigNumber(exchangeTokenValue.toString());
@@ -48,7 +48,7 @@ export const fetchTokenAmounts = async (
 
 	//check if they own enough tokens to exchange
 	const exchangeTokenBalance = balances.find(
-		(token) => token.id === exchangeToken.id
+		(token) => token.assetId === exchangeToken.id
 	);
 	if (parseFloat(exchangeTokenValue) > exchangeTokenBalance.value) {
 		throw new Error("Account balance is too low");
