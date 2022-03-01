@@ -1,11 +1,11 @@
 import { Api } from "@cennznet/api";
 import { AssetId, AssetInfoV41 as AssetInfo } from "@cennznet/types";
 import { hexToString } from "@polkadot/util";
-import { CENNZnetAsset } from "@/types";
+import { CENNZAsset } from "@/types";
 
 export default async function fetchCENNZnetAssets(
 	api: Api
-): Promise<CENNZnetAsset[]> {
+): Promise<CENNZAsset[]> {
 	const registeredAssets = await (
 		api.rpc as any
 	).genericAsset.registeredAssets();

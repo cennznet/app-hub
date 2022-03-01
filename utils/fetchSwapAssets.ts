@@ -1,5 +1,5 @@
 import { Api } from "@cennznet/api";
-import { CENNZnetAsset } from "@/types";
+import { CENNZAsset } from "@/types";
 import fetchCENNZnetAssets from "@/utils/fetchCENNZnetAssets";
 
 /**
@@ -7,11 +7,9 @@ import fetchCENNZnetAssets from "@/utils/fetchCENNZnetAssets";
  * We use `totalLiquidity` value to determine if token is swappable or not
  *
  * @param {Api} api
- * @return {Promise<CENNZnetAsset[]>}
+ * @return {Promise<CENNZAsset[]>}
  */
-export default async function fetchSwapAssets(
-	api: Api
-): Promise<CENNZnetAsset[]> {
+export default async function fetchSwapAssets(api: Api): Promise<CENNZAsset[]> {
 	const assets = await fetchCENNZnetAssets(api);
 	const liquidityPredicates = await Promise.all(
 		assets.map(async ({ assetId, symbol }) => {
