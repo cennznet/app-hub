@@ -70,7 +70,7 @@ const Settings: React.FC<{
 							{infoOpen && (
 								<div css={styles.infoOpenBox}>
 									<div css={styles.infoOpenText}>
-										<span style={{ fontWeight: "bold" }}>Slippage</span>
+										<b>Slippage</b>
 										&nbsp;is the difference between the price you expect to get
 										on the crypto you have ordered and the price you actually
 										get when the transaction is sent.
@@ -81,16 +81,14 @@ const Settings: React.FC<{
 						<div css={styles.slippageTextBox(color)}>
 							<div css={styles.slippageText}>
 								If the amount of {tokenName} used sits outside{" "}
-								<span style={{ fontWeight: "bold" }}>{slippage}%</span> <br />
+								<b>{slippage}%</b> <br />
 								{!!coreAmount && (
 									<span>
-										(<b>{slippageValues?.min.toFixed(2)}</b>-
-										<b>{slippageValues?.max.toFixed(2)}</b> {tokenName}),
+										(<b>{slippageValues.min?.toFixed(2)}</b>-
+										<b>{slippageValues.max?.toFixed(2)}</b> {tokenName}),
 									</span>
 								)}{" "}
-								<span style={{ fontWeight: "bold" }}>
-									the transaction will fail.
-								</span>
+								<b>the transaction will fail.</b>
 							</div>
 						</div>
 					</div>
