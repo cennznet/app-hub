@@ -10,7 +10,7 @@ import {
 	useState,
 } from "react";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
-import { useWallet } from "@/providers/SupportedWalletProvider";
+import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import {
 	fetchAddLiquidityValues,
 	fetchExchangePool,
@@ -57,7 +57,7 @@ export default function PoolProvider({
 }: PropsWithChildren<ProviderProps>) {
 	const [value, setValue] = useState<PoolContextType>(poolContextDefaultValues);
 	const { api } = useCENNZApi();
-	const { wallet, selectedAccount, updateBalances } = useWallet();
+	const { wallet, selectedAccount, updateBalances } = useCENNZWallet();
 	const signer = wallet?.signer;
 
 	//set core asset

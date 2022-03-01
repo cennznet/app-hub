@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import { css } from "@emotion/react";
 import { Modal, Divider, CircularProgress } from "@mui/material";
-import { useWallet } from "@/providers/SupportedWalletProvider";
+import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import { formatBalance } from "@/utils";
 import AccountIdenticon from "@/components/shared/AccountIdenticon";
 import { useCENNZExtension } from "@/providers/CENNZExtensionProvider";
@@ -12,7 +12,7 @@ const WalletModal: React.FC<{
 	setModalOpen: Function;
 }> = ({ setModalOpen, modalOpen }) => {
 	const { balances, selectedAccount, selectAccount, disconnectWallet } =
-		useWallet();
+		useCENNZWallet();
 	const { accounts } = useCENNZExtension();
 	const onAccountSelect = useCallback(
 		(event) => {

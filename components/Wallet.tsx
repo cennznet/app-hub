@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useCallback } from "react";
 import { css } from "@emotion/react";
-import { useWallet } from "@/providers/SupportedWalletProvider";
+import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import WalletModal from "@/components/shared/WalletModal";
 import ThreeDots from "@/components/shared/ThreeDots";
 import AccountIdenticon from "@/components/shared/AccountIdenticon";
@@ -9,7 +9,7 @@ type WalletState = "NotConnected" | "Connecting" | "Connected";
 
 const Wallet: React.FC<{}> = () => {
 	const [modalOpen, setModalOpen] = useState<boolean>(false);
-	const { selectedAccount, balances, connectWallet } = useWallet();
+	const { selectedAccount, balances, connectWallet } = useCENNZWallet();
 	const walletState = useMemo<WalletState>(() => {
 		if (!selectedAccount) return "NotConnected";
 		if (selectedAccount && !balances?.length) return "Connecting";

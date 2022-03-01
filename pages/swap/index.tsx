@@ -6,7 +6,7 @@ import { useAssets } from "@/providers/SupportedAssetsProvider";
 import { Asset } from "@/types";
 
 import styles from "@/styles/pages/swap.module.css";
-import { useWallet } from "@/providers/SupportedWalletProvider";
+import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import {
 	fetchEstimatedTransactionFee,
 	fetchExchangeExtrinsic,
@@ -37,7 +37,8 @@ const Exchange: React.FC<{}> = () => {
 	const [success, setSuccess] = useState<string>();
 	const { api }: any = useCENNZApi();
 	const assets = useAssets();
-	const { balances, updateBalances, wallet, selectedAccount } = useWallet();
+	const { balances, updateBalances, wallet, selectedAccount } =
+		useCENNZWallet();
 	const signer = wallet?.signer;
 
 	useEffect(() => {

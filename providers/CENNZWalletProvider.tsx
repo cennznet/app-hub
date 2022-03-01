@@ -27,7 +27,7 @@ type WalletContext = {
 	selectAccount: (account: InjectedAccountWithMeta) => void;
 };
 
-const SupportedWalletContext = createContext<WalletContext>({
+const CENNZWalletContext = createContext<WalletContext>({
 	balances: null,
 	updateBalances: null,
 	selectedAccount: null,
@@ -39,7 +39,7 @@ const SupportedWalletContext = createContext<WalletContext>({
 
 type ProviderProps = {};
 
-export default function SupportedWalletProvider({
+export default function CENNZWalletProvider({
 	children,
 }: PropsWithChildren<ProviderProps>) {
 	const { api } = useCENNZApi();
@@ -123,7 +123,7 @@ export default function SupportedWalletProvider({
 	}, [updateBalances]);
 
 	return (
-		<SupportedWalletContext.Provider
+		<CENNZWalletContext.Provider
 			value={{
 				balances,
 				updateBalances,
@@ -135,10 +135,10 @@ export default function SupportedWalletProvider({
 			}}
 		>
 			{children}
-		</SupportedWalletContext.Provider>
+		</CENNZWalletContext.Provider>
 	);
 }
 
-export function useWallet(): WalletContext {
-	return useContext(SupportedWalletContext);
+export function useCENNZWallet(): WalletContext {
+	return useContext(CENNZWalletContext);
 }

@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import { defineTxModal } from "@/utils/bridge/modal";
 import { useBlockchain } from "@/providers/BlockchainProvider";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
-import { useWallet } from "@/providers/SupportedWalletProvider";
+import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import TxModal from "@/components/bridge/TxModal";
 import ErrorModal from "@/components/bridge/ErrorModal";
 import { BridgeToken, CENNZnetAccount } from "@/types";
@@ -34,7 +34,7 @@ const Withdraw: React.FC<{
 	});
 	const { Contracts, Account, Signer }: any = useBlockchain();
 	const { api }: any = useCENNZApi();
-	const { wallet, balances, updateBalances } = useWallet();
+	const { wallet, balances, updateBalances } = useCENNZWallet();
 	const signer = wallet?.signer;
 
 	useEffect(() => {

@@ -1,4 +1,3 @@
-import React from "react";
 import type { AppProps } from "next/app";
 import Head from "next/head";
 import { ThemeProvider } from "@mui/material/styles";
@@ -6,7 +5,7 @@ import theme from "@/styles/theme";
 import CssBaseline from "@mui/material/CssBaseline";
 import "@/styles/global.css";
 import CENNZApiProvider from "@/providers/CENNZApiProvider";
-import SupportedWalletProvider from "@/providers/SupportedWalletProvider";
+import CENNZWalletProvider from "@/providers/CENNZWalletProvider";
 import Switch from "@/components/AppSwitch";
 import Wallet from "@/components/Wallet";
 import SupportedAssetsProvider from "@/providers/SupportedAssetsProvider";
@@ -38,7 +37,7 @@ function MyApp({
 					<CENNZExtensionProvider>
 						<CENNZApiProvider>
 							<SupportedAssetsProvider supportedAssets={supportedAssets}>
-								<SupportedWalletProvider>
+								<CENNZWalletProvider>
 									<BlockchainProvider>
 										<PageBackdrop />
 										<Wallet />
@@ -46,7 +45,7 @@ function MyApp({
 										<Component {...pageProps} />
 										<PageFrame />
 									</BlockchainProvider>
-								</SupportedWalletProvider>
+								</CENNZWalletProvider>
 							</SupportedAssetsProvider>
 						</CENNZApiProvider>
 					</CENNZExtensionProvider>

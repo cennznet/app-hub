@@ -12,7 +12,7 @@ import { Asset, PoolConfig, BridgeToken } from "@/types";
 import { useBlockchain } from "@/providers/BlockchainProvider";
 import { useRouter } from "next/router";
 import styles from "@/styles/components/shared/TokenPicker.module.css";
-import { useWallet } from "@/providers/SupportedWalletProvider";
+import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import { PoolAction } from "@/providers/PoolProvider";
 import { formatBalance } from "@/utils";
 
@@ -58,7 +58,7 @@ const TokenPicker: React.FC<{
 	const [displayTokenBalance, setDisplayTokenBalance] = useState<string>();
 	const assets = useAssets();
 	const { Account } = useBlockchain();
-	const { balances } = useWallet();
+	const { balances } = useCENNZWallet();
 
 	useEffect(() => {
 		if (!assets) return;

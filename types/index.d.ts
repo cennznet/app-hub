@@ -264,3 +264,8 @@ export interface CENNZnetAsset extends GenericCoin {
 export interface EthereumToken extends GenericCoin {
 	address: string;
 }
+
+export interface CENNZnetBalance extends CENNZnetAsset {
+	value: number;
+	rawValue: Codec;
+}

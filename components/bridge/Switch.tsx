@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Box } from "@mui/material";
 import { SwitchButton } from "@/components/StyledComponents";
-import { useWallet } from "@/providers/SupportedWalletProvider";
+import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import ErrorModal from "@/components/bridge/ErrorModal";
 
 const Switch: React.FC<{ isDeposit: Boolean; toggleIsDeposit: Function }> = ({
@@ -10,7 +10,7 @@ const Switch: React.FC<{ isDeposit: Boolean; toggleIsDeposit: Function }> = ({
 }) => {
 	const [modalState, setModalState] = useState<string>();
 	const [modalOpen, setModalOpen] = useState<boolean>();
-	const { selectedAccount } = useWallet();
+	const { selectedAccount } = useCENNZWallet();
 
 	const checkCENNZnetAccount = () => {
 		if (!selectedAccount) {
