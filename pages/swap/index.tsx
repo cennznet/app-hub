@@ -128,7 +128,7 @@ const Exchange: React.FC<{}> = () => {
 							if (event.method === "AssetBought") {
 								setError(undefined);
 								await showDialog({
-									title: "Transaction Successfully!",
+									title: "Transaction Successfully Completed!",
 									message: `Successfully Swapped ${exchangeTokenValue} ${exchangeToken.symbol} for ${receivedTokenValue} ${receivedToken.symbol}!`,
 								});
 								updateBalances();
