@@ -251,3 +251,16 @@ export interface CENNZnetAccount {
 }
 
 export type BridgeState = "Deposit" | "Withdraw";
+
+export interface GenericCoin {
+	decimals: number;
+	symbol: string;
+}
+
+export interface CENNZnetAsset extends GenericCoin {
+	assetId: number;
+}
+
+export interface EthereumToken extends GenericCoin {
+	address: string;
+}
