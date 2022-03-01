@@ -2,24 +2,19 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import { useGlobalModal } from "@/providers/GlobalModalProvider";
+import { TxModalAttributes } from "@/types";
 
 const ETH_CHAIN_ID = process.env.NEXT_PUBLIC_ETH_CHAIN_ID;
 
 interface Props {
-	modalState: string;
 	modalOpen: boolean;
-	modalText: string;
-	modalTitle: string;
-	etherscanHash: string;
+	modalAttributes: TxModalAttributes;
 	resetModal: Function;
 }
 
 const TxModal: React.FC<Props> = ({
-	modalText,
-	modalTitle,
+	modalAttributes,
 	modalOpen,
-	etherscanHash,
-	modalState,
 	resetModal,
 }) => {
 	const [etherscanLink, setEtherscanLink] = useState("");
@@ -48,22 +43,25 @@ const TxModal: React.FC<Props> = ({
 
 	useEffect(() => {
 		let relayerLink;
-
-		switch (ETH_CHAIN_ID) {
-			default:
-			case "1":
-				setEtherscanLink(`https://etherscan.io/tx/${etherscanHash}`);
-				if (modalState === "relayer")
-					relayerLink = `https://bridge-contracts.centralityapp.com/transactions/${etherscanHash}`;
-				break;
-			case "42":
-				setEtherscanLink(`https://kovan.etherscan.io/tx/${etherscanHash}`);
-				if (modalState === "relayer")
-					relayerLink = `https://bridge-contracts.nikau.centrality.me/transactions/${etherscanHash}`;
-				break;
+		if (modalAttributes?.hash) {
+			switch (ETH_CHAIN_ID) {
+				default:
+				case "1":
+					setEtherscanLink(`https://etherscan.io/tx/${modalAttributes.hash}`);
+					if (modalAttributes.state === "relayer")
+						relayerLink = `https://bridge-contracts.centralityapp.com/transactions/${modalAttributes.hash}`;
+					break;
+				case "42":
+					setEtherscanLink(
+						`https://kovan.etherscan.io/tx/${modalAttributes.hash}`
+					);
+					if (modalAttributes.state === "relayer")
+						relayerLink = `https://bridge-contracts.nikau.centrality.me/transactions/${modalAttributes.hash}`;
+					break;
+			}
 		}
 
-		if (modalState === "relayer") {
+		if (modalAttributes?.state && modalAttributes.state === "relayer") {
 			switch (relayerStatus) {
 				default:
 					const interval = setInterval(
@@ -85,35 +83,36 @@ const TxModal: React.FC<Props> = ({
 			}
 		}
 		//eslint-disable-next-line
-	}, [etherscanHash, modalState, relayerStatus]);
+	}, [modalAttributes, relayerStatus]);
 
 	useEffect(() => {
-		if (modalOpen) {
+		if (modalOpen && modalAttributes) {
 			if (
-				etherscanHash !== "" &&
-				etherscanHash !== "noTokenSelected" &&
-				modalState !== "relayer" &&
+				modalAttributes?.hash &&
+				modalAttributes.hash !== "noTokenSelected" &&
+				modalAttributes.state !== "relayer" &&
 				etherscanLink !== ""
 			) {
 				showDialog({
-					title: modalTitle,
-					message: modalText,
+					title: modalAttributes.title,
+					message: modalAttributes.text,
 					buttonText: "View on Etherscan",
 					link: etherscanLink,
 					disabled: false,
 				});
 			} else {
 				showDialog({
-					title: modalTitle,
-					message: modalText,
-					disabled: modalState === "withdrawCENNZside",
+					title: modalAttributes.title,
+					message: modalAttributes.text,
+					disabled: modalAttributes.state === "withdrawCENNZside",
 					callback: resetModal,
 				});
 			}
 		}
-	}, [modalOpen, modalText, modalState, etherscanLink]);
+		//eslint-disable-next-line
+	}, [modalOpen, modalAttributes, etherscanLink]);
 
-	return <></>;
+	return null;
 };
 
 export default TxModal;
