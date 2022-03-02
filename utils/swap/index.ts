@@ -73,7 +73,7 @@ export const fetchEstimatedTransactionFee = async (
 	exchangeAmount: string,
 	exchangeTokenId: number,
 	receivedTokenId: number,
-	slippage: number,
+	slippage: number
 ) => {
 	const maxAmount = Math.round(
 		parseFloat(exchangeAmount) + parseFloat(exchangeAmount) * (slippage / 100)

@@ -8,8 +8,18 @@ import {
 } from "@/utils/swap";
 
 const assets = {
-	CENNZ: { assetId: 16000, symbol: "CENNZ", decimals: 4, logo: "/images/cennz.svg" },
-	CPAY: { assetId: 16001, symbol: "CPAY", decimals: 4, logo: "/images/cpay.svg" },
+	CENNZ: {
+		assetId: 16000,
+		symbol: "CENNZ",
+		decimals: 4,
+		logo: "/images/cennz.svg",
+	},
+	CPAY: {
+		assetId: 16001,
+		symbol: "CPAY",
+		decimals: 4,
+		logo: "/images/cpay.svg",
+	},
 };
 const balances = [
 	{

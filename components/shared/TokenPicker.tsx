@@ -88,7 +88,7 @@ const TokenPicker: React.FC<{
 		if (toChain === "CENNZnet") {
 			let tokes: EthereumToken[] = assets as EthereumToken[];
 			setTokens(tokes);
-			setToken(tokes[0])
+			setToken(tokes[0]);
 			setSelectedTokenIdx(0);
 			setAssetsLoading(false);
 			return;
@@ -112,7 +112,7 @@ const TokenPicker: React.FC<{
 
 		setTokens(tokes);
 		setSelectedTokenIdx(forceSelection ? foundTokenIdx : 0);
-		setToken(tokes[forceSelection ? foundTokenIdx : 0])
+		setToken(tokes[forceSelection ? foundTokenIdx : 0]);
 		setAssetsLoading(false);
 	}, [assets, forceSelection, removeToken, toChain, setToken]);
 
