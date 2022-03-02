@@ -104,7 +104,7 @@ export const styles = {
 	settingsBox: (open: boolean) => css`
 		margin-top: 30px;
 		width: 468px;
-		margin-bottem: ${open && "36px"};
+		margin-bottom: ${open && "36px"};
 	`,
 	settings: (open: boolean) => css`
 		display: flex;

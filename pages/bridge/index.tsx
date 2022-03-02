@@ -3,7 +3,7 @@ import { css } from "@emotion/react";
 import { useBridge } from "@/providers/BridgeProvider";
 import Deposit from "@/components/bridge/Deposit";
 import Withdraw from "@/components/bridge/Withdraw";
-import CENNZnetAccountPicker from "@/components/shared/CENNZnetAccountPicker";
+import AccountPicker from "@/components/shared/AccountPicker";
 import ChainPicker from "@/components/bridge/ChainPicker";
 import { Chain, CENNZAccount, BridgeState } from "@/types";
 import TokenPicker from "@/components/shared/TokenPicker";
@@ -117,7 +117,7 @@ const Emery: React.FC<{}> = () => {
 					width={"460px"}
 				/>
 			</div>
-			<CENNZnetAccountPicker
+			<AccountPicker
 				updateSelectedAccount={updateSelectedAccountCustom}
 				topText={"DESTINATION"}
 				forceAddress={toChain.name === "Ethereum" && Account}
