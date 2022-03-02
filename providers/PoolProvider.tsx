@@ -19,6 +19,7 @@ import {
 	fetchUserPoolShare,
 	fetchWithdrawLiquidityValues,
 } from "@/utils/pool";
+import { useGlobalModal } from "@/providers/GlobalModalProvider";
 
 export enum PoolAction {
 	ADD = "Add",
@@ -57,6 +58,7 @@ const PoolProvider: FC<{
 }> = ({ children, api, selectedAccount }) => {
 	const [value, setValue] = useState<PoolContextType>(poolContextDefaultValues);
 	const { wallet, updateBalances } = useCENNZWallet();
+	const { showDialog } = useGlobalModal();
 	const signer = wallet?.signer;
 
 	//set core asset
@@ -177,17 +179,34 @@ const PoolProvider: FC<{
 
 	const sendExtrinsic = useCallback(async () => {
 		if (!api || !value.currentExtrinsic || !selectedAccount || !signer) return;
+		await showDialog({
+			title: "Pool Transaction in Progress",
+			message: "Please sign transaction to continue.",
+			loading: true,
+		});
 		value.currentExtrinsic.signAndSend(
 			selectedAccount.address,
 			{ signer },
 			async ({ status, events }: any) => {
 				if (status.isInBlock) {
+					let foundMethodType = "";
 					for (const {
 						event: { method, section, data },
 					} of events) {
-						//TODO - format response for user
+						if (method === "AddLiquidity" || method === "RemoveLiquidity")
+							foundMethodType = method;
 						console.log({ method, section, data: data.toHuman() });
-						if (method === "ExtrinsicSuccess") await updateBalances();
+						if (method === "ExtrinsicSuccess") {
+							const msg =
+								foundMethodType === "AddLiquidity"
+									? "Liquidity Successfully added to the pool!"
+									: "Liquidity Successfully withdrawn from the pool!";
+							await showDialog({
+								title: "Transaction Successfully Completed!",
+								message: msg,
+							});
+							await updateBalances();
+						}
 					}
 				}
 			}

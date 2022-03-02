@@ -16,6 +16,7 @@ import UserAgentProvider from "@/providers/UserAgentProvider";
 import CENNZExtensionProvider from "@/providers/CENNZExtensionProvider";
 import PageBackdrop from "@/components/shared/PageBackdrop";
 import PageFrame from "@/components/shared/PageFrame";
+import GlobalModalProvider from "@/providers/GlobalModalProvider";
 
 type MyAppProps = Omit<AppProps, "pageProps"> & {
 	pageProps: {} & GlobalProps;
@@ -42,11 +43,13 @@ function MyApp({
 									<BridgeProvider
 										ethChainId={process.env.NEXT_PUBLIC_ETH_CHAIN_ID}
 									>
-										<PageBackdrop />
-										<Wallet />
-										<Switch />
-										<Component {...pageProps} />
-										<PageFrame />
+										<GlobalModalProvider>
+											<PageBackdrop />
+											<Wallet />
+											<Switch />
+											<Component {...pageProps} />
+											<PageFrame />
+										</GlobalModalProvider>
 									</BridgeProvider>
 								</CENNZWalletProvider>
 							</SupportedAssetsProvider>

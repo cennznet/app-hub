@@ -6,7 +6,7 @@ import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import TxModal from "@/components/bridge/TxModal";
 import ErrorModal from "@/components/bridge/ErrorModal";
-import { BridgeToken, CENNZAccount } from "@/types";
+import { BridgeToken, CENNZAccount, TxModalAttributes } from "@/types";
 import ConnectWalletButton from "@/components/shared/ConnectWalletButton";
 import { checkWithdrawStatus, fetchEstimatedFee } from "@/utils/bridge";
 
@@ -27,11 +27,7 @@ const Withdraw: React.FC<{
 }) => {
 	const [modalOpen, setModalOpen] = useState(false);
 	const [errorModalOpen, setErrorModalOpen] = useState(false);
-	const [modal, setModal] = useState({
-		state: "",
-		text: "",
-		hash: "",
-	});
+	const [modal, setModal] = useState<TxModalAttributes>(null);
 	const { Contracts, Account, Signer }: any = useBridge();
 	const { api }: any = useCENNZApi();
 	const { wallet, balances, updateBalances } = useCENNZWallet();
@@ -57,11 +53,11 @@ const Withdraw: React.FC<{
 			(balance) => balance.symbol === token.symbol
 		);
 
-		setEnoughBalance(foundToken.value >= Number(amount));
+		setEnoughBalance(foundToken?.value >= Number(amount));
 	}, [token, balances, api, amount, setEnoughBalance]);
 
 	const resetModal = () => {
-		setModal({ state: "", text: "", hash: "" });
+		setModal(null);
 		setModalOpen(false);
 	};
 
@@ -228,9 +224,8 @@ const Withdraw: React.FC<{
 		<>
 			{modalOpen && (
 				<TxModal
-					modalState={modal.state}
-					modalText={modal.text}
-					etherscanHash={modal.hash}
+					modalOpen={modalOpen}
+					modalAttributes={modal}
 					resetModal={resetModal}
 				/>
 			)}

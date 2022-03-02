@@ -10,6 +10,7 @@ import TokenPicker from "@/components/shared/TokenPicker";
 import { CHAINS, fetchMetamaskBalance } from "@/utils/bridge";
 import ExchangeIcon from "@/components/shared/ExchangeIcon";
 import generateGlobalProps from "@/utils/generateGlobalProps";
+import { useGlobalModal } from "@/providers/GlobalModalProvider";
 
 export async function getStaticProps() {
 	return {
@@ -34,6 +35,7 @@ const Emery: React.FC<{}> = () => {
 		});
 	const [enoughBalance, setEnoughBalance] = useState<boolean>(false);
 	const [estimatedFee, setEstimatedFee] = useState(0);
+	const { showDialog } = useGlobalModal();
 
 	useEffect(() => {
 		if (!toChain) return;
