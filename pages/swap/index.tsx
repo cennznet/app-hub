@@ -16,6 +16,7 @@ import {
 import ConnectWalletButton from "@/components/shared/ConnectWalletButton";
 import Settings from "@/components/pool/Settings";
 import generateGlobalProps from "@/utils/generateGlobalProps";
+import { useGlobalModal } from "@/providers/GlobalModalProvider";
 
 export async function getStaticProps() {
 	return {
@@ -40,6 +41,7 @@ const Exchange: React.FC<{}> = () => {
 	const { balances, updateBalances, wallet, selectedAccount } =
 		useCENNZWallet();
 	const signer = wallet?.signer;
+	const { showDialog } = useGlobalModal();
 
 	useEffect(() => {
 		setError(undefined);
@@ -112,6 +114,11 @@ const Exchange: React.FC<{}> = () => {
 				receivedTokenValue,
 				slippage
 			);
+			await showDialog({
+				title: "Swap in Progress",
+				message: "Please sign transaction to continue with the token swap.",
+				loading: true,
+			});
 
 			extrinsic.signAndSend(
 				selectedAccount.address,
@@ -121,7 +128,10 @@ const Exchange: React.FC<{}> = () => {
 						for (const { event } of events) {
 							if (event.method === "AssetBought") {
 								setError(undefined);
-								setSuccess(`Successfully Swapped Tokens!`);
+								await showDialog({
+									title: "Transaction Successfully Completed!",
+									message: `Successfully Swapped ${exchangeTokenValue} ${exchangeToken.symbol} for ${receivedTokenValue} ${receivedToken.symbol}!`,
+								});
 								updateBalances();
 							}
 						}
@@ -129,7 +139,10 @@ const Exchange: React.FC<{}> = () => {
 				}
 			);
 		} catch (e) {
-			setError(e.message);
+			await showDialog({
+				title: "Error Occurred",
+				message: e.message,
+			});
 		}
 	}, [
 		signer,

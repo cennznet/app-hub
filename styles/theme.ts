@@ -26,9 +26,9 @@ const theme = createTheme({
 		},
 		secondary: {
 			main: "#B3BDFF",
-			swap: "#B3BDFF",
-			pool: "#E4D1FF",
-			bridge: "#B1EAEB",
+			swap: "rgba(17, 48, 255, 0.35)",
+			pool: "rgba(152, 71, 255, 0.35)",
+			bridge: "rgba(45, 200, 203, 0.35)",
 		},
 		error: {
 			main: "#EC022C",

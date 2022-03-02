@@ -130,7 +130,7 @@ export const styles = {
 	chainButton: css`
 		cursor: pointer;
 		height: 60px;
-		width: 175px;
+		width: 182px;
 		border: none;
 		position: relative;
 		background-color: transparent;

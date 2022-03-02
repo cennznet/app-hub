@@ -105,3 +105,10 @@ export interface CENNZAssetBalance extends CENNZAsset {
 	value: number;
 	rawValue: Codec;
 }
+
+export type TxModalAttributes = {
+	state: string;
+	title: string;
+	text: string;
+	hash: string;
+} | null;
