@@ -2,7 +2,7 @@ import { FC } from "react";
 import { css, SerializedStyles } from "@emotion/react";
 
 const ThreeDots: FC<{
-	rootCss: SerializedStyles;
+	rootCss?: SerializedStyles;
 }> = ({ rootCss }) => {
 	return (
 		<div css={[rootCss, styles.root]}>
