@@ -111,6 +111,7 @@ const TxModal: React.FC<Props> = ({
 				});
 			}
 		}
+		//FIXME: adding 'showDialog' causes infinite loop
 		//eslint-disable-next-line
 	}, [modalOpen, modalAttributes, etherscanLink]);
 
