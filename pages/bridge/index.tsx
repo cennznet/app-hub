@@ -5,11 +5,13 @@ import Deposit from "@/components/bridge/Deposit";
 import Withdraw from "@/components/bridge/Withdraw";
 import CENNZnetAccountPicker from "@/components/shared/CENNZnetAccountPicker";
 import ChainPicker from "@/components/bridge/ChainPicker";
-import { Chain, BridgeToken, CENNZAccount, BridgeState } from "@/types";
+import { Asset, Chain, BridgeToken, CENNZAccount, BridgeState } from "@/types";
 import TokenPicker from "@/components/shared/TokenPicker";
 import { CHAINS, fetchMetamaskBalance } from "@/utils/bridge";
+import { fetchBridgeTokens, fetchCENNZAssets } from "@/utils";
 import ExchangeIcon from "@/components/shared/ExchangeIcon";
 import generateGlobalProps from "@/utils/generateGlobalProps";
+import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import { useGlobalModal } from "@/providers/GlobalModalProvider";
 
 export async function getStaticProps() {
@@ -21,7 +23,7 @@ export async function getStaticProps() {
 }
 
 const Emery: React.FC<{}> = () => {
-	const [bridgeState, setBridgeState] = useState<BridgeState>("Deposit");
+	const [assets, setAssets] = useState<Asset[]>();
 	const [toChain, setToChain] = useState<Chain>(CHAINS[0]);
 	const [fromChain, setFromChain] = useState<Chain>(CHAINS[1]);
 	const { Account } = useBridge();
@@ -35,20 +37,24 @@ const Emery: React.FC<{}> = () => {
 		});
 	const [enoughBalance, setEnoughBalance] = useState<boolean>(false);
 	const [estimatedFee, setEstimatedFee] = useState(0);
+	const { api } = useCENNZApi();
 	const { showDialog } = useGlobalModal();
 
 	useEffect(() => {
 		if (!toChain) return;
+		setAssets(null);
 		if (toChain.name === "CENNZnet") {
-			setBridgeState("Deposit");
-		} else {
-			setBridgeState("Withdraw");
+			(async () => setAssets(await fetchBridgeTokens()))();
+			return;
 		}
-	}, [toChain, fromChain]);
+		if (api && toChain.name === "Ethereum") {
+			(async () => setAssets(await fetchCENNZAssets(api)))();
+		}
+	}, [toChain, api]);
 
 	//Check MetaMask account has enough tokens to deposit if eth token picker
 	useEffect(() => {
-		if (bridgeState === "Deposit") {
+		if (toChain.name === "CENNZnet") {
 			setError("");
 			const { ethereum }: any = window;
 			if (!erc20Token) return;
@@ -66,7 +72,7 @@ const Emery: React.FC<{}> = () => {
 				}
 			})();
 		}
-	}, [erc20Token, Account, amount, bridgeState]);
+	}, [erc20Token, Account, amount, toChain]);
 
 	useEffect(() => {
 		if (!enoughBalance && parseFloat(amount) > 0)
@@ -104,23 +110,24 @@ const Emery: React.FC<{}> = () => {
 					<p css={styles.tokenPickerTopText}>Select Token</p>
 				</div>
 				<TokenPicker
+					assets={assets}
+					toChain={toChain.name}
 					setToken={setErc20Token}
 					setAmount={setAmount}
 					amount={amount}
 					error={error}
 					showBalance={true}
-					withdrawBridge={bridgeState === "Withdraw"}
 					width={"460px"}
 				/>
 			</div>
 			<CENNZnetAccountPicker
 				updateSelectedAccount={updateSelectedAccountCustom}
 				topText={"DESTINATION"}
-				forceAddress={bridgeState === "Withdraw" && Account}
+				forceAddress={toChain.name === "Ethereum" && Account}
 			/>
 			<div css={styles.infoBoxContainer}>
 				<p css={styles.infoBoxText}>
-					{bridgeState === "Withdraw" ? (
+					{toChain.name === "Ethereum" ? (
 						<span css={styles.feeContainer}>
 							Estimated Withdrawal Fee: {estimatedFee + " ETH"}
 						</span>
@@ -132,7 +139,7 @@ const Emery: React.FC<{}> = () => {
 					)}
 				</p>
 			</div>
-			{bridgeState === "Deposit" ? (
+			{toChain.name === "CENNZnet" ? (
 				<Deposit
 					token={erc20Token}
 					amount={amount}
