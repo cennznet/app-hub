@@ -13,12 +13,11 @@ import {
 import store from "store";
 import { useCENNZExtension } from "@/providers/CENNZExtensionProvider";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
-import { useAssets } from "@/providers/SupportedAssetsProvider";
-import { fetchAssetBalances } from "@/utils/fetchAssetBalances";
-import { BalanceInfo } from "@/types";
+import fetchCENNZAssetBalances from "@/utils/fetchCENNZAssetBalances";
+import { CENNZAssetBalance } from "@/types";
 
 type WalletContext = {
-	balances: Array<BalanceInfo>;
+	balances: CENNZAssetBalance[];
 	updateBalances: Function;
 	selectedAccount: InjectedAccountWithMeta;
 	wallet: InjectedExtension;
@@ -27,7 +26,7 @@ type WalletContext = {
 	selectAccount: (account: InjectedAccountWithMeta) => void;
 };
 
-const SupportedWalletContext = createContext<WalletContext>({
+const CENNZWalletContext = createContext<WalletContext>({
 	balances: null,
 	updateBalances: null,
 	selectedAccount: null,
@@ -39,13 +38,12 @@ const SupportedWalletContext = createContext<WalletContext>({
 
 type ProviderProps = {};
 
-export default function SupportedWalletProvider({
+export default function CENNZWalletProvider({
 	children,
 }: PropsWithChildren<ProviderProps>) {
 	const { api } = useCENNZApi();
 	const { promptInstallExtension, extension, accounts } = useCENNZExtension();
-	const assets = useAssets();
-	const [balances, setBalances] = useState<Array<BalanceInfo>>(null);
+	const [balances, setBalances] = useState<CENNZAssetBalance[]>(null);
 	const [wallet, setWallet] = useState<InjectedExtension>(null);
 	const [selectedAccount, setAccount] = useState<InjectedAccountWithMeta>(null);
 
@@ -103,18 +101,17 @@ export default function SupportedWalletProvider({
 
 	//3. Fetch asset balance
 	const updateBalances = useCallback(async () => {
-		if (!assets || !selectedAccount?.address || !api) return;
+		if (!selectedAccount?.address || !api) return;
 		(async () => {
 			setBalances([]);
-			const balances = await fetchAssetBalances(
+			const balances = await fetchCENNZAssetBalances(
 				api,
-				assets,
 				selectedAccount.address
 			);
 
 			setBalances(balances);
 		})();
-	}, [assets, selectedAccount, api]);
+	}, [selectedAccount, api]);
 
 	useEffect(() => {
 		(async () => {
@@ -123,7 +120,7 @@ export default function SupportedWalletProvider({
 	}, [updateBalances]);
 
 	return (
-		<SupportedWalletContext.Provider
+		<CENNZWalletContext.Provider
 			value={{
 				balances,
 				updateBalances,
@@ -135,10 +132,10 @@ export default function SupportedWalletProvider({
 			}}
 		>
 			{children}
-		</SupportedWalletContext.Provider>
+		</CENNZWalletContext.Provider>
 	);
 }
 
-export function useWallet(): WalletContext {
-	return useContext(SupportedWalletContext);
+export function useCENNZWallet(): WalletContext {
+	return useContext(CENNZWalletContext);
 }

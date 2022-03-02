@@ -6,7 +6,7 @@ import theme from "@/styles/theme";
 import CssBaseline from "@mui/material/CssBaseline";
 import "@/styles/global.css";
 import CENNZApiProvider from "@/providers/CENNZApiProvider";
-import SupportedWalletProvider from "@/providers/SupportedWalletProvider";
+import CENNZWalletProvider from "@/providers/CENNZWalletProvider";
 import Switch from "@/components/AppSwitch";
 import Wallet from "@/components/Wallet";
 import SupportedAssetsProvider from "@/providers/SupportedAssetsProvider";
@@ -38,7 +38,7 @@ function MyApp({
 					<CENNZExtensionProvider>
 						<CENNZApiProvider endpoint={process.env.NEXT_PUBLIC_API_URL}>
 							<SupportedAssetsProvider supportedAssets={supportedAssets}>
-								<SupportedWalletProvider>
+								<CENNZWalletProvider>
 									<BridgeProvider
 										ethChainId={process.env.NEXT_PUBLIC_ETH_CHAIN_ID}
 									>
@@ -48,7 +48,7 @@ function MyApp({
 										<Component {...pageProps} />
 										<PageFrame />
 									</BridgeProvider>
-								</SupportedWalletProvider>
+								</CENNZWalletProvider>
 							</SupportedAssetsProvider>
 						</CENNZApiProvider>
 					</CENNZExtensionProvider>

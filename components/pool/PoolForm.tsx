@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { css } from "@emotion/react";
 import TokenPicker from "@/components/shared/TokenPicker";
 import { AssetInfo, PoolConfig, PoolValues } from "@/types";
-import { useWallet } from "@/providers/SupportedWalletProvider";
+import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import { PoolAction, usePool } from "@/providers/PoolProvider";
 import { PoolSummaryProps } from "@/types";
 import PoolSummary from "@/components/pool/PoolSummary";
@@ -40,7 +40,7 @@ const PoolForm: React.FC<{}> = () => {
 		poolLiquidity,
 		exchangeRate: null,
 	});
-	const { balances } = useWallet();
+	const { balances } = useCENNZWallet();
 	const {
 		coreAsset,
 		exchangePool,

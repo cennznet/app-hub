@@ -1,6 +1,6 @@
 import React, { FC, MouseEventHandler, useEffect, useState } from "react";
 import styles from "@/styles/components/shared/ConnectWalletButton.module.css";
-import { useWallet } from "@/providers/SupportedWalletProvider";
+import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import { useBridge } from "@/providers/BridgeProvider";
 import { Button } from "@mui/material";
 
@@ -32,7 +32,7 @@ const ConnectWalletButton: FC<ConnectWalletButtonProps> = ({
 		!requireCennznet
 	);
 
-	const { wallet, connectWallet } = useWallet();
+	const { wallet, connectWallet } = useCENNZWallet();
 	const { initBridge, Account }: any = useBridge();
 
 	useEffect(() => {

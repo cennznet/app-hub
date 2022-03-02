@@ -8,13 +8,13 @@ import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import TxModal from "@/components/bridge/TxModal";
 import ErrorModal from "@/components/bridge/ErrorModal";
 import ConnectWalletButton from "@/components/shared/ConnectWalletButton";
-import { BridgeToken, CennznetAccount } from "@/types";
-import { useWallet } from "@/providers/SupportedWalletProvider";
+import { BridgeToken, CENNZAccount } from "@/types";
+import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 
 const Deposit: React.FC<{
 	token: BridgeToken;
 	amount: string;
-	selectedAccount: CennznetAccount;
+	selectedAccount: CENNZAccount;
 	disabled: boolean;
 }> = ({ token, amount, selectedAccount, disabled }) => {
 	const [modalOpen, setModalOpen] = useState(false);
@@ -27,7 +27,7 @@ const Deposit: React.FC<{
 	});
 	const { Contracts, Signer }: any = useBridge();
 	const { api }: any = useCENNZApi();
-	const { updateBalances } = useWallet();
+	const { updateBalances } = useCENNZWallet();
 
 	const resetModal = () => {
 		setModal({ state: "", text: "", hash: "" });

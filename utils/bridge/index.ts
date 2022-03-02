@@ -3,18 +3,18 @@ import GenericERC20TokenAbi from "@/artifacts/GenericERC20Token.json";
 import { Chain } from "@/types";
 import { decodeAddress } from "@polkadot/keyring";
 import { Api } from "@cennznet/api";
+import getTokenLogo from "@/utils/getTokenLogo";
 
 export const ETH = "0x0000000000000000000000000000000000000000";
-export const ETH_LOGO = `images/eth.svg`;
 
 export const CHAINS: Chain[] = [
 	{
 		name: "CENNZnet",
-		logo: "images/cennz.svg",
+		logo: getTokenLogo("cennz")?.src,
 	},
 	{
 		name: "Ethereum",
-		logo: ETH_LOGO,
+		logo: getTokenLogo("eth")?.src,
 	},
 ];
 

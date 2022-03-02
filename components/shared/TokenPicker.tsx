@@ -6,15 +6,16 @@ import {
 	ClickAwayListener,
 } from "@mui/material";
 import ERC20Tokens from "@/artifacts/erc20tokens.json";
-import { ETH, ETH_LOGO, fetchMetamaskBalance } from "@/utils/bridge";
+import { ETH, fetchMetamaskBalance } from "@/utils/bridge";
 import { useAssets } from "@/providers/SupportedAssetsProvider";
 import { Asset, PoolConfig, BridgeToken } from "@/types";
 import { useBridge } from "@/providers/BridgeProvider";
 import { useRouter } from "next/router";
 import styles from "@/styles/components/shared/TokenPicker.module.css";
-import { useWallet } from "@/providers/SupportedWalletProvider";
+import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import { PoolAction } from "@/providers/PoolProvider";
 import { formatBalance } from "@/utils";
+import getTokenLogo from "@/utils/getTokenLogo";
 
 const ETH_CHAIN_ID = process.env.NEXT_PUBLIC_ETH_CHAIN_ID;
 
@@ -58,7 +59,7 @@ const TokenPicker: React.FC<{
 	const [displayTokenBalance, setDisplayTokenBalance] = useState<string>();
 	const assets = useAssets();
 	const { Account } = useBridge();
-	const { balances } = useWallet();
+	const { balances } = useCENNZWallet();
 
 	useEffect(() => {
 		if (!assets) return;
@@ -104,7 +105,7 @@ const TokenPicker: React.FC<{
 			let tokes: Asset[] = [
 				{
 					symbol: "ETH",
-					logo: ETH_LOGO,
+					logo: getTokenLogo("eth").src,
 					address: ETH,
 				},
 			];
@@ -236,7 +237,7 @@ const TokenPicker: React.FC<{
 								<img
 									className={styles.tokenSelectedImg}
 									alt=""
-									src={tokens[selectedTokenIdx]?.logo}
+									src={getTokenLogo(tokens[selectedTokenIdx]?.symbol)?.src}
 									width={33}
 									height={33}
 								/>
@@ -283,7 +284,12 @@ const TokenPicker: React.FC<{
 												}}
 												className={styles.tokenChoiceContainer}
 											>
-												<img alt="" src={token.logo} width={33} height={33} />
+												<img
+													alt=""
+													src={getTokenLogo(token.symbol)?.src}
+													width={33}
+													height={33}
+												/>
 												<span>{token.symbol}</span>
 											</div>
 										);
@@ -316,7 +322,7 @@ const TokenPicker: React.FC<{
 						className={styles.amountInput}
 						type="number"
 						placeholder={"0.00"}
-						value={!!amount ? amount : ""}
+						value={amount}
 						disabled={assetsLoading}
 						onChange={(event) => {
 							whichAsset

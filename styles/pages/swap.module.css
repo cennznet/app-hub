@@ -55,7 +55,6 @@
 	justify-content: flex-start;
 }
 
-
 .infoBoxContainer {
 	width: 460px;
 	height: 95px;
@@ -83,14 +82,14 @@
 }
 
 .feeContainer p {
-	color: #1130FF;
+	color: #1130ff;
 	margin: 0px 5px 3px 0px;
 }
 .feeContainer span {
 	font-weight: normal;
 }
 
-.exchangeIconContainer{
+.exchangeIconContainer {
 	margin-top: -27px;
 	margin-bottom: 8px;
 }

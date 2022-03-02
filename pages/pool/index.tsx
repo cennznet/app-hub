@@ -4,7 +4,7 @@ import PoolProvider from "@/providers/PoolProvider";
 import PoolForm from "@/components/pool/PoolForm";
 import generateGlobalProps from "@/utils/generateGlobalProps";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
-import { useWallet } from "@/providers/SupportedWalletProvider";
+import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 
 export async function getStaticProps() {
 	return {
@@ -16,7 +16,7 @@ export async function getStaticProps() {
 
 const Pool: React.FC<{}> = () => {
 	const { api } = useCENNZApi();
-	const { selectedAccount } = useWallet();
+	const { selectedAccount } = useCENNZWallet();
 
 	return (
 		<PoolProvider api={api} selectedAccount={selectedAccount}>

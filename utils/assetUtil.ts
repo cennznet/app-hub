@@ -1,4 +1,4 @@
-import { ExchangeFormData, IExchangePool } from "@/types";
+import { IExchangePool } from "@/types";
 import { Amount } from "@/utils/Amount";
 
 export const ROUND_UP = 1;

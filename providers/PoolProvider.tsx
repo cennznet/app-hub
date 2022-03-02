@@ -5,12 +5,13 @@ import { AssetInfo, IExchangePool, IUserShareInPool } from "@/types";
 import {
 	FC,
 	createContext,
+	PropsWithChildren,
 	useCallback,
 	useContext,
 	useEffect,
 	useState,
 } from "react";
-import { useWallet } from "@/providers/SupportedWalletProvider";
+import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import {
 	fetchAddLiquidityValues,
 	fetchExchangePool,
@@ -55,7 +56,7 @@ const PoolProvider: FC<{
 	selectedAccount: InjectedAccountWithMeta;
 }> = ({ children, api, selectedAccount }) => {
 	const [value, setValue] = useState<PoolContextType>(poolContextDefaultValues);
-	const { wallet, updateBalances } = useWallet();
+	const { wallet, updateBalances } = useCENNZWallet();
 	const signer = wallet?.signer;
 
 	//set core asset
