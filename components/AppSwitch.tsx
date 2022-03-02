@@ -1,16 +1,10 @@
-import React, { useMemo } from "react";
 import { css } from "@emotion/react";
-import { useRouter } from "next/router";
 import Link from "next/link";
-import { SectionUri } from "@/types";
 import { Theme } from "@mui/material";
+import useSectionUri from "@/hooks/useSectionUri";
 
 const Switch: React.FC<{}> = () => {
-	const { pathname } = useRouter();
-	const section = useMemo<SectionUri>(() => {
-		const section = pathname.replace("/", "").trim();
-		return section as SectionUri;
-	}, [pathname]);
+	const section = useSectionUri();
 	return (
 		<nav css={styles.container}>
 			<Link href="/swap" passHref={true}>

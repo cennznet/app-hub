@@ -1,15 +1,11 @@
-import { FC, useEffect, useMemo, useRef } from "react";
+import { FC, useEffect, useRef } from "react";
 import { css } from "@emotion/react";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { SectionUri } from "@/types";
+import useSectionUri from "@/hooks/useSectionUri";
 
 const PageBackdrop: FC<{}> = () => {
-	const { pathname } = useRouter();
-	const section = useMemo<SectionUri>(() => {
-		const section = pathname.replace("/", "").trim();
-		return section as SectionUri;
-	}, [pathname]);
+	const section = useSectionUri();
 	const ref0 = useRef<HTMLDivElement>();
 	const ref1 = useRef<HTMLDivElement>();
 	const ref2 = useRef<HTMLDivElement>();
@@ -139,7 +135,7 @@ const Layer1: FC<{ section: SectionUri }> = ({ section }) => {
 };
 export const styles = {
 	container:
-		(section: string) =>
+		(section: SectionUri) =>
 		({ palette }) =>
 			css`
 				position: fixed;
@@ -151,7 +147,7 @@ export const styles = {
 			`,
 
 	logo:
-		(section: string) =>
+		(section: SectionUri) =>
 		({ palette }) =>
 			css`
 				width: 140px;
@@ -189,7 +185,7 @@ export const styles = {
 	`,
 
 	layer1Graphics:
-		(section: string) =>
+		(section: SectionUri) =>
 		({ palette }) =>
 			css`
 				margin: 0 auto;

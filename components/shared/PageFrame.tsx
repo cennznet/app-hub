@@ -1,14 +1,10 @@
-import { FC, useMemo } from "react";
+import { FC } from "react";
 import { css } from "@emotion/react";
-import { useRouter } from "next/router";
+import useSectionUri from "@/hooks/useSectionUri";
 import { SectionUri } from "@/types";
 
 const PageFrame: FC<{}> = () => {
-	const { pathname } = useRouter();
-	const section = useMemo<SectionUri>(() => {
-		const section = pathname.replace("/", "").trim();
-		return section as SectionUri;
-	}, [pathname]);
+	const section = useSectionUri();
 	return <div css={styles.container(section)} />;
 };
 
@@ -16,7 +12,7 @@ export default PageFrame;
 
 export const styles = {
 	container:
-		(section: string) =>
+		(section: SectionUri) =>
 		({ palette }) =>
 			css`
 				position: fixed;
