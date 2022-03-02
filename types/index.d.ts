@@ -105,3 +105,5 @@ export interface CENNZAssetBalance extends CENNZAsset {
 	value: number;
 	rawValue: Codec;
 }
+
+export type SectionUri = "swap" | "pool" | "bridge";

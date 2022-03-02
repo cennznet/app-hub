@@ -2,13 +2,13 @@ import { FC, useEffect, useMemo, useRef } from "react";
 import { css } from "@emotion/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { SectionUri } from "@/types";
 
 const PageBackdrop: FC<{}> = () => {
 	const { pathname } = useRouter();
-	const section = useMemo(() => {
+	const section = useMemo<SectionUri>(() => {
 		const section = pathname.replace("/", "").trim();
-		if (section === "") return "swap";
-		return section as "swap" | "pool" | "bridge";
+		return section as SectionUri;
 	}, [pathname]);
 	const ref0 = useRef<HTMLDivElement>();
 	const ref1 = useRef<HTMLDivElement>();
@@ -88,7 +88,7 @@ const PageBackdrop: FC<{}> = () => {
 
 export default PageBackdrop;
 
-const Layer1: FC<{ section: "swap" | "pool" | "bridge" }> = ({ section }) => {
+const Layer1: FC<{ section: SectionUri }> = ({ section }) => {
 	return (
 		<svg
 			width="1155"

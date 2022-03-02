@@ -1,13 +1,13 @@
 import { FC, useMemo } from "react";
 import { css } from "@emotion/react";
 import { useRouter } from "next/router";
+import { SectionUri } from "@/types";
 
 const PageFrame: FC<{}> = () => {
 	const { pathname } = useRouter();
-	const section = useMemo(() => {
+	const section = useMemo<SectionUri>(() => {
 		const section = pathname.replace("/", "").trim();
-		if (section === "") return "swap";
-		return section as "swap" | "pool" | "bridge";
+		return section as SectionUri;
 	}, [pathname]);
 	return <div css={styles.container(section)} />;
 };

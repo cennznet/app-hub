@@ -4,14 +4,14 @@ import { Box } from "@mui/material";
 import { SwitchButton } from "@/components/StyledComponents";
 import Link from "next/link";
 import { useTheme } from "@mui/material/styles";
+import { SectionUri } from "@/types";
 
 const Switch: React.FC<{}> = () => {
 	const { pathname } = useRouter();
 	const theme = useTheme();
-	const section = useMemo(() => {
+	const section = useMemo<SectionUri>(() => {
 		const section = pathname.replace("/", "").trim();
-		if (section === "") return "swap";
-		return section as "swap" | "pool" | "bridge";
+		return section as SectionUri;
 	}, [pathname]);
 	return (
 		<Box
@@ -29,7 +29,7 @@ const Switch: React.FC<{}> = () => {
 				position: "relative",
 			}}
 		>
-			<Link href="/" passHref={true}>
+			<Link href="/swap" passHref={true}>
 				<SwitchButton active={section === "swap"} paletteKey={section}>
 					Swap
 				</SwitchButton>
