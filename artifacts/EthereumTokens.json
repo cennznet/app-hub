@@ -13,6 +13,13 @@
     },
 
     {
+      "symbol": "ETH",
+      "decimals": 18,
+      "chainId": 42,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+
+    {
       "symbol": "USDT",
       "decimals": 6,
       "chainId": 1,
@@ -104,6 +111,13 @@
     },
 
     {
+      "symbol": "LINK",
+      "decimals": 18,
+      "address": "  0xa36085F69e2889c224210F603D836748e7dC0088",
+      "chainId": 42
+    },
+
+    {
       "address": "0xAaF64BFCC32d0F15873a02163e7E500671a4ffcD",
       "symbol": "MKR",
       "decimals": 18,
@@ -122,6 +136,13 @@
       "symbol": "CERTI",
       "decimals": 18,
       "chainId": 1
+    },
+
+    {
+      "address": "0xd0a1e359811322d97991e03f863a0c30c2cf029c",
+      "symbol": "wETH",
+      "decimals": 18,
+      "chainId": 42
     }
   ]
 }
