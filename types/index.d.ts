@@ -60,14 +60,14 @@ export interface PoolValues {
 }
 
 export interface PoolSummaryProps {
-	tradeAsset: AssetInfo;
+	tradeAsset: CENNZAsset;
 	poolLiquidity: PoolValues;
 	exchangeRate: number | string;
 }
 
 export interface PoolConfig {
-	tradeAsset: AssetInfo;
-	coreAsset: AssetInfo;
+	tradeAsset: CENNZAsset;
+	coreAsset: CENNZAsset;
 	userPoolShare: IUserShareInPool;
 	poolAction: string;
 	setOtherAsset: Function;
