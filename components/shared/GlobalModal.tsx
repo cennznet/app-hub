@@ -48,7 +48,7 @@ const GlobalModal: React.FC<GlobalModalProps> = ({
 					<div css={styles.contentContainer}>
 						<div css={styles.headerContainer}>
 							<h1 css={styles.header}>{title}</h1>
-							{loading && <ThreeDots fontSize={24} />}
+							{loading && <ThreeDots rootCss={styles.threeDots} />}
 						</div>
 						<p css={styles.infoText}>{message}</p>
 						{buttonLink ? (
@@ -129,6 +129,9 @@ export const styles = {
 		line-height: 24px;
 		letter-spacing: 0.15px;
 		color: #1130ff;
+	`,
+	threeDots: css`
+		font-size: 24px;
 	`,
 	infoText: css`
 		text-align: left;
