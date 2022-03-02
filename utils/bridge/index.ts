@@ -10,11 +10,11 @@ export const ETH = "0x0000000000000000000000000000000000000000";
 export const CHAINS: Chain[] = [
 	{
 		name: "CENNZnet",
-		logo: getTokenLogo("cennz").src,
+		logo: getTokenLogo("cennz")?.src,
 	},
 	{
 		name: "Ethereum",
-		logo: getTokenLogo("eth").src,
+		logo: getTokenLogo("eth")?.src,
 	},
 ];
 

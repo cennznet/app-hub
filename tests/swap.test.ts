@@ -13,18 +13,16 @@ const assets = {
 };
 const balances = [
 	{
-		id: 16000,
+		assetId: 16000,
 		symbol: "CENNZ",
 		decimals: 4,
-		logo: "/images/cennz.svg",
 		value: 5000,
 		rawValue: null,
 	},
 	{
-		id: 16001,
+		assetId: 16001,
 		symbol: "CPAY",
 		decimals: 4,
-		logo: "/images/cpay.svg",
 		value: 5000,
 		rawValue: null,
 	},
