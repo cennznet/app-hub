@@ -17,7 +17,9 @@ const ExchangeIconClass: FC<ExchangeIconProps> = ({
 	return (
 		<Box
 			className={
-				horizontal ? `${styles.horizontal} ${styles.exchangeIcon}` : styles.exchangeIcon
+				horizontal
+					? `${styles.horizontal} ${styles.exchangeIcon}`
+					: styles.exchangeIcon
 			}
 			sx={{
 				"&:hover": {

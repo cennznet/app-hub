@@ -9,6 +9,6 @@ import fetchCENNZAssets from "@/utils/fetchCENNZAssets";
  * @return {Promise<CENNZAsset[]>} The pool assets.
  */
 export default async function fetchPoolAssets(api: Api): Promise<CENNZAsset[]> {
-  const assets = await fetchCENNZAssets(api);
-  return assets.filter(({ symbol }) => symbol !== "CPAY");
+	const assets = await fetchCENNZAssets(api);
+	return assets.filter(({ symbol }) => symbol !== "CPAY");
 }
