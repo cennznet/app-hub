@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { Backdrop, Modal } from "@mui/material";
+import { Modal } from "@mui/material";
 import { css } from "@emotion/react";
-import { useTheme } from "@mui/material/styles";
-import { useRouter } from "next/router";
 import { Link } from "@mui/material";
 import ThreeDots from "@/components/shared/ThreeDots";
+import ModalBackdrop from "@/components/shared/ModalBackdrop";
+
 interface GlobalModalProps {
 	isOpen: boolean;
 	setModalOpened: Function;
@@ -28,62 +27,53 @@ const GlobalModal: React.FC<GlobalModalProps> = ({
 	loading,
 	disableButton = false,
 }) => {
-	const theme = useTheme();
-	const router = useRouter();
-
 	return (
-		<Backdrop
-			sx={{
-				backgroundColor:
-					theme.palette.secondary[router.asPath.replace("/", "")],
-				zIndex: (theme) => theme.zIndex.drawer + 1,
-			}}
+		<Modal
 			open={isOpen}
-			onClick={() => {
+			BackdropComponent={ModalBackdrop}
+			onBackdropClick={() => {
 				if (!disableButton) setModalOpened(false);
 			}}
 		>
-			<Modal open={isOpen}>
-				<div css={styles.styledModal}>
-					<div css={styles.contentContainer}>
-						<div css={styles.headerContainer}>
-							<h1 css={styles.header}>{title}</h1>
-							{loading && <ThreeDots rootCss={styles.threeDots} />}
-						</div>
-						<p css={styles.infoText}>{message}</p>
-						{buttonLink ? (
-							<Link
-								css={styles.linkedButton}
-								href={buttonLink}
-								target="_blank"
-								rel="noopener noreferrer"
-							>
-								<button
-									disabled={disableButton}
-									onClick={() => {
-										if (callback) callback();
-									}}
-									css={styles.confirmButton}
-								>
-									{buttonText ? buttonText : "Close"}
-								</button>
-							</Link>
-						) : (
+			<div css={styles.styledModal}>
+				<div css={styles.contentContainer}>
+					<div css={styles.headerContainer}>
+						<h1 css={styles.header}>{title}</h1>
+						{loading && <ThreeDots rootCss={styles.threeDots} />}
+					</div>
+					<p css={styles.infoText}>{message}</p>
+					{buttonLink ? (
+						<Link
+							css={styles.linkedButton}
+							href={buttonLink}
+							target="_blank"
+							rel="noopener noreferrer"
+						>
 							<button
 								disabled={disableButton}
 								onClick={() => {
 									if (callback) callback();
-									setModalOpened(false);
 								}}
 								css={styles.confirmButton}
 							>
 								{buttonText ? buttonText : "Close"}
 							</button>
-						)}
-					</div>
+						</Link>
+					) : (
+						<button
+							disabled={disableButton}
+							onClick={() => {
+								if (callback) callback();
+								setModalOpened(false);
+							}}
+							css={styles.confirmButton}
+						>
+							{buttonText ? buttonText : "Close"}
+						</button>
+					)}
 				</div>
-			</Modal>
-		</Backdrop>
+			</div>
+		</Modal>
 	);
 };
 
@@ -91,9 +81,11 @@ export default GlobalModal;
 
 export const styles = {
 	styledModal: css`
+		border-radius: 4px;
+		outline: none;
 		position: absolute;
 		height: auto;
-		width: 550px;
+		width: 600px;
 		justify-content: center;
 		align-items: center;
 		display: flex;
