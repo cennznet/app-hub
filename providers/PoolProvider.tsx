@@ -1,7 +1,7 @@
 import { Api } from "@cennznet/api";
 import { Amount } from "@/utils/Amount";
 import { InjectedAccountWithMeta } from "@polkadot/extension-inject/types";
-import { AssetInfo, IExchangePool, IUserShareInPool } from "@/types";
+import { CENNZAsset, IExchangePool, IUserShareInPool } from "@/types";
 import {
 	FC,
 	createContext,
@@ -27,7 +27,7 @@ export enum PoolAction {
 }
 
 type PoolContextType = {
-	coreAsset: AssetInfo;
+	coreAsset: CENNZAsset;
 	estimatedFee: Amount;
 	userPoolShare: IUserShareInPool;
 	getUserPoolShare: Function;
@@ -69,10 +69,15 @@ const PoolProvider: FC<{
 			let coreAsset: any = await api.query.genericAsset.assetMeta(
 				Number(coreAssetId)
 			);
+			coreAsset = coreAsset.toHuman();
 
 			setValue((value) => ({
 				...value,
-				coreAsset: { ...coreAsset.toHuman(), id: Number(coreAssetId) },
+				coreAsset: {
+					symbol: coreAsset.symbol,
+					assetId: Number(coreAssetId),
+					decimals: Number(coreAsset.decimalPlaces),
+				},
 			}));
 		})();
 	}, [api]);
@@ -83,7 +88,7 @@ const PoolProvider: FC<{
 
 			const exchangePool: IExchangePool = await fetchExchangePool(
 				api,
-				asset.id
+				asset.assetId
 			);
 
 			setValue((value) => ({
@@ -101,7 +106,7 @@ const PoolProvider: FC<{
 			const userPoolShare: IUserShareInPool = await fetchUserPoolShare(
 				api,
 				selectedAccount.address,
-				asset.id
+				asset.assetId
 			);
 
 			setValue({ ...value, userPoolShare });
@@ -111,7 +116,7 @@ const PoolProvider: FC<{
 
 	const defineExtrinsic = useCallback(
 		async (
-			asset: AssetInfo,
+			asset: CENNZAsset,
 			assetAmount: Amount,
 			coreAmount: Amount,
 			poolAction: string,
@@ -134,7 +139,7 @@ const PoolProvider: FC<{
 					);
 
 				extrinsic = api.tx.cennzx.addLiquidity(
-					asset.id,
+					asset.assetId,
 					minLiquidity,
 					maxAssetAmount,
 					maxCoreAmount
@@ -154,7 +159,7 @@ const PoolProvider: FC<{
 					);
 
 				extrinsic = api.tx.cennzx.removeLiquidity(
-					asset.id,
+					asset.assetId,
 					liquidityAmount,
 					minAssetWithdraw,
 					minCoreWithdraw
@@ -164,7 +169,7 @@ const PoolProvider: FC<{
 			const estimatedFee = await fetchFeeEstimate(
 				api,
 				extrinsic,
-				value.coreAsset.id,
+				value.coreAsset.assetId,
 				"50000000000000000"
 			);
 
@@ -211,7 +216,7 @@ const PoolProvider: FC<{
 				}
 			}
 		);
-	}, [api, value, selectedAccount, signer, updateBalances]);
+	}, [api, value, selectedAccount, signer, updateBalances, showDialog]);
 
 	return (
 		<PoolContext.Provider
