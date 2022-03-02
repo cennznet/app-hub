@@ -120,7 +120,6 @@ const Emery: React.FC<{}> = () => {
 			<AccountPicker
 				updateSelectedAccount={updateSelectedAccountCustom}
 				topText={"DESTINATION"}
-				forceAddress={toChain.name === "Ethereum" && Account}
 			/>
 			<div css={styles.infoBoxContainer}>
 				<p css={styles.infoBoxText}>

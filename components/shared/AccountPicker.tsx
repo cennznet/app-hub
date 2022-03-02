@@ -3,59 +3,46 @@ import { Autocomplete, TextField } from "@mui/material";
 import { useCENNZExtension } from "@/providers/CENNZExtensionProvider";
 import { css } from "@emotion/react";
 import AccountIdenticon from "@/components/shared/AccountIdenticon";
+import { useWallet } from "@/providers/SupportedWalletProvider";
 
 const AccountPicker: React.FC<{
 	updateSelectedAccount: Function;
 	topText?: string;
-	forceAddress?: string;
-}> = ({ updateSelectedAccount, topText, forceAddress }) => {
+	cennznet?: string;
+}> = ({ updateSelectedAccount, topText }) => {
 	const { accounts } = useCENNZExtension();
-	const [open, setOpen] = useState<boolean>(false);
-	const [selectedAccount, setSelectedAccount] = useState<string>();
-	const [cennzAccountAddress, setCennzAccountAddress] = useState<string[]>([]);
+	const { selectedAccount } = useWallet();
+	const [selectedAccountInput, setSelectedAccountInput] = useState<string>();
 	const [error, setError] = useState<string>();
 
 	useEffect(() => {
-		let addresses: string[] = [];
 		if (accounts) {
-			accounts.map((account) => {
-				addresses.push(account.address);
-			});
-			if (forceAddress) setCennzAccountAddress([forceAddress]);
-			else setCennzAccountAddress(addresses);
+			updateSelectedAccount(accounts[0]);
+			setSelectedAccountInput(accounts[0].address);
 		}
-	}, [accounts, forceAddress]);
+	}, []);
 
 	useEffect(() => {
-		if (!forceAddress || !accounts) return;
-		setCennzAccountAddress([]);
-		//set to default cennznet account
-		updateSelectedAccount(accounts[0]);
-	}, [forceAddress, accounts, updateSelectedAccount]);
+		if (selectedAccount) {
+			updateSelectedAccount({
+				address: selectedAccount.address,
+				name: selectedAccount.meta.name,
+			});
+			setSelectedAccountInput(selectedAccount.address);
+		}
+	}, [selectedAccount]);
 
 	const updateAccount = (accountAddress: string) => {
 		setError("");
-		let foundAccount = false;
-		//Check if account name exist in lists of user accounts
-		accounts.forEach((account) => {
-			if (account.address === accountAddress) {
-				updateSelectedAccount({
-					name: account.meta.name,
-					address: account.address,
-				});
-				setSelectedAccount(account.address);
-				setError("");
-				foundAccount = true;
-				return;
-			}
-		});
-		if (foundAccount || forceAddress) return;
 		//else check if the account they entered is valid cennznet address
 		//TODO improve address validation
 		const cennznetAddressLength = 48;
 		if (accountAddress.length === cennznetAddressLength) {
-			setSelectedAccount(accountAddress);
-		} else if (accountAddress !== "" && !forceAddress) {
+			updateSelectedAccount({
+				name: "",
+				address: accountAddress,
+			});
+		} else if (accountAddress !== "") {
 			setError("Invalid Cennznet Address");
 		}
 	};
@@ -64,15 +51,33 @@ const AccountPicker: React.FC<{
 		<div css={styles.accountPickerContainer}>
 			<p css={styles.topText}>{topText}</p>
 			<div css={styles.addressInputContainer}>
-				<AccountIdenticon theme="beachball" size={28} value={selectedAccount} />
+				{/*<div css={styles.defaultCircle} />*/}
+				<AccountIdenticon
+					theme="beachball"
+					size={28}
+					value={selectedAccountInput}
+				/>
 				<input
 					type={"text"}
 					placeholder={"Type Address"}
-					value={selectedAccount}
+					value={selectedAccountInput}
 					disabled={false}
-					onChange={() => {}}
+					onChange={(e: any) => {
+						setSelectedAccountInput(e.target.value);
+						updateAccount(e.target.value);
+					}}
 				/>
-				<img src={"/images/blue_minus.svg"} alt={""} />
+				<img
+					src={"/images/blue_minus.svg"}
+					alt={""}
+					onClick={() => {
+						setSelectedAccountInput("");
+						updateSelectedAccount({
+							name: "",
+							address: "",
+						});
+					}}
+				/>
 			</div>
 
 			{/*<Autocomplete*/}
@@ -126,6 +131,12 @@ const AccountPicker: React.FC<{
 export default AccountPicker;
 
 export const styles = {
+	defaultCircle: css`
+		border-radius: 50%;
+		border: 3px solid blue;
+		width: 32px;
+		height: 30px;
+	`,
 	accountPickerContainer: css`
 		display: flex;
 		flex-direction: column;
