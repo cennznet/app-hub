@@ -1,17 +1,18 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Autocomplete, TextField } from "@mui/material";
 import { useCENNZExtension } from "@/providers/CENNZExtensionProvider";
 import { css } from "@emotion/react";
 import AccountIdenticon from "@/components/shared/AccountIdenticon";
-import { useWallet } from "@/providers/SupportedWalletProvider";
+import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
+import { useBridge } from "@/providers/BridgeProvider";
 
 const AccountPicker: React.FC<{
 	updateSelectedAccount: Function;
-	topText?: string;
-	cennznet?: string;
-}> = ({ updateSelectedAccount, topText }) => {
+	topText: string;
+	cennznet: boolean;
+}> = ({ updateSelectedAccount, topText, cennznet }) => {
 	const { accounts } = useCENNZExtension();
-	const { selectedAccount } = useWallet();
+	const { selectedAccount } = useCENNZWallet();
+	const { Account }: any = useBridge();
 	const [selectedAccountInput, setSelectedAccountInput] = useState<string>();
 	const [validAddress, setValidAddress] = useState<boolean>();
 	const [error, setError] = useState<string>();
@@ -55,84 +56,47 @@ const AccountPicker: React.FC<{
 		<div css={styles.accountPickerContainer}>
 			<p css={styles.topText}>{topText}</p>
 			<div css={styles.addressInputContainer}>
-				{validAddress ? (
-					<AccountIdenticon
-						theme="beachball"
-						size={28}
-						value={selectedAccountInput}
-					/>
+				{cennznet ? (
+					validAddress ? (
+						<AccountIdenticon
+							theme="beachball"
+							size={28}
+							value={selectedAccountInput}
+						/>
+					) : (
+						<img src={"/images/cennznet_blue.svg"} alt={""} />
+					)
 				) : (
-					<img src={"/images/cennznet_blue.svg"} alt={""} />
+					<div>MM</div>
 				)}
-
 				<input
 					type={"text"}
-					placeholder={"Type Address"}
-					value={selectedAccountInput}
-					disabled={false}
+					placeholder={
+						cennznet ? "Type Address" : Account ? Account : "Connect Wallet"
+					}
+					value={cennznet ? selectedAccountInput : Account}
+					disabled={!cennznet}
 					onChange={(e: any) => {
 						setSelectedAccountInput(e.target.value);
 						updateAccount(e.target.value);
 					}}
 				/>
-				<img
-					css={styles.blueMinus}
-					src={"/images/blue_minus.svg"}
-					alt={""}
-					onClick={() => {
-						setSelectedAccountInput("");
-						setValidAddress(false);
-						updateSelectedAccount({
-							name: "",
-							address: "",
-						});
-					}}
-				/>
+				{cennznet && (
+					<img
+						css={styles.blueMinus}
+						src={"/images/blue_minus.svg"}
+						alt={""}
+						onClick={() => {
+							setSelectedAccountInput("");
+							setValidAddress(false);
+							updateSelectedAccount({
+								name: "",
+								address: "",
+							});
+						}}
+					/>
+				)}
 			</div>
-
-			{/*<Autocomplete*/}
-			{/*	disablePortal*/}
-			{/*	open={open}*/}
-			{/*	options={accountNames}*/}
-			{/*	forcePopupIcon={!!!forceAddress}*/}
-			{/*	onOpen={!!forceAddress ? null : () => setOpen(true)}*/}
-			{/*	onClose={() => setOpen(false)}*/}
-			{/*	onSelect={(e: any) => {*/}
-			{/*		setSelectedAccount(e.target.value);*/}
-			{/*		updateAccount(e.target.value);*/}
-			{/*	}}*/}
-			{/*	clearIcon={!wallet && <img src={"/images/blue_minus.svg"} alt={""} />}*/}
-			{/*	onChange={(event, value, reason) => {*/}
-			{/*		if (reason === "clear") {*/}
-			{/*			updateAccount("");*/}
-			{/*			setSelectedAccount("");*/}
-			{/*			updateSelectedAccount({*/}
-			{/*				address: "",*/}
-			{/*				name: "",*/}
-			{/*			});*/}
-			{/*			setError("");*/}
-			{/*		}*/}
-			{/*	}}*/}
-			{/*	sx={{*/}
-			{/*		width: wallet ? "100%" : "460px",*/}
-			{/*	}}*/}
-			{/*	renderInput={(params) => (*/}
-			{/*		<TextField*/}
-			{/*			{...params}*/}
-			{/*			label={*/}
-			{/*				selectedAccount*/}
-			{/*					? ""*/}
-			{/*					: wallet*/}
-			{/*					? "Switch Account"*/}
-			{/*					: forceAddress*/}
-			{/*					? forceAddress*/}
-			{/*					: "Select or Type Address"*/}
-			{/*			}*/}
-			{/*			InputLabelProps={{ shrink: false }}*/}
-			{/*			disabled={!!forceAddress}*/}
-			{/*		/>*/}
-			{/*	)}*/}
-			{/*/>*/}
 			{error && <div css={styles.errorMsg}>{error}</div>}
 		</div>
 	);
@@ -178,6 +142,10 @@ export const styles = {
 			background: transparent;
 			border: none;
 			text-overflow: ellipsis;
+			font-style: normal;
+			font-weight: bold;
+			font-size: 16px;
+			line-height: 124%;
 			&:focus-visible {
 				outline: none;
 			}
