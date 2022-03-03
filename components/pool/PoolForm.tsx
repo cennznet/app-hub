@@ -59,16 +59,16 @@ const PoolForm: React.FC<{}> = () => {
 	}, [api, assets]);
 
 	useEffect(() => {
-		if (!exchangePool) return;
+		if (!exchangePool || !tradeAsset || !coreAsset) return;
 
-		const exchangeRate = fetchExchangeRate(exchangePool);
+		const exchangeRate = fetchExchangeRate(exchangePool, tradeAsset, coreAsset);
 
 		setPoolSummaryProps({
 			tradeAsset,
 			poolLiquidity,
 			exchangeRate,
 		});
-	}, [exchangePool, tradeAsset, poolLiquidity]);
+	}, [exchangePool, tradeAsset, coreAsset, poolLiquidity]);
 
 	//set pool balances
 	useEffect(() => {

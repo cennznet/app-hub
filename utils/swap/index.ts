@@ -61,7 +61,7 @@ export const fetchTokenAmounts = async (
 	);
 	let receivedAmount: any = new Amount(
 		sellPrice.price.toString(),
-		AmountUnit.UN
+		AmountUnit.UN,
 	);
 	receivedAmount = receivedAmount.toAmount(receivedToken.decimals);
 
@@ -75,9 +75,9 @@ export const fetchEstimatedTransactionFee = async (
 	receivedTokenId: number,
 	slippage: number
 ) => {
-	const maxAmount = Math.round(
+	const maxAmount = new Amount(
 		parseFloat(exchangeAmount) + parseFloat(exchangeAmount) * (slippage / 100)
-	);
+	).toString();
 	const extrinsic = api.tx.cennzx.buyAsset(
 		null,
 		exchangeTokenId,
@@ -106,9 +106,9 @@ export const fetchExchangeExtrinsic = async (
 	exchangeAmount = exchangeAmount
 		.multipliedBy(Math.pow(10, exchangeToken.decimals))
 		.toString(10);
-	const maxAmount = Math.round(
+	const maxAmount = new Amount(
 		parseFloat(exchangeAmount) + parseFloat(exchangeAmount) * (slippage / 100)
-	);
+	).toString();
 	let buyAmount: any = new BigNumber(receivedTokenValue);
 	buyAmount = buyAmount
 		.multipliedBy(Math.pow(10, receivedToken.decimals))

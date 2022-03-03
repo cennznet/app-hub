@@ -32,12 +32,16 @@ export const fetchTradeAmount = (
 	return tradeAmount;
 };
 
-export const fetchExchangeRate = (exchangePool: IExchangePool) => {
-	const exchangeRate =
-		Number(exchangePool.assetBalance.toString()) /
-		Number(exchangePool.coreAssetBalance.toString());
+export const fetchExchangeRate = (
+	exchangePool: IExchangePool,
+	tradeAsset: CENNZAsset,
+	coreAsset: CENNZAsset
+) => {
+	const exchangeRate = exchangePool.assetBalance
+		.toAmount(tradeAsset.decimals)
+		.dividedBy(exchangePool.coreAssetBalance.toAmount(coreAsset.decimals));
 
-	return formatBalance(exchangeRate);
+	return formatBalance(exchangeRate.toNumber());
 };
 
 export const checkLiquidityBalances = (
