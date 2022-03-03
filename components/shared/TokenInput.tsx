@@ -6,15 +6,22 @@ import getTokenLogo from "@/utils/getTokenLogo";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 
 interface TokenInputProps {
-	coinsList: Partial<CENNZAsset & EthereumToken>[];
-	token: number | string;
+	tokens: Partial<CENNZAsset & EthereumToken>[];
+	selectedTokenId: number | string;
 	onTokenChange: (event: SelectChangeEvent) => void;
 	onMaxValueRequest?: () => void;
 }
 
 const TokenInput: FC<
 	TokenInputProps & InputHTMLAttributes<HTMLInputElement>
-> = ({ token, onTokenChange, coinsList, onMaxValueRequest, ...props }) => {
+> = ({
+	selectedTokenId: token,
+	onTokenChange,
+	tokens,
+	onMaxValueRequest,
+	placeholder = "0.0",
+	...props
+}) => {
 	return (
 		<div css={styles.root}>
 			<Select
@@ -24,24 +31,31 @@ const TokenInput: FC<
 				MenuProps={{ sx: styles.selectDropdown as any }}
 				IconComponent={ExpandLess}
 			>
-				{coinsList.map((coin) => {
-					const { symbol, assetId, address } = coin;
-					const logo = getTokenLogo(symbol);
-					const value = address || assetId;
-					return (
-						<MenuItem key={value} value={value} css={styles.selectItem}>
-							{logo && <img src={logo.src} alt={symbol} />}
-							<span>{coin.symbol}</span>
-						</MenuItem>
-					);
-				})}
+				{!!tokens?.length &&
+					tokens.map((coin) => {
+						const { symbol, assetId, address } = coin;
+						const logo = getTokenLogo(symbol);
+						const value = address || assetId;
+						return (
+							<MenuItem key={value} value={value} css={styles.selectItem}>
+								{logo && <img src={logo.src} alt={symbol} />}
+								<span>{coin.symbol}</span>
+							</MenuItem>
+						);
+					})}
 			</Select>
 			{onMaxValueRequest && (
 				<div css={styles.maxButton} onClick={onMaxValueRequest}>
 					Max
 				</div>
 			)}
-			<input css={styles.input} {...props} type="number" />
+			<input
+				css={styles.input}
+				{...props}
+				type="number"
+				min={0}
+				placeholder={placeholder}
+			/>
 		</div>
 	);
 };
@@ -74,13 +88,16 @@ export const styles = {
 			}
 
 			> span {
+				font-size: 0.875em;
 				font-weight: bold;
+				flex: 1;
 			}
 		}
 	`,
 
 	select: ({ palette }: Theme) => css`
 		border: none;
+		width: 200px;
 
 		.MuiList-root {
 			padding: 0;
@@ -91,7 +108,7 @@ export const styles = {
 		}
 
 		.MuiSelect-iconOpen {
-			color: ${palette.primary.section};
+			color: ${palette.primary.main};
 		}
 	`,
 
@@ -101,7 +118,7 @@ export const styles = {
 			overflow: hidden;
 			transform: translate(-1px, 5px) !important;
 			box-shadow: 4px 8px 8px rgba(0, 0, 0, 0.1);
-			border: 1px solid ${palette.secondary.section};
+			border: 1px solid ${palette.secondary.main};
 		}
 
 		.MuiMenu-list {
@@ -122,6 +139,7 @@ export const styles = {
 		}
 
 		> span {
+			font-size: 0.875em;
 			font-weight: bold;
 			flex: 1;
 		}
@@ -151,7 +169,7 @@ export const styles = {
 		transition: color 0.2s;
 
 		&:hover {
-			color: ${palette.primary.section};
+			color: ${palette.primary.main};
 		}
 	`,
 };
