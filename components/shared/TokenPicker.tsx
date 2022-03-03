@@ -177,7 +177,7 @@ const TokenPicker: React.FC<{
 					}}
 				>
 					<div className={styles.tokenSelector}>
-						{assetsLoading ? (
+						{assetsLoading || !tokens[selectedTokenIdx] ? (
 							<CircularProgress
 								size={30}
 								sx={{
