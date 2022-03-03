@@ -61,7 +61,7 @@ export const fetchTokenAmounts = async (
 	);
 	let receivedAmount: any = new Amount(
 		sellPrice.price.toString(),
-		AmountUnit.UN,
+		AmountUnit.UN
 	);
 	receivedAmount = receivedAmount.toAmount(receivedToken.decimals);
 
