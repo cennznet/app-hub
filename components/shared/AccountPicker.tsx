@@ -13,12 +13,14 @@ const AccountPicker: React.FC<{
 	const { accounts } = useCENNZExtension();
 	const { selectedAccount } = useWallet();
 	const [selectedAccountInput, setSelectedAccountInput] = useState<string>();
+	const [validAddress, setValidAddress] = useState<boolean>();
 	const [error, setError] = useState<string>();
 
 	useEffect(() => {
 		if (accounts) {
 			updateSelectedAccount(accounts[0]);
 			setSelectedAccountInput(accounts[0].address);
+			setValidAddress(true);
 		}
 	}, []);
 
@@ -29,12 +31,13 @@ const AccountPicker: React.FC<{
 				name: selectedAccount.meta.name,
 			});
 			setSelectedAccountInput(selectedAccount.address);
+			setValidAddress(true);
 		}
 	}, [selectedAccount]);
 
 	const updateAccount = (accountAddress: string) => {
 		setError("");
-		//else check if the account they entered is valid cennznet address
+		setValidAddress(false);
 		//TODO improve address validation
 		const cennznetAddressLength = 48;
 		if (accountAddress.length === cennznetAddressLength) {
@@ -42,6 +45,7 @@ const AccountPicker: React.FC<{
 				name: "",
 				address: accountAddress,
 			});
+			setValidAddress(true);
 		} else if (accountAddress !== "") {
 			setError("Invalid Cennznet Address");
 		}
@@ -51,12 +55,16 @@ const AccountPicker: React.FC<{
 		<div css={styles.accountPickerContainer}>
 			<p css={styles.topText}>{topText}</p>
 			<div css={styles.addressInputContainer}>
-				{/*<div css={styles.defaultCircle} />*/}
-				<AccountIdenticon
-					theme="beachball"
-					size={28}
-					value={selectedAccountInput}
-				/>
+				{validAddress ? (
+					<AccountIdenticon
+						theme="beachball"
+						size={28}
+						value={selectedAccountInput}
+					/>
+				) : (
+					<img src={"/images/cennznet_blue.svg"} alt={""} />
+				)}
+
 				<input
 					type={"text"}
 					placeholder={"Type Address"}
@@ -68,10 +76,12 @@ const AccountPicker: React.FC<{
 					}}
 				/>
 				<img
+					css={styles.blueMinus}
 					src={"/images/blue_minus.svg"}
 					alt={""}
 					onClick={() => {
 						setSelectedAccountInput("");
+						setValidAddress(false);
 						updateSelectedAccount({
 							name: "",
 							address: "",
@@ -131,12 +141,6 @@ const AccountPicker: React.FC<{
 export default AccountPicker;
 
 export const styles = {
-	defaultCircle: css`
-		border-radius: 50%;
-		border: 3px solid blue;
-		width: 32px;
-		height: 30px;
-	`,
 	accountPickerContainer: css`
 		display: flex;
 		flex-direction: column;
@@ -153,6 +157,10 @@ export const styles = {
 		margin: 0;
 		margin-bottom: 6px;
 	`,
+	blueMinus: css`
+		cursor: pointer;
+		margin-left: 30px;
+	`,
 	addressInputContainer: css`
 		width: 460px;
 		height: 60px;
@@ -162,11 +170,6 @@ export const styles = {
 		align-items: center;
 		justify-content: flex-start;
 		padding: 0px 20px;
-
-		img {
-			cursor: pointer;
-			margin-left: 30px;
-		}
 
 		input {
 			margin-left: 10px;
