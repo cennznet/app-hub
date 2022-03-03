@@ -5,7 +5,7 @@ import Deposit from "@/components/bridge/Deposit";
 import Withdraw from "@/components/bridge/Withdraw";
 import CENNZnetAccountPicker from "@/components/shared/CENNZnetAccountPicker";
 import ChainPicker from "@/components/bridge/ChainPicker";
-import { Asset, Chain, BridgeToken, CENNZAccount, BridgeState } from "@/types";
+import { Chain, CENNZAccount, BridgeState } from "@/types";
 import TokenPicker from "@/components/shared/TokenPicker";
 import { CHAINS, fetchMetamaskBalance } from "@/utils/bridge";
 import { fetchBridgeTokens, fetchCENNZAssets } from "@/utils";
@@ -23,12 +23,12 @@ export async function getStaticProps() {
 }
 
 const Emery: React.FC<{}> = () => {
-	const [assets, setAssets] = useState<Asset[]>();
+	const [assets, setAssets] = useState<any[]>();
 	const [toChain, setToChain] = useState<Chain>(CHAINS[0]);
 	const [fromChain, setFromChain] = useState<Chain>(CHAINS[1]);
 	const { Account } = useBridge();
 	const [amount, setAmount] = useState<string>("");
-	const [erc20Token, setErc20Token] = useState<BridgeToken>();
+	const [erc20Token, setErc20Token] = useState<any>();
 	const [error, setError] = useState<string>();
 	const [selectedAccountCustom, updateSelectedAccountCustom] =
 		useState<CENNZAccount>({
@@ -54,24 +54,21 @@ const Emery: React.FC<{}> = () => {
 
 	//Check MetaMask account has enough tokens to deposit if eth token picker
 	useEffect(() => {
-		if (toChain.name === "CENNZnet") {
+		if (toChain.name !== "CENNZnet" || !erc20Token || !Account) return;
+		(async () => {
 			setError("");
 			const { ethereum }: any = window;
-			if (!erc20Token) return;
-			(async () => {
-				if (!erc20Token || !Account) return;
-				const balance = await fetchMetamaskBalance(
-					ethereum,
-					erc20Token.address,
-					Account
-				);
-				if (balance < parseFloat(amount)) {
-					setEnoughBalance(false);
-				} else {
-					setEnoughBalance(true);
-				}
-			})();
-		}
+			const balance = await fetchMetamaskBalance(
+				ethereum,
+				erc20Token.address,
+				Account
+			);
+			if (balance < parseFloat(amount)) {
+				setEnoughBalance(false);
+			} else {
+				setEnoughBalance(true);
+			}
+		})();
 	}, [erc20Token, Account, amount, toChain]);
 
 	useEffect(() => {

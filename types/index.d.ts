@@ -2,22 +2,12 @@ import { Amount } from "@/utils/Amount";
 
 export interface Asset {
 	symbol: string;
-	id?: number;
+	assetId?: number;
 	decimals?: number;
 	logo?: string;
 	amount?: number;
 	address?: string;
 	name?: string;
-}
-
-export interface BridgeToken {
-	chainId: number;
-	address: string;
-	name: string;
-	symbol: string;
-	decimals: number;
-	logoURI: string;
-	id: number;
 }
 
 export interface IExchangePool {

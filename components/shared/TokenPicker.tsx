@@ -11,7 +11,6 @@ import { useAssets } from "@/providers/SupportedAssetsProvider";
 import {
 	Asset,
 	PoolConfig,
-	BridgeToken,
 	CENNZAsset,
 	CENNZAssetBalance,
 	EthereumToken,
