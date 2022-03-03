@@ -92,6 +92,7 @@ const AccountPicker: React.FC<{
 						onClick={() => {
 							setSelectedAccountInput("");
 							setValidAddress(false);
+							setError("");
 							updateSelectedAccount({
 								name: "",
 								address: "",
