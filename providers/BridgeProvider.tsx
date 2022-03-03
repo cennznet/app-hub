@@ -1,4 +1,4 @@
-import { FC, createContext, useContext, useState } from "react";
+import { FC, createContext, useContext, useState, useEffect } from "react";
 import { ethers } from "ethers";
 import CENNZnetBridge from "@/artifacts/CENNZnetBridge.json";
 import ERC20Peg from "@/artifacts/ERC20Peg.json";
@@ -27,6 +27,19 @@ const BridgeProvider: FC<{ ethChainId: string }> = ({
 	children,
 	ethChainId,
 }) => {
+	useEffect(() => {
+		async function listenMMAccountChange() {
+			global.ethereum.on("accountsChanged", async function () {
+				const { ethereum } = window as any;
+				const accounts = await ethereum.request({
+					method: "eth_requestAccounts",
+				});
+				setValue({ ...value, Account: accounts[0] });
+			});
+		}
+		listenMMAccountChange();
+	}, []);
+
 	const [value, setValue] = useState({
 		Contracts: {
 			bridge: {} as ethers.Contract,

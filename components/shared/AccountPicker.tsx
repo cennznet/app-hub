@@ -73,8 +73,14 @@ const AccountPicker: React.FC<{
 					) : (
 						<img src={"/images/cennznet_blue.svg"} alt={""} />
 					)
-				) : (
+				) : Account ? (
 					<Jazzicon diameter={30} seed={jsNumberForAddress(Account)} />
+				) : (
+					<img
+						css={styles.metamaskLogo}
+						src={"images/metamask_logo.svg"}
+						alt={""}
+					/>
 				)}
 				<input
 					type={"text"}
@@ -175,5 +181,9 @@ export const styles = {
 		margin: 0;
 		margin-top: 12px;
 		align-self: flex-end;
+	`,
+	metamaskLogo: css`
+		width: 40px;
+		height: 40px;
 	`,
 };
