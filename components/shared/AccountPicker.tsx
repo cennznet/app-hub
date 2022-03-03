@@ -6,12 +6,13 @@ import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import { useBridge } from "@/providers/BridgeProvider";
 import Jazzicon, { jsNumberForAddress } from "react-jazzicon";
 import ClearIcon from "@mui/icons-material/Clear";
+import { SupportedChain } from "@/types";
 
 const AccountPicker: React.FC<{
 	updateSelectedAccount: Function;
 	topText: string;
-	cennznet: boolean;
-}> = ({ updateSelectedAccount, topText, cennznet }) => {
+	chain: SupportedChain;
+}> = ({ updateSelectedAccount, topText, chain }) => {
 	const { accounts } = useCENNZExtension();
 	const { selectedAccount } = useCENNZWallet();
 	const { Account }: any = useBridge();
@@ -28,7 +29,7 @@ const AccountPicker: React.FC<{
 		}
 	}, []);
 
-	useEffect(() => setError(""), [cennznet]);
+	useEffect(() => setError(""), [chain]);
 
 	useEffect(() => {
 		if (selectedAccount) {
@@ -62,7 +63,7 @@ const AccountPicker: React.FC<{
 		<div css={styles.accountPickerContainer}>
 			<p css={styles.topText}>{topText}</p>
 			<div css={styles.addressInputContainer}>
-				{cennznet ? (
+				{chain === "CENNZnet" ? (
 					validAddress ? (
 						<AccountIdenticon
 							theme="beachball"
@@ -78,16 +79,20 @@ const AccountPicker: React.FC<{
 				<input
 					type={"text"}
 					placeholder={
-						cennznet ? "Type Address" : Account ? Account : "Connect Wallet"
+						chain === "CENNZnet"
+							? "Type Address"
+							: Account
+							? Account
+							: "Connect Wallet"
 					}
-					value={cennznet ? selectedAccountInput : Account}
-					disabled={!cennznet}
+					value={chain === "CENNZnet" ? selectedAccountInput : Account}
+					disabled={!(chain === "CENNZnet")}
 					onChange={(e: any) => {
 						setSelectedAccountInput(e.target.value);
 						updateAccount(e.target.value);
 					}}
 				/>
-				{cennznet && !isCleared && (
+				{chain === "CENNZnet" && !isCleared && (
 					<ClearIcon
 						sx={{
 							cursor: "pointer",

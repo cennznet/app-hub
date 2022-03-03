@@ -117,7 +117,7 @@ const Emery: React.FC<{}> = () => {
 			</div>
 			<AccountPicker
 				updateSelectedAccount={updateSelectedAccountCustom}
-				cennznet={bridgeState === "Deposit"}
+				chain={toChain.name}
 				topText={"DESTINATION"}
 			/>
 			<div css={styles.infoBoxContainer}>
