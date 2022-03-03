@@ -1,10 +1,7 @@
-import React from "react";
 import type { AppProps } from "next/app";
 import Head from "next/head";
-import { ThemeProvider } from "@mui/material/styles";
-import theme from "@/styles/theme";
+import ThemeProvider from "@/providers/ThemeProvider";
 import CssBaseline from "@mui/material/CssBaseline";
-import "@/styles/global.css";
 import CENNZApiProvider from "@/providers/CENNZApiProvider";
 import CENNZWalletProvider from "@/providers/CENNZWalletProvider";
 import Switch from "@/components/AppSwitch";
@@ -17,6 +14,7 @@ import CENNZExtensionProvider from "@/providers/CENNZExtensionProvider";
 import PageBackdrop from "@/components/shared/PageBackdrop";
 import PageFrame from "@/components/shared/PageFrame";
 import GlobalModalProvider from "@/providers/GlobalModalProvider";
+import CssGlobal from "@/components/CssGlobal";
 
 type MyAppProps = Omit<AppProps, "pageProps"> & {
 	pageProps: {} & GlobalProps;
@@ -33,8 +31,9 @@ function MyApp({
 				<meta name="description" content="App Hub powered by CENNZnet" />
 				<link rel="icon" href="/favicon.svg" />
 			</Head>
-			<ThemeProvider theme={theme}>
+			<ThemeProvider>
 				<CssBaseline />
+				<CssGlobal />
 				<UserAgentProvider>
 					<CENNZExtensionProvider>
 						<CENNZApiProvider endpoint={process.env.NEXT_PUBLIC_API_URL}>

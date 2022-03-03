@@ -1,4 +1,8 @@
-import { createTheme } from "@mui/material/styles";
+import { FC } from "react";
+import {
+	ThemeProvider as MuiThemeProvider,
+	createTheme,
+} from "@mui/material/styles";
 
 declare module "@mui/material/styles" {
 	interface PaletteColorOptions {
@@ -33,6 +37,10 @@ const theme = createTheme({
 		error: {
 			main: "#EC022C",
 		},
+		text: {
+			primary: "#020202",
+			secondary: "#979797",
+		},
 	},
 	typography: {
 		fontFamily: ["Roboto", "sans-serif"].join(","),
@@ -56,4 +64,8 @@ const theme = createTheme({
 	},
 });
 
-export default theme;
+const ThemeProvider: FC<{}> = (props) => {
+	return <MuiThemeProvider {...props} theme={theme} />;
+};
+
+export default ThemeProvider;
