@@ -5,6 +5,7 @@ import AccountIdenticon from "@/components/shared/AccountIdenticon";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import { useBridge } from "@/providers/BridgeProvider";
 import Jazzicon, { jsNumberForAddress } from "react-jazzicon";
+import ClearIcon from "@mui/icons-material/Clear";
 
 const AccountPicker: React.FC<{
 	updateSelectedAccount: Function;
@@ -17,6 +18,7 @@ const AccountPicker: React.FC<{
 	const [selectedAccountInput, setSelectedAccountInput] = useState<string>();
 	const [validAddress, setValidAddress] = useState<boolean>();
 	const [error, setError] = useState<string>();
+	const [isCleared, setIsCleared] = useState<boolean>(false);
 
 	useEffect(() => {
 		if (accounts) {
@@ -42,6 +44,7 @@ const AccountPicker: React.FC<{
 	const updateAccount = (accountAddress: string) => {
 		setError("");
 		setValidAddress(false);
+		setIsCleared(false);
 		//TODO improve address validation
 		const cennznetAddressLength = 48;
 		if (accountAddress.length === cennznetAddressLength) {
@@ -84,11 +87,11 @@ const AccountPicker: React.FC<{
 						updateAccount(e.target.value);
 					}}
 				/>
-				{cennznet && (
-					<img
-						css={styles.blueMinus}
-						src={"/images/blue_minus.svg"}
-						alt={""}
+				{cennznet && !isCleared && (
+					<ClearIcon
+						sx={{
+							cursor: "pointer",
+						}}
 						onClick={() => {
 							setSelectedAccountInput("");
 							setValidAddress(false);
@@ -97,6 +100,7 @@ const AccountPicker: React.FC<{
 								name: "",
 								address: "",
 							});
+							setIsCleared(true);
 						}}
 					/>
 				)}
@@ -124,10 +128,6 @@ export const styles = {
 		color: #020202;
 		margin: 0;
 		margin-bottom: 6px;
-	`,
-	blueMinus: css`
-		cursor: pointer;
-		margin-left: 30px;
 	`,
 	addressInputContainer: css`
 		width: 460px;
