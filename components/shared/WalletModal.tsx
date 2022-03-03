@@ -7,6 +7,7 @@ import AccountIdenticon from "@/components/shared/AccountIdenticon";
 import { useCENNZExtension } from "@/providers/CENNZExtensionProvider";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import getTokenLogo from "@/utils/getTokenLogo";
+import ModalBackdrop from "@/components/shared/ModalBackdrop";
 
 const WalletModal: React.FC<{
 	modalOpen: boolean;
@@ -35,6 +36,8 @@ const WalletModal: React.FC<{
 		<Modal
 			open={modalOpen}
 			css={styles.modalRoot}
+			BackdropComponent={ModalBackdrop}
+			onBackdropClick={() => setModalOpen(false)}
 			onClose={() => setModalOpen(false)}
 		>
 			<div css={styles.modalContent}>

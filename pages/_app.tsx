@@ -4,7 +4,7 @@ import ThemeProvider from "@/providers/ThemeProvider";
 import CssBaseline from "@mui/material/CssBaseline";
 import CENNZApiProvider from "@/providers/CENNZApiProvider";
 import CENNZWalletProvider from "@/providers/CENNZWalletProvider";
-import Switch from "@/components/AppSwitch";
+import AppSwitch from "@/components/AppSwitch";
 import Wallet from "@/components/Wallet";
 import SupportedAssetsProvider from "@/providers/SupportedAssetsProvider";
 import BridgeProvider from "@/providers/BridgeProvider";
@@ -45,7 +45,7 @@ function MyApp({
 										<GlobalModalProvider>
 											<PageBackdrop />
 											<Wallet />
-											<Switch />
+											<AppSwitch />
 											<Component {...pageProps} />
 											<PageFrame />
 										</GlobalModalProvider>
