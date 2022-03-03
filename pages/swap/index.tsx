@@ -17,6 +17,7 @@ import ConnectWalletButton from "@/components/shared/ConnectWalletButton";
 import Settings from "@/components/pool/Settings";
 import generateGlobalProps from "@/utils/generateGlobalProps";
 import { useGlobalModal } from "@/providers/GlobalModalProvider";
+import TokenInput from "@/components/shared/TokenInput";
 
 export async function getStaticProps() {
 	return {
@@ -156,10 +157,23 @@ const Exchange: React.FC<{}> = () => {
 		slippage,
 	]);
 
+	const [token, setToken] = useState(16000);
+
 	return (
 		<div className={styles.swapContainer}>
 			<h1 className={styles.pageHeader}>SWAP</h1>
 			<div className={styles.tokenPickerContainer}>
+				<TokenInput
+					onMaxValueRequest={() => {}}
+					placeholder="0.00"
+					token={token}
+					onTokenChange={(event) => setToken(Number(event.target.value))}
+					coinsList={[
+						{ assetId: 16000, symbol: "CENNZ", decimals: 10 },
+						{ assetId: 16001, symbol: "CPAY", decimals: 10 },
+						{ assetId: 17004, symbol: "ETH", decimals: 10 },
+					]}
+				/>
 				<p className={styles.secondaryText}>YOU SEND</p>
 				<TokenPicker
 					setToken={setExchangeToken}
