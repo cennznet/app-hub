@@ -29,7 +29,7 @@
     "react-device-detect": "^2.1.2",
     "react-dom": "^17.0.2",
     "store": "^2.0.12",
-    "styled-components": "^5.3.3"
+    "suitcss-base": "^5.0.0"
   },
   "resolutions": {
     "@polkadot/util": "^8.4.1",
