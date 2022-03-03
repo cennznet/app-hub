@@ -8,11 +8,11 @@ import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import TxModal from "@/components/bridge/TxModal";
 import ErrorModal from "@/components/bridge/ErrorModal";
 import ConnectWalletButton from "@/components/shared/ConnectWalletButton";
-import { BridgeToken, CENNZAccount, TxModalAttributes } from "@/types";
+import { EthereumToken, CENNZAccount, TxModalAttributes } from "@/types";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 
 const Deposit: React.FC<{
-	token: BridgeToken;
+	token: EthereumToken;
 	amount: string;
 	selectedAccount: CENNZAccount;
 	disabled: boolean;

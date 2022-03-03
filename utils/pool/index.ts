@@ -1,6 +1,6 @@
 import { Api } from "@cennznet/api";
 import {
-	AssetInfo,
+	CENNZAsset,
 	IExchangePool,
 	IUserShareInPool,
 	PoolValues,
@@ -13,8 +13,8 @@ export const fetchCoreAmount = (
 	exchangePool: IExchangePool
 ) => {
 	const coreAmount =
-		(tradeAmount * exchangePool.coreAssetBalance.toNumber()) /
-		exchangePool.assetBalance.toNumber();
+		(tradeAmount * Number(exchangePool.coreAssetBalance.toString())) /
+		Number(exchangePool.assetBalance.toString());
 
 	if (coreAmount <= 0) return 0;
 	return coreAmount;
@@ -25,19 +25,23 @@ export const fetchTradeAmount = (
 	exchangePool: IExchangePool
 ) => {
 	const tradeAmount =
-		(coreAmount * exchangePool.assetBalance.toNumber()) /
-		exchangePool.coreAssetBalance.toNumber();
+		(coreAmount * Number(exchangePool.assetBalance.toString())) /
+		Number(exchangePool.coreAssetBalance.toString());
 
 	if (tradeAmount <= 0) return 0;
 	return tradeAmount;
 };
 
-export const fetchExchangeRate = (exchangePool: IExchangePool) => {
-	const exchangeRate =
-		exchangePool.assetBalance.toNumber() /
-		exchangePool.coreAssetBalance.toNumber();
+export const fetchExchangeRate = (
+	exchangePool: IExchangePool,
+	tradeAsset: CENNZAsset,
+	coreAsset: CENNZAsset
+) => {
+	const exchangeRate = exchangePool.assetBalance
+		.toAmount(tradeAsset.decimals)
+		.dividedBy(exchangePool.coreAssetBalance.toAmount(coreAsset.decimals));
 
-	return formatBalance(exchangeRate);
+	return formatBalance(exchangeRate.toNumber());
 };
 
 export const checkLiquidityBalances = (
@@ -110,12 +114,12 @@ export const fetchUserPoolShare = async (
 
 export const calculateValues = async (
 	api: Api,
-	asset: AssetInfo,
+	asset: CENNZAsset,
 	assetAmount: Amount,
-	coreAsset: AssetInfo,
+	coreAsset: CENNZAsset,
 	coreAmount: Amount
 ) => {
-	const totalLiquidity = await api.derive.cennzx.totalLiquidity(asset.id);
+	const totalLiquidity = await api.derive.cennzx.totalLiquidity(asset.assetId);
 
 	const assetAmountCal = new Amount(
 		assetAmount,
@@ -133,9 +137,9 @@ export const calculateValues = async (
 
 export const fetchAddLiquidityValues = async (
 	api: Api,
-	asset: AssetInfo,
+	asset: CENNZAsset,
 	assetAmount: Amount,
-	coreAsset: AssetInfo,
+	coreAsset: CENNZAsset,
 	coreAmount: Amount,
 	exchangePool: IExchangePool,
 	buffer: number
@@ -158,10 +162,10 @@ export const fetchAddLiquidityValues = async (
 
 export const fetchWithdrawLiquidityValues = async (
 	api: Api,
-	asset: AssetInfo,
+	asset: CENNZAsset,
 	address: string,
 	assetAmount: Amount,
-	coreAsset: AssetInfo,
+	coreAsset: CENNZAsset,
 	coreAmount: Amount,
 	exchangePool: IExchangePool,
 	withdrawMax: boolean,
@@ -178,11 +182,11 @@ export const fetchWithdrawLiquidityValues = async (
 	let liquidityAmount, assetToWithdraw;
 	if (withdrawMax) {
 		liquidityAmount = await api.derive.cennzx.liquidityBalance(
-			asset.id,
+			asset.assetId,
 			address
 		);
 		assetToWithdraw = await api.derive.cennzx.assetToWithdraw(
-			asset.id,
+			asset.assetId,
 			liquidityAmount
 		);
 	} else if (exchangePool.assetBalance === exchangePool.coreAssetBalance) {

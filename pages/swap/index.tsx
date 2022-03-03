@@ -2,11 +2,10 @@ import React, { useEffect, useState, useCallback } from "react";
 import TokenPicker from "@/components/shared/TokenPicker";
 import ExchangeIcon from "@/components/shared/ExchangeIcon";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
-import { useAssets } from "@/providers/SupportedAssetsProvider";
-import { Asset } from "@/types";
-
+import { CENNZAsset } from "@/types";
 import styles from "@/styles/pages/swap.module.css";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
+import { fetchSwapAssets } from "@/utils";
 import {
 	fetchEstimatedTransactionFee,
 	fetchExchangeExtrinsic,
@@ -28,8 +27,9 @@ export async function getStaticProps() {
 }
 
 const Exchange: React.FC<{}> = () => {
-	const [exchangeToken, setExchangeToken] = useState<Asset>();
-	const [receivedToken, setReceivedToken] = useState<Asset>();
+	const [assets, setAssets] = useState<CENNZAsset[]>();
+	const [exchangeToken, setExchangeToken] = useState<CENNZAsset>();
+	const [receivedToken, setReceivedToken] = useState<CENNZAsset>();
 	const [receivedTokenValue, setReceivedTokenValue] = React.useState<string>();
 	const [exchangeTokenValue, setExchangeTokenValue] = React.useState<string>();
 	const [estimatedFee, setEstimatedFee] = useState<string>();
@@ -37,12 +37,16 @@ const Exchange: React.FC<{}> = () => {
 	const [slippage, setSlippage] = useState<number>(5);
 	const [error, setError] = useState<string>();
 	const [success, setSuccess] = useState<string>();
-	const { api }: any = useCENNZApi();
-	const assets = useAssets();
+	const { api } = useCENNZApi();
 	const { balances, updateBalances, wallet, selectedAccount } =
 		useCENNZWallet();
 	const signer = wallet?.signer;
 	const { showDialog } = useGlobalModal();
+
+	useEffect(() => {
+		if (!api || assets) return;
+		(async () => setAssets(await fetchSwapAssets(api)))();
+	}, [api, assets]);
 
 	useEffect(() => {
 		setError(undefined);
@@ -77,8 +81,8 @@ const Exchange: React.FC<{}> = () => {
 				const estimatedFee = await fetchEstimatedTransactionFee(
 					api,
 					exchangeAmount,
-					exchangeToken.id,
-					receivedToken.id,
+					exchangeToken.assetId,
+					receivedToken.assetId,
 					slippage
 				);
 				setEstimatedFee(estimatedFee);
@@ -155,6 +159,7 @@ const Exchange: React.FC<{}> = () => {
 		updateBalances,
 		selectedAccount,
 		slippage,
+		showDialog,
 	]);
 
 	const [token, setToken] = useState(16000);
@@ -176,6 +181,7 @@ const Exchange: React.FC<{}> = () => {
 				/>
 				<p className={styles.secondaryText}>YOU SEND</p>
 				<TokenPicker
+					assets={assets}
 					setToken={setExchangeToken}
 					setAmount={setExchangeTokenValue}
 					amount={exchangeTokenValue}
@@ -199,6 +205,7 @@ const Exchange: React.FC<{}> = () => {
 			<div className={styles.tokenPickerContainer}>
 				<p className={styles.thirdText}>YOU GET</p>
 				<TokenPicker
+					assets={assets}
 					setToken={setReceivedToken}
 					setAmount={setReceivedTokenValue}
 					amount={receivedTokenValue}

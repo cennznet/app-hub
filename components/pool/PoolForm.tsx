@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { css } from "@emotion/react";
 import TokenPicker from "@/components/shared/TokenPicker";
-import { AssetInfo, PoolConfig, PoolValues } from "@/types";
+import { CENNZAsset, PoolConfig, PoolValues, PoolSummaryProps } from "@/types";
+import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import { PoolAction, usePool } from "@/providers/PoolProvider";
-import { PoolSummaryProps } from "@/types";
 import PoolSummary from "@/components/pool/PoolSummary";
 import Settings from "@/components/pool/Settings";
 import {
@@ -16,7 +16,7 @@ import {
 import ConnectWalletButton from "@/components/shared/ConnectWalletButton";
 import PoolSwapper from "@/components/pool/PoolSwapper";
 import ExchangeIcon from "@/components/shared/ExchangeIcon";
-import { formatBalance } from "@/utils";
+import { formatBalance, fetchCENNZAssets } from "@/utils";
 
 export enum PoolColors {
 	ADD = "#1130FF",
@@ -24,11 +24,12 @@ export enum PoolColors {
 }
 
 const PoolForm: React.FC<{}> = () => {
+	const [assets, setAssets] = useState<CENNZAsset[]>();
 	const [poolAction, setPoolAction] = useState<string>(PoolAction.ADD);
 	const [poolColors, setPoolColors] = useState<string>(PoolColors.ADD);
-	const [tradeAsset, setTradeAsset] = useState<AssetInfo>(null);
+	const [tradeAsset, setTradeAsset] = useState<CENNZAsset>(null);
 	const [tradeAssetAmount, setTradeAssetAmount] = useState<number | string>("");
-	const [_, setCoreAsset] = useState<AssetInfo>(null);
+	const [_, setCoreAsset] = useState<CENNZAsset>(null);
 	const [coreAmount, setCoreAmount] = useState<number | string>("");
 	const [poolLiquidity, setPoolLiquidity] = useState<PoolValues>();
 	const [userBalances, setUserBalances] = useState<PoolValues>();
@@ -40,6 +41,7 @@ const PoolForm: React.FC<{}> = () => {
 		poolLiquidity,
 		exchangeRate: null,
 	});
+	const { api } = useCENNZApi();
 	const { balances } = useCENNZWallet();
 	const {
 		coreAsset,
@@ -52,16 +54,21 @@ const PoolForm: React.FC<{}> = () => {
 	} = usePool();
 
 	useEffect(() => {
-		if (!exchangePool) return;
+		if (!api || assets) return;
+		(async () => setAssets(await fetchCENNZAssets(api)))();
+	}, [api, assets]);
 
-		const exchangeRate = fetchExchangeRate(exchangePool);
+	useEffect(() => {
+		if (!exchangePool || !tradeAsset || !coreAsset) return;
+
+		const exchangeRate = fetchExchangeRate(exchangePool, tradeAsset, coreAsset);
 
 		setPoolSummaryProps({
 			tradeAsset,
 			poolLiquidity,
 			exchangeRate,
 		});
-	}, [exchangePool, tradeAsset, poolLiquidity]);
+	}, [exchangePool, tradeAsset, coreAsset, poolLiquidity]);
 
 	//set pool balances
 	useEffect(() => {
@@ -76,6 +83,7 @@ const PoolForm: React.FC<{}> = () => {
 	useEffect(() => {
 		if (!balances?.length || !tradeAsset || !coreAsset || !userPoolShare)
 			return;
+
 		const userTradeAsset = balances.find(
 			(asset) => asset.symbol === tradeAsset.symbol
 		);
@@ -319,24 +327,22 @@ const PoolForm: React.FC<{}> = () => {
 				)}
 			</div>
 			<TokenPicker
+				assets={assets}
 				setToken={setTradeAsset}
 				setAmount={setTradeAssetAmount}
 				amount={tradeAssetAmount?.toString()}
 				error={tradeError}
-				cennznet={true}
 				removeToken={coreAsset}
 				showBalance={true}
 				poolConfig={poolConfig}
 				whichAsset={"trade"}
 			/>
 			<TokenPicker
+				assets={[coreAsset]}
 				setToken={setCoreAsset}
 				setAmount={setCoreAmount}
 				amount={coreAmount?.toString()}
 				error={coreError}
-				cennznet={true}
-				forceSelection={coreAsset}
-				removeToken={tradeAsset}
 				showBalance={true}
 				poolConfig={poolConfig}
 				whichAsset={"core"}

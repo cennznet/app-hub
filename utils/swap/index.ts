@@ -1,7 +1,7 @@
 import { Api } from "@cennznet/api";
 import { Amount, AmountUnit } from "@/utils/Amount";
 import BigNumber from "bignumber.js";
-import { Asset } from "@/types";
+import { CENNZAsset } from "@/types";
 import { CENNZAssetBalance } from "@/types";
 
 const CPAY = {
@@ -13,17 +13,17 @@ const CPAY = {
 
 export const fetchExchangeRate = async (
 	api: Api,
-	exchangeToken: Asset,
-	receivedToken: Asset
+	exchangeToken: CENNZAsset,
+	receivedToken: CENNZAsset
 ) => {
 	let exchangeAmount: any = new BigNumber("1");
 	exchangeAmount = exchangeAmount
 		.multipliedBy(Math.pow(10, exchangeToken.decimals))
 		.toString(10);
 	const sellPrice = await (api.rpc as any).cennzx.sellPrice(
-		exchangeToken.id,
+		exchangeToken.assetId,
 		exchangeAmount,
-		receivedToken.id
+		receivedToken.assetId
 	);
 	let receivedAmount: any = new Amount(
 		sellPrice.price.toString(),
@@ -36,10 +36,10 @@ export const fetchExchangeRate = async (
 
 export const fetchTokenAmounts = async (
 	api: Api,
-	exchangeToken: Asset,
+	exchangeToken: CENNZAsset,
 	exchangeTokenValue: string,
 	balances: CENNZAssetBalance[],
-	receivedToken: Asset
+	receivedToken: CENNZAsset
 ) => {
 	let exchangeAmount: any = new BigNumber(exchangeTokenValue.toString());
 	exchangeAmount = exchangeAmount
@@ -48,15 +48,16 @@ export const fetchTokenAmounts = async (
 
 	//check if they own enough tokens to exchange
 	const exchangeTokenBalance = balances.find(
-		(token) => token.assetId === exchangeToken.id
+		(token) => token.assetId === exchangeToken.assetId
 	);
 	if (parseFloat(exchangeTokenValue) > exchangeTokenBalance.value) {
 		throw new Error("Account balance is too low");
 	}
+
 	const sellPrice = await (api.rpc as any).cennzx.sellPrice(
-		exchangeToken.id,
+		exchangeToken.assetId,
 		exchangeAmount,
-		receivedToken.id
+		receivedToken.assetId
 	);
 	let receivedAmount: any = new Amount(
 		sellPrice.price.toString(),
@@ -74,9 +75,9 @@ export const fetchEstimatedTransactionFee = async (
 	receivedTokenId: number,
 	slippage: number
 ) => {
-	const maxAmount = Math.round(
+	const maxAmount = new Amount(
 		parseFloat(exchangeAmount) + parseFloat(exchangeAmount) * (slippage / 100)
-	);
+	).toString();
 	const extrinsic = api.tx.cennzx.buyAsset(
 		null,
 		exchangeTokenId,
@@ -95,9 +96,9 @@ export const fetchEstimatedTransactionFee = async (
 
 export const fetchExchangeExtrinsic = async (
 	api: Api,
-	exchangeToken: Asset,
+	exchangeToken: CENNZAsset,
 	exchangeTokenValue: string,
-	receivedToken: Asset,
+	receivedToken: CENNZAsset,
 	receivedTokenValue: string,
 	slippage: number
 ) => {
@@ -105,9 +106,9 @@ export const fetchExchangeExtrinsic = async (
 	exchangeAmount = exchangeAmount
 		.multipliedBy(Math.pow(10, exchangeToken.decimals))
 		.toString(10);
-	const maxAmount = Math.round(
+	const maxAmount = new Amount(
 		parseFloat(exchangeAmount) + parseFloat(exchangeAmount) * (slippage / 100)
-	);
+	).toString();
 	let buyAmount: any = new BigNumber(receivedTokenValue);
 	buyAmount = buyAmount
 		.multipliedBy(Math.pow(10, receivedToken.decimals))
@@ -115,8 +116,8 @@ export const fetchExchangeExtrinsic = async (
 
 	return api.tx.cennzx.buyAsset(
 		null,
-		exchangeToken.id,
-		receivedToken.id,
+		exchangeToken.assetId,
+		receivedToken.assetId,
 		buyAmount,
 		maxAmount
 	);

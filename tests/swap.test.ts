@@ -8,8 +8,18 @@ import {
 } from "@/utils/swap";
 
 const assets = {
-	CENNZ: { id: 16000, symbol: "CENNZ", decimals: 4, logo: "/images/cennz.svg" },
-	CPAY: { id: 16001, symbol: "CPAY", decimals: 4, logo: "/images/cpay.svg" },
+	CENNZ: {
+		assetId: 16000,
+		symbol: "CENNZ",
+		decimals: 4,
+		logo: "/images/cennz.svg",
+	},
+	CPAY: {
+		assetId: 16001,
+		symbol: "CPAY",
+		decimals: 4,
+		logo: "/images/cpay.svg",
+	},
 };
 const balances = [
 	{
@@ -57,9 +67,9 @@ describe("fetchTokenAmounts", () => {
 			.multipliedBy(Math.pow(10, exchangeToken.decimals))
 			.toString(10);
 		const sellPrice = await api.rpc.cennzx.sellPrice(
-			exchangeToken.id,
+			exchangeToken.assetId,
 			exchangeAmount,
-			receivedToken.id
+			receivedToken.assetId
 		);
 		let expectedReceivedAmount: BigNumber | Amount = new Amount(
 			sellPrice.price.toString(),
@@ -90,8 +100,8 @@ describe("fetchEstimatedTransactionFee", () => {
 		exchangeAmount = exchangeAmount
 			.multipliedBy(Math.pow(10, assets.CENNZ.decimals))
 			.toString(10);
-		const exchangeTokenId = assets.CENNZ.id;
-		const receivedTokenId = assets.CPAY.id;
+		const exchangeTokenId = assets.CENNZ.assetId;
+		const receivedTokenId = assets.CPAY.assetId;
 		const estimatedFee = await fetchEstimatedTransactionFee(
 			api,
 			exchangeAmount,
@@ -112,7 +122,7 @@ describe("fetchEstimatedTransactionFee", () => {
 		);
 		const feeFromQuery = await api.derive.fees.estimateFee({
 			extrinsic,
-			userFeeAssetId: assets.CPAY.id,
+			userFeeAssetId: assets.CPAY.assetId,
 		});
 		let expectedEstimatedFee: BigNumber | Amount = new Amount(
 			feeFromQuery.toString(),
@@ -157,8 +167,8 @@ describe("fetchExchangeExtrinsic", () => {
 		);
 		const expectedExtrinsic = await api.tx.cennzx.buyAsset(
 			null,
-			exchangeToken.id,
-			receivedToken.id,
+			exchangeToken.assetId,
+			receivedToken.assetId,
 			buyAmount,
 			maxAmount
 		);

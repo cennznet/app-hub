@@ -60,11 +60,15 @@ describe("fetchCoreAmount", () => {
 
 describe("fetchExchangeRate", () => {
 	it("returns correct value", () => {
-		const exchangeRate = fetchExchangeRate(exchangePool);
+		const assets = [
+			{ assetId: 16000, symbol: "CENNZ", decimals: 4 },
+			{ assetId: 16001, symbol: "CPAY", decimals: 4 },
+		];
+		const exchangeRate = fetchExchangeRate(exchangePool, assets[0], assets[1]);
 
-		const expectedExchangeRate =
-			exchangePool.assetBalance.toNumber() /
-			exchangePool.coreAssetBalance.toNumber();
+		const expectedExchangeRate = exchangePool.assetBalance
+			.toAmount(assets[0].decimals)
+			.dividedBy(exchangePool.coreAssetBalance.toAmount(assets[1].decimals));
 
 		expect(exchangeRate).toEqual(expectedExchangeRate.toFixed(4));
 	});

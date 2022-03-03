@@ -11,8 +11,8 @@ import {
 
 const testingAddress = "5FbMzsoEpd2mt8eyKpKUxwJ5S9W7nJVJkCer2Jk7tvSpB1vF";
 const assets = {
-	CENNZ: { id: 16000, symbol: "CENNZ", decimals: 4, logo: "/images/cennz.svg" },
-	CPAY: { id: 16001, symbol: "CPAY", decimals: 4, logo: "/images/cpay.svg" },
+	CENNZ: { assetId: 16000, symbol: "CENNZ", decimals: 4 },
+	CPAY: { assetId: 16001, symbol: "CPAY", decimals: 4 },
 };
 
 let api;
@@ -22,7 +22,7 @@ beforeAll(async () => {
 
 let exchangePool, assetAmount, coreAmount;
 beforeEach(async () => {
-	exchangePool = await fetchExchangePool(api, assets.CENNZ.id);
+	exchangePool = await fetchExchangePool(api, assets.CENNZ.assetId);
 	assetAmount = new Amount(1000);
 	coreAmount = assetAmount
 		.mul(exchangePool.coreAssetBalance)
@@ -36,7 +36,7 @@ afterAll(async () => {
 
 describe("fetchExchangePool", () => {
 	it("returns exchange pool values for CENNZ", async () => {
-		const CENNZ = assets.CENNZ.id;
+		const CENNZ = assets.CENNZ.assetId;
 		const { address, assetBalance, coreAssetBalance } = await fetchExchangePool(
 			api,
 			CENNZ
@@ -67,11 +67,11 @@ describe("fetchExchangePool", () => {
 describe("fetchUserPoolShare", () => {
 	it("returns user pool share", async () => {
 		const { assetBalance, coreAssetBalance, liquidity } =
-			await fetchUserPoolShare(api, testingAddress, assets.CENNZ.id);
+			await fetchUserPoolShare(api, testingAddress, assets.CENNZ.assetId);
 
 		const liquidityValue = await api.rpc.cennzx.liquidityValue(
 			testingAddress,
-			assets.CENNZ.id
+			assets.CENNZ.assetId
 		);
 		const userAssetShare = new Amount(liquidityValue.asset);
 		const userCoreShare = new Amount(liquidityValue.core);
@@ -86,7 +86,7 @@ describe("fetchUserPoolShare", () => {
 		await fetchUserPoolShare(
 			api,
 			"5FbMzsoEpd2mt8eyfakeAddress7nJVJkCer2Jk7tvSpB1vF",
-			assets.CENNZ.id
+			assets.CENNZ.assetId
 		).catch((err) => expect(err.message).toContain("Invalid decoded address"));
 	});
 });
@@ -103,7 +103,7 @@ describe("calculateValues", () => {
 			);
 
 		const expectedTotalLiquidity = await api.derive.cennzx.totalLiquidity(
-			assets.CENNZ.id
+			assets.CENNZ.assetId
 		);
 		const expectedAmountCal = new Amount(
 			coreAmount,
@@ -211,11 +211,11 @@ describe("fetchWithdrawLiquidityValues", () => {
 			);
 
 		const expectedLiquidityAmount = await api.derive.cennzx.liquidityBalance(
-			assets.CENNZ.id,
+			assets.CENNZ.assetId,
 			testingAddress
 		);
 		const assetToWithdraw = await api.derive.cennzx.assetToWithdraw(
-			assets.CENNZ.id,
+			assets.CENNZ.assetId,
 			expectedLiquidityAmount
 		);
 		const expectedMinAssetWithdraw = assetToWithdraw.assetAmount;
@@ -240,12 +240,12 @@ describe("fetchFeeEstimate", () => {
 				0.05
 			);
 		const extrinsic = api.tx.cennzx.addLiquidity(
-			assets.CENNZ.id,
+			assets.CENNZ.assetId,
 			minLiquidity,
 			maxAssetAmount,
 			maxCoreAmount
 		);
-		const userFeeAssetId = assets.CPAY.id;
+		const userFeeAssetId = assets.CPAY.assetId;
 		const maxPayment = "50000000000000000";
 		const feeEstimate = await fetchFeeEstimate(
 			api,
@@ -276,12 +276,12 @@ describe("fetchFeeEstimate", () => {
 				0.05
 			);
 		const extrinsic = api.tx.cennzx.removeLiquidity(
-			assets.CENNZ.id,
+			assets.CENNZ.assetId,
 			liquidityAmount,
 			minAssetWithdraw,
 			minCoreWithdraw
 		);
-		const userFeeAssetId = assets.CPAY.id;
+		const userFeeAssetId = assets.CPAY.assetId;
 		const maxPayment = "50000000000000000";
 		const feeEstimate = await fetchFeeEstimate(
 			api,

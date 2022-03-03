@@ -6,12 +6,12 @@ import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import TxModal from "@/components/bridge/TxModal";
 import ErrorModal from "@/components/bridge/ErrorModal";
-import { BridgeToken, CENNZAccount, TxModalAttributes } from "@/types";
+import { CENNZAsset, CENNZAccount, TxModalAttributes } from "@/types";
 import ConnectWalletButton from "@/components/shared/ConnectWalletButton";
 import { checkWithdrawStatus, fetchEstimatedFee } from "@/utils/bridge";
 
 const Withdraw: React.FC<{
-	token: BridgeToken;
+	token: CENNZAsset;
 	amount: string;
 	selectedAccount: CENNZAccount;
 	disabled: boolean;
@@ -49,6 +49,7 @@ const Withdraw: React.FC<{
 	//Check CENNZnet account has enough tokens to withdraw
 	useEffect(() => {
 		if (!token || !balances || !api) return;
+
 		const foundToken = balances.find(
 			(balance) => balance.symbol === token.symbol
 		);
@@ -66,7 +67,10 @@ const Withdraw: React.FC<{
 		const bridgeActive = await checkWithdrawStatus(api, Contracts.peg);
 
 		if (bridgeActive) {
-			if (token.address !== "") {
+			const tokenAddress = await api.query.erc20Peg.assetIdToErc20(
+				token.assetId
+			);
+			if (!!tokenAddress) {
 				setModal(defineTxModal("withdrawCENNZside", "", setModalOpen));
 
 				const withdrawAmount = ethers.utils
@@ -75,13 +79,13 @@ const Withdraw: React.FC<{
 				const eventProof = await withdrawCENNZside(
 					withdrawAmount,
 					Account,
-					token.id
+					token.assetId
 				);
 				await withdrawEthSide(
 					withdrawAmount,
 					eventProof,
 					Account,
-					token.address
+					tokenAddress.toString()
 				);
 			} else {
 				setModal(defineTxModal("error", "noTokenSelected", setModalOpen));
@@ -125,11 +129,8 @@ const Withdraw: React.FC<{
 		await new Promise(async (resolve) => {
 			const unsubHeads = await api.rpc.chain.subscribeNewHeads(async () => {
 				console.log(`Waiting till event proof is fetched....`);
-				const versionedEventProof = (
-					await api.rpc.ethy.getEventProof(eventProofId)
-				).toJSON();
-				if (versionedEventProof !== null) {
-					eventProof = versionedEventProof.eventProof;
+				eventProof = await api.derive.ethBridge.eventProof(eventProofId);
+				if (!!eventProof) {
 					console.log("Event proof found;::", eventProof);
 					unsubHeads();
 					resolve(eventProof);
@@ -149,19 +150,6 @@ const Withdraw: React.FC<{
 		setModalOpen(false);
 
 		const verificationFee = await Contracts.bridge.verificationFee();
-
-		const v: any = [],
-			r: any = [],
-			s: any = [];
-
-		eventProof.signatures.forEach((signature: any) => {
-			const hexifySignature = ethers.utils.hexlify(signature);
-			const sig = ethers.utils.splitSignature(hexifySignature);
-			v.push(sig.v);
-			r.push(sig.r);
-			s.push(sig.s);
-		});
-
 		const validators = (await api.query.ethBridge.notaryKeys()).map(
 			(validator: ethers.utils.BytesLike) => {
 				// session key is not set
@@ -184,9 +172,9 @@ const Withdraw: React.FC<{
 			{
 				eventId: eventProof.eventId,
 				validatorSetId: eventProof.validatorSetId,
-				v,
-				r,
-				s,
+				v: eventProof.v,
+				r: eventProof.r,
+				s: eventProof.s,
 				validators,
 			},
 			{
@@ -203,9 +191,9 @@ const Withdraw: React.FC<{
 			{
 				eventId: eventProof.eventId,
 				validatorSetId: eventProof.validatorSetId,
-				v,
-				r,
-				s,
+				v: eventProof.v,
+				r: eventProof.r,
+				s: eventProof.s,
 				validators,
 			},
 			{
