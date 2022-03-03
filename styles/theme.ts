@@ -46,13 +46,6 @@ const theme = createTheme({
 				disableRipple: true,
 			},
 		},
-		MuiBackdrop: {
-			styleOverrides: {
-				root: {
-					opacity: "0.3",
-				},
-			},
-		},
 	},
 });
 
