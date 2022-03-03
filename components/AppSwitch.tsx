@@ -1,51 +1,64 @@
-import React, { useMemo } from "react";
-import { useRouter } from "next/router";
-import { Box } from "@mui/material";
-import { SwitchButton } from "@/components/StyledComponents";
+import { css } from "@emotion/react";
 import Link from "next/link";
-import { useTheme } from "@mui/material/styles";
+import { Theme } from "@mui/material";
+import useSectionUri from "@/hooks/useSectionUri";
 
 const Switch: React.FC<{}> = () => {
-	const { pathname } = useRouter();
-	const theme = useTheme();
-	const section = useMemo(() => {
-		const section = pathname.replace("/", "").trim();
-		if (section === "") return "swap";
-		return section as "swap" | "pool" | "bridge";
-	}, [pathname]);
+	const section = useSectionUri();
 	return (
-		<Box
-			style={{ "--section-color": theme.palette.primary[section] } as any}
-			sx={{
-				width: "360px",
-				display: "flex",
-				flexDirection: "row",
-				justifyContent: "center",
-				alignItems: "flex-start",
-				margin: "3em auto",
-				filter: "drop-shadow(0px 3px 3px rgba(0, 0, 0, 0.12))",
-				borderRadius: "4px",
-				overflow: "hidden",
-				position: "relative",
-			}}
-		>
-			<Link href="/" passHref={true}>
-				<SwitchButton active={section === "swap"} paletteKey={section}>
-					Swap
-				</SwitchButton>
+		<nav css={styles.container}>
+			<Link href="/swap" passHref={true}>
+				<a css={styles.navItem(section === "swap")}>Swap</a>
 			</Link>
 			<Link href="/pool" passHref={true}>
-				<SwitchButton active={section === "pool"} paletteKey={section}>
-					Pool
-				</SwitchButton>
+				<a css={styles.navItem(section === "pool")}>Pool</a>
 			</Link>
 			<Link href="/bridge" passHref={true}>
-				<SwitchButton active={section === "bridge"} paletteKey={section}>
-					Bridge
-				</SwitchButton>
+				<a css={styles.navItem(section === "bridge")}>Bridge</a>
 			</Link>
-		</Box>
+		</nav>
 	);
 };
 
 export default Switch;
+
+export const styles = {
+	container: css`
+		width: 360px;
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		align-items: flex-start;
+		margin: 3em auto;
+		box-shadow: 4px 8px 8px rgba(17, 48, 255, 0.1);
+		border-radius: 4px;
+		overflow: hidden;
+		position: relative;
+	`,
+
+	navItem:
+		(active: boolean) =>
+		({ palette }: Theme) =>
+			css`
+				text-decoration: none;
+				background-color: white;
+				height: 48px;
+				max-width: 120px;
+				flex: 1;
+				font-weight: 500;
+				font-size: 14px;
+				text-align: center;
+				line-height: 48px;
+				text-transform: uppercase;
+				color: ${active ? palette.primary.main : "rgba(17,48,255,0.5)"};
+				border-bottom: ${active
+					? `2px solid ${palette.primary.main}`
+					: `2px solid white`};
+				transition: color 0.2s;
+
+				&:hover {
+					color: ${palette.primary.main};
+					background-color: white;
+				}
+			`,
+};

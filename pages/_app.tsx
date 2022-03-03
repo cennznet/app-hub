@@ -1,4 +1,3 @@
-import React from "react";
 import type { AppProps } from "next/app";
 import Head from "next/head";
 import { ThemeProvider } from "@mui/material/styles";
@@ -7,7 +6,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import "@/styles/global.css";
 import CENNZApiProvider from "@/providers/CENNZApiProvider";
 import CENNZWalletProvider from "@/providers/CENNZWalletProvider";
-import Switch from "@/components/AppSwitch";
+import AppSwitch from "@/components/AppSwitch";
 import Wallet from "@/components/Wallet";
 import SupportedAssetsProvider from "@/providers/SupportedAssetsProvider";
 import BridgeProvider from "@/providers/BridgeProvider";
@@ -46,7 +45,7 @@ function MyApp({
 										<GlobalModalProvider>
 											<PageBackdrop />
 											<Wallet />
-											<Switch />
+											<AppSwitch />
 											<Component {...pageProps} />
 											<PageFrame />
 										</GlobalModalProvider>
