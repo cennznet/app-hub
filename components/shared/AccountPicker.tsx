@@ -4,6 +4,7 @@ import { css } from "@emotion/react";
 import AccountIdenticon from "@/components/shared/AccountIdenticon";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import { useBridge } from "@/providers/BridgeProvider";
+import Jazzicon, { jsNumberForAddress } from "react-jazzicon";
 
 const AccountPicker: React.FC<{
 	updateSelectedAccount: Function;
@@ -24,6 +25,8 @@ const AccountPicker: React.FC<{
 			setValidAddress(true);
 		}
 	}, []);
+
+	useEffect(() => setError(""), [cennznet]);
 
 	useEffect(() => {
 		if (selectedAccount) {
@@ -67,7 +70,7 @@ const AccountPicker: React.FC<{
 						<img src={"/images/cennznet_blue.svg"} alt={""} />
 					)
 				) : (
-					<div>MM</div>
+					<Jazzicon diameter={30} seed={jsNumberForAddress(Account)} />
 				)}
 				<input
 					type={"text"}
@@ -133,7 +136,7 @@ export const styles = {
 		display: flex;
 		align-items: center;
 		justify-content: flex-start;
-		padding: 0px 20px;
+		padding: 0px 15px;
 
 		input {
 			margin-left: 10px;
