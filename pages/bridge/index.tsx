@@ -54,7 +54,7 @@ const Emery: React.FC<{}> = () => {
 
 	//Check MetaMask account has enough tokens to deposit if eth token picker
 	useEffect(() => {
-		if (toChain.name !== "CENNZnet" || !erc20Token || !Account) return;
+		if (toChain.name !== "CENNZnet" || !erc20Token?.address || !Account) return;
 		(async () => {
 			setError("");
 			const { ethereum }: any = window;
