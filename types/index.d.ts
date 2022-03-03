@@ -106,6 +106,8 @@ export interface CENNZAssetBalance extends CENNZAsset {
 	rawValue: Codec;
 }
 
+export type SectionUri = "swap" | "pool" | "bridge";
+
 export type TxModalAttributes = {
 	state: string;
 	title: string;
