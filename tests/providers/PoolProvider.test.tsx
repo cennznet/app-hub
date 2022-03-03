@@ -1,7 +1,7 @@
 import { act, renderHook } from "@testing-library/react-hooks";
 import PoolProvider, { usePool } from "@/providers/PoolProvider";
 import { Api } from "@cennznet/api";
-import { AssetInfo, IExchangePool, IUserShareInPool } from "@/types";
+import { CENNZAsset, IExchangePool, IUserShareInPool } from "@/types";
 
 const selectedAccount = {
 	address: "5FbMzsoEpd2mt8eyKpKUxwJ5S9W7nJVJkCer2Jk7tvSpB1vF",
@@ -14,15 +14,13 @@ const selectedAccount = {
 const assets = {
 	CPAY: {
 		symbol: "CPAY",
-		decimalPlaces: "4",
-		existentialDeposit: "1",
-		id: 16001,
+		decimals: 4,
+		assetId: 16001,
 	},
 	CENNZ: {
 		symbol: "CENNZ",
-		decimalPlaces: "4",
-		existentialDeposit: "1",
-		id: 16000,
+		decimals: 4,
+		assetId: 16000,
 	},
 };
 
@@ -59,7 +57,7 @@ test("should define functions, and fetch exchangePool & userPoolShare", async ()
 	expect(defineExtrinsic).toBeDefined();
 	expect(sendExtrinsic).toBeDefined();
 
-	const coreAsset: AssetInfo = result.current.coreAsset;
+	const coreAsset: CENNZAsset = result.current.coreAsset;
 	expect(coreAsset).toEqual(assets.CPAY);
 
 	await act(async () => {
@@ -69,7 +67,7 @@ test("should define functions, and fetch exchangePool & userPoolShare", async ()
 	expect(exchangePool.address).toEqual(
 		"5DwJXhQP4W9VLR3RoPNLX6mGdtFtJyd7zaWUDf89fS8cP2eg"
 	);
-	expect(exchangePool.assetId).toEqual(assets.CENNZ.id);
+	expect(exchangePool.assetId).toEqual(assets.CENNZ.assetId);
 	expect(exchangePool.assetBalance).toBeDefined();
 	expect(exchangePool.coreAssetBalance).toBeDefined();
 
@@ -78,7 +76,7 @@ test("should define functions, and fetch exchangePool & userPoolShare", async ()
 	});
 	const userPoolShare: IUserShareInPool = result.current.userPoolShare;
 	expect(userPoolShare.address).toEqual(selectedAccount.address);
-	expect(userPoolShare.assetId).toEqual(assets.CENNZ.id);
+	expect(userPoolShare.assetId).toEqual(assets.CENNZ.assetId);
 	expect(userPoolShare.assetBalance).toBeDefined();
 	expect(userPoolShare.coreAssetBalance).toBeDefined();
 	expect(userPoolShare.liquidity).toBeDefined();

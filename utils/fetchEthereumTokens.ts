@@ -1,8 +1,8 @@
 import { EthereumToken } from "@/types";
-import { tokens } from "@/artifacts/EthereumTokens.json";
+import EthereumTokens from "@/artifacts/EthereumTokens.json";
 
 export default function fetchEthereumTokens(chainId: number): EthereumToken[] {
-	return tokens
+	return EthereumTokens.tokens
 		.filter((token) => token.chainId === chainId)
 		.map((token) => ({
 			address: token.address,
