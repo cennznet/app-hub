@@ -36,7 +36,11 @@ const TokenInput: FC<
 					);
 				})}
 			</Select>
-			{onMaxValueRequest && <div css={styles.maxButton}>Max</div>}
+			{onMaxValueRequest && (
+				<div css={styles.maxButton} onClick={onMaxValueRequest}>
+					Max
+				</div>
+			)}
 			<input css={styles.input} {...props} type="number" />
 		</div>
 	);
@@ -75,7 +79,7 @@ export const styles = {
 		}
 	`,
 
-	select: css`
+	select: ({ palette }: Theme) => css`
 		border: none;
 
 		.MuiList-root {
@@ -87,17 +91,17 @@ export const styles = {
 		}
 
 		.MuiSelect-iconOpen {
-			color: #1130ff;
+			color: ${palette.primary.section};
 		}
 	`,
 
-	selectDropdown: css`
+	selectDropdown: ({ palette }: Theme) => css`
 		.MuiPaper-root {
 			border-radius: 4px;
 			overflow: hidden;
 			transform: translate(-1px, 5px) !important;
 			box-shadow: 4px 8px 8px rgba(0, 0, 0, 0.1);
-			border: 1px solid rgba(17, 48, 255, 0.35);
+			border: 1px solid ${palette.secondary.section};
 		}
 
 		.MuiMenu-list {
@@ -143,5 +147,11 @@ export const styles = {
 		text-transform: uppercase;
 		padding: 0 0.5em;
 		cursor: pointer;
+		color: ${palette.text.secondary};
+		transition: color 0.2s;
+
+		&:hover {
+			color: ${palette.primary.section};
+		}
 	`,
 };
