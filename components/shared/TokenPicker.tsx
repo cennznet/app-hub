@@ -106,7 +106,7 @@ const TokenPicker: React.FC<{
 
 		if (toChain === "Ethereum")
 			tokes = tokes.filter(
-				(asset) => asset.symbol !== "CENNZ" && asset.symbol !== "CPAY"
+				(asset) => asset.symbol !== "CPAY"
 			);
 
 		setTokens(tokes);
