@@ -171,9 +171,9 @@ const Exchange: React.FC<{}> = () => {
 				<TokenInput
 					onMaxValueRequest={() => {}}
 					placeholder="0.00"
-					token={token}
+					selectedTokenId={token}
 					onTokenChange={(event) => setToken(Number(event.target.value))}
-					coinsList={[
+					tokens={[
 						{ assetId: 16000, symbol: "CENNZ", decimals: 10 },
 						{ assetId: 16001, symbol: "CPAY", decimals: 10 },
 						{ assetId: 17004, symbol: "ETH", decimals: 10 },
