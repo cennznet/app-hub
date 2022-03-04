@@ -1,4 +1,4 @@
-import { FC, InputHTMLAttributes } from "react";
+import { FC, InputHTMLAttributes, useEffect } from "react";
 import { css } from "@emotion/react";
 import { Select, SelectChangeEvent, MenuItem, Theme } from "@mui/material";
 import { CENNZAsset, EthereumToken } from "@/types";
@@ -15,7 +15,7 @@ interface TokenInputProps {
 const TokenInput: FC<
 	TokenInputProps & InputHTMLAttributes<HTMLInputElement>
 > = ({
-	selectedTokenId: token,
+	selectedTokenId,
 	onTokenChange,
 	tokens,
 	onMaxValueRequest,
@@ -26,7 +26,7 @@ const TokenInput: FC<
 		<div css={styles.root}>
 			<Select
 				css={styles.select}
-				value={token}
+				value={selectedTokenId}
 				onChange={onTokenChange}
 				MenuProps={{ sx: styles.selectDropdown as any }}
 				IconComponent={ExpandLess}

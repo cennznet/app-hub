@@ -1,249 +1,134 @@
-import React, { useEffect, useState, useCallback } from "react";
-import TokenPicker from "@/components/shared/TokenPicker";
-import ExchangeIcon from "@/components/shared/ExchangeIcon";
-import { useCENNZApi } from "@/providers/CENNZApiProvider";
+import { Api } from "@cennznet/api";
 import { CENNZAsset } from "@/types";
-import styles from "@/styles/pages/swap.module.css";
-import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
-import { fetchSwapAssets } from "@/utils";
-import {
-	fetchEstimatedTransactionFee,
-	fetchExchangeExtrinsic,
-	fetchExchangeRate,
-	fetchTokenAmounts,
-} from "@/utils/swap";
-import ConnectWalletButton from "@/components/shared/ConnectWalletButton";
-import Settings from "@/components/pool/Settings";
-import generateGlobalProps from "@/utils/generateGlobalProps";
-import { useGlobalModal } from "@/providers/GlobalModalProvider";
+import fetchSwapAssets from "@/utils/fetchSwapAssets";
+import { css } from "@emotion/react";
+import { Theme } from "@mui/material";
+import useTokensFetcher from "@/hooks/useTokensFetcher";
 import TokenInput from "@/components/shared/TokenInput";
+import useTokenInput from "@/hooks/useTokenInput";
+import { useCallback, useEffect, useState } from "react";
+import ExchangeIcon from "@/components/shared/ExchangeIcon";
 
 export async function getStaticProps() {
+	const api = await Api.create({ provider: process.env.NEXT_PUBLIC_API_URL });
+
 	return {
 		props: {
-			...(await generateGlobalProps()),
+			defaultAssets: await fetchSwapAssets(api),
 		},
 	};
 }
 
-const Exchange: React.FC<{}> = () => {
-	const [assets, setAssets] = useState<CENNZAsset[]>();
-	const [exchangeToken, setExchangeToken] = useState<CENNZAsset>();
-	const [receivedToken, setReceivedToken] = useState<CENNZAsset>();
-	const [receivedTokenValue, setReceivedTokenValue] = React.useState<string>();
-	const [exchangeTokenValue, setExchangeTokenValue] = React.useState<string>();
-	const [estimatedFee, setEstimatedFee] = useState<string>();
-	const [exchangeRate, setExchangeRate] = useState<number>();
-	const [slippage, setSlippage] = useState<number>(5);
-	const [error, setError] = useState<string>();
-	const [success, setSuccess] = useState<string>();
-	const { api } = useCENNZApi();
-	const { balances, updateBalances, wallet, selectedAccount } =
-		useCENNZWallet();
-	const signer = wallet?.signer;
-	const { showDialog } = useGlobalModal();
+const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
+	const [sendTokens] = useTokensFetcher<CENNZAsset[]>(
+		fetchSwapAssets,
+		defaultAssets
+	);
+
+	const [receiveTokens, setReceiveTokens] = useState<CENNZAsset[]>(sendTokens);
+
+	const cpayAsset = sendTokens?.find((token) => token.symbol === "CPAY");
+	const cennzAsset = sendTokens?.find((token) => token.symbol === "CENNZ");
+
+	const [sendToken, sendValue] = useTokenInput(cennzAsset.assetId, Number);
+	const [receiveToken, receiveValue] = useTokenInput(cpayAsset.assetId, Number);
+
+	const onExchangeIconClick = useCallback(() => {
+		const setTokenId = sendToken.setTokenId;
+		setTokenId(receiveToken.tokenId);
+	}, [receiveToken.tokenId, sendToken.setTokenId]);
 
 	useEffect(() => {
-		if (!api || assets) return;
-		(async () => setAssets(await fetchSwapAssets(api)))();
-	}, [api, assets]);
+		const receiveTokens = sendTokens.filter(
+			(token) => token.assetId !== sendToken.tokenId
+		);
+		const setTokenId = receiveToken.setTokenId;
 
-	useEffect(() => {
-		setError(undefined);
-		setSuccess(undefined);
-		if (
-			parseInt(exchangeTokenValue) <= 0 ||
-			!api ||
-			!exchangeToken ||
-			!receivedToken ||
-			!balances ||
-			!exchangeTokenValue ||
-			!assets
-		)
-			return;
-
-		(async () => {
-			try {
-				const { exchangeAmount, receivedAmount } = await fetchTokenAmounts(
-					api,
-					exchangeToken,
-					exchangeTokenValue,
-					balances,
-					receivedToken
-				);
-				setReceivedTokenValue(receivedAmount.toString());
-				const estimatedExchangeRate = await fetchExchangeRate(
-					api,
-					exchangeToken,
-					receivedToken
-				);
-				setExchangeRate(estimatedExchangeRate);
-				const estimatedFee = await fetchEstimatedTransactionFee(
-					api,
-					exchangeAmount,
-					exchangeToken.assetId,
-					receivedToken.assetId,
-					slippage
-				);
-				setEstimatedFee(estimatedFee);
-			} catch (e) {
-				setError(e.message);
-			}
-		})();
-	}, [
-		api,
-		exchangeTokenValue,
-		assets,
-		exchangeToken,
-		receivedToken,
-		balances,
-		slippage,
-	]);
-
-	const exchangeTokens = useCallback(async () => {
-		if (
-			parseFloat(receivedTokenValue) <= 0 ||
-			!api ||
-			!exchangeToken ||
-			!receivedToken ||
-			!signer
-		)
-			return;
-
-		try {
-			const extrinsic = await fetchExchangeExtrinsic(
-				api,
-				exchangeToken,
-				exchangeTokenValue,
-				receivedToken,
-				receivedTokenValue,
-				slippage
+		setTokenId((currentTokenId) => {
+			const token = receiveTokens.find(
+				(token) => token.assetId === currentTokenId
 			);
-			await showDialog({
-				title: "Swap in Progress",
-				message: "Please sign transaction to continue with the token swap.",
-				loading: true,
-			});
+			if (token) return currentTokenId;
+			return receiveTokens[0].assetId;
+		});
 
-			extrinsic.signAndSend(
-				selectedAccount.address,
-				{ signer },
-				async ({ status, events }: any) => {
-					if (status.isInBlock && events !== undefined) {
-						for (const { event } of events) {
-							if (event.method === "AssetBought") {
-								setError(undefined);
-								await showDialog({
-									title: "Transaction Successfully Completed!",
-									message: `Successfully Swapped ${exchangeTokenValue} ${exchangeToken.symbol} for ${receivedTokenValue} ${receivedToken.symbol}!`,
-								});
-								updateBalances();
-							}
-						}
-					}
-				}
-			);
-		} catch (e) {
-			await showDialog({
-				title: "Error Occurred",
-				message: e.message,
-			});
-		}
-	}, [
-		signer,
-		api,
-		exchangeToken,
-		exchangeTokenValue,
-		receivedToken,
-		receivedTokenValue,
-		updateBalances,
-		selectedAccount,
-		slippage,
-		showDialog,
-	]);
-
-	const [token, setToken] = useState(16000);
+		setReceiveTokens(receiveTokens);
+	}, [sendTokens, sendToken.tokenId, receiveToken.setTokenId]);
 
 	return (
-		<div className={styles.swapContainer}>
-			<h1 className={styles.pageHeader}>SWAP</h1>
-			<div className={styles.tokenPickerContainer}>
-				<TokenInput
-					onMaxValueRequest={() => {}}
-					placeholder="0.00"
-					selectedTokenId={token}
-					onTokenChange={(event) => setToken(Number(event.target.value))}
-					tokens={[
-						{ assetId: 16000, symbol: "CENNZ", decimals: 10 },
-						{ assetId: 16001, symbol: "CPAY", decimals: 10 },
-						{ assetId: 17004, symbol: "ETH", decimals: 10 },
-					]}
-				/>
-				<p className={styles.secondaryText}>YOU SEND</p>
-				<TokenPicker
-					assets={assets}
-					setToken={setExchangeToken}
-					setAmount={setExchangeTokenValue}
-					amount={exchangeTokenValue}
-					cennznet={true}
-					forceSelection={exchangeToken}
-					showBalance={true}
-					error={error}
-					success={success}
-				/>
-			</div>
-			<div className={styles.exchangeIconContainer}>
-				<ExchangeIcon
-					onClick={() => {
-						setReceivedToken(exchangeToken);
-						setExchangeToken(receivedToken);
-						setExchangeTokenValue(receivedTokenValue);
-						setReceivedTokenValue(exchangeTokenValue);
-					}}
-				/>
-			</div>
-			<div className={styles.tokenPickerContainer}>
-				<p className={styles.thirdText}>YOU GET</p>
-				<TokenPicker
-					assets={assets}
-					setToken={setReceivedToken}
-					setAmount={setReceivedTokenValue}
-					amount={receivedTokenValue}
-					cennznet={true}
-					forceSelection={receivedToken}
-					removeToken={exchangeToken}
-				/>
-			</div>
-			{estimatedFee && (
-				<div className={styles.infoBoxContainer}>
-					<div className={styles.infoBoxText}>
-						<div className={styles.feeContainer}>
-							<p>{"Exchange rates:"}</p>
-							<span>{`1 ${exchangeToken.symbol} = ${exchangeRate} ${receivedToken.symbol}`}</span>
-						</div>
-						<div className={styles.feeContainer}>
-							<p>{"Transaction fee (estimated):"}</p>
-							<span>{estimatedFee + " CPAY"}</span>
-						</div>
-					</div>
+		<div css={styles.root}>
+			<h1 css={styles.heading}>SWAP</h1>
+			<form css={styles.form}>
+				<div css={styles.formField}>
+					<label>You Send</label>
+					<TokenInput
+						selectedTokenId={sendToken.tokenId}
+						onTokenChange={sendToken.onTokenChange}
+						value={sendValue.value}
+						onChange={sendValue.onValueChange}
+						tokens={sendTokens}
+					/>
 				</div>
-			)}
-			<Settings
-				slippage={slippage}
-				setSlippage={setSlippage}
-				coreAmount={exchangeTokenValue}
-				tokenName={exchangeToken?.symbol}
-				color={"#f5f6ff"}
-			/>
-			<ConnectWalletButton
-				onClick={exchangeTokens}
-				buttonText={"SWAP"}
-				requireMetamask={false}
-				requireCennznet={true}
-				width={89}
-			/>
+
+				<div css={styles.formField}>
+					<ExchangeIcon onClick={onExchangeIconClick} />
+				</div>
+
+				<div css={styles.formField}>
+					<label>You Get</label>
+					<TokenInput
+						selectedTokenId={receiveToken.tokenId}
+						onTokenChange={receiveToken.onTokenChange}
+						value={receiveValue.value}
+						onChange={receiveValue.onValueChange}
+						tokens={receiveTokens}
+					/>
+				</div>
+			</form>
 		</div>
 	);
 };
 
-export default Exchange;
+export default Swap;
+
+const styles = {
+	root: css`
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-start;
+		align-items: center;
+		width: 550px;
+		border-radius: 4px;
+		margin: 0 auto 5em;
+		position: relative;
+		background-color: #ffffff;
+		box-shadow: 4px 8px 8px rgba(17, 48, 255, 0.1);
+		padding: 1.5em 2.5em 2.5em;
+	`,
+
+	heading: ({ palette }: Theme) => css`
+		font-weight: bold;
+		font-size: 20px;
+		line-height: 1;
+		text-align: center;
+		text-transform: uppercase;
+		color: ${palette.primary.main};
+	`,
+
+	form: css`
+		width: 100%;
+		margin-top: 1.5em;
+	`,
+
+	formField: css`
+		margin-bottom: 2em;
+
+		label {
+			font-weight: bold;
+			font-size: 0.875em;
+			text-transform: uppercase;
+			margin-bottom: 0.5em;
+			display: block;
+		}
+	`,
+};
