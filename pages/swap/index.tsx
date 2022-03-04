@@ -34,25 +34,32 @@ const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 	const [receiveTokens, setReceiveTokens] =
 		useState<CENNZAsset[]>(exchangeTokens);
 
-	const cpayAsset = exchangeTokens?.find((token) => token.symbol === "CPAY");
 	const cennzAsset = exchangeTokens?.find((token) => token.symbol === "CENNZ");
+	const cpayAsset = exchangeTokens?.find((token) => token.symbol === "CPAY");
 
 	const [exchangeToken, exchangeValue] = useTokenInput(cennzAsset.assetId);
 	const [receiveToken, receiveValue] = useTokenInput(cpayAsset.assetId);
 
 	const onSwapButtonClick = useCallback(() => {
-		const setTokenId = exchangeToken.setTokenId;
-		setTokenId(receiveToken.tokenId);
-	}, [receiveToken.tokenId, exchangeToken.setTokenId]);
+		const setExchangeTokenId = exchangeToken.setTokenId;
+		const setReceiveTokenId = receiveToken.setTokenId;
+		setExchangeTokenId(receiveToken.tokenId);
+		setReceiveTokenId(exchangeToken.tokenId);
+	}, [
+		receiveToken.tokenId,
+		exchangeToken.tokenId,
+		exchangeToken.setTokenId,
+		receiveToken.setTokenId,
+	]);
 
 	// Sync up tokens for receive input
 	useEffect(() => {
 		const receiveTokens = exchangeTokens.filter(
 			(token) => token.assetId !== exchangeToken.tokenId
 		);
-		const setTokenId = receiveToken.setTokenId;
+		const setReceiveTokenId = receiveToken.setTokenId;
 
-		setTokenId((currentTokenId) => {
+		setReceiveTokenId((currentTokenId) => {
 			const token = receiveTokens.find(
 				(token) => token.assetId === currentTokenId
 			);

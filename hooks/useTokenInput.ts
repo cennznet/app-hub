@@ -1,11 +1,9 @@
-import { CENNZAsset, EthereumToken } from "@/types";
 import { SelectChangeEvent } from "@mui/material";
 import {
 	ChangeEventHandler,
 	Dispatch,
 	SetStateAction,
 	useCallback,
-	useEffect,
 	useState,
 } from "react";
 
