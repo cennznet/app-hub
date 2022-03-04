@@ -25,28 +25,32 @@ export async function getStaticProps() {
 const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 	const { selectedAccount, balances } = useCENNZWallet();
 
-	const [sendTokens] = useTokensFetcher<CENNZAsset[]>(
+	const [exchangeTokens] = useTokensFetcher<CENNZAsset[]>(
 		fetchSwapAssets,
 		defaultAssets
 	);
 
-	const [receiveTokens, setReceiveTokens] = useState<CENNZAsset[]>(sendTokens);
+	const [receiveTokens, setReceiveTokens] =
+		useState<CENNZAsset[]>(exchangeTokens);
 
-	const cpayAsset = sendTokens?.find((token) => token.symbol === "CPAY");
-	const cennzAsset = sendTokens?.find((token) => token.symbol === "CENNZ");
+	const cpayAsset = exchangeTokens?.find((token) => token.symbol === "CPAY");
+	const cennzAsset = exchangeTokens?.find((token) => token.symbol === "CENNZ");
 
-	const [sendToken, sendValue] = useTokenInput(cennzAsset.assetId, Number);
+	const [exchangeToken, exchangeValue] = useTokenInput(
+		cennzAsset.assetId,
+		Number
+	);
 	const [receiveToken, receiveValue] = useTokenInput(cpayAsset.assetId, Number);
 
 	const onExchangeIconClick = useCallback(() => {
-		const setTokenId = sendToken.setTokenId;
+		const setTokenId = exchangeToken.setTokenId;
 		setTokenId(receiveToken.tokenId);
-	}, [receiveToken.tokenId, sendToken.setTokenId]);
+	}, [receiveToken.tokenId, exchangeToken.setTokenId]);
 
 	// Sync up tokens for receive input
 	useEffect(() => {
-		const receiveTokens = sendTokens.filter(
-			(token) => token.assetId !== sendToken.tokenId
+		const receiveTokens = exchangeTokens.filter(
+			(token) => token.assetId !== exchangeToken.tokenId
 		);
 		const setTokenId = receiveToken.setTokenId;
 
@@ -59,7 +63,7 @@ const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 		});
 
 		setReceiveTokens(receiveTokens);
-	}, [sendTokens, sendToken.tokenId, receiveToken.setTokenId]);
+	}, [exchangeTokens, exchangeToken.tokenId, receiveToken.setTokenId]);
 
 	const [sendBalance, setSendBalance] = useState<number>(null);
 	const [receiveBalance, setReceiveBalance] = useState<number>(null);
@@ -73,7 +77,7 @@ const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 		}
 
 		const sendBalance = balances.find(
-			(balance) => balance.assetId === sendToken.tokenId
+			(balance) => balance.assetId === exchangeToken.tokenId
 		);
 
 		const receiveBalance = balances.find(
@@ -82,12 +86,12 @@ const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 
 		setSendBalance(sendBalance.value);
 		setReceiveBalance(receiveBalance.value);
-	}, [balances, sendToken.tokenId, receiveToken.tokenId]);
+	}, [balances, exchangeToken.tokenId, receiveToken.tokenId]);
 
 	// Reset the send value when changing send token
 	useEffect(() => {
 		if (sendBalance === null) return;
-		const setValue = sendValue.setValue;
+		const setValue = exchangeValue.setValue;
 
 		setValue((currentRawValue) => {
 			const currentValue = Number(currentRawValue);
@@ -95,7 +99,7 @@ const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 				return currentRawValue;
 			return "";
 		});
-	}, [sendBalance, sendValue.setValue]);
+	}, [sendBalance, exchangeValue.setValue]);
 
 	return (
 		<div css={styles.root}>
@@ -106,14 +110,14 @@ const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 					<TokenInput
 						onMaxValueRequest={
 							!!sendBalance
-								? () => sendValue.setValue(formatBalance(sendBalance))
+								? () => exchangeValue.setValue(formatBalance(sendBalance))
 								: null
 						}
-						selectedTokenId={sendToken.tokenId}
-						onTokenChange={sendToken.onTokenChange}
-						value={sendValue.value}
-						onChange={sendValue.onValueChange}
-						tokens={sendTokens}
+						selectedTokenId={exchangeToken.tokenId}
+						onTokenChange={exchangeToken.onTokenChange}
+						value={exchangeValue.value}
+						onChange={exchangeValue.onValueChange}
+						tokens={exchangeTokens}
 					/>
 
 					{!!selectedAccount && (
