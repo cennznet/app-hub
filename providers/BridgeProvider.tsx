@@ -29,16 +29,17 @@ const BridgeProvider: FC<{ ethChainId: string }> = ({
 }) => {
 	useEffect(() => {
 		async function listenMMAccountChange() {
-			global.ethereum.on("accountsChanged", async function () {
-				const { ethereum } = window as any;
-				const accounts = await ethereum.request({
-					method: "eth_requestAccounts",
-				});
-				setValue({ ...value, Account: accounts[0] });
+			const { ethereum } = window as any;
+			const accounts = await ethereum.request({
+				method: "eth_requestAccounts",
 			});
+			setValue({ ...value, Account: accounts[0] });
 		}
-		listenMMAccountChange();
-	}, []);
+		global.ethereum.on("accountsChanged", listenMMAccountChange);
+		return function cleanup() {
+			global.ethereum.removeListener("accountsChanged", listenMMAccountChange);
+		};
+	});
 
 	const [value, setValue] = useState({
 		Contracts: {
