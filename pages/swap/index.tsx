@@ -11,6 +11,7 @@ import SwapButton from "@/components/shared/SwapButton";
 import ThreeDots from "@/components/shared/ThreeDots";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import { formatBalance } from "@/utils";
+import useExchangeRate from "@/hooks/useExchangeRate";
 
 export async function getStaticProps() {
 	const api = await Api.create({ provider: process.env.NEXT_PUBLIC_API_URL });
@@ -36,11 +37,8 @@ const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 	const cpayAsset = exchangeTokens?.find((token) => token.symbol === "CPAY");
 	const cennzAsset = exchangeTokens?.find((token) => token.symbol === "CENNZ");
 
-	const [exchangeToken, exchangeValue] = useTokenInput(
-		cennzAsset.assetId,
-		Number
-	);
-	const [receiveToken, receiveValue] = useTokenInput(cpayAsset.assetId, Number);
+	const [exchangeToken, exchangeValue] = useTokenInput(cennzAsset.assetId);
+	const [receiveToken, receiveValue] = useTokenInput(cpayAsset.assetId);
 
 	const onSwapButtonClick = useCallback(() => {
 		const setTokenId = exchangeToken.setTokenId;
@@ -88,18 +86,18 @@ const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 		setReceiveBalance(receiveBalance.value);
 	}, [balances, exchangeToken.tokenId, receiveToken.tokenId]);
 
-	// Reset the send value when changing send token
-	useEffect(() => {
-		if (sendBalance === null) return;
-		const setValue = exchangeValue.setValue;
+	const exchangeRate = useExchangeRate(
+		exchangeToken.tokenId,
+		receiveToken.tokenId,
+		exchangeTokens
+	);
 
-		setValue((currentRawValue) => {
-			const currentValue = Number(currentRawValue);
-			if (currentRawValue === "" || currentValue <= sendBalance)
-				return currentRawValue;
-			return "";
-		});
-	}, [sendBalance, exchangeValue.setValue]);
+	useEffect(() => {
+		if (!exchangeValue.value) return;
+		const value = Number(exchangeValue.value);
+		const setValue = receiveValue.setValue;
+		setValue((value * exchangeRate).toString());
+	}, [exchangeRate, exchangeValue.value, receiveValue.setValue]);
 
 	return (
 		<div css={styles.root}>
@@ -145,9 +143,12 @@ const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 					<TokenInput
 						selectedTokenId={receiveToken.tokenId}
 						onTokenChange={receiveToken.onTokenChange}
-						value={receiveValue.value}
+						value={
+							receiveValue.value ? Number(receiveValue.value).toFixed(10) : ""
+						}
 						onChange={receiveValue.onValueChange}
 						tokens={receiveTokens}
+						disabled={true}
 					/>
 					{!!selectedAccount && (
 						<div css={styles.tokenBalance}>

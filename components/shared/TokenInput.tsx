@@ -103,7 +103,7 @@ export const styles = {
 
 	select: ({ palette }: Theme) => css`
 		border: none;
-		width: 200px;
+		min-width: 135px;
 
 		.MuiList-root {
 			padding: 0;
@@ -160,6 +160,10 @@ export const styles = {
 		text-align: right;
 		outline: none;
 		font-weight: bold;
+
+		&:disabled {
+			background-color: white;
+		}
 
 		&::placeholder {
 			color: ${palette.text.secondary};

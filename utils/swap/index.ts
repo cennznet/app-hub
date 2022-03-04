@@ -15,23 +15,14 @@ export const fetchExchangeRate = async (
 	api: Api,
 	exchangeToken: CENNZAsset,
 	receivedToken: CENNZAsset
-) => {
-	let exchangeAmount: any = new BigNumber("1");
-	exchangeAmount = exchangeAmount
-		.multipliedBy(Math.pow(10, exchangeToken.decimals))
-		.toString(10);
-	const sellPrice = await (api.rpc as any).cennzx.sellPrice(
+): Promise<number> => {
+	const { price } = await (api.rpc as any).cennzx.sellPrice(
 		exchangeToken.assetId,
-		exchangeAmount,
+		(1 * Math.pow(10, exchangeToken.decimals)).toString(),
 		receivedToken.assetId
 	);
-	let receivedAmount: any = new Amount(
-		sellPrice.price.toString(),
-		AmountUnit.UN
-	);
-	receivedAmount = receivedAmount.toAmount(receivedToken.decimals);
 
-	return receivedAmount;
+	return price.toJSON() / Math.pow(10, receivedToken.decimals);
 };
 
 export const fetchTokenAmounts = async (
