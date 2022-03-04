@@ -43,6 +43,7 @@ const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 		setTokenId(receiveToken.tokenId);
 	}, [receiveToken.tokenId, sendToken.setTokenId]);
 
+	// Sync up tokens for receive input
 	useEffect(() => {
 		const receiveTokens = sendTokens.filter(
 			(token) => token.assetId !== sendToken.tokenId
@@ -63,6 +64,7 @@ const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 	const [sendBalance, setSendBalance] = useState<number>(null);
 	const [receiveBalance, setReceiveBalance] = useState<number>(null);
 
+	// Update asset balances for both send and receive assets
 	useEffect(() => {
 		if (!balances?.length) {
 			setSendBalance(null);
@@ -81,6 +83,19 @@ const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 		setSendBalance(sendBalance.value);
 		setReceiveBalance(receiveBalance.value);
 	}, [balances, sendToken.tokenId, receiveToken.tokenId]);
+
+	// Reset the send value when changing send token
+	useEffect(() => {
+		if (sendBalance === null) return;
+		const setValue = sendValue.setValue;
+
+		setValue((currentRawValue) => {
+			const currentValue = Number(currentRawValue);
+			if (currentRawValue === "" || currentValue <= sendBalance)
+				return currentRawValue;
+			return "";
+		});
+	}, [sendBalance, sendValue.setValue]);
 
 	return (
 		<div css={styles.root}>
