@@ -2,7 +2,7 @@ import { Api } from "@cennznet/api";
 import { CENNZAsset } from "@/types";
 import fetchSwapAssets from "@/utils/fetchSwapAssets";
 import { css } from "@emotion/react";
-import { Theme } from "@mui/material";
+import { Theme, CircularProgress } from "@mui/material";
 import useTokensFetcher from "@/hooks/useTokensFetcher";
 import TokenInput from "@/components/shared/TokenInput";
 import useTokenInput from "@/hooks/useTokenInput";
@@ -128,13 +128,10 @@ const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 					{!!selectedAccount && (
 						<div css={styles.tokenBalance}>
 							Balance:{" "}
-							<span>
-								{sendBalance !== null ? (
-									formatBalance(sendBalance)
-								) : (
-									<ThreeDots />
-								)}
-							</span>
+							{sendBalance !== null && (
+								<span>{formatBalance(sendBalance)}</span>
+							)}
+							{sendBalance === null && <CircularProgress size="0.75em" />}
 						</div>
 					)}
 				</div>
@@ -162,13 +159,10 @@ const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 					{!!selectedAccount && (
 						<div css={styles.tokenBalance}>
 							Balance:{" "}
-							<span>
-								{receiveBalance !== null ? (
-									formatBalance(receiveBalance)
-								) : (
-									<ThreeDots />
-								)}
-							</span>
+							{receiveBalance !== null && (
+								<span>{formatBalance(receiveBalance)}</span>
+							)}
+							{receiveBalance === null && <CircularProgress size="0.75em" />}
 						</div>
 					)}
 				</div>

@@ -31,6 +31,11 @@ const CssGlobal: FC<{}> = () => {
 					line-height: inherit;
 					padding: 0;
 				}
+
+				.MuiCircularProgress-root {
+					animation-timing-function: ease-in-out !important;
+					animation-duration: 0.7s !important;
+				}
 			`}
 		/>
 	);
