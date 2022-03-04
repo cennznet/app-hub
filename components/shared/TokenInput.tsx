@@ -63,13 +63,19 @@ const TokenInput: FC<
 export default TokenInput;
 
 export const styles = {
-	root: css`
+	root: ({ palette }: Theme) => css`
 		width: 100%;
 		border: 1px solid #979797;
 		border-radius: 4px;
 		overflow: hidden;
 		display: flex;
 		align-items: center;
+		transition: border-color 0.2s;
+
+		&:hover,
+		&:focus {
+			border-color: ${palette.primary.main};
+		}
 
 		.MuiOutlinedInput-notchedOutline {
 			border: none;
@@ -165,7 +171,8 @@ export const styles = {
 		text-transform: uppercase;
 		padding: 0 0.5em;
 		cursor: pointer;
-		color: ${palette.text.secondary};
+		font-size: 0.875em;
+		color: ${palette.text.primary};
 		transition: color 0.2s;
 
 		&:hover {

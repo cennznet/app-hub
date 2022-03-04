@@ -8,6 +8,9 @@ import TokenInput from "@/components/shared/TokenInput";
 import useTokenInput from "@/hooks/useTokenInput";
 import { useCallback, useEffect, useState } from "react";
 import ExchangeIcon from "@/components/shared/ExchangeIcon";
+import ThreeDots from "@/components/shared/ThreeDots";
+import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
+import { formatBalance } from "@/utils";
 
 export async function getStaticProps() {
 	const api = await Api.create({ provider: process.env.NEXT_PUBLIC_API_URL });
@@ -20,6 +23,8 @@ export async function getStaticProps() {
 }
 
 const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
+	const { selectedAccount, balances } = useCENNZWallet();
+
 	const [sendTokens] = useTokensFetcher<CENNZAsset[]>(
 		fetchSwapAssets,
 		defaultAssets
@@ -55,6 +60,28 @@ const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 		setReceiveTokens(receiveTokens);
 	}, [sendTokens, sendToken.tokenId, receiveToken.setTokenId]);
 
+	const [sendBalance, setSendBalance] = useState<number>(null);
+	const [receiveBalance, setReceiveBalance] = useState<number>(null);
+
+	useEffect(() => {
+		if (!balances?.length) {
+			setSendBalance(null);
+			setReceiveBalance(null);
+			return;
+		}
+
+		const sendBalance = balances.find(
+			(balance) => balance.assetId === sendToken.tokenId
+		);
+
+		const receiveBalance = balances.find(
+			(balance) => balance.assetId === receiveToken.tokenId
+		);
+
+		setSendBalance(sendBalance.value);
+		setReceiveBalance(receiveBalance.value);
+	}, [balances, sendToken.tokenId, receiveToken.tokenId]);
+
 	return (
 		<div css={styles.root}>
 			<h1 css={styles.heading}>SWAP</h1>
@@ -62,12 +89,28 @@ const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 				<div css={styles.formField}>
 					<label>You Send</label>
 					<TokenInput
+						onMaxValueRequest={
+							!!sendBalance
+								? () => sendValue.setValue(formatBalance(sendBalance))
+								: null
+						}
 						selectedTokenId={sendToken.tokenId}
 						onTokenChange={sendToken.onTokenChange}
 						value={sendValue.value}
 						onChange={sendValue.onValueChange}
 						tokens={sendTokens}
 					/>
+
+					{!!selectedAccount && (
+						<div css={styles.tokenBalance}>
+							Balance:{" "}
+							{sendBalance !== null ? (
+								formatBalance(sendBalance)
+							) : (
+								<ThreeDots />
+							)}
+						</div>
+					)}
 				</div>
 
 				<div css={styles.formField}>
@@ -83,6 +126,16 @@ const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 						onChange={receiveValue.onValueChange}
 						tokens={receiveTokens}
 					/>
+					{!!selectedAccount && (
+						<div css={styles.tokenBalance}>
+							Balance:{" "}
+							{receiveBalance !== null ? (
+								formatBalance(receiveBalance)
+							) : (
+								<ThreeDots />
+							)}
+						</div>
+					)}
 				</div>
 			</form>
 		</div>
@@ -130,5 +183,10 @@ const styles = {
 			margin-bottom: 0.5em;
 			display: block;
 		}
+	`,
+
+	tokenBalance: css`
+		margin-top: 0.5em;
+		font-weight: 500;
 	`,
 };
