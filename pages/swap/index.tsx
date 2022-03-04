@@ -7,7 +7,7 @@ import useTokensFetcher from "@/hooks/useTokensFetcher";
 import TokenInput from "@/components/shared/TokenInput";
 import useTokenInput from "@/hooks/useTokenInput";
 import { useCallback, useEffect, useState } from "react";
-import ExchangeIcon from "@/components/shared/ExchangeIcon";
+import SwapButton from "@/components/shared/SwapButton";
 import ThreeDots from "@/components/shared/ThreeDots";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import { formatBalance } from "@/utils";
@@ -42,7 +42,7 @@ const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 	);
 	const [receiveToken, receiveValue] = useTokenInput(cpayAsset.assetId, Number);
 
-	const onExchangeIconClick = useCallback(() => {
+	const onSwapButtonClick = useCallback(() => {
 		const setTokenId = exchangeToken.setTokenId;
 		setTokenId(receiveToken.tokenId);
 	}, [receiveToken.tokenId, exchangeToken.setTokenId]);
@@ -132,8 +132,12 @@ const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 					)}
 				</div>
 
-				<div css={styles.formField}>
-					<ExchangeIcon onClick={onExchangeIconClick} />
+				<div css={[styles.formField, styles.formControl]}>
+					<SwapButton
+						onClick={onSwapButtonClick}
+						vertical={true}
+						type="button"
+					/>
 				</div>
 
 				<div css={styles.formField}>
@@ -193,7 +197,7 @@ const styles = {
 	`,
 
 	formField: css`
-		margin-bottom: 2em;
+		margin-bottom: 1em;
 
 		label {
 			font-weight: bold;
@@ -202,6 +206,10 @@ const styles = {
 			margin-bottom: 0.5em;
 			display: block;
 		}
+	`,
+
+	formControl: css`
+		text-align: center;
 	`,
 
 	tokenBalance: css`
