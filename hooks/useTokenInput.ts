@@ -9,11 +9,10 @@ import {
 	useState,
 } from "react";
 
-type TokenId = CENNZAsset["assetId"] | EthereumToken["address"];
-type ReturnType = [
+type ReturnType<T> = [
 	{
-		tokenId: TokenId;
-		setTokenId: Dispatch<SetStateAction<TokenId>>;
+		tokenId: T;
+		setTokenId: Dispatch<SetStateAction<T>>;
 		onTokenChange: (event: SelectChangeEvent) => void;
 	},
 	{
@@ -23,21 +22,22 @@ type ReturnType = [
 	}
 ];
 
-export default function useTokenInput(
-	defaultToken?: TokenId,
-	typeCast?: (value: TokenId) => TokenId
-): ReturnType {
-	const [tokenId, setTokenId] = useState<TokenId>(defaultToken);
+export default function useTokenInput<T>(defaultTokenId: T): ReturnType<T> {
+	const [tokenId, setTokenId] = useState<T>(defaultTokenId);
 	const onTokenChange = useCallback(
 		(event: SelectChangeEvent) => {
-			setTokenId(typeCast ? typeCast(event.target.value) : event.target.value);
+			const value = event.target.value;
+			setTokenId(
+				typeof defaultTokenId === "number" ? (Number(value) as any) : value
+			);
 		},
-		[typeCast]
+		[defaultTokenId]
 	);
 
 	const [value, setValue] = useState<string>("");
 	const onValueChange = useCallback<ChangeEventHandler<HTMLInputElement>>(
 		(event) => {
+			console.log(event.target.value);
 			setValue(event.target.value);
 		},
 		[]
