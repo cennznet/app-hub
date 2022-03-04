@@ -128,11 +128,13 @@ const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 					{!!selectedAccount && (
 						<div css={styles.tokenBalance}>
 							Balance:{" "}
-							{sendBalance !== null ? (
-								formatBalance(sendBalance)
-							) : (
-								<ThreeDots />
-							)}
+							<span>
+								{sendBalance !== null ? (
+									formatBalance(sendBalance)
+								) : (
+									<ThreeDots />
+								)}
+							</span>
 						</div>
 					)}
 				</div>
@@ -160,11 +162,13 @@ const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 					{!!selectedAccount && (
 						<div css={styles.tokenBalance}>
 							Balance:{" "}
-							{receiveBalance !== null ? (
-								formatBalance(receiveBalance)
-							) : (
-								<ThreeDots />
-							)}
+							<span>
+								{receiveBalance !== null ? (
+									formatBalance(receiveBalance)
+								) : (
+									<ThreeDots />
+								)}
+							</span>
 						</div>
 					)}
 				</div>
@@ -223,5 +227,9 @@ const styles = {
 	tokenBalance: css`
 		margin-top: 0.5em;
 		font-weight: 500;
+
+		span {
+			font-family: "Roboto Mono", monospace;
+		}
 	`,
 };

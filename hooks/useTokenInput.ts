@@ -35,7 +35,6 @@ export default function useTokenInput<T>(defaultTokenId: T): ReturnType<T> {
 	const [value, setValue] = useState<string>("");
 	const onValueChange = useCallback<ChangeEventHandler<HTMLInputElement>>(
 		(event) => {
-			console.log(event.target.value);
 			setValue(event.target.value);
 		},
 		[]

@@ -159,7 +159,7 @@ export const styles = {
 		margin: 0.45em;
 		text-align: right;
 		outline: none;
-		font-weight: bold;
+		font-family: "Roboto Mono", monospace;
 
 		&:disabled {
 			background-color: white;
