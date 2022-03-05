@@ -6,11 +6,13 @@ import { Theme, CircularProgress } from "@mui/material";
 import useTokensFetcher from "@/hooks/useTokensFetcher";
 import TokenInput from "@/components/shared/TokenInput";
 import useTokenInput from "@/hooks/useTokenInput";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import SwapButton from "@/components/shared/SwapButton";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
-import { formatBalance } from "@/utils";
+import { formatBalance, getBuyAssetExtrinsic } from "@/utils";
 import useSwapExchangeRate from "@/hooks/useSwapExchangeRate";
+import { useCENNZApi } from "@/providers/CENNZApiProvider";
+import useGasFee from "@/hooks/useGasFee";
 
 export async function getStaticProps() {
 	const api = await Api.create({ provider: process.env.NEXT_PUBLIC_API_URL });
@@ -26,6 +28,7 @@ const CENNZ_ASSET_ID = Number(process.env.NEXT_PUBLIC_CENNZ_ID);
 const CPAY_ASSET_ID = Number(process.env.NEXT_PUBLIC_CPAY_ID);
 
 const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
+	const { api } = useCENNZApi();
 	const { selectedAccount, balances } = useCENNZWallet();
 	const [exchangeTokens] = useTokensFetcher<CENNZAsset[]>(
 		fetchSwapAssets,
@@ -43,6 +46,13 @@ const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 
 	const [exchangeToken, exchangeValue] = useTokenInput(cennzAsset.assetId);
 	const [receiveToken, receiveValue] = useTokenInput(cpayAsset.assetId);
+
+	const exchangeAsset = exchangeTokens?.find(
+		(token) => token.assetId === exchangeToken.tokenId
+	);
+	const receiveAsset = exchangeTokens?.find(
+		(token) => token.assetId === receiveToken.tokenId
+	);
 
 	const setTokensPair = useCallback(
 		(exchangeTokenId, receiveTokenId = null) => {
@@ -79,13 +89,13 @@ const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 		setTokensPair(exchangeToken.tokenId);
 	}, [exchangeToken.tokenId, setTokensPair]);
 
-	const [sendBalance, setSendBalance] = useState<number>(null);
+	const [exchangeBalance, setExchangeBalance] = useState<number>(null);
 	const [receiveBalance, setReceiveBalance] = useState<number>(null);
 
 	// Update asset balances for both send and receive assets
 	useEffect(() => {
 		if (!balances?.length) {
-			setSendBalance(null);
+			setExchangeBalance(null);
 			setReceiveBalance(null);
 			return;
 		}
@@ -98,7 +108,7 @@ const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 			(balance) => balance.assetId === receiveToken.tokenId
 		);
 
-		setSendBalance(sendBalance.value);
+		setExchangeBalance(sendBalance.value);
 		setReceiveBalance(receiveBalance.value);
 	}, [balances, exchangeToken.tokenId, receiveToken.tokenId]);
 
@@ -114,6 +124,28 @@ const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 		setValue((Number(exchangeValue.value) * exchangeRate).toString());
 	}, [exchangeRate, exchangeValue.value, receiveValue.setValue]);
 
+	const [slippage, setSlippage] = useState<string>("5");
+	const swapExtrinsic = useMemo(() => {
+		if (!api) return;
+
+		return getBuyAssetExtrinsic(
+			api,
+			exchangeAsset,
+			exchangeValue.value || "0",
+			receiveAsset,
+			receiveValue.value || "0",
+			Number(slippage)
+		);
+	}, [
+		api,
+		exchangeAsset,
+		exchangeValue.value,
+		receiveAsset,
+		receiveValue.value,
+		slippage,
+	]);
+	const [gasFee, gasAsset] = useGasFee(swapExtrinsic);
+
 	return (
 		<div css={styles.root}>
 			<h1 css={styles.heading}>SWAP</h1>
@@ -122,8 +154,8 @@ const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 					<label>You Send</label>
 					<TokenInput
 						onMaxValueRequest={
-							!!sendBalance
-								? () => exchangeValue.setValue(formatBalance(sendBalance))
+							!!exchangeBalance
+								? () => exchangeValue.setValue(formatBalance(exchangeBalance))
 								: null
 						}
 						selectedTokenId={exchangeToken.tokenId}
@@ -136,10 +168,10 @@ const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 					{!!selectedAccount && (
 						<div css={styles.tokenBalance}>
 							Balance:{" "}
-							{sendBalance !== null && (
-								<span>{formatBalance(sendBalance)}</span>
+							{exchangeBalance !== null && (
+								<span>{formatBalance(exchangeBalance)}</span>
 							)}
-							{sendBalance === null && <CircularProgress size="0.75em" />}
+							{exchangeBalance === null && <CircularProgress size="0.75em" />}
 						</div>
 					)}
 				</div>
@@ -176,6 +208,28 @@ const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 						</div>
 					)}
 				</div>
+
+				<ul css={[styles.formField, styles.formInfo]}>
+					<li>
+						<strong>Exchange Rate:</strong>{" "}
+						{!!exchangeRate && (
+							<span>
+								1 {exchangeAsset.symbol} = {formatBalance(exchangeRate)}{" "}
+								{receiveAsset.symbol}
+							</span>
+						)}
+						{!exchangeRate && <CircularProgress size="0.75em" />}
+					</li>
+					<li>
+						<strong>Gas Fee: </strong>{" "}
+						{!!gasFee && (
+							<span>
+								{gasFee} {gasAsset.symbol}
+							</span>
+						)}
+						{!gasFee && <CircularProgress size="0.75em" />}
+					</li>
+				</ul>
 			</form>
 		</div>
 	);
@@ -228,12 +282,42 @@ const styles = {
 		text-align: center;
 	`,
 
-	tokenBalance: css`
+	tokenBalance: ({ palette }: Theme) => css`
 		margin-top: 0.5em;
 		font-weight: 500;
 
 		span {
 			font-family: "Roboto Mono", monospace;
+			color: ${palette.text.primary};
+		}
+	`,
+
+	formInfo: ({ palette }: Theme) => css`
+		margin-top: 2em;
+		padding: 1.5em;
+		color: ${palette.primary.main};
+		list-style: none;
+		position: relative;
+
+		&:before {
+			content: "";
+			background-color: ${palette.info.main};
+			opacity: 0.4;
+			position: absolute;
+			inset: 0;
+		}
+
+		li {
+			position: relative;
+			margin-bottom: 0.5em;
+			&:last-child {
+				margin-bottom: 0;
+			}
+		}
+
+		span {
+			font-family: "Roboto Mono", monospace;
+			color: ${palette.text.primary};
 		}
 	`,
 };

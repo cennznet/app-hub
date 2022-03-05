@@ -42,6 +42,13 @@ const config = {
 			pool: "#E4D1FF",
 			bridge: "#B1EAEB",
 		},
+		info: {
+			default: "#E4E7FF",
+			main: "#E4E7FF",
+			swap: "#E4E7FF",
+			pool: "#F5ECFF",
+			bridge: "#E8F8F9",
+		},
 		error: {
 			main: "#EC022C",
 		},
