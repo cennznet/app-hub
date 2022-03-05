@@ -134,45 +134,46 @@ describe("fetchEstimatedTransactionFee", () => {
 	});
 });
 
-describe("fetchExchangeExtrinsic", () => {
-	it("returns extrinsic", async () => {
-		const exchangeToken = assets.CENNZ;
-		const receivedToken = assets.CPAY;
-		const slippage = 5;
-		const { exchangeAmount, receivedAmount } = await fetchTokenAmounts(
-			api,
-			exchangeToken,
-			"100",
-			balances,
-			receivedToken
-		);
-		const extrinsic = await fetchExchangeExtrinsic(
-			api,
-			exchangeToken,
-			exchangeAmount,
-			receivedToken,
-			receivedAmount,
-			slippage
-		);
+//NOTE: This test is not effective, as comparing one extrinsic to another can be false positive
+// describe("fetchExchangeExtrinsic", () => {
+// 	it("returns extrinsic", async () => {
+// 		const exchangeToken = assets.CENNZ;
+// 		const receivedToken = assets.CPAY;
+// 		const slippage = 5;
+// 		const { exchangeAmount, receivedAmount } = await fetchTokenAmounts(
+// 			api,
+// 			exchangeToken,
+// 			"100",
+// 			balances,
+// 			receivedToken
+// 		);
+// 		const extrinsic = await fetchExchangeExtrinsic(
+// 			api,
+// 			exchangeToken,
+// 			exchangeAmount,
+// 			receivedToken,
+// 			receivedAmount,
+// 			slippage
+// 		);
 
-		let buyAmount: BigNumber | string = new BigNumber(
-			receivedAmount.toString()
-		);
-		buyAmount = buyAmount
-			.multipliedBy(Math.pow(10, receivedToken.decimals))
-			.toString(10);
+// 		let buyAmount: BigNumber | string = new BigNumber(
+// 			receivedAmount.toString()
+// 		);
+// 		buyAmount = buyAmount
+// 			.multipliedBy(Math.pow(10, receivedToken.decimals))
+// 			.toString(10);
 
-		const maxAmount = Math.round(
-			parseFloat(exchangeAmount) + parseFloat(exchangeAmount) * (slippage / 100)
-		);
-		const expectedExtrinsic = await api.tx.cennzx.buyAsset(
-			null,
-			exchangeToken.assetId,
-			receivedToken.assetId,
-			buyAmount,
-			maxAmount
-		);
+// 		const maxAmount = Math.round(
+// 			parseFloat(exchangeAmount) + parseFloat(exchangeAmount) * (slippage / 100)
+// 		);
+// 		const expectedExtrinsic = await api.tx.cennzx.buyAsset(
+// 			null,
+// 			exchangeToken.assetId,
+// 			receivedToken.assetId,
+// 			buyAmount,
+// 			maxAmount
+// 		);
 
-		expect(extrinsic).toEqual(expectedExtrinsic);
-	});
-});
+// 		expect(extrinsic).toEqual(expectedExtrinsic);
+// 	});
+// });

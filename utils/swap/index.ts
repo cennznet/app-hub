@@ -11,7 +11,7 @@ const CPAY = {
 	logo: "/images/cpay.svg",
 };
 
-// NOTE: Moved to `@/utils/fetchSwapExchangeRate`
+// NOTE: Use `@/utils/fetchSwapExchangeRate` instead
 // export const fetchExchangeRate = async (
 // 	api: Api,
 // 	exchangeToken: CENNZAsset,
@@ -60,57 +60,59 @@ export const fetchTokenAmounts = async (
 	return { exchangeAmount, receivedAmount };
 };
 
-export const fetchEstimatedTransactionFee = async (
-	api: Api,
-	exchangeAmount: string,
-	exchangeTokenId: number,
-	receivedTokenId: number,
-	slippage: number
-) => {
-	const maxAmount = new Amount(
-		parseFloat(exchangeAmount) + parseFloat(exchangeAmount) * (slippage / 100)
-	).toString();
-	const extrinsic = api.tx.cennzx.buyAsset(
-		null,
-		exchangeTokenId,
-		receivedTokenId,
-		exchangeAmount,
-		maxAmount
-	);
-	const feeFromQuery = await api.derive.fees.estimateFee({
-		extrinsic,
-		userFeeAssetId: CPAY.id,
-	});
-	let estimatedFee: any = new Amount(feeFromQuery.toString(), AmountUnit.UN);
-	estimatedFee = estimatedFee.toAmount(CPAY.decimals);
-	return estimatedFee.toString();
-};
+// NOTE: Use `@/utils/fetchGasFee` instead
+// export const fetchEstimatedTransactionFee = async (
+// 	api: Api,
+// 	exchangeAmount: string,
+// 	exchangeTokenId: number,
+// 	receivedTokenId: number,
+// 	slippage: number
+// ) => {
+// 	const maxAmount = new Amount(
+// 		parseFloat(exchangeAmount) + parseFloat(exchangeAmount) * (slippage / 100)
+// 	).toString();
+// 	const extrinsic = api.tx.cennzx.buyAsset(
+// 		null,
+// 		exchangeTokenId,
+// 		receivedTokenId,
+// 		exchangeAmount,
+// 		maxAmount
+// 	);
+// 	const feeFromQuery = await api.derive.fees.estimateFee({
+// 		extrinsic,
+// 		userFeeAssetId: CPAY.id,
+// 	});
+// 	let estimatedFee: any = new Amount(feeFromQuery.toString(), AmountUnit.UN);
+// 	estimatedFee = estimatedFee.toAmount(CPAY.decimals);
+// 	return estimatedFee.toString();
+// };
 
-export const fetchExchangeExtrinsic = async (
-	api: Api,
-	exchangeToken: CENNZAsset,
-	exchangeTokenValue: string,
-	receivedToken: CENNZAsset,
-	receivedTokenValue: string,
-	slippage: number
-) => {
-	let exchangeAmount: any = new BigNumber(exchangeTokenValue.toString());
-	exchangeAmount = exchangeAmount
-		.multipliedBy(Math.pow(10, exchangeToken.decimals))
-		.toString(10);
-	const maxAmount = new Amount(
-		parseFloat(exchangeAmount) + parseFloat(exchangeAmount) * (slippage / 100)
-	).toString();
-	let buyAmount: any = new BigNumber(receivedTokenValue);
-	buyAmount = buyAmount
-		.multipliedBy(Math.pow(10, receivedToken.decimals))
-		.toString(10);
+// NOTE: Used `@/utils/getBuyAssetExtrinsic` instead
+// export const fetchExchangeExtrinsic = async (
+// 	api: Api,
+// 	exchangeToken: CENNZAsset,
+// 	exchangeTokenValue: string,
+// 	receivedToken: CENNZAsset,
+// 	receivedTokenValue: string,
+// 	slippage: number
+// ) => {
+// 	let exchangeAmount: any = new BigNumber(exchangeTokenValue.toString());
+// 	exchangeAmount = exchangeAmount
+// 		.multipliedBy(Math.pow(10, exchangeToken.decimals))
+// 		.toString(10);
+// 	const maxAmount = new Amount(
+// 		parseFloat(exchangeAmount) + parseFloat(exchangeAmount) * (slippage / 100)
+// 	).toString();
+// 	let buyAmount: any = new BigNumber(receivedTokenValue);
+// 	buyAmount = buyAmount
+// 		.multipliedBy(Math.pow(10, receivedToken.decimals))
+// 		.toString(10);
 
-	return api.tx.cennzx.buyAsset(
-		null,
-		exchangeToken.assetId,
-		receivedToken.assetId,
-		buyAmount,
-		maxAmount
-	);
-};
+// 	return api.tx.cennzx.buyAsset(
+// 		null,
+// 		exchangeToken.assetId,
+// 		receivedToken.assetId,
+// 		buyAmount,
+// 		maxAmount
+// 	);
+// };

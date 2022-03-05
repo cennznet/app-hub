@@ -8,6 +8,8 @@ import fetchSwapAssets from "@/utils/fetchSwapAssets";
 import generateGlobalProps from "@/utils/generateGlobalProps";
 import getTokenLogo from "@/utils/getTokenLogo";
 import fetchSwapExchangeRate from "@/utils/fetchSwapExchangeRate";
+import fetchGasFee from "@/utils/fetchGasFee";
+import getBuyAssetExtrinsic from "@/utils/getBuyAssetExtrinsic";
 
 export const formatBalance = (balance: number): string => {
 	if (balance === 0 || !balance) return "0.0000";
@@ -25,4 +27,6 @@ export {
 	fetchSwapAssets,
 	getTokenLogo,
 	fetchSwapExchangeRate,
+	fetchGasFee,
+	getBuyAssetExtrinsic,
 };
