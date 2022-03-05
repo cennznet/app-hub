@@ -1,4 +1,4 @@
-import { FC, InputHTMLAttributes, useEffect } from "react";
+import { FC, InputHTMLAttributes, useCallback, useEffect } from "react";
 import { css } from "@emotion/react";
 import { Select, SelectChangeEvent, MenuItem, Theme } from "@mui/material";
 import { CENNZAsset, EthereumToken } from "@/types";
@@ -10,18 +10,38 @@ interface TokenInputProps {
 	selectedTokenId: number | string;
 	onTokenChange: (event: SelectChangeEvent) => void;
 	onMaxValueRequest?: () => void;
+	onValueChange: (value: string) => void;
 }
 
+// match escaped "." characters via in a non-capturing group
+const inputRegex = RegExp(`^\\d*(?:\\\\[.])?\\d*$`);
+
+// $& means the whole matched string
+const escapeRegExp = (string: string): string => {
+	return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+};
+
 const TokenInput: FC<
-	TokenInputProps & InputHTMLAttributes<HTMLInputElement>
+	InputHTMLAttributes<HTMLInputElement> & TokenInputProps
 > = ({
 	selectedTokenId,
 	onTokenChange,
 	tokens,
 	onMaxValueRequest,
 	placeholder = "0.0",
+	onValueChange,
 	...props
 }) => {
+	const onInputChange = useCallback(
+		(event) => {
+			const value = event.target.value.replace(/,/g, ".");
+			if (value === "" || inputRegex.test(escapeRegExp(event.target.value))) {
+				onValueChange?.(value);
+			}
+		},
+		[onValueChange]
+	);
+
 	return (
 		<div css={styles.root}>
 			<Select
@@ -50,10 +70,17 @@ const TokenInput: FC<
 				</div>
 			)}
 			<input
-				css={styles.input}
 				{...props}
-				type="number"
+				css={styles.input}
+				type="text"
+				inputMode="decimal"
+				autoComplete="off"
+				autoCorrect="off"
+				pattern="^[0-9]*[.,]?[0-9]*$"
+				spellCheck={false}
 				min={0}
+				maxLength={79}
+				onChange={onInputChange}
 				placeholder={placeholder}
 			/>
 		</div>

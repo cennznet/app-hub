@@ -16,7 +16,7 @@ type ReturnType<T> = [
 	{
 		value: string;
 		setValue: Dispatch<SetStateAction<string>>;
-		onValueChange: ChangeEventHandler<HTMLInputElement>;
+		onValueChange: (value: string) => void;
 	}
 ];
 
@@ -33,12 +33,9 @@ export default function useTokenInput<T>(defaultTokenId: T): ReturnType<T> {
 	);
 
 	const [value, setValue] = useState<string>("");
-	const onValueChange = useCallback<ChangeEventHandler<HTMLInputElement>>(
-		(event) => {
-			setValue(event.target.value);
-		},
-		[]
-	);
+	const onValueChange = useCallback<(value: string) => void>((value) => {
+		setValue(value);
+	}, []);
 
 	return [
 		{

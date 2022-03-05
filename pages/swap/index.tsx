@@ -8,7 +8,6 @@ import TokenInput from "@/components/shared/TokenInput";
 import useTokenInput from "@/hooks/useTokenInput";
 import { useCallback, useEffect, useState } from "react";
 import SwapButton from "@/components/shared/SwapButton";
-import ThreeDots from "@/components/shared/ThreeDots";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import { formatBalance } from "@/utils";
 import useExchangeRate from "@/hooks/useExchangeRate";
@@ -121,7 +120,7 @@ const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 						selectedTokenId={exchangeToken.tokenId}
 						onTokenChange={exchangeToken.onTokenChange}
 						value={exchangeValue.value}
-						onChange={exchangeValue.onValueChange}
+						onValueChange={exchangeValue.onValueChange}
 						tokens={exchangeTokens}
 					/>
 
@@ -150,9 +149,11 @@ const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 						selectedTokenId={receiveToken.tokenId}
 						onTokenChange={receiveToken.onTokenChange}
 						value={
-							receiveValue.value ? Number(receiveValue.value).toFixed(10) : ""
+							receiveValue.value
+								? formatBalance(Number(receiveValue.value))
+								: ""
 						}
-						onChange={receiveValue.onValueChange}
+						onValueChange={receiveValue.onValueChange}
 						tokens={receiveTokens}
 						disabled={true}
 					/>
