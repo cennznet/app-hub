@@ -24,12 +24,10 @@ export async function getStaticProps() {
 
 const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 	const { selectedAccount, balances } = useCENNZWallet();
-
 	const [exchangeTokens] = useTokensFetcher<CENNZAsset[]>(
 		fetchSwapAssets,
 		defaultAssets
 	);
-
 	const [receiveTokens, setReceiveTokens] =
 		useState<CENNZAsset[]>(exchangeTokens);
 
@@ -39,35 +37,40 @@ const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 	const [exchangeToken, exchangeValue] = useTokenInput(cennzAsset.assetId);
 	const [receiveToken, receiveValue] = useTokenInput(cpayAsset.assetId);
 
+	const setTokensPair = useCallback(
+		(exchangeTokenId, receiveTokenId = null) => {
+			const setExchangeTokenId = exchangeToken.setTokenId;
+			const setReceiveTokenId = receiveToken.setTokenId;
+
+			setExchangeTokenId(exchangeTokenId);
+
+			const receiveTokens = exchangeTokens.filter(
+				(token) => token.assetId !== exchangeTokenId
+			);
+
+			setReceiveTokenId((currentTokenId) => {
+				const tokenIdToCheck = receiveTokenId || currentTokenId;
+				const token = receiveTokens.find(
+					(token) => token.assetId === tokenIdToCheck
+				);
+				if (token) return tokenIdToCheck;
+				return receiveTokens[0].assetId;
+			});
+
+			setReceiveTokens(receiveTokens);
+		},
+
+		[exchangeToken.setTokenId, receiveToken.setTokenId, exchangeTokens]
+	);
+
 	const onSwapButtonClick = useCallback(() => {
-		const setExchangeTokenId = exchangeToken.setTokenId;
-		const setReceiveTokenId = receiveToken.setTokenId;
-		setExchangeTokenId(receiveToken.tokenId);
-		setReceiveTokenId(exchangeToken.tokenId);
-	}, [
-		receiveToken.tokenId,
-		exchangeToken.tokenId,
-		exchangeToken.setTokenId,
-		receiveToken.setTokenId,
-	]);
+		setTokensPair(receiveToken.tokenId, exchangeToken.tokenId);
+	}, [setTokensPair, receiveToken.tokenId, exchangeToken.tokenId]);
 
 	// Sync up tokens for receive input
 	useEffect(() => {
-		const receiveTokens = exchangeTokens.filter(
-			(token) => token.assetId !== exchangeToken.tokenId
-		);
-		const setReceiveTokenId = receiveToken.setTokenId;
-
-		setReceiveTokenId((currentTokenId) => {
-			const token = receiveTokens.find(
-				(token) => token.assetId === currentTokenId
-			);
-			if (token) return currentTokenId;
-			return receiveTokens[0].assetId;
-		});
-
-		setReceiveTokens(receiveTokens);
-	}, [exchangeTokens, exchangeToken.tokenId, receiveToken.setTokenId]);
+		setTokensPair(exchangeToken.tokenId);
+	}, [exchangeToken.tokenId, setTokensPair]);
 
 	const [sendBalance, setSendBalance] = useState<number>(null);
 	const [receiveBalance, setReceiveBalance] = useState<number>(null);
