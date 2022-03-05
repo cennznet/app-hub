@@ -80,6 +80,7 @@ export type BridgeState = "Deposit" | "Withdraw";
 
 export interface GenericCoin {
 	decimals: number;
+	decimalsValue: number;
 	symbol: string;
 }
 

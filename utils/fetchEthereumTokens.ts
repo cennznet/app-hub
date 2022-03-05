@@ -8,5 +8,6 @@ export default function fetchEthereumTokens(chainId: number): EthereumToken[] {
 			address: token.address,
 			symbol: token.symbol,
 			decimals: token.decimals,
+			decimalsValue: Math.pow(10, token.decimals),
 		}));
 }

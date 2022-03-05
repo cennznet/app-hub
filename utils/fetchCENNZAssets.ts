@@ -19,6 +19,7 @@ export default async function fetchCENNZAssets(
 				assetId: assetId.toJSON(),
 				symbol: hexToString(symbol.toJSON()),
 				decimals: decimalPlaces.toNumber(),
+				decimalsValue: Math.pow(10, decimalPlaces.toNumber()),
 			};
 		})
 		.filter(({ assetId, symbol }) => !!assetId && !!symbol)
