@@ -99,10 +99,9 @@ const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 	);
 
 	useEffect(() => {
-		if (!exchangeValue.value) return;
-		const value = Number(exchangeValue.value);
 		const setValue = receiveValue.setValue;
-		setValue((value * exchangeRate).toString());
+		if (!exchangeValue.value) return setValue("");
+		setValue((Number(exchangeValue.value) * exchangeRate).toString());
 	}, [exchangeRate, exchangeValue.value, receiveValue.setValue]);
 
 	return (
