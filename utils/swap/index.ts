@@ -11,19 +11,20 @@ const CPAY = {
 	logo: "/images/cpay.svg",
 };
 
-export const fetchExchangeRate = async (
-	api: Api,
-	exchangeToken: CENNZAsset,
-	receivedToken: CENNZAsset
-): Promise<number> => {
-	const { price } = await (api.rpc as any).cennzx.sellPrice(
-		exchangeToken.assetId,
-		(1 * Math.pow(10, exchangeToken.decimals)).toString(),
-		receivedToken.assetId
-	);
+// NOTE: Moved to `@/utils/fetchSwapExchangeRate`
+// export const fetchExchangeRate = async (
+// 	api: Api,
+// 	exchangeToken: CENNZAsset,
+// 	receivedToken: CENNZAsset
+// ): Promise<number> => {
+// 	const { price } = await (api.rpc as any).cennzx.sellPrice(
+// 		exchangeToken.assetId,
+// 		(1 * Math.pow(10, exchangeToken.decimals)).toString(),
+// 		receivedToken.assetId
+// 	);
 
-	return price.toJSON() / Math.pow(10, receivedToken.decimals);
-};
+// 	return price.toJSON() / Math.pow(10, receivedToken.decimals);
+// };
 
 export const fetchTokenAmounts = async (
 	api: Api,
