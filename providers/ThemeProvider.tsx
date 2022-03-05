@@ -29,18 +29,18 @@ declare module "@mui/material/styles/createPalette" {
 const config = {
 	palette: {
 		primary: {
-			main: "#1130FF",
 			default: "#1130FF",
+			main: "#1130FF",
 			swap: "#1130FF",
 			pool: "#9847FF",
 			bridge: "#2DC8CB",
 		},
 		secondary: {
-			main: "rgba(17, 48, 255, 0.35)",
-			default: "rgba(17, 48, 255, 0.35)",
-			swap: "rgba(17, 48, 255, 0.35)",
-			pool: "rgba(152, 71, 255, 0.35)",
-			bridge: "rgba(45, 200, 203, 0.35)",
+			main: "#B3BDFF",
+			default: "#B3BDFF",
+			swap: "#B3BDFF",
+			pool: "#E4D1FF",
+			bridge: "#B1EAEB",
 		},
 		error: {
 			main: "#EC022C",
