@@ -17,8 +17,7 @@ const Wallet: React.FC<{}> = () => {
 	}, [selectedAccount, balances]);
 
 	const onWalletClick = useCallback(async () => {
-		if (walletState === "Connecting") return;
-		if (walletState === "Connected") return setModalOpen(true);
+		if (walletState !== "NotConnected") return setModalOpen(true);
 
 		await connectWallet();
 		setModalOpen(true);
@@ -44,14 +43,8 @@ const Wallet: React.FC<{}> = () => {
 					)}
 				</div>
 				<div css={styles.walletState}>
-					{walletState === "Connected" && (
+					{walletState !== "NotConnected" && (
 						<span>{selectedAccount?.meta?.name?.toUpperCase?.()}</span>
-					)}
-					{walletState === "Connecting" && (
-						<span>
-							CONNECTING
-							<ThreeDots />
-						</span>
 					)}
 					{walletState === "NotConnected" && <span>CONNECT CENNZnet</span>}
 				</div>
