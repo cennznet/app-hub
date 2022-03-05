@@ -1,10 +1,9 @@
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
-import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import { CENNZAsset } from "@/types";
-import { fetchExchangeRate } from "@/utils/swap";
 import { useEffect, useState } from "react";
+import { fetchSwapExchangeRate } from "@/utils";
 
-export default function useExchangeRate(
+export default function useSwapExchangeRate(
 	exchangeTokenId: CENNZAsset["assetId"],
 	receivedTokenId: CENNZAsset["assetId"],
 	tokensList: CENNZAsset[]
@@ -24,7 +23,9 @@ export default function useExchangeRate(
 			(balance) => balance.assetId === receivedTokenId
 		);
 
-		fetchExchangeRate(api, exchangeToken, receivedToken).then(setExchangeRate);
+		fetchSwapExchangeRate(api, exchangeToken, receivedToken).then(
+			setExchangeRate
+		);
 	}, [api, exchangeTokenId, receivedTokenId, tokensList]);
 
 	return exchangeRate;

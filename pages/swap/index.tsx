@@ -10,7 +10,7 @@ import { useCallback, useEffect, useState } from "react";
 import SwapButton from "@/components/shared/SwapButton";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import { formatBalance } from "@/utils";
-import useExchangeRate from "@/hooks/useExchangeRate";
+import useSwapExchangeRate from "@/hooks/useSwapExchangeRate";
 
 export async function getStaticProps() {
 	const api = await Api.create({ provider: process.env.NEXT_PUBLIC_API_URL });
@@ -95,7 +95,7 @@ const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 		setReceiveBalance(receiveBalance.value);
 	}, [balances, exchangeToken.tokenId, receiveToken.tokenId]);
 
-	const exchangeRate = useExchangeRate(
+	const exchangeRate = useSwapExchangeRate(
 		exchangeToken.tokenId,
 		receiveToken.tokenId,
 		exchangeTokens
