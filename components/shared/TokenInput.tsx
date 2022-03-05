@@ -30,6 +30,7 @@ const TokenInput: FC<
 	onMaxValueRequest,
 	placeholder = "0.0",
 	onValueChange,
+	disabled,
 	...props
 }) => {
 	const onInputChange = useCallback(
@@ -43,7 +44,7 @@ const TokenInput: FC<
 	);
 
 	return (
-		<div css={styles.root}>
+		<div css={[styles.root, !disabled && styles.rootHover]}>
 			<Select
 				css={styles.select}
 				value={selectedTokenId}
@@ -71,6 +72,7 @@ const TokenInput: FC<
 			)}
 			<input
 				{...props}
+				disabled={disabled}
 				css={styles.input}
 				type="text"
 				inputMode="decimal"
@@ -90,7 +92,7 @@ const TokenInput: FC<
 export default TokenInput;
 
 export const styles = {
-	root: ({ palette }: Theme) => css`
+	root: css`
 		width: 100%;
 		border: 1px solid #979797;
 		border-radius: 4px;
@@ -98,11 +100,6 @@ export const styles = {
 		display: flex;
 		align-items: center;
 		transition: border-color 0.2s;
-
-		&:hover,
-		&:focus {
-			border-color: ${palette.primary.main};
-		}
 
 		.MuiOutlinedInput-notchedOutline {
 			border: none;
@@ -125,6 +122,13 @@ export const styles = {
 				font-weight: bold;
 				flex: 1;
 			}
+		}
+	`,
+
+	rootHover: ({ palette }: Theme) => css`
+		&:hover,
+		&:focus {
+			border-color: ${palette.primary.main};
 		}
 	`,
 
