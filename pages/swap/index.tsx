@@ -22,6 +22,9 @@ export async function getStaticProps() {
 	};
 }
 
+const CENNZ_ASSET_ID = Number(process.env.NEXT_PUBLIC_CENNZ_ID);
+const CPAY_ASSET_ID = Number(process.env.NEXT_PUBLIC_CPAY_ID);
+
 const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 	const { selectedAccount, balances } = useCENNZWallet();
 	const [exchangeTokens] = useTokensFetcher<CENNZAsset[]>(
@@ -31,8 +34,12 @@ const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 	const [receiveTokens, setReceiveTokens] =
 		useState<CENNZAsset[]>(exchangeTokens);
 
-	const cennzAsset = exchangeTokens?.find((token) => token.symbol === "CENNZ");
-	const cpayAsset = exchangeTokens?.find((token) => token.symbol === "CPAY");
+	const cennzAsset = exchangeTokens?.find(
+		(token) => token.assetId === CENNZ_ASSET_ID
+	);
+	const cpayAsset = exchangeTokens?.find(
+		(token) => token.assetId === CPAY_ASSET_ID
+	);
 
 	const [exchangeToken, exchangeValue] = useTokenInput(cennzAsset.assetId);
 	const [receiveToken, receiveValue] = useTokenInput(cpayAsset.assetId);
