@@ -2,7 +2,7 @@ import { Api } from "@cennznet/api";
 import { CENNZAsset } from "@/types";
 import fetchSwapAssets from "@/utils/fetchSwapAssets";
 import { css } from "@emotion/react";
-import { Theme, CircularProgress } from "@mui/material";
+import { Theme, CircularProgress, LinearProgress } from "@mui/material";
 import useTokensFetcher from "@/hooks/useTokensFetcher";
 import TokenInput from "@/components/shared/TokenInput";
 import useTokenInput from "@/hooks/useTokenInput";
@@ -209,27 +209,32 @@ const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 					)}
 				</div>
 
-				<ul css={[styles.formField, styles.formInfo]}>
-					<li>
-						<strong>Exchange Rate:</strong>{" "}
-						{!!exchangeRate && (
-							<span>
-								1 {exchangeAsset.symbol} = {formatBalance(exchangeRate)}{" "}
-								{receiveAsset.symbol}
-							</span>
-						)}
-						{!exchangeRate && <CircularProgress size="0.75em" />}
-					</li>
-					<li>
-						<strong>Gas Fee: </strong>{" "}
-						{!!gasFee && (
-							<span>
-								{gasFee} {gasAsset.symbol}
-							</span>
-						)}
-						{!gasFee && <CircularProgress size="0.75em" />}
-					</li>
-				</ul>
+				<div css={[styles.formField, styles.formInfo]}>
+					<LinearProgress
+						css={[styles.formInfoProgress(!!exchangeRate && !!gasFee)]}
+					/>
+					<ul>
+						<li>
+							<strong>Exchange Rate:</strong>{" "}
+							{!!exchangeRate && (
+								<span>
+									1 {exchangeAsset.symbol} = {formatBalance(exchangeRate)}{" "}
+									{receiveAsset.symbol}
+								</span>
+							)}
+							{!exchangeRate && <span>-</span>}
+						</li>
+						<li>
+							<strong>Gas Fee: </strong>{" "}
+							{!!gasFee && (
+								<span>
+									{gasFee} {gasAsset.symbol}
+								</span>
+							)}
+							{!gasFee && <span>-</span>}
+						</li>
+					</ul>
+				</div>
 			</form>
 		</div>
 	);
@@ -296,7 +301,6 @@ const styles = {
 		margin-top: 2em;
 		padding: 1.5em;
 		color: ${palette.primary.main};
-		list-style: none;
 		position: relative;
 
 		&:before {
@@ -305,6 +309,12 @@ const styles = {
 			opacity: 0.4;
 			position: absolute;
 			inset: 0;
+		}
+
+		ul {
+			list-style: none;
+			margin: 0;
+			padding: 0;
 		}
 
 		li {
@@ -319,5 +329,15 @@ const styles = {
 			font-family: "Roboto Mono", monospace;
 			color: ${palette.text.primary};
 		}
+	`,
+
+	formInfoProgress: (hide) => css`
+		width: 25px;
+		border-radius: 10px;
+		opacity: ${hide ? 0 : 0.5};
+		position: absolute;
+		top: 1em;
+		right: 1em;
+		transition: opacity 0.2s;
 	`,
 };
