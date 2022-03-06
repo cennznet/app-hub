@@ -171,7 +171,6 @@ const Exchange: React.FC<{}> = () => {
 					setToken={setExchangeToken}
 					setAmount={setExchangeTokenValue}
 					amount={exchangeTokenValue}
-					cennznet={true}
 					forceSelection={exchangeToken}
 					showBalance={true}
 					error={error}
@@ -195,7 +194,6 @@ const Exchange: React.FC<{}> = () => {
 					setToken={setReceivedToken}
 					setAmount={setReceivedTokenValue}
 					amount={receivedTokenValue}
-					cennznet={true}
 					forceSelection={receivedToken}
 					removeToken={exchangeToken}
 				/>

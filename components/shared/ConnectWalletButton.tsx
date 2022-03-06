@@ -1,8 +1,8 @@
 import React, { FC, MouseEventHandler, useEffect, useState } from "react";
-import styles from "@/styles/components/shared/ConnectWalletButton.module.css";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import { useBridge } from "@/providers/BridgeProvider";
 import { Button } from "@mui/material";
+import { css } from "@emotion/react";
 
 const ETH_CHAIN_ID = process.env.NEXT_PUBLIC_ETH_CHAIN_ID;
 
@@ -78,7 +78,7 @@ const ConnectWalletButton: FC<ConnectWalletButtonProps> = ({
 		onClick: MouseEventHandler<HTMLDivElement>
 	) => {
 		return (
-			<div className={styles.connectWalletButtonInner} onClick={onClick}>
+			<div css={styles.connectWalletButtonInner} onClick={onClick}>
 				<img
 					src={"/images/metamask_logo.svg"}
 					alt={""}
@@ -100,7 +100,7 @@ const ConnectWalletButton: FC<ConnectWalletButtonProps> = ({
 		onClick: MouseEventHandler<HTMLDivElement>
 	) => {
 		return (
-			<div className={styles.connectWalletButtonInner} onClick={onClick}>
+			<div css={styles.connectWalletButtonInner} onClick={onClick}>
 				<img src={"images/cennznet_blue.svg"} alt={""} />
 				<h1
 					style={{
@@ -149,7 +149,7 @@ const ConnectWalletButton: FC<ConnectWalletButtonProps> = ({
 
 	return (
 		<div
-			className={styles.connectWalletButton}
+			css={styles.connectWalletButton}
 			style={{
 				width: width && cennznetConnected ? width : 216,
 				marginBottom: "45px",
@@ -166,3 +166,53 @@ const ConnectWalletButton: FC<ConnectWalletButtonProps> = ({
 };
 
 export default ConnectWalletButton;
+
+export const styles = {
+	connectWalletButton: css`
+		cursor: pointer;
+		width: 216px;
+		height: 60px;
+		min-height: 60px;
+		max-height: 60px;
+		background: #ffffff;
+		box-sizing: border-box;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		button {
+			cursor: pointer;
+			width: 216px;
+			height: 60px;
+			min-height: 60px;
+			max-height: 60px;
+			background: #ffffff;
+			box-sizing: border-box;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			border-left: transparent;
+			border-right: transparent;
+			font-weight: bold;
+			font-size: 16px;
+			line-height: 125%;
+			text-align: center;
+			letter-spacing: 1.12px;
+			text-transform: uppercase;
+		}
+		h1 {
+			font-style: normal;
+			font-weight: bold;
+			font-size: 16px;
+			line-height: 125%;
+			display: flex;
+			align-items: center;
+			text-align: center;
+			letter-spacing: 1.12px;
+			text-transform: uppercase;
+			margin-left: 7px;
+		}
+	`,
+	connectWalletButtonInner: css`
+		display: flex;
+	`,
+};
