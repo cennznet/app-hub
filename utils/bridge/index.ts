@@ -67,7 +67,7 @@ export const fetchEstimatedFee = async (
 	signer,
 	bridgeContract: ethers.Contract
 ) => {
-	let gasPrice = (await signer.getGasPrice()).toString();
+	let gasPrice = (await signer?.getGasPrice()).toString();
 	gasPrice = ethers.utils.formatUnits(gasPrice);
 
 	const gasEstimate = Number(gasPrice) * 150000;

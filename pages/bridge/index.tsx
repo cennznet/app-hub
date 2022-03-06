@@ -3,7 +3,7 @@ import { css } from "@emotion/react";
 import { useBridge } from "@/providers/BridgeProvider";
 import Deposit from "@/components/bridge/Deposit";
 import Withdraw from "@/components/bridge/Withdraw";
-import CENNZnetAccountPicker from "@/components/shared/CENNZnetAccountPicker";
+import AccountPicker from "@/components/shared/AccountPicker";
 import ChainPicker from "@/components/bridge/ChainPicker";
 import { Chain, CENNZAccount, BridgeState } from "@/types";
 import TokenPicker from "@/components/shared/TokenPicker";
@@ -12,7 +12,6 @@ import { fetchBridgeTokens, fetchCENNZAssets } from "@/utils";
 import ExchangeIcon from "@/components/shared/ExchangeIcon";
 import generateGlobalProps from "@/utils/generateGlobalProps";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
-import { useGlobalModal } from "@/providers/GlobalModalProvider";
 
 export async function getStaticProps() {
 	return {
@@ -38,7 +37,6 @@ const Emery: React.FC<{}> = () => {
 	const [enoughBalance, setEnoughBalance] = useState<boolean>(false);
 	const [estimatedFee, setEstimatedFee] = useState(0);
 	const { api } = useCENNZApi();
-	const { showDialog } = useGlobalModal();
 
 	useEffect(() => {
 		if (!toChain) return;
@@ -117,10 +115,10 @@ const Emery: React.FC<{}> = () => {
 					width={"460px"}
 				/>
 			</div>
-			<CENNZnetAccountPicker
+			<AccountPicker
 				updateSelectedAccount={updateSelectedAccountCustom}
+				chain={toChain.name}
 				topText={"DESTINATION"}
-				forceAddress={toChain.name === "Ethereum" && Account}
 			/>
 			<div css={styles.infoBoxContainer}>
 				<p css={styles.infoBoxText}>
