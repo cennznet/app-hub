@@ -13,6 +13,7 @@ import { formatBalance, getBuyAssetExtrinsic } from "@/utils";
 import useSwapExchangeRate from "@/hooks/useSwapExchangeRate";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import useGasFee from "@/hooks/useGasFee";
+import { CENNZ_ASSET_ID, CPAY_ASSET_ID } from "@/constants";
 
 export async function getStaticProps() {
 	const api = await Api.create({ provider: process.env.NEXT_PUBLIC_API_URL });
@@ -23,9 +24,6 @@ export async function getStaticProps() {
 		},
 	};
 }
-
-const CENNZ_ASSET_ID = Number(process.env.NEXT_PUBLIC_CENNZ_ID);
-const CPAY_ASSET_ID = Number(process.env.NEXT_PUBLIC_CPAY_ID);
 
 const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 	const { api } = useCENNZApi();
