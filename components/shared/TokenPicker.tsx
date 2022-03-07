@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
+import { css } from "@emotion/react";
 import {
 	Button,
 	FormControl,
 	CircularProgress,
 	ClickAwayListener,
 } from "@mui/material";
-import ERC20Tokens from "@/artifacts/erc20tokens.json";
-import { ETH, fetchMetamaskBalance } from "@/utils/bridge";
-import { useAssets } from "@/providers/SupportedAssetsProvider";
+import { fetchMetamaskBalance } from "@/utils/bridge";
+import { formatBalance, getTokenLogo, fetchCENNZAssetBalances } from "@/utils";
 import {
 	Asset,
 	PoolConfig,
@@ -15,19 +15,10 @@ import {
 	CENNZAssetBalance,
 	EthereumToken,
 } from "@/types";
-import styles from "@/styles/components/shared/TokenPicker.module.css";
 import { useBridge } from "@/providers/BridgeProvider";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import { PoolAction } from "@/providers/PoolProvider";
-import {
-	formatBalance,
-	getTokenLogo,
-	fetchCENNZAssetBalances,
-	fetchBridgeTokens,
-} from "@/utils";
-
-const ETH_CHAIN_ID = process.env.NEXT_PUBLIC_ETH_CHAIN_ID;
 
 const TokenPicker: React.FC<{
 	assets?: Asset[];
@@ -35,11 +26,9 @@ const TokenPicker: React.FC<{
 	setToken: Function;
 	setAmount?: Function;
 	amount?: string;
-	cennznet?: boolean;
 	forceSelection?: CENNZAsset;
 	removeToken?: CENNZAsset;
 	showBalance?: boolean;
-	wrappedERC20Balance?: boolean;
 	error?: string;
 	success?: string;
 	poolConfig?: PoolConfig;
@@ -51,7 +40,6 @@ const TokenPicker: React.FC<{
 	setToken,
 	setAmount,
 	amount,
-	cennznet = false,
 	forceSelection,
 	removeToken,
 	showBalance,
@@ -85,33 +73,33 @@ const TokenPicker: React.FC<{
 		if (!assets) return;
 
 		if (toChain === "CENNZnet") {
-			let tokes: EthereumToken[] = assets as EthereumToken[];
-			setTokens(tokes);
-			setToken(tokes[0]);
+			let ethereumTokens: EthereumToken[] = assets as EthereumToken[];
+			setTokens(ethereumTokens);
+			setToken(ethereumTokens[0]);
 			setSelectedTokenIdx(0);
 			setAssetsLoading(false);
 			return;
 		}
 
-		let tokes: CENNZAsset[] = assets as CENNZAsset[];
+		let CENNZAssets: CENNZAsset[] = assets as CENNZAsset[];
 		if (removeToken)
-			tokes = tokes.filter((asset) => asset.assetId !== removeToken.assetId);
+			CENNZAssets = CENNZAssets.filter(
+				(asset) => asset.assetId !== removeToken.assetId
+			);
 
 		let foundTokenIdx: number;
 		if (forceSelection) {
-			foundTokenIdx = tokes.findIndex(
+			foundTokenIdx = CENNZAssets.findIndex(
 				(asset) => asset.assetId === forceSelection.assetId
 			);
 		}
 
 		if (toChain === "Ethereum")
-			tokes = tokes.filter(
-				(asset) => asset.symbol !== "CENNZ" && asset.symbol !== "CPAY"
-			);
+			CENNZAssets = CENNZAssets.filter((asset) => asset.symbol !== "CPAY");
 
-		setTokens(tokes);
+		setTokens(CENNZAssets);
 		setSelectedTokenIdx(forceSelection ? foundTokenIdx : 0);
-		setToken(tokes[forceSelection ? foundTokenIdx : 0]);
+		setToken(CENNZAssets[forceSelection ? foundTokenIdx : 0]);
 		setAssetsLoading(false);
 	}, [assets, forceSelection, removeToken, toChain, setToken]);
 
@@ -141,7 +129,7 @@ const TokenPicker: React.FC<{
 	}, [balances, selectedTokenIdx, tokens, Account, toChain]);
 
 	const getBalanceDisplayText = () => {
-		let displayBalanceText = "";
+		let displayBalanceText: string;
 		if (poolConfig?.poolAction === PoolAction.REMOVE) {
 			displayBalanceText = "Withdrawable: ";
 			if (whichAsset === "trade" && poolConfig.userPoolShare) {
@@ -166,9 +154,9 @@ const TokenPicker: React.FC<{
 	};
 
 	return (
-		<div className={styles.tokenPickerContainer}>
+		<div css={styles.tokenPickerContainer}>
 			<div
-				className={styles.tokenPickerBox}
+				css={styles.tokenPickerBox}
 				style={{ width: width ? width : "468px" }}
 			>
 				<FormControl
@@ -176,7 +164,7 @@ const TokenPicker: React.FC<{
 						width: "142px",
 					}}
 				>
-					<div className={styles.tokenSelector}>
+					<div css={styles.tokenSelector}>
 						{assetsLoading || !tokens[selectedTokenIdx] ? (
 							<CircularProgress
 								size={30}
@@ -187,7 +175,7 @@ const TokenPicker: React.FC<{
 						) : (
 							<>
 								<img
-									className={styles.tokenSelectedImg}
+									css={styles.tokenSelectedImg}
 									alt=""
 									src={getTokenLogo(tokens[selectedTokenIdx]?.symbol)?.src}
 									width={33}
@@ -195,7 +183,9 @@ const TokenPicker: React.FC<{
 								/>
 								<button
 									type="button"
-									className={styles.tokenButton}
+									css={styles.tokenButton(
+										tokens[selectedTokenIdx]?.symbol.length
+									)}
 									onClick={() =>
 										whichAsset !== "core"
 											? setTokenDropDownActive(!tokenDropDownActive)
@@ -208,7 +198,7 @@ const TokenPicker: React.FC<{
 									{tokens[selectedTokenIdx]?.symbol}
 									{whichAsset !== "core" && (
 										<img
-											className={
+											css={
 												tokenDropDownActive
 													? styles.tokenSelectedArrow
 													: styles.tokenSelectedArrowDown
@@ -224,7 +214,7 @@ const TokenPicker: React.FC<{
 							<ClickAwayListener
 								onClickAway={() => setTokenDropDownActive(false)}
 							>
-								<div className={styles.tokenDropdownContainer}>
+								<div css={styles.tokenDropdownContainer}>
 									{tokens.map((token: any, i) => {
 										return (
 											<div
@@ -234,7 +224,7 @@ const TokenPicker: React.FC<{
 													setToken(tokens[i]);
 													setTokenDropDownActive(false);
 												}}
-												className={styles.tokenChoiceContainer}
+												css={styles.tokenChoiceContainer}
 											>
 												<img
 													alt=""
@@ -251,7 +241,7 @@ const TokenPicker: React.FC<{
 						)}
 					</div>
 				</FormControl>
-				<div className={styles.amountContainer}>
+				<div css={styles.amountContainer}>
 					<Button
 						sx={{
 							fontWeight: "bold",
@@ -271,7 +261,7 @@ const TokenPicker: React.FC<{
 						MAX
 					</Button>
 					<input
-						className={styles.amountInput}
+						css={styles.amountInput}
 						type="number"
 						placeholder={"0.00"}
 						value={amount}
@@ -284,15 +274,168 @@ const TokenPicker: React.FC<{
 					/>
 				</div>
 			</div>
-			<div className={styles.bottomTextContainer}>
+			<div css={styles.bottomTextContainer}>
 				{showBalance && (
-					<p className={styles.balanceText}>{getBalanceDisplayText()}</p>
+					<p css={styles.balanceText}>{getBalanceDisplayText()}</p>
 				)}
-				{error && <p className={styles.errorMsg}>{error}</p>}
-				{success && <p className={styles.successMsg}>{success}</p>}
+				{error && <p css={styles.errorMsg}>{error}</p>}
+				{success && <p css={styles.successMsg}>{success}</p>}
 			</div>
 		</div>
 	);
 };
 
 export default TokenPicker;
+
+export const styles = {
+	tokenPickerContainer: css`
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-end;
+		align-items: flex-start;
+		margin-bottom: 17px;
+		height: 94px;
+	`,
+	tokenPickerBox: css`
+		display: flex;
+		flex-direction: row;
+		border: 1px solid #979797;
+		width: 468px;
+		height: 60px;
+		margin-top: 50px;
+		justify-content: space-between;
+		align-items: center;
+	`,
+	amountContainer: css`
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		align-items: center;
+	`,
+	amountInput: css`
+		height: 60px;
+		width: 150px;
+		font-style: normal;
+		font-weight: bold;
+		font-size: 16px;
+		line-height: 16px;
+		display: flex;
+		align-items: center;
+		text-align: right;
+		color: #020202;
+		margin-right: 12px;
+		border: 1px solid #979797;
+		border-left: none;
+		border-right: none;
+		background: transparent;
+
+		&:focus-visible {
+			outline: none;
+		}
+	`,
+	tokenSelector: css`
+		height: 60px;
+		border: 1px solid #979797;
+		border-left: none;
+		border-right: none;
+		position: relative;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+
+		&:focus-visible {
+			outline: none;
+		}
+	`,
+	tokenSelectedImg: css`
+		margin-left: 13px;
+	`,
+	tokenSelectedArrow: css`
+		margin-left: 15px;
+	`,
+	tokenSelectedArrowDown: css`
+		margin-left: 15px;
+		transform: rotate(-180deg);
+	`,
+	tokenButton: (tokenSymbolLength: number) => css`
+		cursor: pointer;
+		height: 60px;
+		width: 100px;
+		border: 1px solid #979797;
+		border-left: none;
+		border-right: none;
+		position: relative;
+		background-color: transparent;
+		font-style: normal;
+		font-weight: bold;
+		font-size: ${tokenSymbolLength > 5 ? "11.5px" : "14px"};
+		line-height: 125%;
+		text-align: left;
+		margin-left: 6px;
+	`,
+	tokenDropdownContainer: css`
+		position: absolute;
+		top: 60px;
+		right: 3px;
+		background: #ffffff;
+		box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+		z-index: 5;
+		width: 140px;
+		min-height: 165px;
+		height: 100%;
+		overflow: auto;
+
+		span {
+			padding: 12px 8px;
+			margin-top: 5px;
+			text-decoration: none;
+			font-style: normal;
+			font-weight: bold;
+			font-size: 14px;
+			line-height: 125%;
+			display: flex;
+			align-items: center;
+			letter-spacing: 1.12428px;
+			text-transform: uppercase;
+			color: #020202;
+			justify-content: center;
+		}
+	`,
+	tokenChoiceContainer: css`
+		cursor: pointer;
+		display: flex;
+		flex-direction: row;
+
+		img {
+			margin-left: 11px;
+			margin-top: 7px;
+			margin-bottom: 7px;
+		}
+
+		&:hover {
+			background: #e5e8ff;
+		}
+	`,
+	bottomTextContainer: css`
+		font-style: normal;
+		font-weight: 600;
+		font-size: 16px;
+		line-height: 19px;
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		width: 100%;
+	`,
+	balanceText: css`
+		margin-top: 12px;
+		font-weight: bold;
+	`,
+	errorMsg: css`
+		margin-top: 12px;
+		color: #ec022c;
+	`,
+	successMsg: css`
+		margin-top: 12px;
+		color: green;
+	`,
+};
