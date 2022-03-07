@@ -3,7 +3,6 @@ import Head from "next/head";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "@/styles/theme";
 import CssBaseline from "@mui/material/CssBaseline";
-import "@/styles/global.css";
 import CENNZApiProvider from "@/providers/CENNZApiProvider";
 import CENNZWalletProvider from "@/providers/CENNZWalletProvider";
 import AppSwitch from "@/components/AppSwitch";
