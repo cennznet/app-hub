@@ -3,7 +3,8 @@ import TokenPicker from "@/components/shared/TokenPicker";
 import ExchangeIcon from "@/components/shared/ExchangeIcon";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import { CENNZAsset } from "@/types";
-import styles from "@/styles/pages/swap.module.css";
+import { css } from "@emotion/react";
+
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import { fetchSwapAssets } from "@/utils";
 import {
@@ -162,10 +163,10 @@ const Exchange: React.FC<{}> = () => {
 	]);
 
 	return (
-		<div className={styles.swapContainer}>
-			<h1 className={styles.pageHeader}>SWAP</h1>
-			<div className={styles.tokenPickerContainer}>
-				<p className={styles.secondaryText}>YOU SEND</p>
+		<div css={styles.swapContainer}>
+			<h1 css={styles.pageHeader}>SWAP</h1>
+			<div css={styles.tokenPickerContainer}>
+				<p css={styles.secondaryText}>YOU SEND</p>
 				<TokenPicker
 					assets={assets}
 					setToken={setExchangeToken}
@@ -177,7 +178,7 @@ const Exchange: React.FC<{}> = () => {
 					success={success}
 				/>
 			</div>
-			<div className={styles.exchangeIconContainer}>
+			<div css={styles.exchangeIconContainer}>
 				<ExchangeIcon
 					onClick={() => {
 						setReceivedToken(exchangeToken);
@@ -187,8 +188,8 @@ const Exchange: React.FC<{}> = () => {
 					}}
 				/>
 			</div>
-			<div className={styles.tokenPickerContainer}>
-				<p className={styles.thirdText}>YOU GET</p>
+			<div css={styles.tokenPickerContainer}>
+				<p css={styles.thirdText}>YOU GET</p>
 				<TokenPicker
 					assets={assets}
 					setToken={setReceivedToken}
@@ -199,13 +200,13 @@ const Exchange: React.FC<{}> = () => {
 				/>
 			</div>
 			{estimatedFee && (
-				<div className={styles.infoBoxContainer}>
-					<div className={styles.infoBoxText}>
-						<div className={styles.feeContainer}>
+				<div css={styles.infoBoxContainer}>
+					<div css={styles.infoBoxText}>
+						<div css={styles.feeContainer}>
 							<p>{"Exchange rates:"}</p>
 							<span>{`1 ${exchangeToken.symbol} = ${exchangeRate} ${receivedToken.symbol}`}</span>
 						</div>
-						<div className={styles.feeContainer}>
+						<div css={styles.feeContainer}>
 							<p>{"Transaction fee (estimated):"}</p>
 							<span>{estimatedFee + " CPAY"}</span>
 						</div>
@@ -231,3 +232,92 @@ const Exchange: React.FC<{}> = () => {
 };
 
 export default Exchange;
+
+export const styles = {
+	swapContainer: css`
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-start;
+		align-items: center;
+		width: 550px;
+		border-radius: 4px;
+		margin: 0 auto 5em;
+		position: relative;
+		background-color: #ffffff;
+		box-shadow: 4px 8px 8px rgba(17, 48, 255, 0.1);
+	`,
+	pageHeader: css`
+		font-family: "Roboto";
+		font-style: normal;
+		font-weight: bold;
+		font-size: 20px;
+		line-height: 125%;
+		text-align: center;
+		letter-spacing: 1.12428px;
+		text-transform: uppercase;
+		color: #1130ff;
+		padding-top: 26px;
+	`,
+	secondaryText: css`
+		font-family: "Roboto";
+		font-style: normal;
+		font-weight: bold;
+		font-size: 14px;
+		line-height: 125%;
+		letter-spacing: 1.12428px;
+		text-transform: uppercase;
+		color: #020202;
+		margin-bottom: 27px;
+	`,
+	thirdText: css`
+		font-family: "Roboto";
+		font-style: normal;
+		font-weight: bold;
+		font-size: 14px;
+		line-height: 125%;
+		letter-spacing: 1.12428px;
+		text-transform: uppercase;
+		color: #020202;
+		margin: 0px;
+		margin-bottom: -20px;
+	`,
+	tokenPickerContainer: css`
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-start;
+	`,
+	infoBoxContainer: css`
+		width: 460px;
+		height: 95px;
+		min-height: 95px;
+		background: #f5f6ff;
+		padding: 24px;
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
+	`,
+	infoBoxText: css`
+		font-style: normal;
+		font-weight: 600;
+		font-size: 16px;
+		line-height: 150%;
+		color: #020202;
+		text-align: left;
+	`,
+	feeContainer: css`
+		display: flex;
+		justify-content: flex-start;
+		align-items: flex-start;
+		p {
+			color: #1130ff;
+			margin: 0px 5px 3px 0px;
+		}
+		span {
+			font-weight: normal;
+		}
+	`,
+	exchangeIconContainer: css`
+		margin-top: -27px;
+		margin-bottom: 8px;
+	`,
+};
