@@ -98,6 +98,7 @@ const ThemeProvider: FC<{}> = (props) => {
 						config.palette.secondary.default,
 				},
 			},
+			shadows: ["none", "4px 8px 8px rgba(0, 0, 0, 0.1)"] as any,
 		});
 	}, [section]);
 

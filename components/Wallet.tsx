@@ -59,13 +59,13 @@ export default Wallet;
 export const styles = {
 	walletButton:
 		(modalOpen: boolean) =>
-		({ palette }) =>
+		({ palette, shadows }) =>
 			css`
 				position: absolute;
 				top: 3em;
 				right: 3em;
 				cursor: pointer;
-				box-shadow: 4px 8px 8px rgba(17, 48, 255, 0.1);
+				box-shadow: ${shadows[1]};
 				height: 48px;
 				display: flex;
 				align-items: center;

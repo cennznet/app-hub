@@ -149,12 +149,12 @@ export const styles = {
 		}
 	`,
 
-	selectDropdown: ({ palette }: Theme) => css`
+	selectDropdown: ({ palette, shadows }: Theme) => css`
 		.MuiPaper-root {
 			border-radius: 4px;
 			overflow: hidden;
 			transform: translate(-1px, 5px) !important;
-			box-shadow: 4px 8px 8px rgba(0, 0, 0, 0.1);
+			box-shadow: ${shadows[1]};
 			border: 1px solid ${palette.secondary.main};
 		}
 
