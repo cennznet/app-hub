@@ -64,6 +64,11 @@ const config = {
 	shape: {
 		borderRadius: 0,
 	},
+	transitions: {
+		duration: {
+			shortest: 100,
+		},
+	},
 	components: {
 		MuiButtonBase: {
 			defaultProps: {
@@ -71,7 +76,7 @@ const config = {
 			},
 		},
 	},
-};
+} as Partial<Theme>;
 
 const ThemeProvider: FC<{}> = (props) => {
 	const section = useSectionUri();
