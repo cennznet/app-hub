@@ -5,30 +5,28 @@ import {
 	IUserShareInPool,
 	PoolValues,
 } from "@/types";
-import { Amount, AmountUnit } from "@/utils/Amount";
 import { formatBalance } from "@/utils";
+import Big from "big.js";
 
 export const fetchCoreAmount = (
-	tradeAmount: number,
+	tradeAmount: Big,
 	exchangePool: IExchangePool
 ) => {
-	const coreAmount =
-		(tradeAmount * Number(exchangePool.coreAssetBalance.toString())) /
-		Number(exchangePool.assetBalance.toString());
+	const coreAmount: Big = tradeAmount
+		.times(exchangePool.coreAssetBalance)
+		.div(exchangePool.assetBalance);
 
-	if (coreAmount <= 0) return 0;
 	return coreAmount;
 };
 
 export const fetchTradeAmount = (
-	coreAmount: number,
+	coreAmount: Big,
 	exchangePool: IExchangePool
 ) => {
-	const tradeAmount =
-		(coreAmount * Number(exchangePool.assetBalance.toString())) /
-		Number(exchangePool.coreAssetBalance.toString());
+	const tradeAmount: Big = coreAmount
+		.times(exchangePool.assetBalance)
+		.div(exchangePool.coreAssetBalance);
 
-	if (tradeAmount <= 0) return 0;
 	return tradeAmount;
 };
 
@@ -37,9 +35,9 @@ export const fetchExchangeRate = (
 	tradeAsset: CENNZAsset,
 	coreAsset: CENNZAsset
 ) => {
-	const exchangeRate = exchangePool.assetBalance
-		.toAmount(tradeAsset.decimals)
-		.dividedBy(exchangePool.coreAssetBalance.toAmount(coreAsset.decimals));
+	const exchangeRate: Big = exchangePool.assetBalance
+		.div(10 ** tradeAsset.decimals)
+		.div(exchangePool.coreAssetBalance.div(10 ** coreAsset.decimals));
 
 	return formatBalance(exchangeRate.toNumber());
 };
@@ -75,11 +73,11 @@ export const fetchExchangePool = async (
 ): Promise<IExchangePool> => {
 	const address = await api.derive.cennzx.exchangeAddress(assetId);
 
-	const assetBalance = new Amount(
+	const assetBalance: Big = Big(
 		await api.derive.cennzx.poolAssetBalance(assetId)
 	);
 
-	const coreAssetBalance = new Amount(
+	const coreAssetBalance: Big = Big(
 		await api.derive.cennzx.poolCoreAssetBalance(assetId)
 	);
 
@@ -100,9 +98,9 @@ export const fetchUserPoolShare = async (
 		address,
 		assetId
 	);
-	const liquidity: Amount = new Amount(liquidityValue.liquidity);
-	const userAssetShare: Amount = new Amount(liquidityValue.asset);
-	const userCoreShare: Amount = new Amount(liquidityValue.core);
+	const liquidity: Big = Big(liquidityValue.liquidity);
+	const userAssetShare: Big = Big(liquidityValue.asset);
+	const userCoreShare: Big = Big(liquidityValue.core);
 	return {
 		coreAssetBalance: userCoreShare,
 		assetBalance: userAssetShare,
@@ -115,22 +113,15 @@ export const fetchUserPoolShare = async (
 export const calculateValues = async (
 	api: Api,
 	asset: CENNZAsset,
-	assetAmount: Amount,
+	assetAmount: Big,
 	coreAsset: CENNZAsset,
-	coreAmount: Amount
+	coreAmount: Big
 ) => {
-	const totalLiquidity = await api.derive.cennzx.totalLiquidity(asset.assetId);
-
-	const assetAmountCal = new Amount(
-		assetAmount,
-		AmountUnit.DISPLAY,
-		asset.decimals
+	const totalLiquidity: Big = Big(
+		await api.derive.cennzx.totalLiquidity(asset.assetId)
 	);
-	const coreAmountCal = new Amount(
-		coreAmount,
-		AmountUnit.DISPLAY,
-		coreAsset.decimals
-	);
+	const assetAmountCal: Big = Big(assetAmount).times(10 ** asset.decimals);
+	const coreAmountCal: Big = Big(coreAmount).times(10 ** coreAsset.decimals);
 
 	return { totalLiquidity, assetAmountCal, coreAmountCal };
 };
@@ -138,35 +129,40 @@ export const calculateValues = async (
 export const fetchAddLiquidityValues = async (
 	api: Api,
 	asset: CENNZAsset,
-	assetAmount: Amount,
+	assetAmount: Big,
 	coreAsset: CENNZAsset,
-	coreAmount: Amount,
+	coreAmount: Big,
 	exchangePool: IExchangePool,
 	buffer: number
 ) => {
 	const { totalLiquidity, assetAmountCal, coreAmountCal } =
 		await calculateValues(api, asset, assetAmount, coreAsset, coreAmount);
 
-	const minLiquidity = totalLiquidity.isZero()
+	const minLiquidity: Big = totalLiquidity.eq(0)
 		? coreAmountCal
-		: new Amount(coreAmountCal).mul(
-				totalLiquidity.div(exchangePool.coreAssetBalance)
-		  );
+		: coreAmountCal
+				.times(totalLiquidity)
+				.div(exchangePool.coreAssetBalance.times(10 ** coreAsset.decimals))
+				.toFixed(0);
 
-	const maxAssetAmount = totalLiquidity.isZero()
+	const maxAssetAmount: Big = totalLiquidity.eq(0)
 		? assetAmountCal
-		: new Amount(assetAmountCal.muln(1 + buffer));
+		: assetAmountCal.times(1 + buffer).toFixed(0);
 
-	return { minLiquidity, maxAssetAmount, maxCoreAmount: coreAmountCal };
+	return {
+		minLiquidity,
+		maxAssetAmount,
+		maxCoreAmount: coreAmountCal.toFixed(0),
+	};
 };
 
 export const fetchWithdrawLiquidityValues = async (
 	api: Api,
 	asset: CENNZAsset,
 	address: string,
-	assetAmount: Amount,
+	assetAmount: Big,
 	coreAsset: CENNZAsset,
-	coreAmount: Amount,
+	coreAmount: Big,
 	exchangePool: IExchangePool,
 	withdrawMax: boolean,
 	buffer?: number
@@ -179,11 +175,10 @@ export const fetchWithdrawLiquidityValues = async (
 		coreAmount
 	);
 
-	let liquidityAmount, assetToWithdraw;
+	let liquidityAmount: Big, assetToWithdraw;
 	if (withdrawMax) {
-		liquidityAmount = await api.derive.cennzx.liquidityBalance(
-			asset.assetId,
-			address
+		liquidityAmount = Big(
+			await api.derive.cennzx.liquidityBalance(asset.assetId, address)
 		);
 		assetToWithdraw = await api.derive.cennzx.assetToWithdraw(
 			asset.assetId,
@@ -191,27 +186,31 @@ export const fetchWithdrawLiquidityValues = async (
 		);
 	} else if (exchangePool.assetBalance === exchangePool.coreAssetBalance) {
 		liquidityAmount = assetAmountCal
-			.mul(totalLiquidity)
+			.times(totalLiquidity)
 			.div(exchangePool.assetBalance);
 	} else {
 		liquidityAmount = assetAmountCal
-			.mul(totalLiquidity)
+			.times(totalLiquidity)
 			.div(exchangePool.assetBalance)
-			.addn(1);
+			.add(1);
 	}
 
-	const coreWithdrawAmount = liquidityAmount
-		.mul(exchangePool.coreAssetBalance)
+	const coreWithdrawAmount: Big = liquidityAmount
+		.times(exchangePool.coreAssetBalance)
 		.div(totalLiquidity);
 
-	const minCoreWithdraw = withdrawMax
-		? assetToWithdraw.coreAmount
-		: new Amount(coreWithdrawAmount.muln(1 - buffer));
-	const minAssetWithdraw = withdrawMax
-		? assetToWithdraw.assetAmount
-		: new Amount(assetAmountCal.muln(1 - buffer));
+	const minCoreWithdraw: Big = withdrawMax
+		? Big(assetToWithdraw.coreAmount)
+		: Big(coreWithdrawAmount.timesn(Big(1 - buffer)));
+	const minAssetWithdraw: Big = withdrawMax
+		? Big(assetToWithdraw.assetAmount)
+		: Big(assetAmountCal.timesn(Big(1 - buffer)));
 
-	return { liquidityAmount, minAssetWithdraw, minCoreWithdraw };
+	return {
+		liquidityAmount: liquidityAmount.toFixed(0),
+		minAssetWithdraw: minAssetWithdraw.toFixed(0),
+		minCoreWithdraw: minCoreWithdraw.toFixed(0),
+	};
 };
 
 export const fetchFeeEstimate = async (
@@ -220,10 +219,10 @@ export const fetchFeeEstimate = async (
 	userFeeAssetId: number,
 	maxPayment: string
 ) => {
-	let feeEstimate: any = await api.derive.fees.estimateFee({
+	let feeEstimate: Big = await api.derive.fees.estimateFee({
 		extrinsic,
 		userFeeAssetId,
 		maxPayment,
 	});
-	return new Amount(feeEstimate);
+	return feeEstimate;
 };

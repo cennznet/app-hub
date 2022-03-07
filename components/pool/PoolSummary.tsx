@@ -4,6 +4,7 @@ import { CircularProgress } from "@mui/material";
 import { PoolSummaryProps } from "@/types";
 import { usePool } from "@/providers/PoolProvider";
 import { formatBalance } from "@/utils";
+import Big from 'big.js'
 
 interface FomattedBalances {
 	userTradeAsset: string;
@@ -26,19 +27,19 @@ const PoolSummary: React.FC<{ poolSummaryProps: PoolSummaryProps }> = ({
 		setLoading(true);
 		if (!userPoolShare || !poolLiquidity || !tradeAsset || !coreAsset) return;
 
-		const userTradeAsset = userPoolShare.assetBalance.asString(
-			tradeAsset.decimals
+		const userTradeAsset: Big = userPoolShare.assetBalance.div(Big(
+			10 ** tradeAsset.decimals)
 		);
-		const userCoreAsset = userPoolShare.coreAssetBalance.asString(
-			coreAsset.decimals
+		const userCoreAsset: Big = userPoolShare.coreAssetBalance.div(Big(
+			10 ** coreAsset.decimals)
 		);
 
 		const userPercentageShare =
 			Number(userCoreAsset) / Number(poolLiquidity.coreAsset);
 
 		setFormattedBalances({
-			userTradeAsset: formatBalance(Number(userTradeAsset)),
-			userCoreAsset: formatBalance(Number(userCoreAsset)),
+			userTradeAsset: formatBalance(userTradeAsset.toNumber()),
+			userCoreAsset: formatBalance(userCoreAsset.toNumber()),
 			poolTradeAsset: formatBalance(Number(poolLiquidity.tradeAsset)),
 			poolCoreAsset: formatBalance(Number(poolLiquidity.coreAsset)),
 			userPercentageShare: formatBalance(userPercentageShare * 100),
@@ -102,7 +103,7 @@ const PoolSummary: React.FC<{ poolSummaryProps: PoolSummaryProps }> = ({
 							<div css={styles.summaryBoldText}>Estimated Fee:</div>
 							&nbsp;
 							<div css={styles.summaryText}>
-								{estimatedFee.asString(coreAsset?.decimals)} {coreAsset?.symbol}
+								{estimatedFee.toNumber()} {coreAsset?.symbol}
 							</div>
 						</div>
 					)}

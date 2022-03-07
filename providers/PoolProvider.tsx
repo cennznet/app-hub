@@ -1,11 +1,9 @@
 import { Api } from "@cennznet/api";
-import { Amount } from "@/utils/Amount";
 import { InjectedAccountWithMeta } from "@polkadot/extension-inject/types";
 import { CENNZAsset, IExchangePool, IUserShareInPool } from "@/types";
 import {
 	FC,
 	createContext,
-	PropsWithChildren,
 	useCallback,
 	useContext,
 	useEffect,
@@ -20,6 +18,7 @@ import {
 	fetchWithdrawLiquidityValues,
 } from "@/utils/pool";
 import { useGlobalModal } from "@/providers/GlobalModalProvider";
+import Big from "big.js";
 
 export enum PoolAction {
 	ADD = "Add",
@@ -28,7 +27,7 @@ export enum PoolAction {
 
 type PoolContextType = {
 	coreAsset: CENNZAsset;
-	estimatedFee: Amount;
+	estimatedFee: Big;
 	userPoolShare: IUserShareInPool;
 	getUserPoolShare: Function;
 	exchangePool: IExchangePool;
@@ -93,7 +92,11 @@ const PoolProvider: FC<{
 
 			setValue((value) => ({
 				...value,
-				exchangePool,
+				exchangePool: {
+					...exchangePool,
+					assetBalance: exchangePool.assetBalance.div(10 ** asset.decimals),
+					coreAssetBalance: exchangePool.coreAssetBalance.div(10 ** value.coreAsset.decimals)
+				},
 			}));
 		},
 		[api]
@@ -117,8 +120,8 @@ const PoolProvider: FC<{
 	const defineExtrinsic = useCallback(
 		async (
 			asset: CENNZAsset,
-			assetAmount: Amount,
-			coreAmount: Amount,
+			assetAmount: Big,
+			coreAmount: Big,
 			poolAction: string,
 			withdrawMax: boolean,
 			buffer
@@ -166,16 +169,18 @@ const PoolProvider: FC<{
 				);
 			}
 
-			const estimatedFee = await fetchFeeEstimate(
-				api,
-				extrinsic,
-				value.coreAsset.assetId,
-				"50000000000000000"
+			const estimatedFee: Big = Big(
+				await fetchFeeEstimate(
+					api,
+					extrinsic,
+					value.coreAsset.assetId,
+					"50000000000000000"
+				)
 			);
 
 			setValue({
 				...value,
-				estimatedFee,
+				estimatedFee: estimatedFee.div(Big(10 ** value.coreAsset.decimals)),
 				currentExtrinsic: extrinsic,
 			});
 		},

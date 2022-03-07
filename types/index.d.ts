@@ -1,4 +1,4 @@
-import { Amount } from "@/utils/Amount";
+import Big from "big.js";
 
 export interface Asset {
 	symbol: string;
@@ -11,16 +11,16 @@ export interface Asset {
 }
 
 export interface IExchangePool {
-	coreAssetBalance: Amount;
-	assetBalance: Amount;
+	coreAssetBalance: Big;
+	assetBalance: Big;
 	address: string;
 	assetId: number;
 }
 
 export interface IUserShareInPool {
-	coreAssetBalance: Amount;
-	assetBalance: Amount;
-	liquidity: Amount;
+	coreAssetBalance: Big;
+	assetBalance: Big;
+	liquidity: Big;
 	address: string;
 	assetId: number;
 }
