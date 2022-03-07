@@ -1,5 +1,5 @@
 import React, { FC, useState } from "react";
-import styles from "@/styles/components/shared/ExchangeIcon.module.css";
+import { css } from "@emotion/react";
 import { Box } from "@mui/material";
 
 interface ExchangeIconProps {
@@ -16,11 +16,7 @@ const ExchangeIconClass: FC<ExchangeIconProps> = ({
 	const [rotations, setRotations] = useState(1);
 	return (
 		<Box
-			className={
-				horizontal
-					? `${styles.horizontal} ${styles.exchangeIcon}`
-					: styles.exchangeIcon
-			}
+			css={styles.exchangeIcon(horizontal)}
 			sx={{
 				"&:hover": {
 					fill: "white",
@@ -35,7 +31,7 @@ const ExchangeIconClass: FC<ExchangeIconProps> = ({
 		>
 			<svg
 				id={"arrows"}
-				className={styles.arrows}
+				css={styles.arrows}
 				width="40"
 				height="40"
 				viewBox="0 0 37 40"
@@ -70,3 +66,32 @@ const ExchangeIconClass: FC<ExchangeIconProps> = ({
 };
 
 export default ExchangeIconClass;
+
+export const styles = {
+	exchangeIcon: (horizontal: boolean) => css`
+		height: ${horizontal ? `60px` : `56px`};
+		width: ${horizontal ? `60px` : `56px`};
+		font-size: 20px;
+		line-height: 20px;
+		text-align: center;
+		cursor: pointer;
+		transition-duration: 0.7s;
+		transition-property: transform;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		transform: ${horizontal ? `rotate(-90deg)` : `rotate(0deg)`};
+		margin-bottom: ${horizontal ? `34px` : `0`};
+		&:hover {
+			fill: white;
+		}
+		&:hover > svg {
+			filter: invert(1) sepia(1) hue-rotate(200deg);
+		}
+	`,
+	arrows: css`
+		&:hover {
+			filter: invert(1) sepia(1) hue-rotate(200deg);
+		}
+	`,
+};
