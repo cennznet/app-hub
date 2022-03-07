@@ -1,10 +1,11 @@
 import { VFC } from "react";
 import { css } from "@emotion/react";
 import { GlobalStyles } from "@mui/material";
+import { Theme } from "@mui/material";
 
 const globalStyles = (
 	<GlobalStyles
-		styles={css`
+		styles={({ palette, typography }: Theme) => css`
 			html {
 				scroll-behavior: smooth;
 				-webkit-font-smoothing: antialiased;
@@ -32,6 +33,10 @@ const globalStyles = (
 				padding: 0;
 			}
 
+			pre {
+				font-family: "Roboto Mono", monospace;
+			}
+
 			.MuiCircularProgress-root {
 				animation-duration: 0.7s;
 			}
@@ -54,6 +59,50 @@ const globalStyles = (
 
 			.MuiAccordionDetails-root {
 				padding: 0;
+			}
+
+			.MuiTextField-root {
+				.MuiOutlinedInput-root {
+					border-radius: 4px;
+					line-height: 1;
+
+					&:hover,
+					&:active,
+					&.Mui-focused {
+						.MuiOutlinedInput-notchedOutline {
+							border-color: ${palette.primary.main};
+							border-width: 1px;
+						}
+					}
+
+					.MuiOutlinedInput-input {
+						padding: 0.75em;
+						font-family: "Roboto Mono", monospace;
+					}
+
+					.MuiOutlinedInput-notchedOutline {
+						border-color: ${palette.text.secondary};
+					}
+				}
+			}
+
+			.MuiTooltip-popper {
+				font-weight: normal;
+				.MuiTooltip-tooltip {
+					border-radius: 4px;
+					background-color: white;
+					color: ${palette.text.primary};
+					padding: 1em;
+					box-shadow: 4px 8px 8px rgba(0, 0, 0, 0.1);
+					border: 1px solid ${palette.secondary.main};
+				}
+
+				.MuiTooltip-arrow {
+					color: white;
+					&:before {
+						outline: 1px solid ${palette.secondary.main};
+					}
+				}
 			}
 		`}
 	/>

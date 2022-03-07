@@ -2,7 +2,17 @@ import { Api } from "@cennznet/api";
 import { CENNZAsset } from "@/types";
 import fetchSwapAssets from "@/utils/fetchSwapAssets";
 import { css } from "@emotion/react";
-import { Theme, CircularProgress, LinearProgress } from "@mui/material";
+import {
+	Theme,
+	CircularProgress,
+	LinearProgress,
+	Accordion,
+	AccordionSummary,
+	AccordionDetails,
+	TextField,
+	InputAdornment,
+	Tooltip,
+} from "@mui/material";
 import useTokensFetcher from "@/hooks/useTokensFetcher";
 import TokenInput from "@/components/shared/TokenInput";
 import useTokenInput from "@/hooks/useTokenInput";
@@ -14,6 +24,8 @@ import useSwapExchangeRate from "@/hooks/useSwapExchangeRate";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import useGasFee from "@/hooks/useGasFee";
 import { CENNZ_ASSET_ID, CPAY_ASSET_ID } from "@/constants";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 export async function getStaticProps() {
 	const api = await Api.create({ provider: process.env.NEXT_PUBLIC_API_URL });
@@ -149,7 +161,7 @@ const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 			<h1 css={styles.heading}>SWAP</h1>
 			<form css={styles.form}>
 				<div css={styles.formField}>
-					<label>You Send</label>
+					<label htmlFor="exchangeInput">You Send</label>
 					<TokenInput
 						onMaxValueRequest={
 							!!exchangeBalance
@@ -161,6 +173,8 @@ const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 						value={exchangeValue.value}
 						onValueChange={exchangeValue.onValueChange}
 						tokens={exchangeTokens}
+						id="exchangeInput"
+						required
 					/>
 
 					{!!selectedAccount && (
@@ -173,7 +187,6 @@ const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 						</div>
 					)}
 				</div>
-
 				<div css={[styles.formField, styles.formControl]}>
 					<SwapButton
 						onClick={onSwapButtonClick}
@@ -181,9 +194,8 @@ const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 						type="button"
 					/>
 				</div>
-
 				<div css={styles.formField}>
-					<label>You Get</label>
+					<label htmlFor="receiveInput">You Get</label>
 					<TokenInput
 						selectedTokenId={receiveToken.tokenId}
 						onTokenChange={receiveToken.onTokenChange}
@@ -195,6 +207,7 @@ const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 						onValueChange={receiveValue.onValueChange}
 						tokens={receiveTokens}
 						disabled={true}
+						id="receiveInput"
 					/>
 					{!!selectedAccount && (
 						<div css={styles.tokenBalance}>
@@ -206,7 +219,6 @@ const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 						</div>
 					)}
 				</div>
-
 				<div css={[styles.formField, styles.formInfo]}>
 					<LinearProgress
 						css={[styles.formInfoProgress(!!exchangeRate && !!gasFee)]}
@@ -223,7 +235,7 @@ const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 							{!exchangeRate && <span>-</span>}
 						</li>
 						<li>
-							<strong>Gas Fee: </strong>{" "}
+							<strong>Gas Fee:</strong>{" "}
 							{!!gasFee && (
 								<span>
 									{gasFee} {gasAsset.symbol}
@@ -231,8 +243,68 @@ const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 							)}
 							{!gasFee && <span>-</span>}
 						</li>
+						<li>
+							<strong>Slippage:</strong>{" "}
+							<span>
+								{formatBalance(
+									Number(exchangeValue.value) * (1 + Number(slippage) / 100)
+								)}{" "}
+								{exchangeAsset.symbol}
+							</span>
+							<i>
+								<Tooltip
+									disableFocusListener
+									PopperProps={
+										{
+											sx: styles.formInfoTooltip,
+										} as any
+									}
+									title={
+										<div>
+											If the amount of {exchangeAsset.symbol} used for swapping
+											is greater than Slippage value, the transaction will not
+											proceed. You can update the Slippage percentage under
+											Settings.
+										</div>
+									}
+									arrow
+									placement="right"
+								>
+									<InfoOutlinedIcon fontSize="small" />
+								</Tooltip>
+							</i>
+						</li>
 					</ul>
 				</div>
+				<Accordion css={[styles.formSettings]}>
+					<AccordionSummary
+						css={styles.formSettingsSummary}
+						expandIcon={<ExpandLess />}
+					>
+						Settings
+					</AccordionSummary>
+					<AccordionDetails>
+						<div css={styles.formField}>
+							<label htmlFor="slippageInput">Slippage</label>
+							<TextField
+								css={styles.slippageInput}
+								value={slippage}
+								onChange={(event) => setSlippage(event.target.value)}
+								required
+								type="number"
+								inputProps={{
+									min: 0,
+									max: 100,
+								}}
+								InputProps={{
+									endAdornment: (
+										<InputAdornment position="end">%</InputAdornment>
+									),
+								}}
+							/>
+						</div>
+					</AccordionDetails>
+				</Accordion>
 			</form>
 		</div>
 	);
@@ -241,7 +313,7 @@ const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 export default Swap;
 
 const styles = {
-	root: css`
+	root: ({ shadows }: Theme) => css`
 		display: flex;
 		flex-direction: column;
 		justify-content: flex-start;
@@ -251,7 +323,7 @@ const styles = {
 		margin: 0 auto 5em;
 		position: relative;
 		background-color: #ffffff;
-		box-shadow: 4px 8px 8px rgba(17, 48, 255, 0.1);
+		box-shadow: ${shadows[1]};
 		padding: 1.5em 2.5em 2.5em;
 	`,
 
@@ -298,16 +370,9 @@ const styles = {
 	formInfo: ({ palette }: Theme) => css`
 		margin-top: 2em;
 		padding: 1.5em;
-		color: ${palette.primary.main};
+		color: ${palette.text.primary};
+		background-color: ${palette.background.main};
 		position: relative;
-
-		&:before {
-			content: "";
-			background-color: ${palette.info.main};
-			opacity: 0.4;
-			position: absolute;
-			inset: 0;
-		}
 
 		ul {
 			list-style: none;
@@ -315,17 +380,43 @@ const styles = {
 			padding: 0;
 		}
 
+		p {
+			position: relative;
+		}
+
 		li {
 			position: relative;
 			margin-bottom: 0.5em;
+			display: flex;
+			align-items: center;
 			&:last-child {
 				margin-bottom: 0;
 			}
+
+			strong {
+				margin-right: 0.25em;
+				color: ${palette.text.highlight};
+			}
+
+			span {
+				font-family: "Roboto Mono", monospace;
+			}
+
+			i {
+				flex: 1;
+				text-align: right;
+				display: flex;
+				align-items: center;
+				justify-content: flex-end;
+				cursor: pointer;
+				&:hover {
+					color: ${palette.primary.main};
+				}
+			}
 		}
 
-		span {
-			font-family: "Roboto Mono", monospace;
-			color: ${palette.text.primary};
+		pre {
+			display: inline;
 		}
 	`,
 
@@ -337,5 +428,37 @@ const styles = {
 		top: 1em;
 		right: 1em;
 		transition: opacity 0.2s;
+	`,
+
+	formSettings: css`
+		box-shadow: none;
+
+		&:before {
+			display: none;
+		}
+	`,
+
+	formSettingsSummary: ({ palette }: Theme) => css`
+		text-transform: uppercase;
+		font-weight: bold;
+		padding: 0;
+		justify-content: flex-start;
+
+		.MuiAccordionSummary-content {
+			flex-grow: 0;
+			margin-right: 0.125em;
+		}
+
+		.MuiAccordionSummary-expandIconWrapper.Mui-expanded {
+			color: ${palette.primary.main};
+		}
+	`,
+
+	slippageInput: css`
+		width: 200px;
+	`,
+
+	formInfoTooltip: css`
+		max-width: 200px;
 	`,
 };

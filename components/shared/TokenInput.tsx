@@ -92,9 +92,9 @@ const TokenInput: FC<
 export default TokenInput;
 
 export const styles = {
-	root: css`
+	root: ({ palette }: Theme) => css`
 		width: 100%;
-		border: 1px solid #979797;
+		border: 1px solid ${palette.text.secondary};
 		border-radius: 4px;
 		overflow: hidden;
 		display: flex;
@@ -132,7 +132,7 @@ export const styles = {
 		}
 	`,
 
-	select: ({ palette }: Theme) => css`
+	select: ({ palette, transitions }: Theme) => css`
 		border: none;
 		min-width: 135px;
 
@@ -141,7 +141,8 @@ export const styles = {
 		}
 
 		.MuiSvgIcon-root {
-			transition: transform 0.1s, color 0.1s;
+			transition: transform ${transitions.duration.shortest}ms
+				${transitions.easing.easeInOut};
 		}
 
 		.MuiSelect-iconOpen {

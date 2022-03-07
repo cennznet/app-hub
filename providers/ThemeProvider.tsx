@@ -15,21 +15,25 @@ declare module "@mui/material/styles/createPalette" {
 		swap?: string;
 		pool?: string;
 		bridge?: string;
-		default?: string;
 	}
 
 	export interface PaletteColor {
 		swap?: string;
 		pool?: string;
 		bridge?: string;
-		default?: string;
+	}
+
+	export interface TypeBackground {
+		swap?: string;
+		pool?: string;
+		bridge?: string;
+		main?: string;
 	}
 }
 
 const config = {
 	palette: {
 		primary: {
-			default: "#1130FF",
 			main: "#1130FF",
 			swap: "#1130FF",
 			pool: "#9847FF",
@@ -37,17 +41,21 @@ const config = {
 		},
 		secondary: {
 			main: "#B3BDFF",
-			default: "#B3BDFF",
 			swap: "#B3BDFF",
 			pool: "#E4D1FF",
 			bridge: "#B1EAEB",
 		},
 		info: {
-			default: "#E4E7FF",
 			main: "#E4E7FF",
 			swap: "#E4E7FF",
 			pool: "#F5ECFF",
 			bridge: "#E8F8F9",
+		},
+		background: {
+			main: "rgba(228, 231, 255, 0.4)",
+			swap: "rgba(228, 231, 255, 0.4)",
+			pool: "rgba(245, 236, 255, 0.4)",
+			bridge: "rgba(232, 248, 249, 0.4)",
 		},
 		error: {
 			main: "#EC022C",
@@ -79,7 +87,7 @@ const config = {
 } as Partial<Theme>;
 
 const ThemeProvider: FC<{}> = (props) => {
-	const section = useSectionUri();
+	const section = useSectionUri() || "swap";
 	const theme = useMemo<Theme>(() => {
 		return createTheme({
 			...config,
@@ -87,15 +95,22 @@ const ThemeProvider: FC<{}> = (props) => {
 				...config.palette,
 				primary: {
 					...config.palette.primary,
-					main:
-						config.palette.primary[section] || config.palette.primary.default,
+					main: config.palette.primary[section],
 				},
 
 				secondary: {
 					...config.palette.secondary,
-					main:
-						config.palette.secondary[section] ||
-						config.palette.secondary.default,
+					main: config.palette.secondary[section],
+				},
+
+				info: {
+					...config.palette.info,
+					main: config.palette.info[section],
+				},
+
+				background: {
+					...config.palette.background,
+					main: config.palette.background[section],
 				},
 			},
 			shadows: ["none", "4px 8px 8px rgba(0, 0, 0, 0.1)"] as any,
