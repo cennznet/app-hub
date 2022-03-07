@@ -251,28 +251,26 @@ const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 								)}{" "}
 								{exchangeAsset.symbol}
 							</span>
-							<i>
-								<Tooltip
-									disableFocusListener
-									PopperProps={
-										{
-											sx: styles.formInfoTooltip,
-										} as any
-									}
-									title={
-										<div>
-											If the amount of {exchangeAsset.symbol} used for swapping
-											is greater than Slippage value, the transaction will not
-											proceed. You can update the Slippage percentage under
-											Settings.
-										</div>
-									}
-									arrow
-									placement="right"
-								>
-									<InfoOutlinedIcon fontSize="small" />
-								</Tooltip>
-							</i>
+							<Tooltip
+								disableFocusListener
+								PopperProps={
+									{
+										sx: styles.formInfoTooltip,
+									} as any
+								}
+								title={
+									<div>
+										If the amount of {exchangeAsset.symbol} used for swapping is
+										greater than Slippage value, the transaction will not
+										proceed. You can update the Slippage percentage under
+										Settings.
+									</div>
+								}
+								arrow
+								placement="right"
+							>
+								<InfoOutlinedIcon fontSize={"0.5em" as any} />
+							</Tooltip>
 						</li>
 					</ul>
 				</div>
@@ -396,18 +394,17 @@ const styles = {
 			strong {
 				margin-right: 0.25em;
 				color: ${palette.text.highlight};
+				display: flex;
+				align-items: center;
 			}
 
 			span {
 				font-family: "Roboto Mono", monospace;
 			}
 
-			i {
-				flex: 1;
-				text-align: right;
-				display: flex;
-				align-items: center;
-				justify-content: flex-end;
+			svg {
+				display: inline-block;
+				margin-left: 0.5em;
 				cursor: pointer;
 				&:hover {
 					color: ${palette.primary.main};
