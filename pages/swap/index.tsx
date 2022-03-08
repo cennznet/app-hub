@@ -26,6 +26,8 @@ import useGasFee from "@/hooks/useGasFee";
 import { CENNZ_ASSET_ID, CPAY_ASSET_ID } from "@/constants";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import SubmitButton from "@/components/shared/SubmitButton";
+import signAndSendTx from "@/utils/signAndSendTx";
 
 export async function getStaticProps() {
 	const api = await Api.create({ provider: process.env.NEXT_PUBLIC_API_URL });
@@ -39,7 +41,8 @@ export async function getStaticProps() {
 
 const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 	const { api } = useCENNZApi();
-	const { selectedAccount, balances } = useCENNZWallet();
+	const { selectedAccount, balances, wallet, updateBalances } =
+		useCENNZWallet();
 	const [exchangeTokens] = useTokensFetcher<CENNZAsset[]>(
 		fetchSwapAssets,
 		defaultAssets
@@ -122,28 +125,33 @@ const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 		setReceiveBalance(receiveBalance.value);
 	}, [balances, exchangeToken.tokenId, receiveToken.tokenId]);
 
+	const [slippage, setSlippage] = useState<string>("5");
+
 	const exchangeRate = useSwapExchangeRate(
+		exchangeValue.value,
 		exchangeToken.tokenId,
 		receiveToken.tokenId,
 		exchangeTokens
 	);
 
 	useEffect(() => {
+		const exValue = Number(exchangeValue.value);
 		const setValue = receiveValue.setValue;
-		if (!exchangeValue.value) return setValue("");
-		setValue((Number(exchangeValue.value) * exchangeRate).toString());
+		if (!exValue || isNaN(exValue)) return setValue("");
+		setValue((exValue * exchangeRate).toString());
 	}, [exchangeRate, exchangeValue.value, receiveValue.setValue]);
 
-	const [slippage, setSlippage] = useState<string>("5");
 	const swapExtrinsic = useMemo(() => {
 		if (!api) return;
+		const exValue = Number(exchangeValue.value);
+		const reValue = Number(receiveValue.value);
 
 		return getBuyAssetExtrinsic(
 			api,
 			exchangeAsset,
-			exchangeValue.value || "0",
+			exValue && !isNaN(exValue) ? exchangeValue.value : "1",
 			receiveAsset,
-			receiveValue.value || "0",
+			reValue && !isNaN(reValue) ? receiveValue.value : "1",
 			Number(slippage)
 		);
 	}, [
@@ -156,10 +164,32 @@ const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 	]);
 	const [gasFee, gasAsset] = useGasFee(swapExtrinsic);
 
+	const [txInProgress, setTxInProgress] = useState<boolean>(false);
+	const onFormSubmit = useCallback(
+		async (event) => {
+			event.preventDefault();
+			setTxInProgress(true);
+			let status: string;
+			try {
+				status = await signAndSendTx(
+					swapExtrinsic,
+					selectedAccount.address,
+					wallet.signer
+				);
+			} catch (error) {
+				console.info(error);
+			}
+
+			setTxInProgress(false);
+			await updateBalances();
+		},
+		[swapExtrinsic, selectedAccount, wallet, updateBalances]
+	);
+
 	return (
 		<div css={styles.root}>
 			<h1 css={styles.heading}>SWAP</h1>
-			<form css={styles.form}>
+			<form css={styles.form} onSubmit={onFormSubmit}>
 				<div css={styles.formField}>
 					<label htmlFor="exchangeInput">You Send</label>
 					<TokenInput
@@ -303,7 +333,21 @@ const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 						</div>
 					</AccordionDetails>
 				</Accordion>
+
+				<div css={[styles.formField, styles.formSubmit]}>
+					<SubmitButton requireCENNZnet={true} requireMetaMask={false}>
+						Swap
+					</SubmitButton>
+				</div>
 			</form>
+
+			<div css={styles.formProgress(txInProgress)}>
+				<div>
+					<div css={styles.heading}>Transaction In Progress</div>
+					<LinearProgress css={styles.formProgressBar} />
+					<div>Please sign the transaction with when prompted</div>
+				</div>
+			</div>
 		</div>
 	);
 };
@@ -323,6 +367,7 @@ const styles = {
 		background-color: #ffffff;
 		box-shadow: ${shadows[1]};
 		padding: 1.5em 2.5em 2.5em;
+		overflow: hidden;
 	`,
 
 	heading: ({ palette }: Theme) => css`
@@ -337,6 +382,7 @@ const styles = {
 	form: css`
 		width: 100%;
 		margin-top: 1.5em;
+		position: relative;
 	`,
 
 	formField: css`
@@ -352,6 +398,7 @@ const styles = {
 	`,
 
 	formControl: css`
+		margin-top: 2em;
 		text-align: center;
 	`,
 
@@ -457,5 +504,41 @@ const styles = {
 
 	formInfoTooltip: css`
 		max-width: 200px;
+	`,
+
+	formSubmit: ({ palette }: Theme) => css`
+		text-align: center;
+		border-top: 1px solid ${palette.text.disabled};
+		padding-top: 2em;
+	`,
+
+	formProgress:
+		(show: boolean) =>
+		({ transitions }: Theme) =>
+			css`
+				position: absolute;
+				inset: 0;
+				background-color: rgba(255, 255, 255, 0.9);
+				z-index: 100;
+				opacity: ${show ? 1 : 0};
+				pointer-events: ${show ? "all" : "none"};
+				transition: opacity ${transitions.duration.short}ms;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				backdrop-filter: blur(2px);
+				padding: 5em;
+				text-align: center;
+				font-size: 14px;
+			`,
+
+	formProgressBar: css`
+		border-radius: 10px;
+		height: 10px;
+		margin: 2em;
+
+		.MuiLinearProgress-bar {
+			animation-duration: 1.5s;
+		}
 	`,
 };

@@ -10,7 +10,7 @@ export default function getBuyAssetExtrinsic(
 	exchangeTokenValue: string,
 	receivedToken: CENNZAsset,
 	receivedTokenValue: string,
-	slippage: number
+	slippagePercentage: number
 ): SubmittableExtrinsic<"promise"> {
 	const exchangeAmount: Big = new Big(exchangeTokenValue).mul(
 		exchangeToken.decimalsValue
@@ -18,13 +18,15 @@ export default function getBuyAssetExtrinsic(
 	const receivedAmount: Big = new Big(receivedTokenValue).mul(
 		receivedToken.decimalsValue
 	);
-	const maxExchangeAmount: Big = exchangeAmount.mul(1 + slippage / 100);
+	const maxExchangeAmount: Big = exchangeAmount.mul(
+		1 + slippagePercentage / 100
+	);
 
 	return api.tx.cennzx.buyAsset(
 		null,
 		exchangeToken.assetId,
 		receivedToken.assetId,
-		receivedAmount,
-		maxExchangeAmount
+		receivedAmount.toFixed(0).toString(),
+		maxExchangeAmount.toFixed(0).toString()
 	);
 }

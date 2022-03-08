@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { fetchSwapExchangeRate } from "@/utils";
 
 export default function useSwapExchangeRate(
+	exchangeValue: string,
 	exchangeTokenId: CENNZAsset["assetId"],
 	receivedTokenId: CENNZAsset["assetId"],
 	tokensList: CENNZAsset[]
@@ -12,21 +13,25 @@ export default function useSwapExchangeRate(
 	const [exchangeRate, setExchangeRate] = useState<number>(null);
 
 	useEffect(() => {
-		if (!api || !tokensList?.length) return;
+		if (!api || !tokensList?.length || exchangeTokenId === receivedTokenId)
+			return;
 
-		if (exchangeTokenId === receivedTokenId) return setExchangeRate(1);
+		const exValue = Number(exchangeValue);
 
 		const exchangeToken = tokensList.find(
-			(balance) => balance.assetId === exchangeTokenId
+			(token) => token.assetId === exchangeTokenId
 		);
 		const receivedToken = tokensList.find(
-			(balance) => balance.assetId === receivedTokenId
+			(token) => token.assetId === receivedTokenId
 		);
 
-		fetchSwapExchangeRate(api, exchangeToken, receivedToken).then(
-			setExchangeRate
-		);
-	}, [api, exchangeTokenId, receivedTokenId, tokensList]);
+		fetchSwapExchangeRate(
+			api,
+			exValue && !isNaN(exValue) ? exchangeValue : "1",
+			exchangeToken,
+			receivedToken
+		).then(setExchangeRate);
+	}, [api, exchangeValue, exchangeTokenId, receivedTokenId, tokensList]);
 
 	return exchangeRate;
 }

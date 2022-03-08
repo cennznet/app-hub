@@ -64,6 +64,7 @@ const config = {
 			primary: "#020202",
 			secondary: "#979797",
 			highlight: "#1130FF",
+			disabled: "rgba(151, 151, 151, 0.25)",
 		},
 	},
 	typography: {
