@@ -5,7 +5,7 @@ import { Theme } from "@mui/material";
 
 const globalStyles = (
 	<GlobalStyles
-		styles={({ palette, typography }: Theme) => css`
+		styles={({ palette }: Theme) => css`
 			html {
 				scroll-behavior: smooth;
 				-webkit-font-smoothing: antialiased;
@@ -35,6 +35,8 @@ const globalStyles = (
 
 			pre {
 				font-family: "Roboto Mono", monospace;
+				display: inline;
+				letter-spacing: -0.025em;
 			}
 
 			.MuiCircularProgress-root {

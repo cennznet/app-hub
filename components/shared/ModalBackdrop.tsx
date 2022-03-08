@@ -12,7 +12,7 @@ export default ModalBackdrop;
 export const styles = {
 	root: ({ palette }: Theme) =>
 		css`
-			background-color: ${palette.primary.main};
-			opacity: 0.25 !important;
+			background-color: ${palette.text.secondary};
+			opacity: 0.5 !important;
 		`,
 };

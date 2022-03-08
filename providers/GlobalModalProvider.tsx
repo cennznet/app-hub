@@ -11,6 +11,7 @@ import GlobalModal from "@/components/shared/GlobalModal";
 type GlobalModalContent = {
 	title: string;
 	message: string | JSX.Element;
+	actions?: string | JSX.Element;
 	buttonText?: string;
 	link?: string;
 	disabled?: boolean;
@@ -32,9 +33,12 @@ type ProviderProps = {};
 export default function GlobalModalProvider({
 	children,
 }: PropsWithChildren<ProviderProps>) {
-	const [modalOpened, setModalOpened] = useState<boolean>(false);
+	const [modalOpened, setModalOpened] = useState<{ resolve: () => void }>();
 	const onModalRequestClose = useCallback(() => {
-		setModalOpened(false);
+		setModalOpened((previous) => {
+			previous?.resolve?.();
+			return null;
+		});
 	}, []);
 
 	const [content, setContent] = useState<GlobalModalContent>(
@@ -42,8 +46,10 @@ export default function GlobalModalProvider({
 	);
 
 	const showDialog = useCallback(async (content) => {
-		setContent({ ...content });
-		setModalOpened(true);
+		setContent(content);
+		return new Promise<void>((resolve) => {
+			setModalOpened({ resolve });
+		});
 	}, []);
 
 	return (
@@ -54,15 +60,15 @@ export default function GlobalModalProvider({
 				{children}
 			</GlobalModalContext.Provider>
 			<GlobalModal
-				isOpen={modalOpened}
-				disableButton={content.disabled}
-				setModalOpened={setModalOpened}
-				title={content.title}
-				message={content.message}
-				buttonLink={content.link}
-				buttonText={content.buttonText}
-				callback={content.callback}
-				loading={content.loading}
+				isOpen={!!modalOpened}
+				// disableButton={content.disabled}
+				onRequestClose={onModalRequestClose}
+				shouldCloseOnEsc={true}
+				{...content}
+				// buttonLink={content.link}
+				// buttonText={content.buttonText}
+				// callback={content.callback}
+				// loading={content.loading}
 			/>
 		</>
 	);
