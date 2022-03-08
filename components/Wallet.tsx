@@ -2,8 +2,9 @@ import React, { useState, useMemo, useCallback } from "react";
 import { css } from "@emotion/react";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import WalletModal from "@/components/shared/WalletModal";
-import ThreeDots from "@/components/shared/ThreeDots";
 import AccountIdenticon from "@/components/shared/AccountIdenticon";
+import CENNZBlueSVG from "@/assets/vectors/cennznet-blue.svg";
+import { Theme } from "@mui/material";
 
 type WalletState = "NotConnected" | "Connecting" | "Connected";
 
@@ -28,8 +29,8 @@ const Wallet: React.FC<{}> = () => {
 			<div css={styles.walletButton(modalOpen)} onClick={onWalletClick}>
 				<div css={styles.walletIcon}>
 					<img
-						src="images/cennznet_blue.svg"
-						alt="CENNZnet-log"
+						src={CENNZBlueSVG.src}
+						alt="CENNZnet Logo"
 						css={styles.walletIconImg}
 					/>
 
@@ -59,7 +60,7 @@ export default Wallet;
 export const styles = {
 	walletButton:
 		(modalOpen: boolean) =>
-		({ palette, shadows }) =>
+		({ palette, shadows, transitions }: Theme) =>
 			css`
 				position: absolute;
 				top: 3em;
@@ -71,7 +72,8 @@ export const styles = {
 				align-items: center;
 				background-color: ${modalOpen ? palette.primary.main : "#FFFFFF"};
 				color: ${modalOpen ? "#FFFFFF !important" : palette.primary.main};
-				transition: background-color 0.2s;
+				transition: background-color ${transitions.duration.short}ms,
+					color ${transitions.duration.short}ms;
 				border-radius: 4px;
 				overflow: hidden;
 				padding: 1em;
