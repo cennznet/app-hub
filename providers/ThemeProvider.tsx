@@ -114,7 +114,11 @@ const ThemeProvider: FC<{}> = (props) => {
 					main: config.palette.background[section],
 				},
 			},
-			shadows: ["none", "4px 8px 8px rgba(0, 0, 0, 0.1)"] as any,
+			shadows: [
+				"none",
+				"4px 8px 8px rgba(0, 0, 0, 0.1)",
+				...new Array(23).fill("4px 8px 8px rgba(0, 0, 0, 0.1)"),
+			] as any,
 		});
 	}, [section]);
 

@@ -28,6 +28,7 @@ import ExpandLess from "@mui/icons-material/ExpandLess";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import SubmitButton from "@/components/shared/SubmitButton";
 import signAndSendTx from "@/utils/signAndSendTx";
+import { useGlobalModal } from "@/providers/GlobalModalProvider";
 
 export async function getStaticProps() {
 	const api = await Api.create({ provider: process.env.NEXT_PUBLIC_API_URL });
@@ -165,10 +166,15 @@ const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 	const [gasFee, gasAsset] = useGasFee(swapExtrinsic);
 
 	const [txInProgress, setTxInProgress] = useState<boolean>(false);
+	const { showDialog } = useGlobalModal();
+
 	const onFormSubmit = useCallback(
 		async (event) => {
 			event.preventDefault();
 			setTxInProgress(true);
+
+			const setExValue = exchangeValue.setValue;
+
 			let status: string;
 			try {
 				status = await signAndSendTx(
@@ -178,12 +184,49 @@ const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 				);
 			} catch (error) {
 				console.info(error);
+				setTxInProgress(false);
+				return showDialog({
+					title: "Transaction Incomplete",
+					message: `An error${
+						error?.code ? ` (#${error.code})` : ""
+					} has occured while processing your transaction`,
+					actions: "Dismiss",
+				});
 			}
-
 			setTxInProgress(false);
+			if (status === "cancelled") return;
+
+			await showDialog({
+				title: "Transaction Complete!",
+				message: (
+					<div>
+						You successfully swapped{" "}
+						<pre css={styles.highlightText}>
+							{formatBalance(Number(exchangeValue.value))}{" "}
+							{exchangeAsset.symbol}
+						</pre>{" "}
+						for{" "}
+						<pre css={styles.highlightText}>
+							{formatBalance(Number(receiveValue.value))} {receiveAsset.symbol}
+						</pre>
+					</div>
+				),
+			});
+			setExValue("");
 			await updateBalances();
 		},
-		[swapExtrinsic, selectedAccount, wallet, updateBalances]
+		[
+			showDialog,
+			swapExtrinsic,
+			selectedAccount,
+			wallet,
+			updateBalances,
+			exchangeValue.value,
+			exchangeValue.setValue,
+			receiveValue.value,
+			exchangeAsset,
+			receiveAsset,
+		]
 	);
 
 	return (
@@ -345,7 +388,7 @@ const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 				<div>
 					<div css={styles.heading}>Transaction In Progress</div>
 					<LinearProgress css={styles.formProgressBar} />
-					<div>Please sign the transaction with when prompted</div>
+					<div>Please wait and sign the transaction when prompted</div>
 				</div>
 			</div>
 		</div>
@@ -458,10 +501,6 @@ const styles = {
 				}
 			}
 		}
-
-		pre {
-			display: inline;
-		}
 	`,
 
 	formInfoProgress: (hide) => css`
@@ -536,9 +575,9 @@ const styles = {
 		border-radius: 10px;
 		height: 10px;
 		margin: 2em;
+	`,
 
-		.MuiLinearProgress-bar {
-			animation-duration: 1.5s;
-		}
+	highlightText: ({ palette }: Theme) => css`
+		color: ${palette.text.highlight};
 	`,
 };
