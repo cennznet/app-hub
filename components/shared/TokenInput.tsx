@@ -74,13 +74,12 @@ const TokenInput: FC<
 				{...props}
 				disabled={disabled}
 				css={styles.input}
-				type="text"
+				type="number"
 				inputMode="decimal"
 				autoComplete="off"
 				autoCorrect="off"
 				pattern="^[0-9]*[.,]?[0-9]*$"
 				spellCheck={false}
-				min={0}
 				maxLength={79}
 				onChange={onInputChange}
 				placeholder={placeholder}

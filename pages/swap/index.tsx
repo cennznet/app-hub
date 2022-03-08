@@ -189,7 +189,7 @@ const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 					title: "Transaction Incomplete",
 					message: `An error${
 						error?.code ? ` (#${error.code})` : ""
-					} has occured while processing your transaction`,
+					} has occurred while processing your transaction`,
 					actions: "Dismiss",
 				});
 			}
@@ -248,6 +248,7 @@ const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
 						tokens={exchangeTokens}
 						id="exchangeInput"
 						required
+						max={exchangeBalance}
 					/>
 
 					{!!selectedAccount && (
