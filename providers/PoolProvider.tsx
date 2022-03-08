@@ -77,6 +77,7 @@ const PoolProvider: FC<{
 					symbol: coreAsset.symbol,
 					assetId: Number(coreAssetId),
 					decimals: Number(coreAsset.decimalPlaces),
+					decimalsValue: Math.pow(10, Number(coreAsset.decimalPlaces)),
 				},
 			}));
 		})();

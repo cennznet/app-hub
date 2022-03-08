@@ -1,9 +1,9 @@
-import { FC } from "react";
+import { FC, ButtonHTMLAttributes } from "react";
 import { css } from "@emotion/react";
 import { Theme } from "@mui/material";
 
 interface StandardButtonProps {
-	variant: "primary" | "secondary";
+	variant?: "primary" | "secondary";
 }
 const StandardButton: FC<
 	ButtonHTMLAttributes<HTMLButtonElement> & StandardButtonProps
