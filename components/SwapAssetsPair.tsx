@@ -72,8 +72,8 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = ({
 	}, [exchangeToken.tokenId, setTokensPair]);
 
 	useEffect(() => {
-		if (!exchangeRate) return;
 		const setReceiveValue = receiveValue.setValue;
+		if (!exchangeRate) return setReceiveValue("");
 		setReceiveValue(exchangeRate.toString());
 	}, [exchangeRate, receiveValue.setValue]);
 
@@ -94,7 +94,9 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = ({
 					tokens={exchangeTokens}
 					id="exchangeInput"
 					required
-					max={exchangeBalance}
+					scale={4}
+					min={0.0001}
+					max={Number(exchangeBalance)}
 				/>
 
 				{!!selectedAccount && (
@@ -114,13 +116,13 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = ({
 				<TokenInput
 					selectedTokenId={receiveToken.tokenId}
 					onTokenChange={receiveToken.onTokenChange}
-					value={
-						receiveValue.value ? formatBalance(Number(receiveValue.value)) : ""
-					}
+					value={receiveValue.value}
 					onValueChange={receiveValue.onValueChange}
 					tokens={receiveTokens}
 					disabled={true}
 					id="receiveInput"
+					padFractionalZeros={true}
+					scale={4}
 				/>
 				{!!selectedAccount && (
 					<div css={styles.tokenBalance}>

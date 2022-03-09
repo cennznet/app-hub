@@ -88,7 +88,7 @@ const styles = {
 
 		.MuiAccordionSummary-content {
 			flex-grow: 0;
-			margin: 0;
+			margin: 0 !important;
 		}
 
 		.MuiAccordionSummary-expandIconWrapper.Mui-expanded {

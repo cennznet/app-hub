@@ -12,7 +12,10 @@ export default function useSwapExchangeRate(
 	const { exchangeAsset, receiveAsset } = useSwap();
 
 	const fetch = useMemo(() => {
-		if (!api || !Number(exchangeValue)) return;
+		const exValue = Number(exchangeValue);
+
+		if (!api || !exValue) return setExchangeRate(null);
+
 		return throttle(() => {
 			fetchSellPrice(api, exchangeValue, exchangeAsset, receiveAsset).then(
 				setExchangeRate
@@ -21,7 +24,8 @@ export default function useSwapExchangeRate(
 	}, [api, exchangeValue, exchangeAsset, receiveAsset]);
 
 	useEffect(() => {
-		fetch?.();
+		if (!fetch) return;
+		fetch();
 	}, [fetch]);
 
 	return exchangeRate;

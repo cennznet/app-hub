@@ -1,9 +1,10 @@
-import { FC, InputHTMLAttributes, useCallback, useEffect } from "react";
+import { FC, InputHTMLAttributes } from "react";
 import { css } from "@emotion/react";
 import { Select, SelectChangeEvent, MenuItem, Theme } from "@mui/material";
 import { CENNZAsset, EthereumToken } from "@/types";
 import getTokenLogo from "@/utils/getTokenLogo";
 import ExpandLess from "@mui/icons-material/ExpandLess";
+import { IMaskInput, IMask } from "react-imask";
 
 interface TokenInputProps {
 	tokens: Partial<CENNZAsset & EthereumToken>[];
@@ -13,16 +14,10 @@ interface TokenInputProps {
 	onValueChange: (value: string) => void;
 }
 
-// match escaped "." characters via in a non-capturing group
-const inputRegex = RegExp(`^\\d*(?:\\\\[.])?\\d*$`);
-
-// $& means the whole matched string
-const escapeRegExp = (string: string): string => {
-	return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-};
-
 const TokenInput: FC<
-	InputHTMLAttributes<HTMLInputElement> & TokenInputProps
+	InputHTMLAttributes<HTMLInputElement> &
+		Omit<IMask.MaskedNumberOptions, "mask"> &
+		TokenInputProps
 > = ({
 	selectedTokenId,
 	onTokenChange,
@@ -30,19 +25,11 @@ const TokenInput: FC<
 	onMaxValueRequest,
 	placeholder = "0.0",
 	onValueChange,
+	min,
+	max,
 	disabled,
 	...props
 }) => {
-	const onInputChange = useCallback(
-		(event) => {
-			const value = event.target.value.replace(/,/g, ".");
-			if (value === "" || inputRegex.test(escapeRegExp(event.target.value))) {
-				onValueChange?.(value);
-			}
-		},
-		[onValueChange]
-	);
-
 	return (
 		<div css={[styles.root, !disabled && styles.rootHover]}>
 			<Select
@@ -70,18 +57,16 @@ const TokenInput: FC<
 					Max
 				</div>
 			)}
-			<input
+			<IMaskInput
 				{...props}
 				disabled={disabled}
+				mask={Number}
 				css={styles.input}
-				type="number"
-				inputMode="decimal"
+				type={disabled ? "text" : "number"}
 				autoComplete="off"
 				autoCorrect="off"
-				pattern="^[0-9]*[.,]?[0-9]*$"
-				spellCheck={false}
-				maxLength={79}
-				onChange={onInputChange}
+				radix="."
+				onAccept={onValueChange}
 				placeholder={placeholder}
 			/>
 		</div>
@@ -192,6 +177,7 @@ export const styles = {
 		outline: none;
 		font-family: "Roboto Mono", monospace;
 		font-weight: 600;
+		-moz-appearance: textfield;
 
 		&:disabled {
 			background-color: white;
@@ -199,6 +185,12 @@ export const styles = {
 
 		&::placeholder {
 			color: ${palette.text.secondary};
+		}
+
+		&::-webkit-outer-spin-button,
+		&::-webkit-inner-spin-button {
+			-webkit-appearance: none;
+			margin: 0;
 		}
 	`,
 
