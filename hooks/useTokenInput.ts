@@ -1,7 +1,7 @@
 import { SelectChangeEvent } from "@mui/material";
 import { Dispatch, SetStateAction, useCallback, useState } from "react";
 
-type ReturnType<T> = [
+export type ReturnType<T> = [
 	{
 		tokenId: T;
 		setTokenId: Dispatch<SetStateAction<T>>;

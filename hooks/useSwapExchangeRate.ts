@@ -1,37 +1,31 @@
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
-import { CENNZAsset } from "@/types";
 import { useEffect, useState } from "react";
-import { fetchSwapExchangeRate } from "@/utils";
+import { fetchSellPrice } from "@/utils";
+import { useSwap } from "@/providers/SwapProvider";
 
-export default function useSwapExchangeRate(
-	exchangeValue: string,
-	exchangeTokenId: CENNZAsset["assetId"],
-	receivedTokenId: CENNZAsset["assetId"],
-	tokensList: CENNZAsset[]
-): number {
+export default function useSwapExchangeRate(): number {
 	const { api } = useCENNZApi();
 	const [exchangeRate, setExchangeRate] = useState<number>(null);
+	const { exchangeToken, receiveToken, exchangeTokens } = useSwap();
+
+	const exchangeTokenId = exchangeToken.tokenId;
+	const receiveTokenId = receiveToken.tokenId;
 
 	useEffect(() => {
-		if (!api || !tokensList?.length || exchangeTokenId === receivedTokenId)
+		if (!api || !exchangeTokens?.length || exchangeTokenId === receiveTokenId)
 			return;
 
-		const exValue = Number(exchangeValue);
-
-		const exchangeToken = tokensList.find(
+		const exchangeToken = exchangeTokens.find(
 			(token) => token.assetId === exchangeTokenId
 		);
-		const receivedToken = tokensList.find(
-			(token) => token.assetId === receivedTokenId
+		const receivedToken = exchangeTokens.find(
+			(token) => token.assetId === receiveTokenId
 		);
 
-		fetchSwapExchangeRate(
-			api,
-			exValue && !isNaN(exValue) ? exchangeValue : "1",
-			exchangeToken,
-			receivedToken
-		).then(setExchangeRate);
-	}, [api, exchangeValue, exchangeTokenId, receivedTokenId, tokensList]);
+		fetchSellPrice(api, "1", exchangeToken, receivedToken).then(
+			setExchangeRate
+		);
+	}, [api, exchangeTokenId, receiveTokenId, exchangeTokens]);
 
 	return exchangeRate;
 }

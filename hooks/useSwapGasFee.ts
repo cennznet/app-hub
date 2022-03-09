@@ -1,20 +1,27 @@
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import { CENNZAsset } from "@/types";
-import { fetchCENNZAssets, fetchGasFee } from "@/utils";
-import { SubmittableExtrinsic } from "@cennznet/api/types";
+import { fetchCENNZAssets, fetchGasFee, getBuyAssetExtrinsic } from "@/utils";
+import { CPAY_ASSET_ID } from "@/constants";
 import { useEffect, useState } from "react";
+import { useSwap } from "@/providers/SwapProvider";
 
-const CPAY_ASSET_ID = Number(process.env.NEXT_PUBLIC_CPAY_ID);
-
-export default function useGasFee(
-	extrinsic: SubmittableExtrinsic<"promise">
-): [number, CENNZAsset] {
+export default function useSwapGasFee(): [number, CENNZAsset] {
 	const [gasFee, setGasFee] = useState<number>();
 	const [gasAsset, setGasAsset] = useState<CENNZAsset>();
 	const { api } = useCENNZApi();
+	const { exchangeAsset, receiveAsset } = useSwap();
 
 	useEffect(() => {
-		if (!api || !extrinsic) return;
+		if (!api) return;
+
+		const extrinsic = getBuyAssetExtrinsic(
+			api,
+			exchangeAsset,
+			"1",
+			receiveAsset,
+			"1",
+			5
+		);
 
 		(async () => {
 			const cennzAssets = await fetchCENNZAssets(api);
@@ -27,7 +34,7 @@ export default function useGasFee(
 			setGasAsset(gasAsset);
 			setGasFee(gasFee);
 		})();
-	}, [api, extrinsic]);
+	}, [api, exchangeAsset, receiveAsset]);
 
 	return [gasFee, gasAsset];
 }

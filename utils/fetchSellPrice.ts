@@ -3,7 +3,7 @@ import { CENNZAsset } from "@/types";
 import Big from "big.js";
 
 // TODO: Add test
-export default async function fetchSwapExchangeRate(
+export default async function fetchSellPrice(
 	api: Api,
 	exchangeValue: string,
 	exchangeToken: CENNZAsset,
