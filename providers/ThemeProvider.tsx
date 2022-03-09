@@ -88,7 +88,7 @@ const config = {
 } as Partial<Theme>;
 
 const ThemeProvider: FC<{}> = (props) => {
-	const section = useSectionUri() || "swap";
+	const section = useSectionUri();
 	const theme = useMemo<Theme>(() => {
 		return createTheme({
 			...config,
@@ -96,22 +96,25 @@ const ThemeProvider: FC<{}> = (props) => {
 				...config.palette,
 				primary: {
 					...config.palette.primary,
-					main: config.palette.primary[section],
+					main: config.palette.primary[section] || config.palette.primary.swap,
 				},
 
 				secondary: {
 					...config.palette.secondary,
-					main: config.palette.secondary[section],
+					main:
+						config.palette.secondary[section] || config.palette.secondary.swap,
 				},
 
 				info: {
 					...config.palette.info,
-					main: config.palette.info[section],
+					main: config.palette.info[section] || config.palette.info.swap,
 				},
 
 				background: {
 					...config.palette.background,
-					main: config.palette.background[section],
+					main:
+						config.palette.background[section] ||
+						config.palette.background.swap,
 				},
 			},
 			shadows: [

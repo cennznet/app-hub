@@ -9,7 +9,6 @@ export default async function fetchCENNZAssets(
 	const registeredAssets = await (
 		api.rpc as any
 	).genericAsset.registeredAssets();
-	0;
 
 	return registeredAssets
 		.map((registeredAsset: [AssetId, AssetInfo]) => {

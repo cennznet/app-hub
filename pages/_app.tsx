@@ -39,7 +39,9 @@ function MyApp({
 					<UserAgentProvider>
 						<CENNZExtensionProvider>
 							<CENNZApiProvider endpoint={process.env.NEXT_PUBLIC_API_URL}>
-								<SupportedAssetsProvider supportedAssets={supportedAssets}>
+								<SupportedAssetsProvider
+									supportedAssets={supportedAssets || []}
+								>
 									<CENNZWalletProvider>
 										<BridgeProvider
 											ethChainId={process.env.NEXT_PUBLIC_ETH_CHAIN_ID}
