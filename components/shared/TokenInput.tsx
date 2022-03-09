@@ -1,10 +1,17 @@
-import { FC, InputHTMLAttributes } from "react";
+import {
+	FC,
+	MutableRefObject,
+	InputHTMLAttributes,
+	useCallback,
+	useMemo,
+	useEffect,
+} from "react";
 import { css } from "@emotion/react";
 import { Select, SelectChangeEvent, MenuItem, Theme } from "@mui/material";
 import { CENNZAsset, EthereumToken } from "@/types";
 import getTokenLogo from "@/utils/getTokenLogo";
 import ExpandLess from "@mui/icons-material/ExpandLess";
-import { IMaskInput, IMask } from "react-imask";
+import { useIMask, IMask } from "react-imask";
 
 interface TokenInputProps {
 	tokens: Partial<CENNZAsset & EthereumToken>[];
@@ -16,20 +23,45 @@ interface TokenInputProps {
 
 const TokenInput: FC<
 	InputHTMLAttributes<HTMLInputElement> &
-		Omit<IMask.MaskedNumberOptions, "mask"> &
+		Pick<IMask.MaskedNumberOptions, "scale" | "padFractionalZeros"> &
 		TokenInputProps
 > = ({
 	selectedTokenId,
 	onTokenChange,
 	tokens,
 	onMaxValueRequest,
-	placeholder = "0.0",
+	placeholder = "0.0000",
 	onValueChange,
-	min,
-	max,
+	scale,
+	padFractionalZeros,
 	disabled,
+	value,
 	...props
 }) => {
+	const imaskOptions = useMemo(
+		() => ({
+			scale,
+			padFractionalZeros,
+			radix: ".",
+			mask: Number,
+		}),
+		[padFractionalZeros, scale]
+	);
+
+	const onIMaskAccept = useCallback(
+		(value) => {
+			onValueChange?.(value);
+		},
+		[onValueChange]
+	);
+
+	const { ref: inputRef, setValue } = useIMask(imaskOptions, {
+		onAccept: onIMaskAccept,
+	});
+
+	useEffect(() => {
+		setValue?.(value as string);
+	}, [value, setValue]);
 	return (
 		<div css={[styles.root, !disabled && styles.rootHover]}>
 			<Select
@@ -57,16 +89,14 @@ const TokenInput: FC<
 					Max
 				</div>
 			)}
-			<IMaskInput
+			<input
 				{...props}
+				ref={inputRef as MutableRefObject<HTMLInputElement>}
 				disabled={disabled}
-				mask={Number}
 				css={styles.input}
 				type={disabled ? "text" : "number"}
 				autoComplete="off"
 				autoCorrect="off"
-				radix="."
-				onAccept={onValueChange}
 				placeholder={placeholder}
 			/>
 		</div>
@@ -181,6 +211,8 @@ export const styles = {
 
 		&:disabled {
 			background-color: white;
+			color: inherit;
+			cursor: not-allowed;
 		}
 
 		&::placeholder {
