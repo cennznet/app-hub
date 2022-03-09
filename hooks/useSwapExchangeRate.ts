@@ -2,7 +2,7 @@ import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import { useEffect, useState, useMemo } from "react";
 import { fetchSellPrice } from "@/utils";
 import { useSwap } from "@/providers/SwapProvider";
-import throttle from "lodash/throttle";
+import debounce from "lodash/debounce";
 
 export default function useSwapExchangeRate(
 	exchangeValue: string = "1"
@@ -12,21 +12,19 @@ export default function useSwapExchangeRate(
 	const { exchangeAsset, receiveAsset } = useSwap();
 
 	const fetch = useMemo(() => {
-		const exValue = Number(exchangeValue);
-
-		if (!api || !exValue) return setExchangeRate(null);
-
-		return throttle(() => {
+		return debounce((api, exchangeValue, exchangeAsset, receiveAsset) => {
+			const exValue = Number(exchangeValue);
+			if (!exValue) return setExchangeRate(0);
 			fetchSellPrice(api, exchangeValue, exchangeAsset, receiveAsset).then(
 				setExchangeRate
 			);
-		}, 100);
-	}, [api, exchangeValue, exchangeAsset, receiveAsset]);
+		}, 250);
+	}, []);
 
 	useEffect(() => {
-		if (!fetch) return;
-		fetch();
-	}, [fetch]);
+		if (!api) return;
+		fetch(api, exchangeValue, exchangeAsset, receiveAsset);
+	}, [api, fetch, exchangeValue, exchangeAsset, receiveAsset]);
 
 	return exchangeRate;
 }
