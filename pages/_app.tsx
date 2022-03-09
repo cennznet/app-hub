@@ -28,8 +28,8 @@ function MyApp({ Component, pageProps }: MyAppProps) {
 				<link rel="icon" href="/favicon.svg" />
 			</Head>
 			<CssBaseline />
-			<CssGlobal />
 			<ThemeProvider>
+				<CssGlobal />
 				<UserAgentProvider>
 					<CENNZExtensionProvider>
 						<CENNZApiProvider endpoint={process.env.NEXT_PUBLIC_API_URL}>

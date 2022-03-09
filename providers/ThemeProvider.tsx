@@ -75,7 +75,7 @@ const config = {
 	},
 	transitions: {
 		duration: {
-			shortest: 100,
+			shortest: 150,
 		},
 	},
 	components: {

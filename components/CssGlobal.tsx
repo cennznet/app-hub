@@ -52,11 +52,7 @@ const globalStyles = (
 				}
 
 				.MuiAccordionSummary-content {
-					margin-top: 1em;
-					margin-bottom: 1em;
 					&.Mui-expanded {
-						margin-top: 1em;
-						margin-bottom: 1em;
 					}
 				}
 
@@ -88,23 +84,23 @@ const globalStyles = (
 						}
 					}
 				}
+			}
 
-				.MuiTooltip-popper {
-					font-weight: normal;
-					.MuiTooltip-tooltip {
-						border-radius: 4px;
-						background-color: white;
-						color: ${palette.text.primary};
-						padding: 1em;
-						box-shadow: 4px 8px 8px rgba(0, 0, 0, 0.1);
-						border: 1px solid ${palette.secondary.main};
-					}
+			.MuiTooltip-popper {
+				font-weight: normal;
+				.MuiTooltip-tooltip {
+					border-radius: 4px;
+					background-color: white;
+					color: ${palette.text.primary};
+					padding: 1em;
+					box-shadow: 4px 8px 8px rgba(0, 0, 0, 0.1);
+					border: 1px solid ${palette.secondary.main};
+				}
 
-					.MuiTooltip-arrow {
-						color: white;
-						&:before {
-							outline: 1px solid ${palette.secondary.main};
-						}
+				.MuiTooltip-arrow {
+					color: white;
+					&:before {
+						outline: 1px solid ${palette.secondary.main};
 					}
 				}
 			}

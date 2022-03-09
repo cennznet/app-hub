@@ -1,13 +1,16 @@
-import { FC, ButtonHTMLAttributes } from "react";
 import { css } from "@emotion/react";
 import { Theme } from "@mui/material";
+import { FC } from "react";
+import { IntrinsicElements } from "@/types";
 
 interface StandardButtonProps {
 	variant?: "primary" | "secondary";
 }
-const StandardButton: FC<
-	ButtonHTMLAttributes<HTMLButtonElement> & StandardButtonProps
-> = ({ children, variant = "primary", ...props }) => {
+const StandardButton: FC<IntrinsicElements["button"] & StandardButtonProps> = ({
+	children,
+	variant = "primary",
+	...props
+}) => {
 	return (
 		<button css={[styles.root, styles[variant]]} {...props}>
 			{children}

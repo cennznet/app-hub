@@ -191,6 +191,7 @@ export const styles = {
 		text-align: right;
 		outline: none;
 		font-family: "Roboto Mono", monospace;
+		font-weight: 600;
 
 		&:disabled {
 			background-color: white;

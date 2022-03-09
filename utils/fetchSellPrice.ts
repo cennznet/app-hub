@@ -6,17 +6,17 @@ import Big from "big.js";
 export default async function fetchSellPrice(
 	api: Api,
 	exchangeValue: string,
-	exchangeToken: CENNZAsset,
-	receivedToken: CENNZAsset
+	exchangeAsset: CENNZAsset,
+	receiveAsset: CENNZAsset
 ): Promise<number> {
 	const amount = new Big(exchangeValue);
 	const { price } = await (api.rpc as any).cennzx.sellPrice(
-		exchangeToken.assetId,
-		amount.mul(exchangeToken.decimalsValue).toFixed(0).toString(),
-		receivedToken.assetId
+		exchangeAsset.assetId,
+		amount.mul(exchangeAsset.decimalsValue).toFixed(0).toString(),
+		receiveAsset.assetId
 	);
 
-	const sellPrice = new Big(price.toString()).div(receivedToken.decimalsValue);
+	const sellPrice = new Big(price.toString()).div(receiveAsset.decimalsValue);
 
-	return sellPrice.div(amount).toNumber();
+	return sellPrice.toNumber();
 }

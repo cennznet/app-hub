@@ -1,4 +1,10 @@
 import { Amount } from "@/utils/Amount";
+import {
+	ButtonHTMLAttributes,
+	FormHTMLAttributes,
+	HTMLAttributes,
+	HTMLFormElement,
+} from "react";
 
 export interface Asset {
 	symbol: string;
@@ -104,4 +110,10 @@ export interface TxModalAttributes {
 	title: string;
 	text: string;
 	hash: string;
+}
+
+export interface IntrinsicElements {
+	div: HTMLAttributes<HTMLDivElement>;
+	form: FormHTMLAttributes<HTMLFormElement>;
+	button: ButtonHTMLAttributes<HTMLButtonElement>;
 }

@@ -1,31 +1,28 @@
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { fetchSellPrice } from "@/utils";
 import { useSwap } from "@/providers/SwapProvider";
+import throttle from "lodash/throttle";
 
-export default function useSwapExchangeRate(): number {
+export default function useSwapExchangeRate(
+	exchangeValue: string = "1"
+): number {
 	const { api } = useCENNZApi();
 	const [exchangeRate, setExchangeRate] = useState<number>(null);
-	const { exchangeToken, receiveToken, exchangeTokens } = useSwap();
+	const { exchangeAsset, receiveAsset } = useSwap();
 
-	const exchangeTokenId = exchangeToken.tokenId;
-	const receiveTokenId = receiveToken.tokenId;
+	const fetch = useMemo(() => {
+		if (!api || !Number(exchangeValue)) return;
+		return throttle(() => {
+			fetchSellPrice(api, exchangeValue, exchangeAsset, receiveAsset).then(
+				setExchangeRate
+			);
+		}, 100);
+	}, [api, exchangeValue, exchangeAsset, receiveAsset]);
 
 	useEffect(() => {
-		if (!api || !exchangeTokens?.length || exchangeTokenId === receiveTokenId)
-			return;
-
-		const exchangeToken = exchangeTokens.find(
-			(token) => token.assetId === exchangeTokenId
-		);
-		const receivedToken = exchangeTokens.find(
-			(token) => token.assetId === receiveTokenId
-		);
-
-		fetchSellPrice(api, "1", exchangeToken, receivedToken).then(
-			setExchangeRate
-		);
-	}, [api, exchangeTokenId, receiveTokenId, exchangeTokens]);
+		fetch?.();
+	}, [fetch]);
 
 	return exchangeRate;
 }

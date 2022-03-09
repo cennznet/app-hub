@@ -6,17 +6,17 @@ import Big from "big.js";
 // TODO: Need test
 export default function getBuyAssetExtrinsic(
 	api: Api,
-	exchangeToken: CENNZAsset,
-	exchangeTokenValue: string,
-	receivedToken: CENNZAsset,
-	receivedTokenValue: string,
+	exchangeAsset: CENNZAsset,
+	exchangeAssetValue: string,
+	receivedAsset: CENNZAsset,
+	receivedAssetValue: string,
 	slippagePercentage: number
 ): SubmittableExtrinsic<"promise"> {
-	const exchangeAmount: Big = new Big(exchangeTokenValue).mul(
-		exchangeToken.decimalsValue
+	const exchangeAmount: Big = new Big(exchangeAssetValue).mul(
+		exchangeAsset.decimalsValue
 	);
-	const receivedAmount: Big = new Big(receivedTokenValue).mul(
-		receivedToken.decimalsValue
+	const receivedAmount: Big = new Big(receivedAssetValue).mul(
+		receivedAsset.decimalsValue
 	);
 	const maxExchangeAmount: Big = exchangeAmount.mul(
 		1 + slippagePercentage / 100
@@ -24,8 +24,8 @@ export default function getBuyAssetExtrinsic(
 
 	return api.tx.cennzx.buyAsset(
 		null,
-		exchangeToken.assetId,
-		receivedToken.assetId,
+		exchangeAsset.assetId,
+		receivedAsset.assetId,
 		receivedAmount.toFixed(0).toString(),
 		maxExchangeAmount.toFixed(0).toString()
 	);
