@@ -1,6 +1,6 @@
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import { Api } from "@cennznet/api";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export default function useTokensFetcher<T>(
 	fetcher: (api: Api) => Promise<T>,

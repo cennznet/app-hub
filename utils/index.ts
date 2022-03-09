@@ -3,7 +3,6 @@ import fetchCENNZAssets from "@/utils/fetchCENNZAssets";
 import fetchCENNZAssetBalances from "@/utils/fetchCENNZAssetBalances";
 import fetchEthereumTokens from "@/utils/fetchEthereumTokens";
 import fetchPoolAssets from "@/utils/fetchPoolAssets";
-import fetchSupportedAssets from "@/utils/fetchSupportedAssets";
 import fetchSwapAssets from "@/utils/fetchSwapAssets";
 import generateGlobalProps from "@/utils/generateGlobalProps";
 import getTokenLogo from "@/utils/getTokenLogo";
@@ -19,7 +18,6 @@ export const formatBalance = (balance: number): string => {
 export {
 	generateGlobalProps,
 	fetchCENNZAssets,
-	fetchSupportedAssets,
 	fetchPoolAssets,
 	fetchCENNZAssetBalances,
 	fetchBridgeTokens,

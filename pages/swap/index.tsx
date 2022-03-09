@@ -23,30 +23,34 @@ import { formatBalance, getBuyAssetExtrinsic } from "@/utils";
 import useSwapExchangeRate from "@/hooks/useSwapExchangeRate";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import useGasFee from "@/hooks/useGasFee";
-import { CENNZ_ASSET_ID, CPAY_ASSET_ID } from "@/constants";
+import { CENNZ_ASSET_ID, CPAY_ASSET_ID, API_URL } from "@/constants";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import SubmitButton from "@/components/shared/SubmitButton";
 import signAndSendTx from "@/utils/signAndSendTx";
 import { useGlobalModal } from "@/providers/GlobalModalProvider";
+import generateGlobalProps from "@/utils/generateGlobalProps";
 
 export async function getStaticProps() {
-	const api = await Api.create({ provider: process.env.NEXT_PUBLIC_API_URL });
+	const api = await Api.create({ provider: API_URL });
 
 	return {
 		props: {
-			defaultAssets: await fetchSwapAssets(api),
+			supportedAssets: await fetchSwapAssets(api),
+			...(await generateGlobalProps("swap")),
 		},
 	};
 }
 
-const Swap: React.FC<{ defaultAssets: CENNZAsset[] }> = ({ defaultAssets }) => {
+const Swap: React.FC<{ supportedAssets: CENNZAsset[] }> = ({
+	supportedAssets,
+}) => {
 	const { api } = useCENNZApi();
 	const { selectedAccount, balances, wallet, updateBalances } =
 		useCENNZWallet();
 	const [exchangeTokens] = useTokensFetcher<CENNZAsset[]>(
 		fetchSwapAssets,
-		defaultAssets
+		supportedAssets
 	);
 	const [receiveTokens, setReceiveTokens] =
 		useState<CENNZAsset[]>(exchangeTokens);
