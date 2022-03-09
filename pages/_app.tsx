@@ -15,7 +15,6 @@ import PageBackdrop from "@/components/shared/PageBackdrop";
 import PageFrame from "@/components/shared/PageFrame";
 import GlobalModalProvider from "@/providers/GlobalModalProvider";
 import CssGlobal from "@/components/CssGlobal";
-import { StyledEngineProvider } from "@mui/material/styles";
 
 type MyAppProps = Omit<AppProps, "pageProps"> & {
 	pageProps: {} & GlobalProps;
@@ -32,34 +31,30 @@ function MyApp({
 				<meta name="description" content="App Hub powered by CENNZnet" />
 				<link rel="icon" href="/favicon.svg" />
 			</Head>
+			<CssBaseline />
+			<CssGlobal />
 			<ThemeProvider>
-				<CssBaseline />
-				<CssGlobal />
-				<StyledEngineProvider injectFirst>
-					<UserAgentProvider>
-						<CENNZExtensionProvider>
-							<CENNZApiProvider endpoint={process.env.NEXT_PUBLIC_API_URL}>
-								<SupportedAssetsProvider
-									supportedAssets={supportedAssets || []}
-								>
-									<CENNZWalletProvider>
-										<BridgeProvider
-											ethChainId={process.env.NEXT_PUBLIC_ETH_CHAIN_ID}
-										>
-											<GlobalModalProvider>
-												<PageBackdrop />
-												<Wallet />
-												<AppSwitch />
-												<Component {...pageProps} />
-												<PageFrame />
-											</GlobalModalProvider>
-										</BridgeProvider>
-									</CENNZWalletProvider>
-								</SupportedAssetsProvider>
-							</CENNZApiProvider>
-						</CENNZExtensionProvider>
-					</UserAgentProvider>
-				</StyledEngineProvider>
+				<UserAgentProvider>
+					<CENNZExtensionProvider>
+						<CENNZApiProvider endpoint={process.env.NEXT_PUBLIC_API_URL}>
+							<SupportedAssetsProvider supportedAssets={supportedAssets || []}>
+								<CENNZWalletProvider>
+									<BridgeProvider
+										ethChainId={process.env.NEXT_PUBLIC_ETH_CHAIN_ID}
+									>
+										<GlobalModalProvider>
+											<PageBackdrop />
+											<Wallet />
+											<AppSwitch />
+											<Component {...pageProps} />
+											<PageFrame />
+										</GlobalModalProvider>
+									</BridgeProvider>
+								</CENNZWalletProvider>
+							</SupportedAssetsProvider>
+						</CENNZApiProvider>
+					</CENNZExtensionProvider>
+				</UserAgentProvider>
 			</ThemeProvider>
 		</>
 	);

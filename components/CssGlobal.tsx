@@ -39,70 +39,72 @@ const globalStyles = (
 				letter-spacing: -0.025em;
 			}
 
-			.MuiCircularProgress-root {
-				animation-duration: 0.7s;
-			}
-
-			.MuiAccordionSummary-root {
-				min-height: 0;
-				&.Mui-expanded {
-					min-height: 0;
+			#__next {
+				.MuiCircularProgress-root {
+					animation-duration: 0.7s;
 				}
-			}
 
-			.MuiAccordionSummary-content {
-				margin-top: 1em;
-				margin-bottom: 1em;
-				&.Mui-expanded {
+				.MuiAccordionSummary-root {
+					min-height: 0;
+					&.Mui-expanded {
+						min-height: 0;
+					}
+				}
+
+				.MuiAccordionSummary-content {
 					margin-top: 1em;
 					margin-bottom: 1em;
+					&.Mui-expanded {
+						margin-top: 1em;
+						margin-bottom: 1em;
+					}
 				}
-			}
 
-			.MuiAccordionDetails-root {
-				padding: 0;
-			}
+				.MuiAccordionDetails-root {
+					padding: 0;
+				}
 
-			.MuiTextField-root {
-				.MuiOutlinedInput-root {
-					border-radius: 4px;
-					line-height: 1;
+				.MuiTextField-root {
+					.MuiOutlinedInput-root {
+						border-radius: 4px;
+						line-height: 1;
 
-					&:hover,
-					&:active,
-					&.Mui-focused {
+						&:hover,
+						&:active,
+						&.Mui-focused {
+							.MuiOutlinedInput-notchedOutline {
+								border-color: ${palette.primary.main};
+								border-width: 1px;
+							}
+						}
+
+						.MuiOutlinedInput-input {
+							padding: 0.75em;
+							font-family: "Roboto Mono", monospace;
+						}
+
 						.MuiOutlinedInput-notchedOutline {
-							border-color: ${palette.primary.main};
-							border-width: 1px;
+							border-color: ${palette.text.secondary};
 						}
 					}
-
-					.MuiOutlinedInput-input {
-						padding: 0.75em;
-						font-family: "Roboto Mono", monospace;
-					}
-
-					.MuiOutlinedInput-notchedOutline {
-						border-color: ${palette.text.secondary};
-					}
-				}
-			}
-
-			.MuiTooltip-popper {
-				font-weight: normal;
-				.MuiTooltip-tooltip {
-					border-radius: 4px;
-					background-color: white;
-					color: ${palette.text.primary};
-					padding: 1em;
-					box-shadow: 4px 8px 8px rgba(0, 0, 0, 0.1);
-					border: 1px solid ${palette.secondary.main};
 				}
 
-				.MuiTooltip-arrow {
-					color: white;
-					&:before {
-						outline: 1px solid ${palette.secondary.main};
+				.MuiTooltip-popper {
+					font-weight: normal;
+					.MuiTooltip-tooltip {
+						border-radius: 4px;
+						background-color: white;
+						color: ${palette.text.primary};
+						padding: 1em;
+						box-shadow: 4px 8px 8px rgba(0, 0, 0, 0.1);
+						border: 1px solid ${palette.secondary.main};
+					}
+
+					.MuiTooltip-arrow {
+						color: white;
+						&:before {
+							outline: 1px solid ${palette.secondary.main};
+						}
 					}
 				}
 			}
