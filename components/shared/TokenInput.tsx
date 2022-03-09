@@ -70,6 +70,7 @@ const TokenInput: FC<
 				onChange={onTokenChange}
 				MenuProps={{ sx: styles.selectDropdown as any }}
 				IconComponent={ExpandLess}
+				autoWidth={false}
 			>
 				{!!tokens?.length &&
 					tokens.map((coin) => {

@@ -1,4 +1,4 @@
-import { VFC, useEffect, useCallback, useMemo } from "react";
+import { VFC, useEffect, useCallback } from "react";
 import { IntrinsicElements } from "@/types";
 import TokenInput from "@/components/shared/TokenInput";
 import { css } from "@emotion/react";
@@ -71,6 +71,7 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = ({
 		setTokensPair(exchangeToken.tokenId);
 	}, [exchangeToken.tokenId, setTokensPair]);
 
+	// Sync up value for receive input
 	useEffect(() => {
 		const setReceiveValue = receiveValue.setValue;
 		if (!exchangeRate) return setReceiveValue("");
@@ -162,10 +163,12 @@ const styles = {
 	tokenBalance: ({ palette }: Theme) => css`
 		margin-top: 0.5em;
 		font-weight: 500;
+		color: ${palette.grey["700"]};
 
 		span {
 			font-family: "Roboto Mono", monospace;
-			color: ${palette.text.primary};
+			font-size: 14px;
+			font-weight: bold;
 		}
 	`,
 };

@@ -33,8 +33,8 @@ const styles = {
 
 	formSubmit: ({ palette }: Theme) => css`
 		text-align: center;
-		border-top: 1px solid ${palette.text.disabled};
+		border-top: 1px solid ${palette.divider};
 		padding-top: 2em;
-		margin-top: 2em;
+		margin: 2em -2.5em 0;
 	`,
 };
