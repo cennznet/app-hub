@@ -93,46 +93,46 @@ describe("fetchTokenAmounts", () => {
 	});
 });
 
-describe("fetchEstimatedTransactionFee", () => {
-	it("estimates fee", async () => {
-		let exchangeAmount: string | BigNumber = new BigNumber("100");
-		const slippage = 5;
-		exchangeAmount = exchangeAmount
-			.multipliedBy(Math.pow(10, assets.CENNZ.decimals))
-			.toString(10);
-		const exchangeTokenId = assets.CENNZ.assetId;
-		const receivedTokenId = assets.CPAY.assetId;
-		const estimatedFee = await fetchEstimatedTransactionFee(
-			api,
-			exchangeAmount,
-			exchangeTokenId,
-			receivedTokenId,
-			slippage
-		);
+// describe("fetchEstimatedTransactionFee", () => {
+// 	it("estimates fee", async () => {
+// 		let exchangeAmount: string | BigNumber = new BigNumber("100");
+// 		const slippage = 5;
+// 		exchangeAmount = exchangeAmount
+// 			.multipliedBy(Math.pow(10, assets.CENNZ.decimals))
+// 			.toString(10);
+// 		const exchangeTokenId = assets.CENNZ.assetId;
+// 		const receivedTokenId = assets.CPAY.assetId;
+// 		const estimatedFee = await fetchEstimatedTransactionFee(
+// 			api,
+// 			exchangeAmount,
+// 			exchangeTokenId,
+// 			receivedTokenId,
+// 			slippage
+// 		);
 
-		const maxAmount = Math.round(
-			parseFloat(exchangeAmount) + parseFloat(exchangeAmount) * (slippage / 100)
-		);
-		const extrinsic = api.tx.cennzx.buyAsset(
-			null,
-			exchangeTokenId,
-			receivedTokenId,
-			exchangeAmount,
-			maxAmount
-		);
-		const feeFromQuery = await api.derive.fees.estimateFee({
-			extrinsic,
-			userFeeAssetId: assets.CPAY.assetId,
-		});
-		let expectedEstimatedFee: BigNumber | Amount = new Amount(
-			feeFromQuery.toString(),
-			AmountUnit.UN
-		);
-		expectedEstimatedFee = expectedEstimatedFee.toAmount(assets.CPAY.decimals);
+// 		const maxAmount = Math.round(
+// 			parseFloat(exchangeAmount) + parseFloat(exchangeAmount) * (slippage / 100)
+// 		);
+// 		const extrinsic = api.tx.cennzx.buyAsset(
+// 			null,
+// 			exchangeTokenId,
+// 			receivedTokenId,
+// 			exchangeAmount,
+// 			maxAmount
+// 		);
+// 		const feeFromQuery = await api.derive.fees.estimateFee({
+// 			extrinsic,
+// 			userFeeAssetId: assets.CPAY.assetId,
+// 		});
+// 		let expectedEstimatedFee: BigNumber | Amount = new Amount(
+// 			feeFromQuery.toString(),
+// 			AmountUnit.UN
+// 		);
+// 		expectedEstimatedFee = expectedEstimatedFee.toAmount(assets.CPAY.decimals);
 
-		expect(estimatedFee).toEqual(expectedEstimatedFee.toString());
-	});
-});
+// 		expect(estimatedFee).toEqual(expectedEstimatedFee.toString());
+// 	});
+// });
 
 //NOTE: This test is not effective, as comparing one extrinsic to another can be false positive
 // describe("fetchExchangeExtrinsic", () => {
