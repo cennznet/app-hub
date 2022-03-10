@@ -1,14 +1,14 @@
 import React, { useState, useMemo, useCallback } from "react";
 import { css } from "@emotion/react";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
-import WalletModal from "@/components/shared/WalletModal";
+import WalletModal from "@/components/WalletModal";
 import AccountIdenticon from "@/components/shared/AccountIdenticon";
 import CENNZBlueSVG from "@/assets/vectors/cennznet-blue.svg";
 import { Theme } from "@mui/material";
 
 type WalletState = "NotConnected" | "Connecting" | "Connected";
 
-const Wallet: React.FC<{}> = () => {
+const WalletButton: React.FC<{}> = () => {
 	const [modalOpen, setModalOpen] = useState<boolean>(false);
 	const { selectedAccount, balances, connectWallet } = useCENNZWallet();
 	const walletState = useMemo<WalletState>(() => {
@@ -55,7 +55,7 @@ const Wallet: React.FC<{}> = () => {
 	);
 };
 
-export default Wallet;
+export default WalletButton;
 
 export const styles = {
 	walletButton:

@@ -5,7 +5,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import CENNZApiProvider from "@/providers/CENNZApiProvider";
 import CENNZWalletProvider from "@/providers/CENNZWalletProvider";
 import AppSwitch from "@/components/AppSwitch";
-import Wallet from "@/components/Wallet";
+import WalletButton from "@/components/WalletButton";
 import BridgeProvider from "@/providers/BridgeProvider";
 import { GlobalProps } from "@/utils/generateGlobalProps";
 import UserAgentProvider from "@/providers/UserAgentProvider";
@@ -39,7 +39,7 @@ function MyApp({ Component, pageProps }: MyAppProps) {
 								>
 									<GlobalModalProvider>
 										<PageBackdrop />
-										<Wallet />
+										<WalletButton />
 										<AppSwitch />
 										<Component {...pageProps} />
 										<PageFrame />
