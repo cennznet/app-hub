@@ -7,9 +7,9 @@ import Big from "big.js";
 export default function getBuyAssetExtrinsic(
 	api: Api,
 	exchangeAsset: CENNZAsset,
-	exchangeAssetValue: string,
+	exchangeAssetValue: number,
 	receivedAsset: CENNZAsset,
-	receivedAssetValue: string,
+	receivedAssetValue: number,
 	slippagePercentage: number
 ): SubmittableExtrinsic<"promise"> {
 	const exchangeAmount: Big = new Big(exchangeAssetValue).mul(

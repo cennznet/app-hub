@@ -36,9 +36,9 @@ const SwapForm: FC<IntrinsicElements["form"] & SwapFormProps> = ({
 			const extrinsic = getBuyAssetExtrinsic(
 				api,
 				exchangeAsset,
-				exValue,
+				Number(exValue),
 				receiveAsset,
-				reValue,
+				Number(reValue),
 				Number(slippage)
 			);
 

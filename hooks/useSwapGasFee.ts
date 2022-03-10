@@ -17,9 +17,9 @@ export default function useSwapGasFee(): [number, CENNZAsset] {
 		const extrinsic = getBuyAssetExtrinsic(
 			api,
 			exchangeAsset,
-			"1",
+			1,
 			receiveAsset,
-			"1",
+			1,
 			5
 		);
 
