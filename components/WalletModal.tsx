@@ -8,6 +8,7 @@ import { useCENNZExtension } from "@/providers/CENNZExtensionProvider";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import getTokenLogo from "@/utils/getTokenLogo";
 import ModalBackdrop from "@/components/shared/ModalBackdrop";
+import { CENNZ_ASSET_ID, CPAY_ASSET_ID } from "@/constants";
 
 const WalletModal: FC<{
 	modalOpen: boolean;
@@ -121,7 +122,11 @@ const WalletModal: FC<{
 
 								<ul css={styles.balanceList}>
 									{balances
-										.filter((asset) => asset.value > 0)
+										.filter(
+											(asset) =>
+												asset.value > 0 ||
+												[CENNZ_ASSET_ID, CPAY_ASSET_ID].includes(asset.assetId)
+										)
 										.map((asset) => {
 											const logo = getTokenLogo(asset.symbol);
 
