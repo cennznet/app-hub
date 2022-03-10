@@ -33,9 +33,9 @@ const SwapProgress: VFC<IntrinsicElements["div"] & SwapProgressProps> = (
 					)}
 
 					<div css={styles.title}>
-						{txStatus.status === "in-progress" && "Processing..."}
-						{txStatus.status === "success" && "Transaction Completed"}
-						{txStatus.status === "fail" && "Transaction Failed"}
+						{txStatus.status === "in-progress" && "Swap In Progress"}
+						{txStatus.status === "success" && "Swap Completed"}
+						{txStatus.status === "fail" && "Swap Failed"}
 					</div>
 					<div css={styles.message}>{txStatus.message}</div>
 

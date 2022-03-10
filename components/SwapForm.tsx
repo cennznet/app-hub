@@ -44,7 +44,8 @@ const SwapForm: FC<IntrinsicElements["form"] & SwapFormProps> = ({
 
 			setTxStatus({
 				status: "in-progress",
-				message: "Please wait and sign the transaction when prompted...",
+				message:
+					"Please sign the transaction when prompted and wait until it is finished.",
 			});
 
 			let status: UnwrapPromise<ReturnType<typeof signAndSendTx>>;
@@ -60,7 +61,7 @@ const SwapForm: FC<IntrinsicElements["form"] & SwapFormProps> = ({
 					status: "fail",
 					message: `An error${
 						error?.code ? ` (#${error.code})` : ""
-					} has occurred while processing your transaction`,
+					} has occurred while processing your transaction.`,
 				});
 			}
 
@@ -78,6 +79,7 @@ const SwapForm: FC<IntrinsicElements["form"] & SwapFormProps> = ({
 						<pre css={styles.highlightText}>
 							{formatBalance(Number(reValue))} {receiveAsset.symbol}
 						</pre>
+						.
 					</div>
 				),
 			});
