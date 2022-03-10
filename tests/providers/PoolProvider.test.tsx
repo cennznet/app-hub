@@ -16,11 +16,13 @@ const assets = {
 		symbol: "CPAY",
 		decimals: 4,
 		assetId: 16001,
+		decimalValues: 10000,
 	},
 	CENNZ: {
 		symbol: "CENNZ",
 		decimals: 4,
 		assetId: 16000,
+		decimalValues: 10000,
 	},
 };
 
@@ -58,7 +60,7 @@ test("should define functions, and fetch exchangePool & userPoolShare", async ()
 	expect(sendExtrinsic).toBeDefined();
 
 	const coreAsset: CENNZAsset = result.current.coreAsset;
-	expect(coreAsset).toEqual(assets.CPAY);
+	expect(coreAsset.assetId).toEqual(assets.CPAY.assetId);
 
 	await act(async () => {
 		await updateExchangePool(assets.CENNZ);
