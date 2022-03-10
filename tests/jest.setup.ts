@@ -32,8 +32,8 @@ global.getCENNZCoreAssetForTest = (): {
 		},
 
 		cpayAsset: {
-			assetId: 16000,
-			symbol: "CENNZ",
+			assetId: 16001,
+			symbol: "CPAY",
 			decimals: 4,
 			decimalsValue: Math.pow(10, 4),
 		},

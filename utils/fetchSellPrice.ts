@@ -2,7 +2,16 @@ import { Api } from "@cennznet/api";
 import { CENNZAsset } from "@/types";
 import Big from "big.js";
 
-// TODO: Add test
+/**
+ * Query `api.rpc.cennzx.sellPrice` to get a selling price
+ * from exchangeAsset -> receiveAsset
+ *
+ * @param {Api} api
+ * @param {string} exchangeValue
+ * @param {CENNZAsset} exchangeAsset
+ * @param {CENNZAsset} receiveAsset
+ * @return {Promise<number>}
+ */
 export default async function fetchSellPrice(
 	api: Api,
 	exchangeValue: string,
