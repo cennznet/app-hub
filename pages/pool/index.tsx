@@ -9,7 +9,7 @@ import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 export async function getStaticProps() {
 	return {
 		props: {
-			...(await generateGlobalProps()),
+			...(await generateGlobalProps("pool")),
 		},
 	};
 }
