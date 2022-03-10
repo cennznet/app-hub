@@ -1,6 +1,6 @@
-import React, { useCallback } from "react";
+import { useCallback, FC, useRef, useEffect, useState } from "react";
 import { css } from "@emotion/react";
-import { Modal, Divider, CircularProgress } from "@mui/material";
+import { Modal, Divider, Theme, LinearProgress } from "@mui/material";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import { formatBalance } from "@/utils";
 import AccountIdenticon from "@/components/shared/AccountIdenticon";
@@ -9,26 +9,42 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import getTokenLogo from "@/utils/getTokenLogo";
 import ModalBackdrop from "@/components/shared/ModalBackdrop";
 
-const WalletModal: React.FC<{
+const WalletModal: FC<{
 	modalOpen: boolean;
 	setModalOpen: Function;
 }> = ({ setModalOpen, modalOpen }) => {
 	const { balances, selectedAccount, selectAccount, disconnectWallet } =
 		useCENNZWallet();
 	const { accounts } = useCENNZExtension();
+
+	const onWalletDisconnect = useCallback(() => {
+		setModalOpen(false);
+		disconnectWallet();
+	}, [disconnectWallet, setModalOpen]);
+
+	const ref = useRef<HTMLDivElement>();
+	const [balanceListHeight, setBalanceListHeight] = useState<number>(0);
+
+	useEffect(() => {
+		if (!modalOpen) return;
+		const id = setTimeout(() => {
+			const balanceList = ref.current;
+			const rect = balanceList.getBoundingClientRect();
+			setBalanceListHeight(rect.height);
+		}, 500);
+
+		return () => clearTimeout(id);
+	}, [balances, modalOpen]);
+
 	const onAccountSelect = useCallback(
 		(event) => {
+			setBalanceListHeight(0);
 			selectAccount(
 				accounts.find(({ address }) => event.target.value === address)
 			);
 		},
 		[accounts, selectAccount]
 	);
-
-	const onWalletDisconnect = useCallback(() => {
-		setModalOpen(false);
-		disconnectWallet();
-	}, [disconnectWallet, setModalOpen]);
 
 	if (!selectedAccount) return null;
 
@@ -87,37 +103,48 @@ const WalletModal: React.FC<{
 					</div>
 				</div>
 				<Divider />
-				{!!balances?.length && (
-					<div css={styles.accountBalances}>
-						<div css={styles.balanceHeading}>Balance</div>
+				<LinearProgress
+					css={styles.accountBalancesProgress(!balanceListHeight)}
+				/>
+				<div
+					css={[
+						styles.modalBody,
+						css`
+							height: ${balanceListHeight}px;
+						`,
+					]}
+				>
+					<div css={styles.accountBalances} ref={ref}>
+						{!!balances?.length && (
+							<>
+								<div css={styles.balanceHeading}>Balance</div>
 
-						<ul css={styles.balanceList}>
-							{balances
-								.filter((asset) => asset.value > 0)
-								.map((asset) => {
-									const logo = getTokenLogo(asset.symbol);
+								<ul css={styles.balanceList}>
+									{balances
+										.filter((asset) => asset.value > 0)
+										.map((asset) => {
+											const logo = getTokenLogo(asset.symbol);
 
-									return (
-										<li key={asset.assetId} css={styles.balanceItem}>
-											<figure>
-												{logo && (
-													<img src={logo.src} alt={`${asset.symbol}-logo`} />
-												)}
-											</figure>
-											<span>{formatBalance(asset.value)}</span>
-											<label>{asset.symbol}</label>
-										</li>
-									);
-								})}
-						</ul>
+											return (
+												<li key={asset.assetId} css={styles.balanceItem}>
+													<figure>
+														{logo && (
+															<img
+																src={logo.src}
+																alt={`${asset.symbol}-logo`}
+															/>
+														)}
+													</figure>
+													<span>{formatBalance(asset.value)}</span>
+													<label>{asset.symbol}</label>
+												</li>
+											);
+										})}
+								</ul>
+							</>
+						)}
 					</div>
-				)}
-
-				{!balances?.length && (
-					<div css={styles.balanceFetchProgress}>
-						<CircularProgress size={24} />
-					</div>
-				)}
+				</div>
 				<Divider />
 				<nav css={styles.walletActions}>
 					<span onClick={onWalletDisconnect}>Disconnect</span>
@@ -199,9 +226,35 @@ export const styles = {
 		height: 18px;
 	`,
 
+	modalBody: ({ transitions }: Theme) =>
+		css`
+			position: relative;
+			height: 0;
+			transition: height ${transitions.duration.standard}ms
+				${transitions.easing.easeInOut};
+			will-change: height;
+			overflow: hidden;
+		`,
+
 	accountBalances: css`
 		padding: 1em 1.5em 1.5em;
+		position: relative;
 	`,
+
+	accountBalancesProgress:
+		(show: boolean) =>
+		({ transitions }: Theme) =>
+			css`
+				height: 2px;
+				border-radius: 2px;
+				top: -1px;
+				left: 0;
+				opacity: ${show ? 1 : 0};
+				transition: opacity ${transitions.duration.short}ms
+					${transitions.easing.easeInOut};
+				margin-bottom: -2px;
+				transition-delay: ${show ? transitions.duration.standard : 0}ms;
+			`,
 
 	balanceHeading: css`
 		font-weight: bold;
@@ -218,6 +271,7 @@ export const styles = {
 		margin-bottom: 0.75em;
 		display: flex;
 		align-items: center;
+		font-family: "Roboto Mono", monospace;
 
 		&:last-child {
 			margin-bottom: 0;
@@ -246,9 +300,14 @@ export const styles = {
 		}
 	`,
 
-	balanceFetchProgress: css`
+	balanceProgress: css`
 		padding: 1.5em;
 		text-align: center;
+	`,
+
+	balanceProgressVisual: css`
+		height: 0.5em;
+		border-radius: 0.5em;
 	`,
 
 	walletActions: ({ palette }) => css`
