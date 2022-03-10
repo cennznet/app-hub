@@ -13,7 +13,7 @@ export default async function signAndSendTx(
 					if (dispatchError && dispatchError?.isModule && status.isFinalized) {
 						const { index, error } = dispatchError.asModule.toJSON();
 						return reject(
-							new Error(`${index}${error}:${status?.asFinalized?.toString()}`)
+							new Error(`I${index}E${error}:${status?.asFinalized?.toString()}`)
 						);
 					}
 					if (status.isFinalized) return resolve(status.asFinalized.toString());
