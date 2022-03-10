@@ -27,7 +27,7 @@ const SwapStats: VFC<IntrinsicElements["div"] & SwapStatsProps> = ({
 					<strong>Exchange Rate:</strong>{" "}
 					{!!exchangeRate && (
 						<span>
-							1 {exchangeAsset.symbol} = {formatBalance(exchangeRate)}{" "}
+							1 {exchangeAsset.symbol} &asymp; {formatBalance(exchangeRate)}{" "}
 							{receiveAsset.symbol}
 						</span>
 					)}
@@ -37,7 +37,7 @@ const SwapStats: VFC<IntrinsicElements["div"] & SwapStatsProps> = ({
 					<strong>Gas Fee:</strong>{" "}
 					{!!gasFee && (
 						<span>
-							{gasFee} {gasAsset.symbol}
+							&asymp; {gasFee} {gasAsset.symbol}
 						</span>
 					)}
 					{!gasFee && <span>-</span>}
