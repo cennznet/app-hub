@@ -78,6 +78,8 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = ({
 		setReceiveValue(exchangeRate.toString());
 	}, [exchangeRate, receiveValue.setValue]);
 
+	const reValue = Number(receiveValue.value);
+
 	return (
 		<div {...props} css={styles.root}>
 			<div css={styles.formField}>
@@ -117,13 +119,11 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = ({
 				<TokenInput
 					selectedTokenId={receiveToken.tokenId}
 					onTokenChange={receiveToken.onTokenChange}
-					value={receiveValue.value}
+					value={reValue ? formatBalance(reValue) : ""}
 					onValueChange={receiveValue.onValueChange}
 					tokens={receiveTokens}
 					disabled={true}
 					id="receiveInput"
-					padFractionalZeros={true}
-					scale={4}
 				/>
 				{!!selectedAccount && (
 					<div css={styles.tokenBalance}>
