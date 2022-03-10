@@ -14,9 +14,9 @@ import { useSwap } from "@/providers/SwapProvider";
 
 interface SwapSettingsProps {}
 
-const SwapSettings: VFC<IntrinsicElements["div"] & SwapSettingsProps> = ({
-	...props
-}) => {
+const SwapSettings: VFC<IntrinsicElements["div"] & SwapSettingsProps> = (
+	props
+) => {
 	const { slippage, setSlippage } = useSwap();
 
 	return (

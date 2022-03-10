@@ -6,6 +6,7 @@ import {
 	SetStateAction,
 	Dispatch,
 	FC,
+	ReactElement,
 } from "react";
 import { CENNZAsset } from "@/types";
 import { fetchSwapAssets } from "@/utils";
@@ -15,6 +16,11 @@ import { useTokenInput, TokenInputHookType } from "@/hooks";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 
 type CENNZAssetId = CENNZAsset["assetId"];
+
+interface TxStatus {
+	status: "in-progress" | "success" | "fail";
+	message: string | ReactElement;
+}
 
 interface SwapContextType {
 	exchangeTokens: CENNZAsset[];
@@ -30,6 +36,8 @@ interface SwapContextType {
 	receiveBalance: number;
 	slippage: string;
 	setSlippage: Dispatch<SetStateAction<string>>;
+	txStatus: TxStatus;
+	setTxStatus: Dispatch<SetStateAction<TxStatus>>;
 }
 
 const SwapContext = createContext<SwapContextType>({} as SwapContextType);
@@ -69,6 +77,8 @@ const SwapProvider: FC<SwapProviderProps> = ({ supportedAssets, children }) => {
 
 	const [slippage, setSlippage] = useState<string>("5");
 
+	const [txStatus, setTxStatus] = useState<TxStatus>(null);
+
 	// Update asset balances for both send and receive assets
 	useEffect(() => {
 		if (!balances?.length) {
@@ -105,6 +115,8 @@ const SwapProvider: FC<SwapProviderProps> = ({ supportedAssets, children }) => {
 				receiveBalance,
 				slippage,
 				setSlippage,
+				txStatus,
+				setTxStatus,
 			}}
 		>
 			{children}

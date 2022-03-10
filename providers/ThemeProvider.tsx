@@ -57,9 +57,6 @@ const config = {
 			pool: "rgba(245, 236, 255, 0.4)",
 			bridge: "rgba(232, 248, 249, 0.4)",
 		},
-		error: {
-			main: "#EC022C",
-		},
 		text: {
 			primary: "#020202",
 			secondary: "#979797",

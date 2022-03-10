@@ -4,7 +4,7 @@ export default async function signAndSendTx(
 	extrinsic: SubmittableExtrinsic<"promise", any>,
 	address: string,
 	signer: Signer
-): Promise<string> {
+): Promise<string | "cancelled"> {
 	const signAndSend = async () => {
 		return new Promise((resolve, reject) => {
 			extrinsic

@@ -30,11 +30,12 @@ import SubmitButton from "@/components/shared/SubmitButton";
 import signAndSendTx from "@/utils/signAndSendTx";
 import { useGlobalModal } from "@/providers/GlobalModalProvider";
 import generateGlobalProps from "@/utils/generateGlobalProps";
+import SwapProvider from "@/providers/SwapProvider";
 import SwapForm from "@/components/SwapForm";
 import SwapAssetsPair from "@/components/SwapAssetsPair";
 import SwapStats from "@/components/SwapStats";
 import SwapSettings from "@/components/SwapSettings";
-import SwapProvider from "@/providers/SwapProvider";
+import SwapProgress from "@/components/SwapProgress";
 
 export async function getStaticProps() {
 	const api = await Api.create({ provider: API_URL });
@@ -60,6 +61,7 @@ const Swap: React.FC<{ supportedAssets: CENNZAsset[] }> = ({
 					<SwapStats />
 					<SwapSettings />
 				</SwapForm>
+				<SwapProgress />
 			</div>
 		</SwapProvider>
 	);

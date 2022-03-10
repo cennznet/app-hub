@@ -18,7 +18,7 @@ export default function useSwapExchangeRate(
 			fetchSellPrice(api, exchangeValue, exchangeAsset, receiveAsset).then(
 				setExchangeRate
 			);
-		}, 250);
+		}, 150);
 	}, []);
 
 	useEffect(() => {

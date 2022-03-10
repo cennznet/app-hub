@@ -21,31 +21,32 @@ const StandardButton: FC<IntrinsicElements["button"] & StandardButtonProps> = ({
 export default StandardButton;
 
 const styles = {
-	root: ({ palette, transitions }: Theme) => css`
+	root: ({ transitions }: Theme) => css`
 		display: inline-block;
-		padding: 0.5em 1em;
+		padding: 0.75em 1.5em;
 		border-radius: 4px;
 		background-color: white;
 		font-weight: bold;
 		text-transform: uppercase;
 		cursor: pointer;
+		font-size: 14px;
 
 		transition: background-color ${transitions.duration.short}ms,
 			color ${transitions.duration.short}ms;
 	`,
 
-	primary: ({ palette, transitions }: Theme) => css`
-		border: 1px solid ${palette.primary.main};
-		color: ${palette.primary.main};
+	primary: ({ palette }: Theme) => css`
+		border: 1px solid ${palette.text.highlight};
+		color: ${palette.text.highlight};
 		&:hover {
-			background-color: ${palette.primary.main};
+			background-color: ${palette.text.highlight};
 			color: white;
 		}
 	`,
 
-	secondary: ({ palette, transitions }: Theme) => css`
+	secondary: ({ palette }: Theme) => css`
 		border: 1px solid white;
-		color: ${palette.text.secondary};
+		color: ${palette.grey["800"]};
 
 		&: hover {
 			background-color: white;

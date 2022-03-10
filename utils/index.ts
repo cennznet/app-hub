@@ -9,6 +9,7 @@ export { default as getTokenLogo } from "@/utils/getTokenLogo";
 export { default as fetchSellPrice } from "@/utils/fetchSellPrice";
 export { default as fetchGasFee } from "@/utils/fetchGasFee";
 export { default as getBuyAssetExtrinsic } from "@/utils/getBuyAssetExtrinsic";
+export { default as signAndSendTx } from "@/utils/signAndSendTx";
 
 export const formatBalance = (balance: number): string => {
 	if (balance === 0 || !balance) return "0.0000";
