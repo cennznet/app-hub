@@ -38,16 +38,16 @@ const SwapStats: VFC<IntrinsicElements["div"] & SwapStatsProps> = ({
 							{receiveAsset.symbol}
 						</span>
 					)}
-					{!exchangeRate && <span>-</span>}
+					{!exchangeRate && <span>&asymp;</span>}
 				</li>
 				<li>
 					<strong>Gas Fee:</strong>{" "}
 					{!!gasFee && (
 						<span>
-							&asymp;{gasFee} {gasAsset.symbol}
+							&asymp; {gasFee} {gasAsset.symbol}
 						</span>
 					)}
-					{!gasFee && <span>-</span>}
+					{!gasFee && <span>&asymp;</span>}
 				</li>
 				<li>
 					<strong>Slippage:</strong>{" "}
