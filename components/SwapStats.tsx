@@ -1,4 +1,4 @@
-import { VFC } from "react";
+import { useEffect, VFC } from "react";
 import { IntrinsicElements } from "@/types";
 import { LinearProgress, Tooltip, Theme } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
@@ -12,10 +12,17 @@ interface SwapStatsProps {}
 const SwapStats: VFC<IntrinsicElements["div"] & SwapStatsProps> = ({
 	...props
 }) => {
-	const { exchangeValue, exchangeAsset, receiveAsset, slippage } = useSwap();
+	const { exchangeValue, exchangeAsset, receiveAsset, slippage, txStatus } =
+		useSwap();
 
-	const exchangeRate = useSwapExchangeRate();
-	const [gasFee, gasAsset] = useSwapGasFee();
+	const [exchangeRate, updateExchangeRate] = useSwapExchangeRate();
+	const [gasFee, gasAsset, updateGasFee] = useSwapGasFee();
+
+	useEffect(() => {
+		if (txStatus?.status !== "success") return;
+		updateExchangeRate();
+		updateGasFee();
+	}, [txStatus?.status, updateExchangeRate, updateGasFee]);
 
 	return (
 		<div {...props} css={styles.root}>
@@ -37,7 +44,7 @@ const SwapStats: VFC<IntrinsicElements["div"] & SwapStatsProps> = ({
 					<strong>Gas Fee:</strong>{" "}
 					{!!gasFee && (
 						<span>
-							&asymp; {gasFee} {gasAsset.symbol}
+							&asymp;{gasFee} {gasAsset.symbol}
 						</span>
 					)}
 					{!gasFee && <span>-</span>}

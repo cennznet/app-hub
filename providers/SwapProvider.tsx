@@ -25,6 +25,7 @@ interface TxStatus {
 interface SwapContextType {
 	exchangeTokens: CENNZAsset[];
 	receiveTokens: CENNZAsset[];
+	cpayAsset: CENNZAsset;
 	setReceiveTokens: Dispatch<SetStateAction<CENNZAsset[]>>;
 	exchangeToken: TokenInputHookType<CENNZAssetId>[0];
 	exchangeValue: TokenInputHookType<CENNZAssetId>[1];
@@ -111,6 +112,7 @@ const SwapProvider: FC<SwapProviderProps> = ({ supportedAssets, children }) => {
 				receiveValue,
 				exchangeAsset,
 				receiveAsset,
+				cpayAsset,
 				exchangeBalance,
 				receiveBalance,
 				slippage,

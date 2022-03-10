@@ -1,40 +1,32 @@
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
-import { CENNZAsset } from "@/types";
-import { fetchCENNZAssets, fetchGasFee, getBuyAssetExtrinsic } from "@/utils";
-import { CPAY_ASSET_ID } from "@/constants";
-import { useEffect, useState } from "react";
+import { fetchGasFee, getBuyAssetExtrinsic } from "@/utils";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { useSwap } from "@/providers/SwapProvider";
+import { CENNZAsset } from "@/types";
 
-export default function useSwapGasFee(): [number, CENNZAsset] {
+export default function useSwapGasFee(): [number, CENNZAsset, () => void] {
 	const [gasFee, setGasFee] = useState<number>();
-	const [gasAsset, setGasAsset] = useState<CENNZAsset>();
 	const { api } = useCENNZApi();
-	const { exchangeAsset, receiveAsset } = useSwap();
+	const { exchangeAsset, receiveAsset, cpayAsset } = useSwap();
+
+	const extrinsic = useMemo(
+		() =>
+			!!api
+				? getBuyAssetExtrinsic(api, exchangeAsset, 1, receiveAsset, 1, 5)
+				: null,
+		[api, exchangeAsset, receiveAsset]
+	);
+
+	const updateGasFee = useCallback(async () => {
+		if (!api) return;
+		setGasFee(null);
+		const gasFee = await fetchGasFee(api, extrinsic, cpayAsset);
+		setGasFee(gasFee);
+	}, [api, extrinsic, cpayAsset]);
 
 	useEffect(() => {
-		if (!api) return;
+		updateGasFee?.();
+	}, [updateGasFee]);
 
-		const extrinsic = getBuyAssetExtrinsic(
-			api,
-			exchangeAsset,
-			1,
-			receiveAsset,
-			1,
-			5
-		);
-
-		(async () => {
-			const cennzAssets = await fetchCENNZAssets(api);
-			const gasAsset = !!cennzAssets?.length
-				? cennzAssets.find((balance) => balance.assetId === CPAY_ASSET_ID)
-				: null;
-
-			const gasFee = await fetchGasFee(api, extrinsic, gasAsset);
-
-			setGasAsset(gasAsset);
-			setGasFee(gasFee);
-		})();
-	}, [api, exchangeAsset, receiveAsset]);
-
-	return [gasFee, gasAsset];
+	return [gasFee, cpayAsset, updateGasFee];
 }
