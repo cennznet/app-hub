@@ -98,6 +98,7 @@ const TokenInput: FC<
 				type={disabled ? "text" : "number"}
 				autoComplete="off"
 				autoCorrect="off"
+				step="any"
 				placeholder={placeholder}
 			/>
 		</div>
