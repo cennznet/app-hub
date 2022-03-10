@@ -22,7 +22,7 @@ interface TokenInputProps {
 }
 
 const TokenInput: FC<
-	InputHTMLAttributes<HTMLInputElement> &
+	Omit<InputHTMLAttributes<HTMLInputElement>, "onChange"> &
 		Pick<IMask.MaskedNumberOptions, "scale" | "padFractionalZeros"> &
 		TokenInputProps
 > = ({
@@ -30,7 +30,7 @@ const TokenInput: FC<
 	onTokenChange,
 	tokens,
 	onMaxValueRequest,
-	placeholder = "0.0000",
+	placeholder = "0",
 	onValueChange,
 	scale,
 	padFractionalZeros,
@@ -90,17 +90,32 @@ const TokenInput: FC<
 					Max
 				</div>
 			)}
-			<input
-				{...props}
-				ref={inputRef as MutableRefObject<HTMLInputElement>}
-				disabled={disabled}
-				css={styles.input}
-				type={disabled ? "text" : "number"}
-				autoComplete="off"
-				autoCorrect="off"
-				step="any"
-				placeholder={placeholder}
-			/>
+			{!disabled && (
+				<input
+					{...props}
+					ref={inputRef as MutableRefObject<HTMLInputElement>}
+					css={styles.input}
+					type="number"
+					autoComplete="off"
+					autoCorrect="off"
+					step="any"
+					placeholder={placeholder}
+				/>
+			)}
+
+			{disabled && (
+				<input
+					{...props}
+					disabled={true}
+					css={styles.input}
+					type="text"
+					autoComplete="off"
+					autoCorrect="off"
+					placeholder={placeholder}
+					value={value}
+					onChange={(event) => onValueChange(event.target.value)}
+				/>
+			)}
 		</div>
 	);
 };
@@ -218,7 +233,7 @@ export const styles = {
 		}
 
 		&::placeholder {
-			color: ${palette.text.secondary};
+			color: ${palette.text.primary};
 		}
 
 		&::-webkit-outer-spin-button,
