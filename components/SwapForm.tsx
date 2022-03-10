@@ -64,7 +64,7 @@ const SwapForm: FC<IntrinsicElements["form"] & SwapFormProps> = ({
 				});
 			}
 
-			if (status === "cancelled") setTxStatus(null);
+			if (status === "cancelled") return setTxStatus(null);
 
 			setTxStatus({
 				status: "success",
