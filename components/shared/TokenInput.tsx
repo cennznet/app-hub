@@ -30,7 +30,7 @@ const TokenInput: FC<
 	onTokenChange,
 	tokens,
 	onMaxValueRequest,
-	placeholder = "0",
+	placeholder = "0.0",
 	onValueChange,
 	scale,
 	padFractionalZeros,
@@ -60,7 +60,7 @@ const TokenInput: FC<
 	});
 
 	useEffect(() => {
-		setValue?.(value as string);
+		setValue?.((value === "0" ? "" : value) as string);
 	}, [value, setValue]);
 	return (
 		<div css={[styles.root, !disabled && styles.rootHover]}>
