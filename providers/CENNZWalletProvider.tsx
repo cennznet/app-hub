@@ -103,7 +103,6 @@ export default function CENNZWalletProvider({
 	const updateBalances = useCallback(async () => {
 		if (!selectedAccount?.address || !api) return;
 		(async () => {
-			setBalances([]);
 			const balances = await fetchCENNZAssetBalances(
 				api,
 				selectedAccount.address
