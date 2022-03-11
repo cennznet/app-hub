@@ -9,7 +9,7 @@ import {
 	TextField,
 	InputAdornment,
 } from "@mui/material";
-import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
 import { useSwap } from "@/providers/SwapProvider";
 
 interface SwapSettingsProps {}
@@ -24,7 +24,7 @@ const SwapSettings: VFC<IntrinsicElements["div"] & SwapSettingsProps> = (
 			<Accordion css={[styles.formSettings]}>
 				<AccordionSummary
 					css={styles.formSettingsSummary}
-					expandIcon={<ExpandLess />}
+					expandIcon={<ExpandMore />}
 				>
 					Settings
 				</AccordionSummary>
