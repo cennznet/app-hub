@@ -2,8 +2,9 @@ import React, { useState, useMemo, useCallback } from "react";
 import { css } from "@emotion/react";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import WalletModal from "@/components/shared/WalletModal";
-import ThreeDots from "@/components/shared/ThreeDots";
 import AccountIdenticon from "@/components/shared/AccountIdenticon";
+import CENNZBlueSVG from "@/assets/vectors/cennznet-blue.svg";
+import { Theme } from "@mui/material";
 
 type WalletState = "NotConnected" | "Connecting" | "Connected";
 
@@ -17,8 +18,7 @@ const Wallet: React.FC<{}> = () => {
 	}, [selectedAccount, balances]);
 
 	const onWalletClick = useCallback(async () => {
-		if (walletState === "Connecting") return;
-		if (walletState === "Connected") return setModalOpen(true);
+		if (walletState !== "NotConnected") return setModalOpen(true);
 
 		await connectWallet();
 		setModalOpen(true);
@@ -29,8 +29,8 @@ const Wallet: React.FC<{}> = () => {
 			<div css={styles.walletButton(modalOpen)} onClick={onWalletClick}>
 				<div css={styles.walletIcon}>
 					<img
-						src="images/cennznet_blue.svg"
-						alt="CENNZnet-log"
+						src={CENNZBlueSVG.src}
+						alt="CENNZnet Logo"
 						css={styles.walletIconImg}
 					/>
 
@@ -44,14 +44,8 @@ const Wallet: React.FC<{}> = () => {
 					)}
 				</div>
 				<div css={styles.walletState}>
-					{walletState === "Connected" && (
+					{walletState !== "NotConnected" && (
 						<span>{selectedAccount?.meta?.name?.toUpperCase?.()}</span>
-					)}
-					{walletState === "Connecting" && (
-						<span>
-							CONNECTING
-							<ThreeDots />
-						</span>
 					)}
 					{walletState === "NotConnected" && <span>CONNECT CENNZnet</span>}
 				</div>
@@ -66,19 +60,20 @@ export default Wallet;
 export const styles = {
 	walletButton:
 		(modalOpen: boolean) =>
-		({ palette }) =>
+		({ palette, shadows, transitions }: Theme) =>
 			css`
 				position: absolute;
 				top: 3em;
 				right: 3em;
 				cursor: pointer;
-				box-shadow: 4px 8px 8px rgba(17, 48, 255, 0.1);
+				box-shadow: ${shadows[1]};
 				height: 48px;
 				display: flex;
 				align-items: center;
 				background-color: ${modalOpen ? palette.primary.main : "#FFFFFF"};
 				color: ${modalOpen ? "#FFFFFF !important" : palette.primary.main};
-				transition: background-color 0.2s;
+				transition: background-color ${transitions.duration.short}ms,
+					color ${transitions.duration.short}ms;
 				border-radius: 4px;
 				overflow: hidden;
 				padding: 1em;

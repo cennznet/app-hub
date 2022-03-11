@@ -32,7 +32,7 @@ export const styles = {
 		display: inline-block;
 		span {
 			opacity: 0;
-			animation: dot 1s infinite;
+			animation: dot 0.6s infinite;
 
 			&:nth-of-type(1) {
 				animation-delay: 0s;

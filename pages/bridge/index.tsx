@@ -16,7 +16,7 @@ import { useCENNZApi } from "@/providers/CENNZApiProvider";
 export async function getStaticProps() {
 	return {
 		props: {
-			...(await generateGlobalProps()),
+			...(await generateGlobalProps("bridge")),
 		},
 	};
 }

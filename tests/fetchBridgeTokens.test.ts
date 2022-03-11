@@ -6,7 +6,12 @@ describe("fetchBridgeTokens", () => {
 		const tokens = await fetchBridgeTokens();
 		expect(tokens.length).toBeGreaterThan(0);
 		tokens.forEach((token) =>
-			expect(Object.keys(token)).toEqual(["address", "symbol", "decimals"])
+			expect(Object.keys(token)).toEqual([
+				"address",
+				"symbol",
+				"decimals",
+				"decimalsValue",
+			])
 		);
 	});
 });

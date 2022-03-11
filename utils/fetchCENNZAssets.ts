@@ -9,7 +9,6 @@ export default async function fetchCENNZAssets(
 	const registeredAssets = await (
 		api.rpc as any
 	).genericAsset.registeredAssets();
-	0;
 
 	return registeredAssets
 		.map((registeredAsset: [AssetId, AssetInfo]) => {
@@ -19,6 +18,7 @@ export default async function fetchCENNZAssets(
 				assetId: assetId.toJSON(),
 				symbol: hexToString(symbol.toJSON()),
 				decimals: decimalPlaces.toNumber(),
+				decimalsValue: Math.pow(10, decimalPlaces.toNumber()),
 			};
 		})
 		.filter(({ assetId, symbol }) => !!assetId && !!symbol)

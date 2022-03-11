@@ -23,14 +23,14 @@ const Switch: React.FC<{}> = () => {
 export default Switch;
 
 export const styles = {
-	container: css`
+	container: ({ shadows }: Theme) => css`
 		width: 360px;
 		display: flex;
 		flex-direction: row;
 		justify-content: center;
 		align-items: flex-start;
 		margin: 3em auto;
-		box-shadow: 4px 8px 8px rgba(17, 48, 255, 0.1);
+		box-shadow: ${shadows[1]};
 		border-radius: 4px;
 		overflow: hidden;
 		position: relative;

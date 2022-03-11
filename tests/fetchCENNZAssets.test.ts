@@ -15,7 +15,12 @@ describe("fetchCENNZnetAssets", () => {
 		const assets = await fetchCENNZAssets(api);
 		assets.forEach((asset) => {
 			const { assetId, symbol } = asset;
-			expect(Object.keys(asset)).toEqual(["assetId", "symbol", "decimals"]);
+			expect(Object.keys(asset)).toEqual([
+				"assetId",
+				"symbol",
+				"decimals",
+				"decimalsValue",
+			]);
 			expect(!!assetId).toEqual(true);
 			expect(!!symbol).toEqual(true);
 		});

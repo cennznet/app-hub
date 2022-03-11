@@ -30,5 +30,5 @@ module.exports = {
 	},
 	transformIgnorePatterns: ["^.+\\.module\\.(css|sass|scss)$"],
 	testTimeout: 10000,
-	setupFiles: ["./tests/jest.setup.js"],
+	setupFiles: ["./tests/jest.setup.ts"],
 };
