@@ -114,7 +114,7 @@ const styles = {
 
 			strong {
 				margin-right: 0.5em;
-				color: ${palette.text.highlight};
+				color: ${palette.primary.main};
 				display: flex;
 				align-items: center;
 			}

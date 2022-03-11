@@ -1,5 +1,5 @@
 import { act, renderHook } from "@testing-library/react-hooks";
-import PoolProvider, { usePool } from "@/providers/PoolProvider";
+import PoolProvider, { usePool } from "@/providers/PoolCurrentProvider";
 import { Api } from "@cennznet/api";
 import { CENNZAsset, IExchangePool, IUserShareInPool } from "@/types";
 

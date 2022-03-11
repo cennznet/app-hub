@@ -18,7 +18,7 @@ import {
 import { useBridge } from "@/providers/BridgeProvider";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
-import { PoolAction } from "@/providers/PoolProvider";
+import { PoolAction } from "@/providers/PoolCurrentProvider";
 
 const TokenPicker: React.FC<{
 	assets?: Asset[];

@@ -169,10 +169,10 @@ export const styles = {
 
 		&:hover,
 		& .MuiSelect-select[aria-expanded="true"] {
-			color: ${palette.text.highlight};
+			color: ${palette.primary.main};
 
 			.MuiSvgIcon-root {
-				color: ${palette.text.highlight};
+				color: ${palette.primary.main};
 			}
 		}
 

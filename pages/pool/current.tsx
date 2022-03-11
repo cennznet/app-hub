@@ -1,6 +1,6 @@
 import React from "react";
 import { css } from "@emotion/react";
-import PoolProvider from "@/providers/PoolProvider";
+import PoolProvider from "@/providers/PoolCurrentProvider";
 import PoolForm from "@/components/pool/PoolForm";
 import generateGlobalProps from "@/utils/generateGlobalProps";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";

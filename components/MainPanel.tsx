@@ -48,7 +48,7 @@ const styles = {
 		line-height: 1;
 		text-align: center;
 		text-transform: uppercase;
-		color: ${palette.text.highlight};
+		color: ${palette.primary.main};
 		margin-bottom: 1.5em;
 	`,
 };

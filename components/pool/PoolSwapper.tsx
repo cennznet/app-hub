@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { css } from "@emotion/react";
 import { ClickAwayListener } from "@mui/material";
-import { PoolAction } from "@/providers/PoolProvider";
+import { PoolAction } from "@/providers/PoolCurrentProvider";
 
 const options = ["Your Account", "Liquidity Pool"];
 

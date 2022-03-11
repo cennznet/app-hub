@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { css } from "@emotion/react";
 import { CircularProgress } from "@mui/material";
 import { PoolSummaryProps } from "@/types";
-import { usePool } from "@/providers/PoolProvider";
+import { usePool } from "@/providers/PoolCurrentProvider";
 import { formatBalance } from "@/utils";
 
 interface FomattedBalances {

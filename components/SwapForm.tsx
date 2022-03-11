@@ -131,6 +131,6 @@ const styles = {
 	`,
 
 	highlightText: ({ palette }: Theme) => css`
-		color: ${palette.text.highlight};
+		color: ${palette.primary.main};
 	`,
 };

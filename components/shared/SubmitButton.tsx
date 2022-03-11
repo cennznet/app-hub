@@ -58,8 +58,8 @@ const styles = {
 		display: inline-block;
 		padding: 0.75em;
 		border-radius: 4px;
-		border: 1px solid ${palette.primary.main};
-		color: ${palette.primary.main};
+		border: 1px solid ${palette.primary.default};
+		color: ${palette.primary.default};
 		background-color: white;
 		min-width: 240px;
 		font-weight: bold;
@@ -68,7 +68,7 @@ const styles = {
 			color ${transitions.duration.short}ms;
 
 		&:hover {
-			background-color: ${palette.primary.main};
+			background-color: ${palette.primary.default};
 			color: white;
 		}
 	`,

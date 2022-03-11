@@ -4,7 +4,7 @@ import TokenPicker from "@/components/shared/TokenPicker";
 import { CENNZAsset, PoolConfig, PoolValues, PoolSummaryProps } from "@/types";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
-import { PoolAction, usePool } from "@/providers/PoolProvider";
+import { PoolAction, usePool } from "@/providers/PoolCurrentProvider";
 import PoolSummary from "@/components/pool/PoolSummary";
 import Settings from "@/components/pool/Settings";
 import {

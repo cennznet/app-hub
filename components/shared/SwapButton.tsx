@@ -48,9 +48,9 @@ const styles = {
 		transition: border-color 0.2s, background-color 0.2s;
 
 		&:hover {
-			border-color: ${palette.text.highlight};
+			border-color: ${palette.primary.main};
 			svg {
-				color: ${palette.text.highlight};
+				color: ${palette.primary.main};
 			}
 		}
 	`,

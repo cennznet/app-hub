@@ -70,8 +70,8 @@ export const styles = {
 				height: 48px;
 				display: flex;
 				align-items: center;
-				background-color: ${modalOpen ? palette.primary.main : "#FFFFFF"};
-				color: ${modalOpen ? "#FFFFFF !important" : palette.primary.main};
+				background-color: ${modalOpen ? palette.primary.default : "#FFFFFF"};
+				color: ${modalOpen ? "#FFFFFF !important" : palette.primary.default};
 				transition: background-color ${transitions.duration.short}ms,
 					color ${transitions.duration.short}ms;
 				border-radius: 4px;
@@ -80,7 +80,7 @@ export const styles = {
 				max-width: 240px;
 
 				&:hover {
-					background-color: ${palette.primary.main};
+					background-color: ${palette.primary.default};
 					color: white;
 				}
 			`,
