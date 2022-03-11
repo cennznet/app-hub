@@ -22,7 +22,6 @@ export default function useSwapExchangeRate(
 	}, []);
 
 	const fetchExchangeRate = useCallback(() => {
-		setExchangeRate(null);
 		fetch(api, exchangeValue, exchangeAsset, receiveAsset);
 	}, [api, fetch, exchangeValue, exchangeAsset, receiveAsset]);
 

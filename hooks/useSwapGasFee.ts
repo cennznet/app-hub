@@ -5,7 +5,7 @@ import { useSwap } from "@/providers/SwapProvider";
 import { CENNZAsset } from "@/types";
 
 export default function useSwapGasFee(): [number, CENNZAsset, () => void] {
-	const [gasFee, setGasFee] = useState<number>();
+	const [gasFee, setGasFee] = useState<number>(null);
 	const { api } = useCENNZApi();
 	const { exchangeAsset, receiveAsset, cpayAsset } = useSwap();
 
@@ -19,7 +19,6 @@ export default function useSwapGasFee(): [number, CENNZAsset, () => void] {
 
 	const updateGasFee = useCallback(async () => {
 		if (!api) return;
-		setGasFee(null);
 		const gasFee = await fetchGasFee(api, extrinsic, cpayAsset);
 		setGasFee(gasFee);
 	}, [api, extrinsic, cpayAsset]);

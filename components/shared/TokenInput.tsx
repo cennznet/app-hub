@@ -10,7 +10,7 @@ import { css } from "@emotion/react";
 import { Select, SelectChangeEvent, MenuItem, Theme } from "@mui/material";
 import { CENNZAsset, EthereumToken } from "@/types";
 import getTokenLogo from "@/utils/getTokenLogo";
-import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
 import { useIMask, IMask } from "react-imask";
 
 interface TokenInputProps {
@@ -69,7 +69,7 @@ const TokenInput: FC<
 				value={selectedTokenId}
 				onChange={onTokenChange}
 				MenuProps={{ sx: styles.selectDropdown as any }}
-				IconComponent={ExpandLess}
+				IconComponent={ExpandMore}
 				autoWidth={false}
 			>
 				{!!tokens?.length &&
@@ -166,6 +166,15 @@ export const styles = {
 	select: ({ palette, transitions }: Theme) => css`
 		border: none;
 		min-width: 135px;
+
+		&:hover,
+		& .MuiSelect-select[aria-expanded="true"] {
+			color: ${palette.text.highlight};
+
+			.MuiSvgIcon-root {
+				color: ${palette.text.highlight};
+			}
+		}
 
 		.MuiList-root {
 			padding: 0;

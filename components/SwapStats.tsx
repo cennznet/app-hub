@@ -38,16 +38,16 @@ const SwapStats: VFC<IntrinsicElements["div"] & SwapStatsProps> = ({
 							{receiveAsset.symbol}
 						</span>
 					)}
-					{!exchangeRate && <span>-</span>}
+					{!exchangeRate && <span>&asymp;</span>}
 				</li>
 				<li>
 					<strong>Gas Fee:</strong>{" "}
 					{!!gasFee && (
 						<span>
-							&asymp;{gasFee} {gasAsset.symbol}
+							&asymp; {gasFee} {gasAsset.symbol}
 						</span>
 					)}
-					{!gasFee && <span>-</span>}
+					{!gasFee && <span>&asymp;</span>}
 				</li>
 				<li>
 					<strong>Slippage:</strong>{" "}
@@ -91,6 +91,7 @@ const styles = {
 		color: ${palette.text.primary};
 		background-color: ${palette.background.main};
 		position: relative;
+		border-radius: 4px;
 
 		ul {
 			list-style: none;
@@ -112,7 +113,7 @@ const styles = {
 			}
 
 			strong {
-				margin-right: 0.25em;
+				margin-right: 0.5em;
 				color: ${palette.text.highlight};
 				display: flex;
 				align-items: center;
