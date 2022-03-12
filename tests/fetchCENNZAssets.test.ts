@@ -1,16 +1,9 @@
-import { Api } from "@cennznet/api";
 import fetchCENNZAssets from "@/utils/fetchCENNZAssets";
 
-let api: Api;
-beforeAll(async () => {
-	api = await Api.create({ provider: "wss://nikau.centrality.me/public/ws" });
-});
+const api = global.getCENNZApiForTest();
+const { cennzAsset, cpayAsset } = global.getCENNZCoreAssetForTest();
 
-afterAll(async () => {
-	await api.disconnect();
-});
-
-describe("fetchCENNZnetAssets", () => {
+describe("fetchCENNZAssets", () => {
 	it("returns expected result", async () => {
 		const assets = await fetchCENNZAssets(api);
 		assets.forEach((asset) => {
@@ -23,6 +16,9 @@ describe("fetchCENNZnetAssets", () => {
 			]);
 			expect(!!assetId).toEqual(true);
 			expect(!!symbol).toEqual(true);
+
+			expect(assets[0]).toEqual(cennzAsset);
+			expect(assets[1]).toEqual(cpayAsset);
 		});
 	});
 });

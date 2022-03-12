@@ -4,10 +4,11 @@ import fetchCENNZAssets from "@/utils/fetchCENNZAssets";
 import { CPAY_ASSET_ID } from "@/constants";
 
 /**
- * Fetch and returns array of CENNZnetAsset that can be used in Pool
+ * Fetch and returns array of CENNZAsset that
+ * can be used in Liquidty Pool
  *
- * @param {Api} api The api
- * @return {Promise<CENNZAsset[]>} The pool assets.
+ * @param {Api} api
+ * @return {Promise<CENNZAsset[]>}
  */
 export default async function fetchPoolAssets(api: Api): Promise<CENNZAsset[]> {
 	const assets = await fetchCENNZAssets(api);

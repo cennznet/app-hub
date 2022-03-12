@@ -2,6 +2,12 @@ import { Api } from "@cennznet/api";
 import { CENNZAsset } from "@/types";
 
 jest.mock("@/utils/getTokenLogo");
+jest.mock("@/constants", () => ({
+	CENNZ_ASSET_ID: 16000,
+	CPAY_ASSET_ID: 16001,
+	ALLOWED_ASSET_IDS: [16000, 16001],
+	ETH_CHAIN_ID: 42,
+}));
 
 global.getCENNZApiForTest = () => {
 	let api: Api = new Api({
