@@ -24,7 +24,6 @@ const AccountPicker: React.FC<{
 	useEffect(() => {
 		if (!accounts) return;
 
-		console.log("yeeting accounts");
 		updateSelectedAccount(accounts[0]);
 		setSelectedAccountInput(accounts[0].address);
 		setValidAddress(true);
