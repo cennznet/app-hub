@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useCENNZExtension } from "@/providers/CENNZExtensionProvider";
 import { css } from "@emotion/react";
 import AccountIdenticon from "@/components/shared/AccountIdenticon";
@@ -22,25 +22,26 @@ const AccountPicker: React.FC<{
 	const [isCleared, setIsCleared] = useState<boolean>(false);
 
 	useEffect(() => {
-		if (accounts) {
-			updateSelectedAccount(accounts[0]);
-			setSelectedAccountInput(accounts[0].address);
-			setValidAddress(true);
-		}
-	}, []);
+		if (!accounts) return;
+
+		console.log("yeeting accounts");
+		updateSelectedAccount(accounts[0]);
+		setSelectedAccountInput(accounts[0].address);
+		setValidAddress(true);
+	}, [accounts, updateSelectedAccount]);
 
 	useEffect(() => setError(""), [chain]);
 
 	useEffect(() => {
-		if (selectedAccount) {
-			updateSelectedAccount({
-				address: selectedAccount.address,
-				name: selectedAccount.meta.name,
-			});
-			setSelectedAccountInput(selectedAccount.address);
-			setValidAddress(true);
-		}
-	}, [selectedAccount]);
+		if (!selectedAccount) return;
+
+		updateSelectedAccount({
+			address: selectedAccount.address,
+			name: selectedAccount.meta.name,
+		});
+		setSelectedAccountInput(selectedAccount.address);
+		setValidAddress(true);
+	}, [selectedAccount, updateSelectedAccount]);
 
 	const updateAccount = (accountAddress: string) => {
 		setError("");
@@ -148,7 +149,7 @@ export const styles = {
 		display: flex;
 		align-items: center;
 		justify-content: flex-start;
-		padding: 0px 15px;
+		padding: 0 15px;
 
 		input {
 			margin-left: 10px;
