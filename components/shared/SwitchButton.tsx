@@ -19,7 +19,7 @@ const SwapButton: FC<{ vertical?: boolean } & ComponentProps<"button">> = ({
 	);
 
 	return (
-		<button css={styles.root} {...props} onClick={onButtonClick}>
+		<button css={styles.root} {...props} onClick={onButtonClick} type="button">
 			<div css={styles.inner}>
 				<SwapHoriz
 					css={[styles.icon(vertical), alt && styles.iconSpin(vertical)]}
@@ -56,7 +56,7 @@ const styles = {
 	`,
 
 	icon:
-		(vertical) =>
+		(vertical: boolean) =>
 		({ palette }: Theme) =>
 			css`
 				width: 60%;
@@ -66,7 +66,7 @@ const styles = {
 				color: ${palette.text.primary};
 			`,
 
-	iconSpin: (vertical) => css`
+	iconSpin: (vertical: boolean) => css`
 		transform: ${vertical ? "rotateZ(270deg)" : "rotateZ(180deg)"};
 	`,
 };
