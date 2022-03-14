@@ -1,4 +1,4 @@
-import { VFC, useEffect, useCallback, useState } from "react";
+import { VFC, useEffect, useCallback, useMemo } from "react";
 import { IntrinsicElements } from "@/types";
 import TokenInput from "@/components/shared/TokenInput";
 import { css } from "@emotion/react";
@@ -86,16 +86,18 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
 
 	const reValue = Number(receiveValue.value);
 
+	const onExchangeMaxRequest = useMemo(() => {
+		if (!exchangeBalance) return;
+		const setExchangeValue = exchangeValue.setValue;
+		return () => setExchangeValue(formatBalance(exchangeBalance));
+	}, [exchangeBalance, exchangeValue.setValue]);
+
 	return (
 		<div {...props} css={styles.root}>
 			<div css={styles.formField}>
 				<label htmlFor="exchangeInput">From Asset</label>
 				<TokenInput
-					onMaxValueRequest={
-						!!exchangeBalance
-							? () => exchangeValue.setValue(formatBalance(exchangeBalance))
-							: null
-					}
+					onMaxValueRequest={onExchangeMaxRequest}
 					selectedTokenId={exchangeToken.tokenId}
 					onTokenChange={exchangeToken.onTokenChange}
 					value={exchangeValue.value}
