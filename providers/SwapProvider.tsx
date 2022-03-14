@@ -1,6 +1,5 @@
 import {
 	createContext,
-	useEffect,
 	useContext,
 	useState,
 	SetStateAction,
@@ -13,7 +12,6 @@ import { fetchSwapAssets } from "@/utils";
 import { useTokensFetcher } from "@/hooks";
 import { CENNZ_ASSET_ID, CPAY_ASSET_ID } from "@/constants";
 import { useTokenInput, TokenInputHookType } from "@/hooks";
-import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 
 type CENNZAssetId = CENNZAsset["assetId"];
 
@@ -33,8 +31,6 @@ interface SwapContextType {
 	receiveValue: TokenInputHookType<CENNZAssetId>[1];
 	exchangeAsset: CENNZAsset;
 	receiveAsset: CENNZAsset;
-	exchangeBalance: number;
-	receiveBalance: number;
 	slippage: string;
 	setSlippage: Dispatch<SetStateAction<string>>;
 	txStatus: TxStatus;
@@ -48,7 +44,6 @@ interface SwapProviderProps {
 }
 
 const SwapProvider: FC<SwapProviderProps> = ({ supportedAssets, children }) => {
-	const { balances } = useCENNZWallet();
 	const [exchangeAssets] = useTokensFetcher<CENNZAsset[]>(
 		fetchSwapAssets,
 		supportedAssets
@@ -73,32 +68,9 @@ const SwapProvider: FC<SwapProviderProps> = ({ supportedAssets, children }) => {
 		(token) => token.assetId === receiveToken.tokenId
 	);
 
-	const [exchangeBalance, setExchangeBalance] = useState<number>(null);
-	const [receiveBalance, setReceiveBalance] = useState<number>(null);
-
 	const [slippage, setSlippage] = useState<string>("5");
 
 	const [txStatus, setTxStatus] = useState<TxStatus>(null);
-
-	// Update asset balances for both send and receive assets
-	useEffect(() => {
-		if (!balances?.length) {
-			setExchangeBalance(null);
-			setReceiveBalance(null);
-			return;
-		}
-
-		const sendBalance = balances.find(
-			(balance) => balance.assetId === exchangeToken.tokenId
-		);
-
-		const receiveBalance = balances.find(
-			(balance) => balance.assetId === receiveToken.tokenId
-		);
-
-		setExchangeBalance(sendBalance.value);
-		setReceiveBalance(receiveBalance.value);
-	}, [balances, exchangeToken.tokenId, receiveToken.tokenId]);
 
 	return (
 		<SwapContext.Provider
@@ -113,8 +85,6 @@ const SwapProvider: FC<SwapProviderProps> = ({ supportedAssets, children }) => {
 				exchangeAsset,
 				receiveAsset,
 				cpayAsset,
-				exchangeBalance,
-				receiveBalance,
 				slippage,
 				setSlippage,
 				txStatus,

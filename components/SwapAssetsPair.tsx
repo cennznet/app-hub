@@ -1,4 +1,4 @@
-import { VFC, useEffect, useCallback } from "react";
+import { VFC, useEffect, useCallback, useState } from "react";
 import { IntrinsicElements } from "@/types";
 import TokenInput from "@/components/shared/TokenInput";
 import { css } from "@emotion/react";
@@ -9,6 +9,7 @@ import SwitchButton from "@/components/shared/SwitchButton";
 import { Theme } from "@mui/material";
 
 import { useSwapExchangeRate } from "@/hooks";
+import useAssetBalances from "@/hooks/useAssetBalances";
 
 interface SwapAssetsPairProps {}
 
@@ -23,11 +24,11 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
 		exchangeValue,
 		receiveValue,
 		setReceiveAssets,
-		exchangeBalance,
-		receiveBalance,
+		exchangeAsset,
+		receiveAsset,
 	} = useSwap();
 
-	const { selectedAccount } = useCENNZWallet();
+	const { selectedAccount, balances } = useCENNZWallet();
 
 	const [exchangeRate] = useSwapExchangeRate(exchangeValue.value);
 
@@ -78,12 +79,17 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
 		setReceiveValue(exchangeRate.toString());
 	}, [exchangeRate, receiveValue.setValue]);
 
+	const [exchangeBalance, receiveBalance] = useAssetBalances(
+		exchangeAsset,
+		receiveAsset
+	);
+
 	const reValue = Number(receiveValue.value);
 
 	return (
 		<div {...props} css={styles.root}>
 			<div css={styles.formField}>
-				<label htmlFor="exchangeInput">You Send</label>
+				<label htmlFor="exchangeInput">From Asset</label>
 				<TokenInput
 					onMaxValueRequest={
 						!!exchangeBalance
@@ -119,7 +125,7 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
 				/>
 			</div>
 			<div css={styles.formField}>
-				<label htmlFor="receiveInput">You Get</label>
+				<label htmlFor="receiveInput">To Asset</label>
 				<TokenInput
 					selectedTokenId={receiveToken.tokenId}
 					onTokenChange={receiveToken.onTokenChange}
