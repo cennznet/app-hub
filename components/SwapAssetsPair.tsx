@@ -139,7 +139,7 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
 					<div css={styles.tokenBalance}>
 						Balance:{" "}
 						<span>
-							{formatBalance(exchangeBalance !== null ? receiveBalance : 0)}
+							{formatBalance(receiveBalance !== null ? receiveBalance : 0)}
 						</span>
 					</div>
 				)}
