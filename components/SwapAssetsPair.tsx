@@ -155,7 +155,7 @@ export default SwapAssetsPair;
 const styles = {
 	root: css``,
 
-	formField: css`
+	formField: ({ palette }: Theme) => css`
 		margin-bottom: 1em;
 
 		label {
@@ -164,11 +164,12 @@ const styles = {
 			text-transform: uppercase;
 			margin-bottom: 0.5em;
 			display: block;
+			color: ${palette.primary.main};
 		}
 	`,
 
 	formControl: css`
-		margin-top: 1em;
+		margin: 1em 0;
 		text-align: center;
 	`,
 
