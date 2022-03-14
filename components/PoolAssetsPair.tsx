@@ -41,22 +41,37 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 
 	return (
 		<div {...props} css={styles.root}>
-			{poolAction === "Add" && (
-				<div css={styles.formCopy}>
-					<p>
-						To keep the liquidity pool functional, deposits require an equal
-						value of <strong>{poolAsset.symbol}</strong> and{" "}
-						<strong>{cpayAsset.symbol}</strong> at the current exchange rate.
-					</p>
-					<p>
-						By adding liquidity you will earn <strong>0.3%</strong> of all
-						trades on this pair proportional to your share of the pool.
-					</p>
-				</div>
-			)}
-
 			<div css={styles.formField}>
-				<label>Liquidity Asset</label>
+				<label htmlFor="poolInput">Liquidity Asset</label>
+
+				{poolAction === "Add" && (
+					<div css={styles.formCopy}>
+						<p>
+							To keep the liquidity pool functional, deposits require an equal
+							value of <strong>{poolAsset.symbol}</strong> and{" "}
+							<strong>{cpayAsset.symbol}</strong> at the current exchange rate.
+						</p>
+						<p>
+							By adding liquidity you will earn <strong>0.3%</strong> of all
+							trades on this pair proportional to your share of the pool.
+						</p>
+					</div>
+				)}
+
+				{poolAction === "Remove" && (
+					<div css={styles.formCopy}>
+						<p>
+							To keep the liquidity pool functional, withdrawals will return an
+							equal value of <strong>{poolAsset.symbol}</strong> and{" "}
+							<strong>{cpayAsset.symbol}</strong> at the current exchange rate.
+						</p>
+						<p>
+							Accrued fees can be claimed at any time by withdrawing your
+							liquidity.
+						</p>
+					</div>
+				)}
+
 				<TokenInput
 					onMaxValueRequest={onPoolMaxRequest}
 					selectedTokenId={poolToken.tokenId}
@@ -86,7 +101,7 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 					value={cpayValue.value}
 					onValueChange={cpayValue.onValueChange}
 					tokens={[cpayAsset]}
-					id="poolInput"
+					id="cpayInput"
 					required
 					scale={4}
 					min={0.0001}
@@ -113,7 +128,7 @@ const styles = {
 
 		label {
 			font-weight: bold;
-			font-size: 0.875em;
+			font-size: 14px;
 			text-transform: uppercase;
 			margin-bottom: 0.5em;
 			display: block;
@@ -134,6 +149,12 @@ const styles = {
 	`,
 
 	formCopy: ({ palette }: Theme) => css`
+		margin-bottom: 1.5em;
+		font-size: 14px;
+		p {
+			margin-top: 0;
+		}
+
 		strong {
 			color: ${palette.primary.main};
 		}
