@@ -1,7 +1,7 @@
 import { useEffect, VFC } from "react";
 import { IntrinsicElements } from "@/types";
 import { LinearProgress, Tooltip, Theme } from "@mui/material";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import { css } from "@emotion/react";
 import { formatBalance } from "@/utils";
 import { useSwap } from "@/providers/SwapProvider";
@@ -72,7 +72,7 @@ const SwapStats: VFC<IntrinsicElements["div"] & SwapStatsProps> = (props) => {
 						arrow
 						placement="right"
 					>
-						<InfoOutlinedIcon fontSize={"0.5em" as any} />
+						<HelpOutlineIcon fontSize={"0.5em" as any} />
 					</Tooltip>
 				</li>
 			</ul>
