@@ -23,10 +23,10 @@ interface TxStatus {
 }
 
 interface SwapContextType {
-	exchangeTokens: CENNZAsset[];
-	receiveTokens: CENNZAsset[];
+	exchangeAssets: CENNZAsset[];
+	receiveAssets: CENNZAsset[];
 	cpayAsset: CENNZAsset;
-	setReceiveTokens: Dispatch<SetStateAction<CENNZAsset[]>>;
+	setReceiveAssets: Dispatch<SetStateAction<CENNZAsset[]>>;
 	exchangeToken: TokenInputHookType<CENNZAssetId>[0];
 	exchangeValue: TokenInputHookType<CENNZAssetId>[1];
 	receiveToken: TokenInputHookType<CENNZAssetId>[0];
@@ -49,27 +49,27 @@ interface SwapProviderProps {
 
 const SwapProvider: FC<SwapProviderProps> = ({ supportedAssets, children }) => {
 	const { balances } = useCENNZWallet();
-	const [exchangeTokens] = useTokensFetcher<CENNZAsset[]>(
+	const [exchangeAssets] = useTokensFetcher<CENNZAsset[]>(
 		fetchSwapAssets,
 		supportedAssets
 	);
-	const [receiveTokens, setReceiveTokens] =
-		useState<CENNZAsset[]>(exchangeTokens);
+	const [receiveAssets, setReceiveAssets] =
+		useState<CENNZAsset[]>(exchangeAssets);
 
-	const cennzAsset = exchangeTokens?.find(
+	const cennzAsset = exchangeAssets?.find(
 		(token) => token.assetId === CENNZ_ASSET_ID
 	);
-	const cpayAsset = exchangeTokens?.find(
+	const cpayAsset = exchangeAssets?.find(
 		(token) => token.assetId === CPAY_ASSET_ID
 	);
 
 	const [exchangeToken, exchangeValue] = useTokenInput(cennzAsset.assetId);
 	const [receiveToken, receiveValue] = useTokenInput(cpayAsset.assetId);
 
-	const exchangeAsset = exchangeTokens?.find(
+	const exchangeAsset = exchangeAssets?.find(
 		(token) => token.assetId === exchangeToken.tokenId
 	);
-	const receiveAsset = exchangeTokens?.find(
+	const receiveAsset = exchangeAssets?.find(
 		(token) => token.assetId === receiveToken.tokenId
 	);
 
@@ -103,9 +103,9 @@ const SwapProvider: FC<SwapProviderProps> = ({ supportedAssets, children }) => {
 	return (
 		<SwapContext.Provider
 			value={{
-				exchangeTokens,
-				receiveTokens,
-				setReceiveTokens,
+				exchangeAssets,
+				receiveAssets,
+				setReceiveAssets,
 				exchangeToken,
 				exchangeValue,
 				receiveToken,

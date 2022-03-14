@@ -16,13 +16,13 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
 	props
 ) => {
 	const {
-		exchangeTokens,
-		receiveTokens,
+		exchangeAssets,
+		receiveAssets,
 		exchangeToken,
 		receiveToken,
 		exchangeValue,
 		receiveValue,
-		setReceiveTokens,
+		setReceiveAssets,
 		exchangeBalance,
 		receiveBalance,
 	} = useSwap();
@@ -38,7 +38,7 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
 
 			setExchangeTokenId(exchangeTokenId);
 
-			const receiveTokens = exchangeTokens.filter(
+			const receiveTokens = exchangeAssets.filter(
 				(token) => token.assetId !== exchangeTokenId
 			);
 
@@ -51,14 +51,14 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
 				return receiveTokens[0].assetId;
 			});
 
-			setReceiveTokens(receiveTokens);
+			setReceiveAssets(receiveTokens);
 		},
 
 		[
 			exchangeToken.setTokenId,
 			receiveToken.setTokenId,
-			exchangeTokens,
-			setReceiveTokens,
+			exchangeAssets,
+			setReceiveAssets,
 		]
 	);
 
@@ -94,7 +94,7 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
 					onTokenChange={exchangeToken.onTokenChange}
 					value={exchangeValue.value}
 					onValueChange={exchangeValue.onValueChange}
-					tokens={exchangeTokens}
+					tokens={exchangeAssets}
 					id="exchangeInput"
 					required
 					scale={4}
@@ -125,7 +125,7 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
 					onTokenChange={receiveToken.onTokenChange}
 					value={reValue ? formatBalance(reValue) : ""}
 					onValueChange={receiveValue.onValueChange}
-					tokens={receiveTokens}
+					tokens={receiveAssets}
 					disabled={true}
 					id="receiveInput"
 				/>
