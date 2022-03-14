@@ -2,7 +2,7 @@ import { IntrinsicElements } from "@/types";
 import { css } from "@emotion/react";
 import { useCallback, useEffect, useState, VFC } from "react";
 import SwitchButton from "@/components/shared/SwitchButton";
-import { MenuItem } from "@mui/material";
+import { MenuItem, Theme } from "@mui/material";
 import { usePool } from "@/providers/PoolProvider";
 import SelectInput from "@/components/shared/SelectInput";
 
@@ -67,11 +67,10 @@ const PoolActionsPair: VFC<IntrinsicElements["div"] & PoolActionsPairProps> = (
 	return (
 		<div {...props} css={styles.root}>
 			<div css={styles.formField}>
-				<div>
+				<div css={styles.selectInput}>
 					<label htmlFor="fromSelect">From</label>
 					<SelectInput
 						id="fromSelect"
-						css={styles.select}
 						onChange={onFromActionChange}
 						value={fromOption}
 						inputProps={{ sx: styles.selectItem as any }}
@@ -90,11 +89,10 @@ const PoolActionsPair: VFC<IntrinsicElements["div"] & PoolActionsPairProps> = (
 					</SelectInput>
 				</div>
 				<SwitchButton css={styles.switchButton} onClick={onSwitchClick} />
-				<div>
+				<div css={styles.selectInput}>
 					<label htmlFor="toSelect">To</label>
 					<SelectInput
 						id="toSelect"
-						css={styles.select}
 						onChange={onToActionChange}
 						value={toOption}
 						inputProps={{ sx: styles.selectItem as any }}
@@ -121,10 +119,10 @@ export default PoolActionsPair;
 
 const styles = {
 	root: css`
-		margin-bottom: 1em;
+		margin-bottom: 2em;
 	`,
 
-	formField: css`
+	formField: ({ palette }: Theme) => css`
 		margin-bottom: 1em;
 		display: flex;
 		align-items: flex-end;
@@ -135,6 +133,7 @@ const styles = {
 			text-transform: uppercase;
 			margin-bottom: 0.5em;
 			display: block;
+			color: ${palette.primary.main};
 		}
 	`,
 
@@ -142,9 +141,12 @@ const styles = {
 		margin: 0 1em;
 	`,
 
-	select: css`
-		min-width: 200px;
+	selectInput: css`
 		flex: 1;
+
+		.MuiOutlinedInput-root {
+			width: 100%;
+		}
 	`,
 
 	selectItem: css`

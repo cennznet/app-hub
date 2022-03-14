@@ -66,6 +66,8 @@ const config = {
 		},
 	},
 	typography: {
+		htmlFontSize: 16,
+		fontSize: 14,
 		fontFamily: ["Roboto", "sans-serif"].join(","),
 	},
 	shape: {

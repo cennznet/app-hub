@@ -16,6 +16,7 @@ const globalStyles = (
 				font-size: 16px;
 				line-height: 1.25;
 				letter-spacing: 0;
+				color: ${palette.text.primary};
 			}
 
 			input {

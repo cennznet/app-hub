@@ -6,7 +6,7 @@ import {
 	useMemo,
 	useEffect,
 } from "react";
-import { css } from "@emotion/react";
+import { css, SerializedStyles } from "@emotion/react";
 import { SelectChangeEvent, MenuItem, Theme } from "@mui/material";
 import { CENNZAsset, EthereumToken } from "@/types";
 import getTokenLogo from "@/utils/getTokenLogo";
@@ -19,6 +19,7 @@ interface TokenInputProps {
 	onTokenChange: (event: SelectChangeEvent) => void;
 	onMaxValueRequest?: () => void;
 	onValueChange: (value: string) => void;
+	css?: SerializedStyles;
 }
 
 const TokenInput: FC<
@@ -36,6 +37,7 @@ const TokenInput: FC<
 	padFractionalZeros,
 	disabled,
 	value,
+	css,
 	...props
 }) => {
 	const imaskOptions = useMemo(
@@ -63,12 +65,13 @@ const TokenInput: FC<
 		setValue?.((value === "0" ? "" : value) as string);
 	}, [value, setValue]);
 	return (
-		<div css={[styles.root, !disabled && styles.rootHover]}>
+		<div css={[styles.root, !disabled && styles.rootHover, css]}>
 			<SelectInput
 				css={styles.select}
 				value={selectedTokenId}
 				onChange={onTokenChange}
 				inputProps={{ sx: styles.selectItem as any }}
+				readOnly={tokens?.length <= 1}
 			>
 				{!!tokens?.length &&
 					tokens.map((coin) => {
