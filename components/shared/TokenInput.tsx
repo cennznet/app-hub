@@ -7,11 +7,11 @@ import {
 	useEffect,
 } from "react";
 import { css } from "@emotion/react";
-import { Select, SelectChangeEvent, MenuItem, Theme } from "@mui/material";
+import { SelectChangeEvent, MenuItem, Theme } from "@mui/material";
 import { CENNZAsset, EthereumToken } from "@/types";
 import getTokenLogo from "@/utils/getTokenLogo";
-import ExpandMore from "@mui/icons-material/ExpandMore";
 import { useIMask, IMask } from "react-imask";
+import SelectInput from "@/components/shared/SelectInput";
 
 interface TokenInputProps {
 	tokens: Partial<CENNZAsset & EthereumToken>[];
@@ -64,13 +64,11 @@ const TokenInput: FC<
 	}, [value, setValue]);
 	return (
 		<div css={[styles.root, !disabled && styles.rootHover]}>
-			<Select
+			<SelectInput
 				css={styles.select}
 				value={selectedTokenId}
 				onChange={onTokenChange}
-				MenuProps={{ sx: styles.selectDropdown as any }}
-				IconComponent={ExpandMore}
-				autoWidth={false}
+				inputProps={{ sx: styles.selectItem as any }}
 			>
 				{!!tokens?.length &&
 					tokens.map((coin) => {
@@ -84,7 +82,7 @@ const TokenInput: FC<
 							</MenuItem>
 						);
 					})}
-			</Select>
+			</SelectInput>
 			{onMaxValueRequest && (
 				<div css={styles.maxButton} onClick={onMaxValueRequest}>
 					Max
@@ -135,25 +133,6 @@ export const styles = {
 		.MuiOutlinedInput-notchedOutline {
 			border: none;
 		}
-
-		.MuiSelect-select {
-			display: flex;
-			align-items: center;
-			padding-top: 0.75em;
-			padding-bottom: 0.75em;
-			> img {
-				width: 2em;
-				height: 2em;
-				object-fit: contain;
-				margin-right: 0.5em;
-			}
-
-			> span {
-				font-size: 0.875em;
-				font-weight: bold;
-				flex: 1;
-			}
-		}
 	`,
 
 	rootHover: ({ palette }: Theme) => css`
@@ -163,49 +142,13 @@ export const styles = {
 		}
 	`,
 
-	select: ({ palette, transitions }: Theme) => css`
-		border: none;
+	select: css`
 		min-width: 135px;
-
-		&:hover,
-		& .MuiSelect-select[aria-expanded="true"] {
-			color: ${palette.primary.main};
-
-			.MuiSvgIcon-root {
-				color: ${palette.primary.main};
-			}
-		}
-
-		.MuiList-root {
-			padding: 0;
-		}
-
-		.MuiSvgIcon-root {
-			transition: transform ${transitions.duration.shortest}ms
-				${transitions.easing.easeInOut};
-		}
-
-		.MuiSelect-iconOpen {
-			color: ${palette.primary.main};
-		}
-	`,
-
-	selectDropdown: ({ palette, shadows }: Theme) => css`
-		.MuiPaper-root {
-			border-radius: 4px;
-			overflow: hidden;
-			transform: translate(-1px, 5px) !important;
-			box-shadow: ${shadows[1]};
-			border: 1px solid ${palette.secondary.main};
-		}
-
-		.MuiMenu-list {
-			padding: 0;
-		}
 	`,
 
 	selectItem: css`
 		display: flex;
+		align-items: center;
 		padding-top: 0.75em;
 		padding-bottom: 0.75em;
 
