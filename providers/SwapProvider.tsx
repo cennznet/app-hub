@@ -52,20 +52,20 @@ const SwapProvider: FC<SwapProviderProps> = ({ supportedAssets, children }) => {
 		useState<CENNZAsset[]>(exchangeAssets);
 
 	const cennzAsset = exchangeAssets?.find(
-		(token) => token.assetId === CENNZ_ASSET_ID
+		(asset) => asset.assetId === CENNZ_ASSET_ID
 	);
 	const cpayAsset = exchangeAssets?.find(
-		(token) => token.assetId === CPAY_ASSET_ID
+		(asset) => asset.assetId === CPAY_ASSET_ID
 	);
 
 	const [exchangeToken, exchangeValue] = useTokenInput(cennzAsset.assetId);
 	const [receiveToken, receiveValue] = useTokenInput(cpayAsset.assetId);
 
 	const exchangeAsset = exchangeAssets?.find(
-		(token) => token.assetId === exchangeToken.tokenId
+		(asset) => asset.assetId === exchangeToken.tokenId
 	);
 	const receiveAsset = exchangeAssets?.find(
-		(token) => token.assetId === receiveToken.tokenId
+		(asset) => asset.assetId === receiveToken.tokenId
 	);
 
 	const [slippage, setSlippage] = useState<string>("5");
