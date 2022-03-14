@@ -125,3 +125,5 @@ export type UnwrapPromise<T> = T extends Promise<infer U>
 	: T extends (...args: any) => infer U
 	? U
 	: T;
+
+export type PoolAction = "Add" | "Remove";
