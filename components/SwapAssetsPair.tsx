@@ -160,7 +160,7 @@ const styles = {
 
 		label {
 			font-weight: bold;
-			font-size: 0.875em;
+			font-size: 14px;
 			text-transform: uppercase;
 			margin-bottom: 0.5em;
 			display: block;

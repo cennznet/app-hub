@@ -163,7 +163,7 @@ export const styles = {
 		}
 
 		> span {
-			font-size: 0.875em;
+			font-size: 14px;
 			font-weight: bold;
 			flex: 1;
 		}
@@ -203,7 +203,7 @@ export const styles = {
 		text-transform: uppercase;
 		padding: 0 0.5em;
 		cursor: pointer;
-		font-size: 0.875em;
+		font-size: 14px;
 		color: ${palette.text.primary};
 		transition: color 0.2s;
 
