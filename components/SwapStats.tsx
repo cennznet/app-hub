@@ -9,9 +9,7 @@ import { useSwapExchangeRate, useSwapGasFee } from "@/hooks";
 
 interface SwapStatsProps {}
 
-const SwapStats: VFC<IntrinsicElements["div"] & SwapStatsProps> = ({
-	...props
-}) => {
+const SwapStats: VFC<IntrinsicElements["div"] & SwapStatsProps> = (props) => {
 	const { exchangeValue, exchangeAsset, receiveAsset, slippage, txStatus } =
 		useSwap();
 

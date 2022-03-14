@@ -5,16 +5,16 @@ import { css } from "@emotion/react";
 import { useSwap } from "@/providers/SwapProvider";
 import { formatBalance } from "@/utils";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
-import SwapButton from "@/components/shared/SwapButton";
+import SwitchButton from "@/components/shared/SwitchButton";
 import { Theme } from "@mui/material";
 
 import { useSwapExchangeRate } from "@/hooks";
 
 interface SwapAssetsPairProps {}
 
-const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = ({
-	...props
-}) => {
+const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
+	props
+) => {
 	const {
 		exchangeTokens,
 		receiveTokens,
@@ -62,7 +62,7 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = ({
 		]
 	);
 
-	const onSwapButtonClick = useCallback(() => {
+	const onSwitchButtonClick = useCallback(() => {
 		setTokensPair(receiveToken.tokenId, exchangeToken.tokenId);
 	}, [setTokensPair, receiveToken.tokenId, exchangeToken.tokenId]);
 
@@ -112,7 +112,11 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = ({
 				)}
 			</div>
 			<div css={styles.formControl}>
-				<SwapButton onClick={onSwapButtonClick} vertical={true} type="button" />
+				<SwitchButton
+					onClick={onSwitchButtonClick}
+					vertical={true}
+					type="button"
+				/>
 			</div>
 			<div css={styles.formField}>
 				<label htmlFor="receiveInput">You Get</label>
