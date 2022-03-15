@@ -25,7 +25,7 @@ global.getCENNZApiForTest = () => {
 	return api;
 };
 
-global.getCENNZCoreAssetForTest = (): {
+global.getCENNZCoreAssetsForTest = (): {
 	cennzAsset: CENNZAsset;
 	cpayAsset: CENNZAsset;
 } => {

@@ -1,7 +1,7 @@
 import fetchSellPrice from "@/utils/fetchSellPrice";
 
 const api = global.getCENNZApiForTest();
-const { cennzAsset, cpayAsset } = global.getCENNZCoreAssetForTest();
+const { cennzAsset, cpayAsset } = global.getCENNZCoreAssetsForTest();
 
 describe("fetchSellPrice", () => {
 	it("returns expected result CENNZ -> CPAY", async () => {

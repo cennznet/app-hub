@@ -2,7 +2,7 @@ import fetchPoolExchangeInfo from "@/utils/fetchPoolExchangeInfo";
 
 const api = global.getCENNZApiForTest();
 
-const { cennzAsset } = global.getCENNZCoreAssetForTest();
+const { cennzAsset } = global.getCENNZCoreAssetsForTest();
 
 describe("fetchPoolExchangeInfo", () => {
 	it("returns expected results", async () => {

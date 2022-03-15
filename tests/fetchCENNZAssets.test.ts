@@ -1,7 +1,7 @@
 import fetchCENNZAssets from "@/utils/fetchCENNZAssets";
 
 const api = global.getCENNZApiForTest();
-const { cennzAsset, cpayAsset } = global.getCENNZCoreAssetForTest();
+const { cennzAsset, cpayAsset } = global.getCENNZCoreAssetsForTest();
 
 describe("fetchCENNZAssets", () => {
 	it("returns expected result", async () => {

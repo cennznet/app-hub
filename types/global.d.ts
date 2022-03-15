@@ -3,7 +3,7 @@ import { Api } from "@cennznet/api";
 
 export declare global {
 	function getCENNZApiForTest(): Api;
-	function getCENNZCoreAssetForTest(): {
+	function getCENNZCoreAssetsForTest(): {
 		cennzAsset: CENNZAsset;
 		cpayAsset: CENNZAsset;
 	};

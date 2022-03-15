@@ -3,7 +3,7 @@ import getBuyAssetExtrinsic from "@/utils/getBuyAssetExtrinsic";
 
 const api = global.getCENNZApiForTest();
 
-const { cennzAsset, cpayAsset } = global.getCENNZCoreAssetForTest();
+const { cennzAsset, cpayAsset } = global.getCENNZCoreAssetsForTest();
 
 describe("fetchGasFee", () => {
 	it("returns expected result", async () => {
