@@ -45,7 +45,7 @@ const SwapForm: FC<IntrinsicElements["form"] & SwapFormProps> = ({
 			setTxStatus({
 				status: "in-progress",
 				message:
-					"Please sign the transaction when prompted and wait until it is finished.",
+					"Please sign the transaction when prompted and wait until completed.",
 			});
 
 			let status: UnwrapPromise<ReturnType<typeof signAndSendTx>>;

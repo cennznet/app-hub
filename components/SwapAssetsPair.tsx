@@ -28,7 +28,7 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
 		receiveAsset,
 	} = useSwap();
 
-	const { selectedAccount, balances } = useCENNZWallet();
+	const { selectedAccount } = useCENNZWallet();
 
 	const [exchangeRate] = useSwapExchangeRate(exchangeValue.value);
 
@@ -95,7 +95,7 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
 	return (
 		<div {...props} css={styles.root}>
 			<div css={styles.formField}>
-				<label htmlFor="exchangeInput">From Asset</label>
+				<label htmlFor="exchangeInput">From</label>
 				<TokenInput
 					onMaxValueRequest={onExchangeMaxRequest}
 					selectedTokenId={exchangeToken.tokenId}
@@ -127,7 +127,7 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
 				/>
 			</div>
 			<div css={styles.formField}>
-				<label htmlFor="receiveInput">To Asset</label>
+				<label htmlFor="receiveInput">To</label>
 				<TokenInput
 					selectedTokenId={receiveToken.tokenId}
 					onTokenChange={receiveToken.onTokenChange}
