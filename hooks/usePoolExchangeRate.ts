@@ -8,25 +8,26 @@ export default function usePoolExchangeRate(): [number, boolean, () => void] {
 	const { api } = useCENNZApi();
 	const [exchangeRate, setExchangeRate] = useState<number>(null);
 	const [loading, setLoading] = useState<boolean>(false);
-	const { tradeAsset } = usePool();
+	const { tradeAsset, coreAsset } = usePool();
 
 	const fetch = useMemo(() => {
-		return debounce(async (api, tradeAssetId) => {
-			return fetchPoolExchangeInfo(api, tradeAssetId).then((exchangeInfo) => {
-				setExchangeRate(
-					exchangeInfo.tradeAssetBalance / exchangeInfo.coreAssetBalance
-				);
-			});
+		return debounce(async (api, tradeAsset, coreAsset) => {
+			return fetchPoolExchangeInfo(api, tradeAsset, coreAsset).then(
+				(exchangeInfo) => {
+					setExchangeRate(
+						exchangeInfo.tradeAssetBalance / exchangeInfo.coreAssetBalance
+					);
+				}
+			);
 		}, 150);
 	}, []);
 
 	const fetchExchangeRate = useCallback(async () => {
 		if (!api) return;
 		setLoading(true);
-		const tradeAssetId = tradeAsset.assetId;
-		await Promise.resolve(fetch(api, tradeAssetId));
+		await Promise.resolve(fetch(api, tradeAsset, coreAsset));
 		setLoading(false);
-	}, [api, fetch, tradeAsset.assetId]);
+	}, [api, fetch, tradeAsset, coreAsset]);
 
 	useEffect(() => {
 		fetchExchangeRate();

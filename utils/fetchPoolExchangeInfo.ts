@@ -1,3 +1,4 @@
+import { CENNZAsset } from "@/types";
 import { Api } from "@cennznet/api";
 
 interface PoolExchangeInfo {
@@ -15,18 +16,19 @@ interface PoolExchangeInfo {
  */
 export default async function fetchPoolExchangeInfo(
 	api: Api,
-	assetId: number
+	tradeAsset: CENNZAsset,
+	coreAsset: CENNZAsset
 ): Promise<PoolExchangeInfo> {
 	const [exchangeAddress, tradeAssetBalance, coreAssetBalance] =
 		await Promise.all([
-			api.derive.cennzx.exchangeAddress(assetId),
-			api.derive.cennzx.poolAssetBalance(assetId),
-			api.derive.cennzx.poolCoreAssetBalance(assetId),
+			api.derive.cennzx.exchangeAddress(tradeAsset.assetId),
+			api.derive.cennzx.poolAssetBalance(tradeAsset.assetId),
+			api.derive.cennzx.poolCoreAssetBalance(tradeAsset.assetId),
 		]);
 
 	return {
 		exchangeAddress,
-		tradeAssetBalance: tradeAssetBalance.toNumber(),
-		coreAssetBalance: coreAssetBalance.toNumber(),
+		tradeAssetBalance: tradeAssetBalance.toNumber() / tradeAsset.decimalsValue,
+		coreAssetBalance: coreAssetBalance.toNumber() / coreAsset.decimalsValue,
 	};
 }
