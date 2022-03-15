@@ -13,8 +13,9 @@ const SwapStats: VFC<IntrinsicElements["div"] & SwapStatsProps> = (props) => {
 	const { exchangeValue, exchangeAsset, receiveAsset, slippage, txStatus } =
 		useSwap();
 
-	const [exchangeRate, updateExchangeRate] = useSwapExchangeRate();
-	const [gasFee, gasAsset, updateGasFee] = useSwapGasFee();
+	const [exchangeRate, updatingExchangeRate, updateExchangeRate] =
+		useSwapExchangeRate();
+	const [gasFee, gasAsset, updatingGasFee, updateGasFee] = useSwapGasFee();
 
 	useEffect(() => {
 		if (txStatus?.status !== "success") return;
@@ -25,7 +26,9 @@ const SwapStats: VFC<IntrinsicElements["div"] & SwapStatsProps> = (props) => {
 	return (
 		<div {...props} css={styles.root}>
 			<LinearProgress
-				css={[styles.formInfoProgress(!!exchangeRate && !!gasFee)]}
+				css={[
+					styles.formInfoProgress(!updatingGasFee && !updatingExchangeRate),
+				]}
 			/>
 			<ul>
 				<li>
