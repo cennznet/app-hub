@@ -12,12 +12,13 @@ export default function usePoolExchangeRate(): [number, boolean, () => void] {
 
 	const fetch = useMemo(() => {
 		return debounce(async (api, tradeAsset, coreAsset) => {
-			return fetchPoolExchangeInfo(api, tradeAsset, coreAsset).then(
-				(exchangeInfo) => {
-					setExchangeRate(
-						exchangeInfo.tradeAssetBalance / exchangeInfo.coreAssetBalance
-					);
-				}
+			const exchangeInfo = await fetchPoolExchangeInfo(
+				api,
+				tradeAsset,
+				coreAsset
+			);
+			setExchangeRate(
+				exchangeInfo.tradeAssetBalance / exchangeInfo.coreAssetBalance
 			);
 		}, 150);
 	}, []);

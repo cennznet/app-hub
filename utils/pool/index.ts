@@ -69,7 +69,7 @@ export const checkLiquidityBalances = (
 	}
 };
 
-// NOTE: Move to `@/utils/fetchPoolExchangeInfo.ts`
+// NOTE: Moved to `@/utils/fetchPoolExchangeInfo.ts`
 export const fetchExchangePool = async (
 	api: Api,
 	assetId: number
@@ -92,6 +92,7 @@ export const fetchExchangePool = async (
 	};
 };
 
+// Note: Moved to `@/utils/fetchPoolUserShare`
 export const fetchUserPoolShare = async (
 	api: Api,
 	address: string,

@@ -4,10 +4,11 @@ import { css } from "@emotion/react";
 import { VFC, useMemo, useEffect } from "react";
 import TokenInput from "@/components/shared/TokenInput";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
-import useAssetBalances from "@/hooks/useAssetBalances";
+import useWalletBalances from "@/hooks/useWalletBalances";
 import { formatBalance } from "@/utils";
 import { Theme } from "@mui/material";
 import usePoolExchangeRate from "@/hooks/usePoolExchangeRate";
+import usePoolBalances from "@/hooks/usePoolBalances";
 
 interface PoolAssetsPairProps {}
 
@@ -26,19 +27,22 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 	} = usePool();
 
 	const { selectedAccount } = useCENNZWallet();
-	const [poolBalance, cpayBalance] = useAssetBalances(tradeAsset, coreAsset);
+	const [tradeWalletBalance, coreWalletBalance] = useWalletBalances(
+		tradeAsset,
+		coreAsset
+	);
+	const [tradePoolBalance, corePoolBalance, updatePoolBalances] =
+		usePoolBalances();
+
+	const tradeBalance =
+		poolAction === "Remove" ? tradePoolBalance : tradeWalletBalance;
+	const coreBalance =
+		poolAction === "Remove" ? corePoolBalance : coreWalletBalance;
 
 	const onTradeAssetMaxRequest = useMemo(() => {
-		if (!poolBalance) return;
 		const setPoolValue = tradeValue.setValue;
-		return () => setPoolValue(formatBalance(poolBalance));
-	}, [poolBalance, tradeValue.setValue]);
-
-	const onCoreAssetMaxRequest = useMemo(() => {
-		if (!cpayBalance) return;
-		const setCPAYValue = coreValue.setValue;
-		return () => setCPAYValue(formatBalance(cpayBalance));
-	}, [cpayBalance, coreValue.setValue]);
+		return () => setPoolValue(formatBalance(tradeBalance));
+	}, [tradeBalance, tradeValue.setValue]);
 
 	const [exchangeRate] = usePoolExchangeRate();
 
@@ -47,20 +51,16 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 		if (!exchangeRate) return;
 		const trValue = Number(tradeValue.value);
 		const setCoreValue = coreValue.setValue;
-		if (!trValue) return setCoreValue("");
-
-		setCoreValue(formatBalance(trValue / exchangeRate));
+		const crValue = trValue / exchangeRate;
+		if (crValue === 0) return setCoreValue("");
+		setCoreValue(formatBalance(crValue));
 	}, [tradeValue.value, coreValue.setValue, exchangeRate]);
 
-	// Update tradeAsset value by coreAsset value
 	useEffect(() => {
-		if (!exchangeRate) return;
-		const crValue = Number(coreValue.value);
-		const setTradeValue = tradeValue.setValue;
-		if (!crValue) return setTradeValue("");
+		if (poolAction !== "Remove") return;
 
-		setTradeValue(formatBalance(crValue * exchangeRate));
-	}, [coreValue.value, tradeValue.setValue, exchangeRate]);
+		updatePoolBalances();
+	}, [poolAction, updatePoolBalances]);
 
 	return (
 		<div {...props} css={styles.root}>
@@ -106,34 +106,43 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 					required
 					scale={4}
 					min={0.0001}
+					max={formatBalance(tradeBalance)}
 				/>
 
-				{!!selectedAccount && (
+				{!!selectedAccount && poolAction === "Add" && (
 					<div css={styles.tokenBalance}>
-						Balance:{" "}
-						<span>{formatBalance(poolBalance !== null ? poolBalance : 0)}</span>
+						Balance: <span>{formatBalance(tradeWalletBalance || 0)}</span>
+					</div>
+				)}
+
+				{!!selectedAccount && poolAction === "Remove" && (
+					<div css={styles.tokenBalance}>
+						Withdrawable: <span>{formatBalance(tradePoolBalance || 0)}</span>
 					</div>
 				)}
 			</div>
 
 			<div css={styles.formField}>
 				<TokenInput
-					onMaxValueRequest={onCoreAssetMaxRequest}
 					selectedTokenId={coreToken.tokenId}
 					onTokenChange={coreToken.onTokenChange}
 					value={coreValue.value}
 					onValueChange={coreValue.onValueChange}
 					tokens={[coreAsset]}
+					disabled={true}
+					max={formatBalance(coreBalance)}
 					id="coreInput"
-					required
-					scale={4}
-					min={0.0001}
 				/>
 
-				{!!selectedAccount && (
+				{!!selectedAccount && poolAction === "Add" && (
 					<div css={styles.tokenBalance}>
-						Balance:{" "}
-						<span>{formatBalance(cpayBalance !== null ? cpayBalance : 0)}</span>
+						Balance: <span>{formatBalance(coreWalletBalance || 0)}</span>
+					</div>
+				)}
+
+				{!!selectedAccount && poolAction === "Remove" && (
+					<div css={styles.tokenBalance}>
+						Withdrawable: <span>{formatBalance(corePoolBalance || 0)}</span>
 					</div>
 				)}
 			</div>

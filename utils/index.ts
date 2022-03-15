@@ -11,6 +11,7 @@ export { default as fetchGasFee } from "@/utils/fetchGasFee";
 export { default as getBuyAssetExtrinsic } from "@/utils/getBuyAssetExtrinsic";
 export { default as signAndSendTx } from "@/utils/signAndSendTx";
 export { default as fetchPoolExchangeInfo } from "@/utils/fetchPoolExchangeInfo";
+export { default as fetchPoolUserBalances } from "@/utils/fetchPoolUserBalances";
 
 export const formatBalance = (balance: number): string => {
 	if (balance === 0 || !balance) return "0.0000";

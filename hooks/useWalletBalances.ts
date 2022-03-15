@@ -2,7 +2,7 @@ import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import { CENNZAsset } from "@/types";
 import { useEffect, useState } from "react";
 
-export default function useAssetBalances(
+export default function useWalletBalances(
 	asset1: CENNZAsset,
 	asset2?: CENNZAsset
 ): [number, number] {

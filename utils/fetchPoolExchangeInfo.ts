@@ -1,5 +1,6 @@
 import { CENNZAsset } from "@/types";
 import { Api } from "@cennznet/api";
+import Big from "big.js";
 
 interface PoolExchangeInfo {
 	exchangeAddress: string;
@@ -10,8 +11,9 @@ interface PoolExchangeInfo {
 /**
  * Fetch pool exchange info of a given `assetId``
  *
- * @param {Api} api
- * @param {number} assetId
+ * @param {Api} api The api
+ * @param {CENNZAsset} tradeAsset
+ * @param {CENNZAsset} coreAsset
  * @return {Promise<PoolExchangeInfo>}
  */
 export default async function fetchPoolExchangeInfo(
@@ -25,10 +27,14 @@ export default async function fetchPoolExchangeInfo(
 			api.derive.cennzx.poolAssetBalance(tradeAsset.assetId),
 			api.derive.cennzx.poolCoreAssetBalance(tradeAsset.assetId),
 		]);
+	const tradeBalanceNumber = new Big(tradeAssetBalance.toString());
+	const coreBalanceNumber = new Big(coreAssetBalance.toString());
 
 	return {
 		exchangeAddress,
-		tradeAssetBalance: tradeAssetBalance.toNumber() / tradeAsset.decimalsValue,
-		coreAssetBalance: coreAssetBalance.toNumber() / coreAsset.decimalsValue,
+		tradeAssetBalance: tradeBalanceNumber
+			.div(tradeAsset.decimalsValue)
+			.toNumber(),
+		coreAssetBalance: coreBalanceNumber.div(coreAsset.decimalsValue).toNumber(),
 	};
 }

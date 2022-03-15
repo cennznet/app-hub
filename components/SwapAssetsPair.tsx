@@ -7,9 +7,8 @@ import { formatBalance } from "@/utils";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import SwitchButton from "@/components/shared/SwitchButton";
 import { Theme } from "@mui/material";
-
 import { useSwapExchangeRate } from "@/hooks";
-import useAssetBalances from "@/hooks/useAssetBalances";
+import useWalletBalances from "@/hooks/useWalletBalances";
 
 interface SwapAssetsPairProps {}
 
@@ -79,7 +78,7 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
 		setReceiveValue(exchangeRate.toString());
 	}, [exchangeRate, receiveValue.setValue]);
 
-	const [exchangeBalance, receiveBalance] = useAssetBalances(
+	const [exchangeBalance, receiveBalance] = useWalletBalances(
 		exchangeAsset,
 		receiveAsset
 	);
@@ -107,7 +106,7 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
 					required
 					scale={4}
 					min={0.0001}
-					max={Number(exchangeBalance)}
+					max={formatBalance(exchangeBalance)}
 				/>
 
 				{!!selectedAccount && (
