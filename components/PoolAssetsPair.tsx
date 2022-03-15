@@ -47,6 +47,7 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 		if (!exchangeRate) return;
 		const trValue = Number(tradeValue.value);
 		const setCoreValue = coreValue.setValue;
+		if (!trValue) return setCoreValue("");
 
 		setCoreValue(formatBalance(trValue / exchangeRate));
 	}, [tradeValue.value, coreValue.setValue, exchangeRate]);
@@ -56,6 +57,7 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 		if (!exchangeRate) return;
 		const crValue = Number(coreValue.value);
 		const setTradeValue = tradeValue.setValue;
+		if (!crValue) return setTradeValue("");
 
 		setTradeValue(formatBalance(crValue * exchangeRate));
 	}, [coreValue.value, tradeValue.setValue, exchangeRate]);
