@@ -189,7 +189,7 @@ export const styles = {
 	`,
 
 	accountName: ({ palette }: any) => css`
-		color: ${palette.primary.main};
+		color: ${palette.primary.default};
 		font-weight: bold;
 		font-size: 24px;
 		text-transform: uppercase;
@@ -206,7 +206,7 @@ export const styles = {
 		font-size: 14px;
 		position: relative;
 		margin-top: 0.25em;
-		color: ${palette.primary.main};
+		color: ${palette.primary.default};
 	`,
 
 	swtichAccountSelect: css`
@@ -248,7 +248,7 @@ export const styles = {
 
 	accountBalancesProgress:
 		(show: boolean) =>
-		({ transitions }: Theme) =>
+		({ transitions, palette }: Theme) =>
 			css`
 				height: 2px;
 				border-radius: 2px;
@@ -259,6 +259,10 @@ export const styles = {
 					${transitions.easing.easeInOut};
 				margin-bottom: -2px;
 				transition-delay: ${show ? transitions.duration.standard : 0}ms;
+				background-color: ${palette.secondary.default};
+				.MuiLinearProgress-bar {
+					background-color: ${palette.primary.default};
+				}
 			`,
 
 	balanceHeading: css`
@@ -317,13 +321,13 @@ export const styles = {
 
 	walletActions: ({ palette }) => css`
 		padding: 1em 1.5em 1.5em;
-		color: rgba(59, 59, 59, 0.75);
+		color: ${palette.grey["700"]};
 
 		> span {
 			transition: color 0.2s;
 			cursor: pointer;
 			&:hover {
-				color: ${palette.primary.main};
+				color: ${palette.primary.default};
 			}
 		}
 	`,
