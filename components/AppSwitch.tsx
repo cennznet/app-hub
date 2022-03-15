@@ -8,13 +8,19 @@ const Switch: React.FC<{}> = () => {
 	return (
 		<nav css={styles.container}>
 			<Link href="/swap" passHref={true}>
-				<a css={styles.navItem(section === "swap")}>Swap</a>
+				<a css={styles.navItem(section === "swap")}>
+					<span>Swap</span>
+				</a>
 			</Link>
 			<Link href="/pool" passHref={true}>
-				<a css={styles.navItem(section === "pool")}>Pool</a>
+				<a css={styles.navItem(section === "pool")}>
+					<span>Pool</span>
+				</a>
 			</Link>
 			<Link href="/bridge" passHref={true}>
-				<a css={styles.navItem(section === "bridge")}>Bridge</a>
+				<a css={styles.navItem(section === "bridge")}>
+					<span>Bridge</span>
+				</a>
 			</Link>
 		</nav>
 	);
@@ -38,7 +44,7 @@ export const styles = {
 
 	navItem:
 		(active: boolean) =>
-		({ palette }: Theme) =>
+		({ palette, transitions }: Theme) =>
 			css`
 				text-decoration: none;
 				background-color: white;
@@ -50,15 +56,22 @@ export const styles = {
 				text-align: center;
 				line-height: 48px;
 				text-transform: uppercase;
-				color: ${active ? palette.primary.main : "rgba(17,48,255,0.5)"};
+				color: ${palette.primary.main};
 				border-bottom: ${active
 					? `2px solid ${palette.primary.main}`
 					: `2px solid white`};
-				transition: color 0.2s;
 
 				&:hover {
-					color: ${palette.primary.main};
 					background-color: white;
+
+					> span {
+						opacity: 1;
+					}
+				}
+
+				> span {
+					opacity: ${active ? 1 : 0.5};
+					transition: opacity ${transitions.duration.short}ms;
 				}
 			`,
 };
