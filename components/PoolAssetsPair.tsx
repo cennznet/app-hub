@@ -1,12 +1,13 @@
 import { usePool } from "@/providers/PoolProvider";
 import { IntrinsicElements } from "@/types";
 import { css } from "@emotion/react";
-import { VFC, useMemo } from "react";
+import { VFC, useMemo, useEffect } from "react";
 import TokenInput from "@/components/shared/TokenInput";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import useAssetBalances from "@/hooks/useAssetBalances";
 import { formatBalance } from "@/utils";
 import { Theme } from "@mui/material";
+import usePoolExchangeRate from "@/hooks/usePoolExchangeRate";
 
 interface PoolAssetsPairProps {}
 
@@ -15,41 +16,61 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 ) => {
 	const {
 		poolAction,
-		poolAssets,
-		poolAsset,
-		poolToken,
-		poolValue,
-		cpayAsset,
-		cpayToken,
-		cpayValue,
+		tradeAssets,
+		tradeAsset,
+		tradeToken,
+		tradeValue,
+		coreAsset,
+		coreToken,
+		coreValue,
 	} = usePool();
 
 	const { selectedAccount } = useCENNZWallet();
-	const [poolBalance, cpayBalance] = useAssetBalances(poolAsset, cpayAsset);
+	const [poolBalance, cpayBalance] = useAssetBalances(tradeAsset, coreAsset);
 
-	const onPoolMaxRequest = useMemo(() => {
+	const onTradeAssetMaxRequest = useMemo(() => {
 		if (!poolBalance) return;
-		const setPoolValue = poolValue.setValue;
+		const setPoolValue = tradeValue.setValue;
 		return () => setPoolValue(formatBalance(poolBalance));
-	}, [poolBalance, poolValue.setValue]);
+	}, [poolBalance, tradeValue.setValue]);
 
-	const onCPAYMaxRequest = useMemo(() => {
+	const onCoreAssetMaxRequest = useMemo(() => {
 		if (!cpayBalance) return;
-		const setCPAYValue = cpayValue.setValue;
+		const setCPAYValue = coreValue.setValue;
 		return () => setCPAYValue(formatBalance(cpayBalance));
-	}, [cpayBalance, cpayValue.setValue]);
+	}, [cpayBalance, coreValue.setValue]);
+
+	const [exchangeRate] = usePoolExchangeRate();
+
+	// Update coreAsset value by tradeAsset value
+	useEffect(() => {
+		if (!exchangeRate) return;
+		const trValue = Number(tradeValue.value);
+		const setCoreValue = coreValue.setValue;
+
+		setCoreValue(formatBalance(trValue / exchangeRate));
+	}, [tradeValue.value, coreValue.setValue, exchangeRate]);
+
+	// Update tradeAsset value by coreAsset value
+	useEffect(() => {
+		if (!exchangeRate) return;
+		const crValue = Number(coreValue.value);
+		const setTradeValue = tradeValue.setValue;
+
+		setTradeValue(formatBalance(crValue * exchangeRate));
+	}, [coreValue.value, tradeValue.setValue, exchangeRate]);
 
 	return (
 		<div {...props} css={styles.root}>
 			<div css={styles.formField}>
-				<label htmlFor="poolInput">Liquidity Asset</label>
+				<label htmlFor="tradeInput">Liquidity Asset</label>
 
 				{poolAction === "Add" && (
 					<div css={styles.formCopy}>
 						<p>
 							To keep the liquidity pool functional, deposits require an equal
-							value of <strong>{poolAsset.symbol}</strong> and{" "}
-							<strong>{cpayAsset.symbol}</strong> at the current exchange rate.
+							value of <strong>{tradeAsset.symbol}</strong> and{" "}
+							<strong>{coreAsset.symbol}</strong> at the current exchange rate.
 						</p>
 						<p>
 							By adding liquidity you will earn <strong>0.3%</strong> of all
@@ -62,8 +83,8 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 					<div css={styles.formCopy}>
 						<p>
 							To keep the liquidity pool functional, withdrawals will return an
-							equal value of <strong>{poolAsset.symbol}</strong> and{" "}
-							<strong>{cpayAsset.symbol}</strong> at the current exchange rate.
+							equal value of <strong>{tradeAsset.symbol}</strong> and{" "}
+							<strong>{coreAsset.symbol}</strong> at the current exchange rate.
 						</p>
 						<p>
 							Accrued fees can be claimed at any time by withdrawing your
@@ -73,13 +94,13 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 				)}
 
 				<TokenInput
-					onMaxValueRequest={onPoolMaxRequest}
-					selectedTokenId={poolToken.tokenId}
-					onTokenChange={poolToken.onTokenChange}
-					value={poolValue.value}
-					onValueChange={poolValue.onValueChange}
-					tokens={poolAssets}
-					id="poolInput"
+					onMaxValueRequest={onTradeAssetMaxRequest}
+					selectedTokenId={tradeToken.tokenId}
+					onTokenChange={tradeToken.onTokenChange}
+					value={tradeValue.value}
+					onValueChange={tradeValue.onValueChange}
+					tokens={tradeAssets}
+					id="tradeInput"
 					required
 					scale={4}
 					min={0.0001}
@@ -95,13 +116,13 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 
 			<div css={styles.formField}>
 				<TokenInput
-					onMaxValueRequest={onCPAYMaxRequest}
-					selectedTokenId={cpayToken.tokenId}
-					onTokenChange={cpayToken.onTokenChange}
-					value={cpayValue.value}
-					onValueChange={cpayValue.onValueChange}
-					tokens={[cpayAsset]}
-					id="cpayInput"
+					onMaxValueRequest={onCoreAssetMaxRequest}
+					selectedTokenId={coreToken.tokenId}
+					onTokenChange={coreToken.onTokenChange}
+					value={coreValue.value}
+					onValueChange={coreValue.onValueChange}
+					tokens={[coreAsset]}
+					id="coreInput"
 					required
 					scale={4}
 					min={0.0001}
@@ -124,7 +145,11 @@ const styles = {
 	root: css``,
 
 	formField: ({ palette }: Theme) => css`
-		margin-bottom: 1em;
+		margin-bottom: 1.5em;
+
+		&:last-child {
+			margin-bottom: 0;
+		}
 
 		label {
 			font-weight: bold;
@@ -137,7 +162,7 @@ const styles = {
 	`,
 
 	tokenBalance: ({ palette }: Theme) => css`
-		margin-top: 0.5em;
+		margin-top: 0.25em;
 		font-weight: 500;
 		color: ${palette.grey["700"]};
 
@@ -156,7 +181,6 @@ const styles = {
 		}
 
 		strong {
-			color: ${palette.primary.main};
 		}
 	`,
 };

@@ -15,13 +15,13 @@ type CENNZAssetId = CENNZAsset["assetId"];
 interface PoolContextType {
 	poolAction: PoolAction;
 	setPoolAction: Dispatch<SetStateAction<PoolAction>>;
-	poolAssets: CENNZAsset[];
-	cpayAsset: CENNZAsset;
-	poolAsset: CENNZAsset;
-	poolToken: TokenInputHookType<CENNZAssetId>[0];
-	poolValue: TokenInputHookType<CENNZAssetId>[1];
-	cpayToken: TokenInputHookType<CENNZAssetId>[0];
-	cpayValue: TokenInputHookType<CENNZAssetId>[1];
+	tradeAssets: CENNZAsset[];
+	tradeAsset: CENNZAsset;
+	tradeToken: TokenInputHookType<CENNZAssetId>[0];
+	tradeValue: TokenInputHookType<CENNZAssetId>[1];
+	coreAsset: CENNZAsset;
+	coreToken: TokenInputHookType<CENNZAssetId>[0];
+	coreValue: TokenInputHookType<CENNZAssetId>[1];
 }
 
 const PoolContext = createContext<PoolContextType>({} as PoolContextType);
@@ -31,7 +31,7 @@ interface PoolProviderProps {
 }
 
 const PoolProvider: FC<PoolProviderProps> = ({ supportedAssets, children }) => {
-	const [poolAssets] = useState<CENNZAsset[]>(
+	const [tradeAssets] = useState<CENNZAsset[]>(
 		supportedAssets.filter((asset) => asset.assetId !== CPAY_ASSET_ID)
 	);
 	const [poolAction, setPoolAction] = useState<PoolAction>("Add");
@@ -39,15 +39,15 @@ const PoolProvider: FC<PoolProviderProps> = ({ supportedAssets, children }) => {
 	const cennzAsset = supportedAssets?.find(
 		(asset) => asset.assetId === CENNZ_ASSET_ID
 	);
-	const cpayAsset = supportedAssets?.find(
+	const coreAsset = supportedAssets?.find(
 		(asset) => asset.assetId === CPAY_ASSET_ID
 	);
 
-	const [poolToken, poolValue] = useTokenInput(cennzAsset.assetId);
-	const [cpayToken, cpayValue] = useTokenInput(cpayAsset.assetId);
+	const [tradeToken, tradeValue] = useTokenInput(cennzAsset.assetId);
+	const [coreToken, coreValue] = useTokenInput(coreAsset.assetId);
 
-	const poolAsset = poolAssets?.find(
-		(asset) => asset.assetId === poolToken.tokenId
+	const tradeAsset = tradeAssets?.find(
+		(asset) => asset.assetId === tradeToken.tokenId
 	);
 
 	return (
@@ -55,13 +55,13 @@ const PoolProvider: FC<PoolProviderProps> = ({ supportedAssets, children }) => {
 			value={{
 				poolAction,
 				setPoolAction,
-				poolAssets,
-				cpayAsset,
-				poolAsset,
-				poolToken,
-				poolValue,
-				cpayToken,
-				cpayValue,
+				tradeAssets,
+				coreAsset,
+				tradeAsset,
+				tradeToken,
+				tradeValue,
+				coreToken,
+				coreValue,
 			}}
 		>
 			{children}

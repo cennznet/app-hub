@@ -174,7 +174,7 @@ const styles = {
 	`,
 
 	tokenBalance: ({ palette }: Theme) => css`
-		margin-top: 0.5em;
+		margin-top: 0.25em;
 		font-weight: 500;
 		color: ${palette.grey["700"]};
 

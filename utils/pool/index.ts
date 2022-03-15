@@ -69,6 +69,7 @@ export const checkLiquidityBalances = (
 	}
 };
 
+// NOTE: Move to `@/utils/fetchPoolExchangeInfo.ts`
 export const fetchExchangePool = async (
 	api: Api,
 	assetId: number
