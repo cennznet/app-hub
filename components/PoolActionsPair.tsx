@@ -111,6 +111,14 @@ const PoolActionsPair: VFC<IntrinsicElements["div"] & PoolActionsPairProps> = (
 					</SelectInput>
 				</div>
 			</div>
+
+			<div css={styles.formCopy}>
+				<p>
+					By adding liquidity you will earn <strong>0.3%</strong> of all trades
+					on this pair proportional to your share of the pool. Accrued fees can
+					be claimed at any time by withdrawing your liquidity.
+				</p>
+			</div>
 		</div>
 	);
 };
@@ -119,7 +127,7 @@ export default PoolActionsPair;
 
 const styles = {
 	root: css`
-		margin-bottom: 2em;
+		margin-bottom: 1.5em;
 	`,
 
 	formField: ({ palette }: Theme) => css`
@@ -160,6 +168,14 @@ const styles = {
 			font-size: 14px;
 			font-weight: bold;
 			flex: 1;
+		}
+	`,
+
+	formCopy: css`
+		margin-bottom: 1.5em;
+		font-size: 14px;
+		p {
+			margin-top: 0;
 		}
 	`,
 };

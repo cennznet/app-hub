@@ -110,8 +110,11 @@ const globalStyles = (
 				}
 			}
 
-			.MuiTooltip-popper {
-				font-weight: normal;
+			#__next ~ .MuiTooltip-popper {
+				> div {
+					font-weight: 400 !important;
+				}
+
 				.MuiTooltip-tooltip {
 					border-radius: 4px;
 					background-color: white;

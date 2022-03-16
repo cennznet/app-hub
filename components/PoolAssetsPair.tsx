@@ -6,7 +6,8 @@ import TokenInput from "@/components/shared/TokenInput";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import useWalletBalances from "@/hooks/useWalletBalances";
 import { formatBalance } from "@/utils";
-import { Theme } from "@mui/material";
+import { Theme, Tooltip } from "@mui/material";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 
 interface PoolAssetsPairProps {}
 
@@ -75,35 +76,6 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 		<div {...props} css={styles.root}>
 			<div css={styles.formField}>
 				<label htmlFor="tradeInput">Liquidity Asset</label>
-
-				{poolAction === "Add" && (
-					<div css={styles.formCopy}>
-						<p>
-							To keep the liquidity pool functional, deposits require an equal
-							value of <strong>{tradeAsset.symbol}</strong> and{" "}
-							<strong>{coreAsset.symbol}</strong> at the current exchange rate.
-						</p>
-						<p>
-							By adding liquidity you will earn <strong>0.3%</strong> of all
-							trades on this pair proportional to your share of the pool.
-						</p>
-					</div>
-				)}
-
-				{poolAction === "Remove" && (
-					<div css={styles.formCopy}>
-						<p>
-							To keep the liquidity pool functional, withdrawals will return an
-							equal value of <strong>{tradeAsset.symbol}</strong> and{" "}
-							<strong>{coreAsset.symbol}</strong> at the current exchange rate.
-						</p>
-						<p>
-							Accrued fees can be claimed at any time by withdrawing your
-							liquidity.
-						</p>
-					</div>
-				)}
-
 				<TokenInput
 					onMaxValueRequest={onTradeAssetMaxRequest}
 					selectedTokenId={tradeToken.tokenId}
@@ -140,7 +112,43 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 					tokens={[coreAsset]}
 					disabled={true}
 					ref={coreInputRef}
-				/>
+				>
+					<Tooltip
+						css={styles.inputTooltip}
+						disableFocusListener
+						PopperProps={
+							{
+								sx: styles.inputTooltipPopper,
+							} as any
+						}
+						title={
+							<>
+								{poolAction === "Add" && (
+									<div>
+										To keep the liquidity pool functional, deposits require an
+										equal value of <strong>{tradeAsset.symbol}</strong> and{" "}
+										<strong>{coreAsset.symbol}</strong> at the current exchange
+										rate.
+									</div>
+								)}
+
+								{poolAction === "Remove" && (
+									<div>
+										To keep the liquidity pool functional, withdrawals will
+										return an equal value of{" "}
+										<strong>{tradeAsset.symbol}</strong> and{" "}
+										<strong>{coreAsset.symbol}</strong> at the current exchange
+										rate.
+									</div>
+								)}
+							</>
+						}
+						arrow
+						placement="right"
+					>
+						<HelpOutlineIcon fontSize={"0.5em" as any} />
+					</Tooltip>
+				</TokenInput>
 
 				{!!selectedAccount && poolAction === "Add" && (
 					<div css={styles.tokenBalance}>
@@ -192,14 +200,16 @@ const styles = {
 		}
 	`,
 
-	formCopy: css`
-		margin-bottom: 1.5em;
-		font-size: 14px;
-		p {
-			margin-top: 0;
+	inputTooltip: ({ palette }: Theme) => css`
+		position: absolute;
+		left: 108px;
+		cursor: pointer;
+		&:hover {
+			color: ${palette.primary.main};
 		}
+	`,
 
-		strong {
-		}
+	inputTooltipPopper: css`
+		max-width: 200px;
 	`,
 };

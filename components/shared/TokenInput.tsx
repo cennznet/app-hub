@@ -41,6 +41,7 @@ const TokenInput = forwardRef<
 			disabled,
 			value,
 			css,
+			children,
 			...props
 		},
 		ref
@@ -126,6 +127,8 @@ const TokenInput = forwardRef<
 						<div css={styles.inputCurtain}></div>
 					</>
 				)}
+
+				{children}
 			</div>
 		);
 	}
