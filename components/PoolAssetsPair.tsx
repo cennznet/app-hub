@@ -1,7 +1,7 @@
 import { usePool } from "@/providers/PoolProvider";
 import { IntrinsicElements } from "@/types";
 import { css } from "@emotion/react";
-import { VFC, useMemo, useEffect } from "react";
+import { VFC, useMemo, useEffect, useRef } from "react";
 import TokenInput from "@/components/shared/TokenInput";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import useWalletBalances from "@/hooks/useWalletBalances";
@@ -56,9 +56,20 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 
 	useEffect(() => {
 		if (poolAction !== "Remove") return;
-
 		updatePoolBalances();
 	}, [poolAction, updatePoolBalances]);
+
+	const coreInputRef = useRef<HTMLInputElement>();
+	useEffect(() => {
+		const coreInput = coreInputRef.current;
+		if (!coreInput) return;
+		const value = Number(coreInput.value);
+		coreInput.setCustomValidity(
+			value > coreBalance
+				? `Value must be less than or equal to ${formatBalance(coreBalance)}.`
+				: ""
+		);
+	}, [coreBalance]);
 
 	return (
 		<div {...props} css={styles.root}>
@@ -128,8 +139,7 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 					onValueChange={coreValue.onValueChange}
 					tokens={[coreAsset]}
 					disabled={true}
-					max={formatBalance(coreBalance)}
-					id="coreInput"
+					ref={coreInputRef}
 				/>
 
 				{!!selectedAccount && poolAction === "Add" && (
