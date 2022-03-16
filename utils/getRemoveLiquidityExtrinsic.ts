@@ -18,7 +18,7 @@ export default function getRemoveLiquidityExtrinsic(
 	const minTradeAmount = tradeAmount.mul(1 - slippagePercentage / 100);
 	const minCoreAmount = coreAmount.mul(1 - slippagePercentage / 100);
 
-	return api.tx.cennzx.addLiquidity(
+	return api.tx.cennzx.removeLiquidity(
 		tradeAsset.assetId,
 		tradeAmount.toFixed(0),
 		minTradeAmount.toFixed(0),

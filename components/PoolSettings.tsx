@@ -10,14 +10,14 @@ import {
 	InputAdornment,
 } from "@mui/material";
 import ExpandMore from "@mui/icons-material/ExpandMore";
-import { useSwap } from "@/providers/SwapProvider";
+import { usePool } from "@/providers/PoolProvider";
 
-interface SwapSettingsProps {}
+interface PoolSettingsProps {}
 
-const SwapSettings: VFC<IntrinsicElements["div"] & SwapSettingsProps> = (
+const PoolSettings: VFC<IntrinsicElements["div"] & PoolSettingsProps> = (
 	props
 ) => {
-	const { slippage, setSlippage } = useSwap();
+	const { slippage, setSlippage } = usePool();
 
 	return (
 		<div {...props} css={styles.root}>
@@ -52,7 +52,7 @@ const SwapSettings: VFC<IntrinsicElements["div"] & SwapSettingsProps> = (
 	);
 };
 
-export default SwapSettings;
+export default PoolSettings;
 
 const styles = {
 	root: css`

@@ -5,12 +5,14 @@ import { LinearProgress, Tooltip, Theme } from "@mui/material";
 import { usePool } from "@/providers/PoolProvider";
 import { formatBalance } from "@/utils";
 import { usePoolGasFee } from "@/hooks";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 
 interface PoolStatsProps {}
 
 const PoolStats: VFC<IntrinsicElements["div"] & PoolStatsProps> = (props) => {
 	const {
 		tradeAsset,
+		tradeValue,
 		coreAsset,
 		exchangeRate,
 		exchangeInfo,
@@ -18,6 +20,8 @@ const PoolStats: VFC<IntrinsicElements["div"] & PoolStatsProps> = (props) => {
 		tradePoolBalance,
 		corePoolBalance,
 		updatingPoolBalances,
+		slippage,
+		poolAction,
 	} = usePool();
 
 	const userPercentageShare =
@@ -84,6 +88,46 @@ const PoolStats: VFC<IntrinsicElements["div"] & PoolStatsProps> = (props) => {
 						<span>{formatBalance(userPercentageShare)}%</span>
 					)}
 					{corePoolBalance === null && <span>%</span>}
+				</li>
+				<li>
+					<strong>Slippage:</strong>{" "}
+					{poolAction === "Add" && (
+						<span>
+							{formatBalance(
+								Number(tradeValue.value) * (1 + Number(slippage) / 100)
+							)}{" "}
+							{tradeAsset.symbol}
+						</span>
+					)}
+					{poolAction === "Remove" && (
+						<span>
+							{formatBalance(
+								Number(tradeValue.value) * (1 - Number(slippage) / 100)
+							)}{" "}
+							{tradeAsset.symbol}
+						</span>
+					)}
+					<Tooltip
+						disableFocusListener
+						PopperProps={
+							{
+								sx: styles.formInfoTooltip,
+							} as any
+						}
+						title={
+							<div>
+								If the amount of <strong>{tradeAsset.symbol}</strong> used for
+								liquidity pool is{" "}
+								{poolAction === "Remove" ? "lesser" : "greater"} than Slippage
+								value, the transaction will not proceed. You can update the
+								Slippage percentage under Settings.
+							</div>
+						}
+						arrow
+						placement="right"
+					>
+						<HelpOutlineIcon fontSize={"0.5em" as any} />
+					</Tooltip>
 				</li>
 			</ul>
 		</div>

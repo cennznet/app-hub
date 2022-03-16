@@ -29,6 +29,8 @@ interface PoolContextType extends PoolExchangeRateHook, PoolBalancesHook {
 	coreAsset: CENNZAsset;
 	coreToken: TokenInputHook<CENNZAssetId>[0];
 	coreValue: TokenInputHook<CENNZAssetId>[1];
+	slippage: string;
+	setSlippage: Dispatch<SetStateAction<string>>;
 }
 
 const PoolContext = createContext<PoolContextType>({} as PoolContextType);
@@ -71,6 +73,8 @@ const PoolProvider: FC<PoolProviderProps> = ({ supportedAssets, children }) => {
 		updatePoolBalances,
 	} = usePoolBalances(tradeAsset, coreAsset);
 
+	const [slippage, setSlippage] = useState<string>("5");
+
 	return (
 		<PoolContext.Provider
 			value={{
@@ -93,6 +97,9 @@ const PoolProvider: FC<PoolProviderProps> = ({ supportedAssets, children }) => {
 				corePoolBalance,
 				updatingPoolBalances,
 				updatePoolBalances,
+
+				slippage,
+				setSlippage,
 			}}
 		>
 			{children}

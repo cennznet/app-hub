@@ -66,9 +66,10 @@ const SwapStats: VFC<IntrinsicElements["div"] & SwapStatsProps> = (props) => {
 						}
 						title={
 							<div>
-								If the amount of {exchangeAsset.symbol} used for swapping is
-								greater than Slippage value, the transaction will not proceed.
-								You can update the Slippage percentage under Settings.
+								If the amount of <strong>{exchangeAsset.symbol}</strong> used
+								for swapping is greater than Slippage value, the transaction
+								will not proceed. You can update the Slippage percentage under
+								Settings.
 							</div>
 						}
 						arrow
