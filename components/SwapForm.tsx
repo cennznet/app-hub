@@ -24,6 +24,9 @@ const SwapForm: FC<IntrinsicElements["form"] & SwapFormProps> = ({
 		receiveValue: { value: reValue },
 		slippage,
 		setTxStatus,
+		setSuccessStatus,
+		setProgressStatus,
+		setFailStatus,
 	} = useSwap();
 	const { selectedAccount, wallet, updateBalances } = useCENNZWallet();
 
@@ -42,11 +45,7 @@ const SwapForm: FC<IntrinsicElements["form"] & SwapFormProps> = ({
 				Number(slippage)
 			);
 
-			setTxStatus({
-				status: "in-progress",
-				message:
-					"Please sign the transaction when prompted and wait until completed.",
-			});
+			setProgressStatus();
 
 			let status: UnwrapPromise<ReturnType<typeof signAndSendTx>>;
 			try {
@@ -57,33 +56,12 @@ const SwapForm: FC<IntrinsicElements["form"] & SwapFormProps> = ({
 				);
 			} catch (error) {
 				console.info(error);
-				return setTxStatus({
-					status: "fail",
-					message: `An error${
-						error?.code ? ` (#${error.code})` : ""
-					} has occurred while processing your transaction.`,
-				});
+				return setFailStatus(error?.code);
 			}
 
 			if (status === "cancelled") return setTxStatus(null);
 
-			setTxStatus({
-				status: "success",
-				message: (
-					<div>
-						You successfully swapped{" "}
-						<pre css={styles.highlightText}>
-							{formatBalance(Number(exValue))} {exchangeAsset.symbol}
-						</pre>{" "}
-						for{" "}
-						<pre css={styles.highlightText}>
-							{formatBalance(Number(reValue))} {receiveAsset.symbol}
-						</pre>
-						.
-					</div>
-				),
-			});
-
+			setSuccessStatus();
 			setExValue("");
 			await updateBalances();
 		},
@@ -99,6 +77,9 @@ const SwapForm: FC<IntrinsicElements["form"] & SwapFormProps> = ({
 			setTxStatus,
 			updateBalances,
 			setExValue,
+			setSuccessStatus,
+			setFailStatus,
+			setProgressStatus,
 		]
 	);
 
@@ -118,7 +99,7 @@ const SwapForm: FC<IntrinsicElements["form"] & SwapFormProps> = ({
 export default SwapForm;
 
 const styles = {
-	root: css`
+	root: ({ palette }: Theme) => css`
 		width: 100%;
 		position: relative;
 	`,
@@ -128,9 +109,5 @@ const styles = {
 		border-top: 1px solid ${palette.divider};
 		padding-top: 2em;
 		margin: 2em -2.5em 0;
-	`,
-
-	highlightText: ({ palette }: Theme) => css`
-		color: ${palette.primary.main};
 	`,
 };

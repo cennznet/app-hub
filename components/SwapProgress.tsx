@@ -32,11 +32,7 @@ const SwapProgress: VFC<IntrinsicElements["div"] & SwapProgressProps> = (
 						/>
 					)}
 
-					<div css={styles.title}>
-						{txStatus.status === "in-progress" && "Swap In Progress"}
-						{txStatus.status === "success" && "Swap Completed"}
-						{txStatus.status === "fail" && "Swap Failed"}
-					</div>
+					<div css={styles.title}>{txStatus.title}</div>
 					<div css={styles.message}>{txStatus.message}</div>
 
 					{txStatus.status !== "in-progress" && (
@@ -103,11 +99,15 @@ const styles = {
 		color: ${palette.primary.main};
 	`,
 
-	message: css`
+	message: ({ palette }: Theme) => css`
 		margin-top: 1em;
 		line-height: 1.5;
 		pre {
 			font-weight: bold;
+		}
+		em {
+			font-style: normal;
+			color: ${palette.primary.main};
 		}
 	`,
 

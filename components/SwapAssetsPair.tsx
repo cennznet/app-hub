@@ -118,7 +118,7 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
 					</div>
 				)}
 			</div>
-			<div css={styles.formControl}>
+			<div css={styles.formControl(!!selectedAccount)}>
 				<SwitchButton
 					onClick={onSwitchButtonClick}
 					vertical={true}
@@ -167,8 +167,9 @@ const styles = {
 		}
 	`,
 
-	formControl: css`
-		margin: 1em 0;
+	formControl: (isConnected: boolean) => css`
+		margin-bottom: 1em;
+		margin-top: ${isConnected ? "1em" : "2em"};
 		text-align: center;
 	`,
 

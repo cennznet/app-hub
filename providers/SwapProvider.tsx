@@ -6,9 +6,10 @@ import {
 	Dispatch,
 	FC,
 	ReactElement,
+	useCallback,
 } from "react";
 import { CENNZAsset } from "@/types";
-import { fetchSwapAssets } from "@/utils";
+import { fetchSwapAssets, formatBalance } from "@/utils";
 import { useTokensFetcher } from "@/hooks";
 import { CENNZ_ASSET_ID, CPAY_ASSET_ID } from "@/constants";
 import { useTokenInput, TokenInputHook } from "@/hooks";
@@ -17,6 +18,7 @@ type CENNZAssetId = CENNZAsset["assetId"];
 
 interface TxStatus {
 	status: "in-progress" | "success" | "fail";
+	title: string;
 	message: string | ReactElement;
 }
 
@@ -35,6 +37,10 @@ interface SwapContextType {
 	setSlippage: Dispatch<SetStateAction<string>>;
 	txStatus: TxStatus;
 	setTxStatus: Dispatch<SetStateAction<TxStatus>>;
+
+	setProgressStatus: () => void;
+	setSuccessStatus: () => void;
+	setFailStatus: (errorCode?: string) => void;
 }
 
 const SwapContext = createContext<SwapContextType>({} as SwapContextType);
@@ -69,8 +75,73 @@ const SwapProvider: FC<SwapProviderProps> = ({ supportedAssets, children }) => {
 	);
 
 	const [slippage, setSlippage] = useState<string>("5");
-
 	const [txStatus, setTxStatus] = useState<TxStatus>(null);
+
+	const setProgressStatus = useCallback(() => {
+		setTxStatus({
+			status: "in-progress",
+			title: "Transaction In Progress",
+			message: (
+				<div>
+					Please sign the transaction when prompted and wait until it is
+					completed.
+				</div>
+			),
+		});
+	}, []);
+
+	const setFailStatus = useCallback((errorCode?: string) => {
+		setTxStatus({
+			status: "fail",
+			title: "Transaction Failed",
+			message: (
+				<div>
+					An error has occurred while processing your transaction.
+					{!!errorCode && (
+						<>
+							<br />
+							<pre>#{errorCode}</pre>
+						</>
+					)}
+				</div>
+			),
+		});
+	}, []);
+
+	const setSuccessStatus = useCallback(() => {
+		const exValue = formatBalance(Number(exchangeValue.value));
+		const exSymbol = exchangeAsset.symbol;
+
+		const reValue = formatBalance(Number(receiveValue.value));
+		const reSymbol = receiveAsset.symbol;
+
+		setTxStatus({
+			status: "success",
+			title: "Transaction Completed",
+			message: (
+				<div>
+					You successfully swapped{" "}
+					<pre>
+						<em>
+							{exValue} {exSymbol}
+						</em>
+					</pre>{" "}
+					for{" "}
+					<pre>
+						<em>
+							{reValue} {reSymbol}
+						</em>
+					</pre>
+					.
+				</div>
+			),
+		});
+	}, [
+		exchangeValue.value,
+		exchangeAsset.symbol,
+		receiveValue.value,
+		receiveAsset.symbol,
+	]);
 
 	return (
 		<SwapContext.Provider
@@ -89,6 +160,9 @@ const SwapProvider: FC<SwapProviderProps> = ({ supportedAssets, children }) => {
 				setSlippage,
 				txStatus,
 				setTxStatus,
+				setProgressStatus,
+				setSuccessStatus,
+				setFailStatus,
 			}}
 		>
 			{children}

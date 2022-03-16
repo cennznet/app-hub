@@ -37,7 +37,6 @@ export default function useSwapExchangeRate(exchangeValue: string = "1"): {
 	}, [api, fetch, exchangeValue, exchangeAsset, receiveAsset]);
 
 	useEffect(() => {
-		console.log("useEffect called");
 		updateExchangeRate();
 	}, [updateExchangeRate]);
 
