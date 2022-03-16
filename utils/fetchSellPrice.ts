@@ -21,7 +21,7 @@ export default async function fetchSellPrice(
 	const amount = new Big(exchangeValue);
 	const { price } = await (api.rpc as any).cennzx.sellPrice(
 		exchangeAsset.assetId,
-		amount.mul(exchangeAsset.decimalsValue).toFixed(0).toString(),
+		amount.mul(exchangeAsset.decimalsValue).toFixed(0),
 		receiveAsset.assetId
 	);
 

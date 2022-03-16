@@ -31,22 +31,22 @@ const SwapStats: VFC<IntrinsicElements["div"] & SwapStatsProps> = (props) => {
 			<ul>
 				<li>
 					<strong>Gas Fee:</strong>{" "}
-					{!!gasFee && (
+					{gasFee !== null && (
 						<span>
 							&asymp; {gasFee} {gasAsset.symbol}
 						</span>
 					)}
-					{!gasFee && <span>&asymp;</span>}
+					{gasFee === null && <span>&asymp;</span>}
 				</li>
 				<li>
 					<strong>Exchange Rate:</strong>{" "}
-					{!!exchangeRate && (
+					{exchangeRate !== null && (
 						<span>
 							1 {exchangeAsset.symbol} &asymp; {formatBalance(exchangeRate)}{" "}
 							{receiveAsset.symbol}
 						</span>
 					)}
-					{!exchangeRate && <span>&asymp;</span>}
+					{exchangeRate === null && <span>&asymp;</span>}
 				</li>
 
 				<li>
@@ -108,6 +108,7 @@ const styles = {
 			margin-bottom: 0.5em;
 			display: flex;
 			align-items: center;
+			font-size: 14px;
 			&:last-child {
 				margin-bottom: 0;
 			}

@@ -21,16 +21,17 @@ export default function usePoolExchangeRate(
 	const [loading, setLoading] = useState<boolean>(true);
 
 	const fetch = useMemo(() => {
-		return debounce((api, tradeAsset, coreAsset) => {
-			return fetchPoolExchangeInfo(api, tradeAsset, coreAsset).then(
-				(exchangeInfo) => {
-					setExchangeInfo(exchangeInfo);
-					setExchangeRate(
-						exchangeInfo.tradeAssetBalance / exchangeInfo.coreAssetBalance
-					);
-					setLoading(false);
-				}
+		return debounce(async (api, tradeAsset, coreAsset) => {
+			const exchangeInfo = await fetchPoolExchangeInfo(
+				api,
+				tradeAsset,
+				coreAsset
 			);
+			setExchangeInfo(exchangeInfo);
+			setExchangeRate(
+				exchangeInfo.tradeAssetBalance / exchangeInfo.coreAssetBalance
+			);
+			setLoading(false);
 		}, 150);
 	}, []);
 

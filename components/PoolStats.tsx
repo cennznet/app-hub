@@ -4,6 +4,7 @@ import { VFC } from "react";
 import { LinearProgress, Tooltip, Theme } from "@mui/material";
 import { usePool } from "@/providers/PoolProvider";
 import { formatBalance } from "@/utils";
+import { usePoolGasFee } from "@/hooks";
 
 interface PoolStatsProps {}
 
@@ -20,26 +21,41 @@ const PoolStats: VFC<IntrinsicElements["div"] & PoolStatsProps> = (props) => {
 	} = usePool();
 
 	const userPercentageShare =
-		(corePoolBalance / exchangeInfo.coreAssetBalance) * 100;
+		corePoolBalance !== null && exchangeInfo?.coreAssetBalance !== undefined
+			? (corePoolBalance / exchangeInfo.coreAssetBalance) * 100
+			: null;
+
+	const { gasFee, gasAsset, updatingGasFee } = usePoolGasFee();
 
 	return (
 		<div {...props} css={styles.root}>
 			<LinearProgress
 				css={[
-					styles.formInfoProgress(updatingExchangeRate || updatingPoolBalances),
+					styles.formInfoProgress(
+						updatingExchangeRate || updatingPoolBalances || updatingGasFee
+					),
 				]}
 			/>
 
 			<ul>
 				<li>
+					<strong>Gas Fee:</strong>{" "}
+					{gasFee !== null && (
+						<span>
+							&asymp; {gasFee} {gasAsset.symbol}
+						</span>
+					)}
+					{gasFee === null && <span>&asymp;</span>}
+				</li>
+				<li>
 					<strong>Exchange Rate:</strong>
-					{!!exchangeRate && (
+					{exchangeRate !== null && (
 						<span>
 							1 {tradeAsset.symbol} &asymp; {formatBalance(1 / exchangeRate)}{" "}
 							{coreAsset.symbol}
 						</span>
 					)}
-					{!exchangeRate && <span>&asymp;</span>}
+					{exchangeRate === null && <span>&asymp;</span>}
 				</li>
 				<li>
 					<strong>Pool Liquidity:</strong>
@@ -54,20 +70,20 @@ const PoolStats: VFC<IntrinsicElements["div"] & PoolStatsProps> = (props) => {
 				</li>
 				<li>
 					<strong>Your Liquidity:</strong>
-					{!!tradePoolBalance && (
+					{tradePoolBalance !== null && (
 						<span>
 							{formatBalance(tradePoolBalance)} {tradeAsset.symbol} +{" "}
 							{formatBalance(corePoolBalance)} {coreAsset.symbol}
 						</span>
 					)}
-					{!tradePoolBalance && <span>+</span>}
+					{tradePoolBalance === null && <span>+</span>}
 				</li>
 				<li>
 					<strong>Your Pool Share:</strong>
-					{!!corePoolBalance && (
+					{corePoolBalance !== null && (
 						<span>{formatBalance(userPercentageShare)}%</span>
 					)}
-					{!corePoolBalance && <span>%</span>}
+					{corePoolBalance === null && <span>%</span>}
 				</li>
 			</ul>
 		</div>
@@ -100,6 +116,7 @@ const styles = {
 			margin-bottom: 0.5em;
 			display: flex;
 			align-items: center;
+			font-size: 14px;
 			&:last-child {
 				margin-bottom: 0;
 			}
