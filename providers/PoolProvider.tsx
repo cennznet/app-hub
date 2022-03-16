@@ -7,21 +7,28 @@ import {
 	useContext,
 	useState,
 } from "react";
-import { useTokenInput, TokenInputHookType } from "@/hooks";
+import {
+	useTokenInput,
+	TokenInputHook,
+	usePoolExchangeRate,
+	PoolExchangeRateHook,
+	usePoolBalances,
+	PoolBalancesHook,
+} from "@/hooks";
 import { CENNZ_ASSET_ID, CPAY_ASSET_ID } from "@/constants";
 
 type CENNZAssetId = CENNZAsset["assetId"];
 
-interface PoolContextType {
+interface PoolContextType extends PoolExchangeRateHook, PoolBalancesHook {
 	poolAction: PoolAction;
 	setPoolAction: Dispatch<SetStateAction<PoolAction>>;
 	tradeAssets: CENNZAsset[];
 	tradeAsset: CENNZAsset;
-	tradeToken: TokenInputHookType<CENNZAssetId>[0];
-	tradeValue: TokenInputHookType<CENNZAssetId>[1];
+	tradeToken: TokenInputHook<CENNZAssetId>[0];
+	tradeValue: TokenInputHook<CENNZAssetId>[1];
 	coreAsset: CENNZAsset;
-	coreToken: TokenInputHookType<CENNZAssetId>[0];
-	coreValue: TokenInputHookType<CENNZAssetId>[1];
+	coreToken: TokenInputHook<CENNZAssetId>[0];
+	coreValue: TokenInputHook<CENNZAssetId>[1];
 }
 
 const PoolContext = createContext<PoolContextType>({} as PoolContextType);
@@ -50,6 +57,20 @@ const PoolProvider: FC<PoolProviderProps> = ({ supportedAssets, children }) => {
 		(asset) => asset.assetId === tradeToken.tokenId
 	);
 
+	const {
+		exchangeRate,
+		exchangeInfo,
+		updatingExchangeRate,
+		updateExchangeRate,
+	} = usePoolExchangeRate(tradeAsset, coreAsset);
+
+	const {
+		tradePoolBalance,
+		corePoolBalance,
+		updatingPoolBalances,
+		updatePoolBalances,
+	} = usePoolBalances(tradeAsset, coreAsset);
+
 	return (
 		<PoolContext.Provider
 			value={{
@@ -62,6 +83,16 @@ const PoolProvider: FC<PoolProviderProps> = ({ supportedAssets, children }) => {
 				tradeValue,
 				coreToken,
 				coreValue,
+
+				exchangeRate,
+				exchangeInfo,
+				updateExchangeRate,
+				updatingExchangeRate,
+
+				tradePoolBalance,
+				corePoolBalance,
+				updatingPoolBalances,
+				updatePoolBalances,
 			}}
 		>
 			{children}

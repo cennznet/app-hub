@@ -4,15 +4,15 @@ import { useEffect, useState, useMemo, useCallback } from "react";
 import { useSwap } from "@/providers/SwapProvider";
 import { CENNZAsset } from "@/types";
 
-export default function useSwapGasFee(): [
-	number,
-	CENNZAsset,
-	boolean,
-	() => void
-] {
+export default function useSwapGasFee(): {
+	gasFee: number;
+	gasAsset: CENNZAsset;
+	updatingGasFee: boolean;
+	updateGasFee: () => void;
+} {
 	const { api } = useCENNZApi();
 	const [gasFee, setGasFee] = useState<number>(null);
-	const [loading, setLoading] = useState<boolean>(false);
+	const [loading, setLoading] = useState<boolean>(true);
 	const { exchangeAsset, receiveAsset, cpayAsset } = useSwap();
 
 	const extrinsic = useMemo(
@@ -35,5 +35,10 @@ export default function useSwapGasFee(): [
 		updateGasFee?.();
 	}, [updateGasFee]);
 
-	return [gasFee, cpayAsset, loading, updateGasFee];
+	return {
+		gasFee,
+		gasAsset: cpayAsset,
+		updatingGasFee: loading,
+		updateGasFee,
+	};
 }

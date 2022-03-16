@@ -7,8 +7,6 @@ import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import useWalletBalances from "@/hooks/useWalletBalances";
 import { formatBalance } from "@/utils";
 import { Theme } from "@mui/material";
-import usePoolExchangeRate from "@/hooks/usePoolExchangeRate";
-import usePoolBalances from "@/hooks/usePoolBalances";
 
 interface PoolAssetsPairProps {}
 
@@ -24,6 +22,10 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 		coreAsset,
 		coreToken,
 		coreValue,
+		exchangeRate,
+		tradePoolBalance,
+		corePoolBalance,
+		updatePoolBalances,
 	} = usePool();
 
 	const { selectedAccount } = useCENNZWallet();
@@ -31,8 +33,6 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 		tradeAsset,
 		coreAsset
 	);
-	const [tradePoolBalance, corePoolBalance, updatePoolBalances] =
-		usePoolBalances();
 
 	const tradeBalance =
 		poolAction === "Remove" ? tradePoolBalance : tradeWalletBalance;
@@ -43,8 +43,6 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 		const setPoolValue = tradeValue.setValue;
 		return () => setPoolValue(formatBalance(tradeBalance));
 	}, [tradeBalance, tradeValue.setValue]);
-
-	const [exchangeRate] = usePoolExchangeRate();
 
 	// Update coreAsset value by tradeAsset value
 	useEffect(() => {
@@ -184,7 +182,7 @@ const styles = {
 		}
 	`,
 
-	formCopy: ({ palette }: Theme) => css`
+	formCopy: css`
 		margin-bottom: 1.5em;
 		font-size: 14px;
 		p {

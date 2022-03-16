@@ -4,12 +4,14 @@ import { fetchSellPrice } from "@/utils";
 import { useSwap } from "@/providers/SwapProvider";
 import debounce from "lodash/debounce";
 
-export default function useSwapExchangeRate(
-	exchangeValue: string = "1"
-): [number, boolean, () => void] {
+export default function useSwapExchangeRate(exchangeValue: string = "1"): {
+	exchangeRate: number;
+	updatingExchangeRate: boolean;
+	updateExchangeRate: () => void;
+} {
 	const { api } = useCENNZApi();
 	const [exchangeRate, setExchangeRate] = useState<number>(null);
-	const [loading, setLoading] = useState<boolean>(false);
+	const [loading, setLoading] = useState<boolean>(true);
 	const { exchangeAsset, receiveAsset } = useSwap();
 
 	const fetch = useMemo(() => {
@@ -21,22 +23,23 @@ export default function useSwapExchangeRate(
 				exchangeValue,
 				exchangeAsset,
 				receiveAsset
-			).then(setExchangeRate);
+			).then((exchangeRate) => {
+				setExchangeRate(exchangeRate);
+				setLoading(false);
+			});
 		}, 150);
 	}, []);
 
-	const fetchExchangeRate = useCallback(async () => {
+	const updateExchangeRate = useCallback(() => {
 		if (!api) return;
 		setLoading(true);
-		await Promise.resolve(
-			fetch(api, exchangeValue, exchangeAsset, receiveAsset)
-		);
-		setLoading(false);
+		fetch(api, exchangeValue, exchangeAsset, receiveAsset);
 	}, [api, fetch, exchangeValue, exchangeAsset, receiveAsset]);
 
 	useEffect(() => {
-		fetchExchangeRate();
-	}, [fetchExchangeRate]);
+		console.log("useEffect called");
+		updateExchangeRate();
+	}, [updateExchangeRate]);
 
-	return [exchangeRate, loading, fetchExchangeRate];
+	return { exchangeRate, updatingExchangeRate: loading, updateExchangeRate };
 }

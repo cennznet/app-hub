@@ -29,7 +29,7 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
 
 	const { selectedAccount } = useCENNZWallet();
 
-	const [exchangeRate] = useSwapExchangeRate(exchangeValue.value);
+	const { exchangeRate } = useSwapExchangeRate(exchangeValue.value);
 
 	const setTokensPair = useCallback(
 		(exchangeTokenId, receiveTokenId = null) => {

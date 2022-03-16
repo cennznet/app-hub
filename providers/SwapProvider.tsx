@@ -11,7 +11,7 @@ import { CENNZAsset } from "@/types";
 import { fetchSwapAssets } from "@/utils";
 import { useTokensFetcher } from "@/hooks";
 import { CENNZ_ASSET_ID, CPAY_ASSET_ID } from "@/constants";
-import { useTokenInput, TokenInputHookType } from "@/hooks";
+import { useTokenInput, TokenInputHook } from "@/hooks";
 
 type CENNZAssetId = CENNZAsset["assetId"];
 
@@ -25,10 +25,10 @@ interface SwapContextType {
 	receiveAssets: CENNZAsset[];
 	cpayAsset: CENNZAsset;
 	setReceiveAssets: Dispatch<SetStateAction<CENNZAsset[]>>;
-	exchangeToken: TokenInputHookType<CENNZAssetId>[0];
-	exchangeValue: TokenInputHookType<CENNZAssetId>[1];
-	receiveToken: TokenInputHookType<CENNZAssetId>[0];
-	receiveValue: TokenInputHookType<CENNZAssetId>[1];
+	exchangeToken: TokenInputHook<CENNZAssetId>[0];
+	exchangeValue: TokenInputHook<CENNZAssetId>[1];
+	receiveToken: TokenInputHook<CENNZAssetId>[0];
+	receiveValue: TokenInputHook<CENNZAssetId>[1];
 	exchangeAsset: CENNZAsset;
 	receiveAsset: CENNZAsset;
 	slippage: string;

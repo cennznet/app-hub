@@ -13,9 +13,9 @@ const SwapStats: VFC<IntrinsicElements["div"] & SwapStatsProps> = (props) => {
 	const { exchangeValue, exchangeAsset, receiveAsset, slippage, txStatus } =
 		useSwap();
 
-	const [exchangeRate, updatingExchangeRate, updateExchangeRate] =
+	const { exchangeRate, updatingExchangeRate, updateExchangeRate } =
 		useSwapExchangeRate();
-	const [gasFee, gasAsset, updatingGasFee, updateGasFee] = useSwapGasFee();
+	const { gasFee, gasAsset, updatingGasFee, updateGasFee } = useSwapGasFee();
 
 	useEffect(() => {
 		if (txStatus?.status !== "success") return;
@@ -26,11 +26,18 @@ const SwapStats: VFC<IntrinsicElements["div"] & SwapStatsProps> = (props) => {
 	return (
 		<div {...props} css={styles.root}>
 			<LinearProgress
-				css={[
-					styles.formInfoProgress(!updatingGasFee && !updatingExchangeRate),
-				]}
+				css={[styles.formInfoProgress(updatingGasFee || updatingExchangeRate)]}
 			/>
 			<ul>
+				<li>
+					<strong>Gas Fee:</strong>{" "}
+					{!!gasFee && (
+						<span>
+							&asymp; {gasFee} {gasAsset.symbol}
+						</span>
+					)}
+					{!gasFee && <span>&asymp;</span>}
+				</li>
 				<li>
 					<strong>Exchange Rate:</strong>{" "}
 					{!!exchangeRate && (
@@ -41,15 +48,7 @@ const SwapStats: VFC<IntrinsicElements["div"] & SwapStatsProps> = (props) => {
 					)}
 					{!exchangeRate && <span>&asymp;</span>}
 				</li>
-				<li>
-					<strong>Gas Fee:</strong>{" "}
-					{!!gasFee && (
-						<span>
-							&asymp; {gasFee} {gasAsset.symbol}
-						</span>
-					)}
-					{!gasFee && <span>&asymp;</span>}
-				</li>
+
 				<li>
 					<strong>Slippage:</strong>{" "}
 					<span>
@@ -135,10 +134,10 @@ const styles = {
 		}
 	`,
 
-	formInfoProgress: (hide: boolean) => css`
+	formInfoProgress: (show: boolean) => css`
 		width: 25px;
 		border-radius: 10px;
-		opacity: ${hide ? 0 : 0.5};
+		opacity: ${show ? 0.5 : 0};
 		position: absolute;
 		top: 1em;
 		right: 1em;

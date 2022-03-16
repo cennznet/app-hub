@@ -2,7 +2,7 @@ import { CENNZAsset } from "@/types";
 import { Api } from "@cennznet/api";
 import Big from "big.js";
 
-interface PoolExchangeInfo {
+export interface PoolExchangeInfo {
 	exchangeAddress: string;
 	tradeAssetBalance: number;
 	coreAssetBalance: number;

@@ -1,38 +1,53 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
-import { usePool } from "@/providers/PoolProvider";
 import debounce from "lodash/debounce";
-import { fetchPoolExchangeInfo } from "@/utils";
+import { fetchPoolExchangeInfo, PoolExchangeInfo } from "@/utils";
+import { CENNZAsset } from "@/types";
 
-export default function usePoolExchangeRate(): [number, boolean, () => void] {
+export interface PoolExchangeRateHook {
+	exchangeRate: number;
+	exchangeInfo: PoolExchangeInfo;
+	updatingExchangeRate: boolean;
+	updateExchangeRate: () => void;
+}
+
+export default function usePoolExchangeRate(
+	tradeAsset: CENNZAsset,
+	coreAsset: CENNZAsset
+): PoolExchangeRateHook {
 	const { api } = useCENNZApi();
 	const [exchangeRate, setExchangeRate] = useState<number>(null);
-	const [loading, setLoading] = useState<boolean>(false);
-	const { tradeAsset, coreAsset } = usePool();
+	const [exchangeInfo, setExchangeInfo] = useState<PoolExchangeInfo>(null);
+	const [loading, setLoading] = useState<boolean>(true);
 
 	const fetch = useMemo(() => {
-		return debounce(async (api, tradeAsset, coreAsset) => {
-			const exchangeInfo = await fetchPoolExchangeInfo(
-				api,
-				tradeAsset,
-				coreAsset
-			);
-			setExchangeRate(
-				exchangeInfo.tradeAssetBalance / exchangeInfo.coreAssetBalance
+		return debounce((api, tradeAsset, coreAsset) => {
+			return fetchPoolExchangeInfo(api, tradeAsset, coreAsset).then(
+				(exchangeInfo) => {
+					setExchangeInfo(exchangeInfo);
+					setExchangeRate(
+						exchangeInfo.tradeAssetBalance / exchangeInfo.coreAssetBalance
+					);
+					setLoading(false);
+				}
 			);
 		}, 150);
 	}, []);
 
-	const fetchExchangeRate = useCallback(async () => {
+	const updateExchangeRate = useCallback(() => {
 		if (!api) return;
 		setLoading(true);
-		await Promise.resolve(fetch(api, tradeAsset, coreAsset));
-		setLoading(false);
+		fetch(api, tradeAsset, coreAsset);
 	}, [api, fetch, tradeAsset, coreAsset]);
 
 	useEffect(() => {
-		fetchExchangeRate();
-	}, [fetchExchangeRate]);
+		updateExchangeRate();
+	}, [updateExchangeRate]);
 
-	return [exchangeRate, loading, fetchExchangeRate];
+	return {
+		exchangeRate,
+		exchangeInfo,
+		updatingExchangeRate: loading,
+		updateExchangeRate,
+	};
 }

@@ -1,7 +1,7 @@
 import { SelectChangeEvent } from "@mui/material";
 import { Dispatch, SetStateAction, useCallback, useState } from "react";
 
-export type ReturnType<T> = [
+export type TokenInputHook<T> = [
 	{
 		tokenId: T;
 		setTokenId: Dispatch<SetStateAction<T>>;
@@ -14,7 +14,7 @@ export type ReturnType<T> = [
 	}
 ];
 
-export default function useTokenInput<T>(defaultTokenId: T): ReturnType<T> {
+export default function useTokenInput<T>(defaultTokenId: T): TokenInputHook<T> {
 	const [tokenId, setTokenId] = useState<T>(defaultTokenId);
 	const onTokenChange = useCallback(
 		(event: SelectChangeEvent) => {
