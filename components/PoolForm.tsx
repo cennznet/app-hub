@@ -5,6 +5,13 @@ import SubmitButton from "@/components/shared/SubmitButton";
 import { Theme } from "@mui/material";
 import { usePool } from "@/providers/PoolProvider";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
+import {
+	getAddLiquidityExtrinsic,
+	getRemoveLiquidityExtrinsic,
+	signAndSendTx,
+} from "@/utils";
+import { UnwrapPromise } from "@/types";
+import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 
 interface PoolFormProps {}
 
@@ -14,7 +21,25 @@ const PoolForm: FC<IntrinsicElements["form"] & PoolFormProps> = ({
 }) => {
 	const { api } = useCENNZApi();
 	const [buttonLabel, setButtonLabel] = useState<string>("Add to Pool");
-	const { poolAction } = usePool();
+	const {
+		poolAction,
+		setTxStatus,
+		setSuccessStatus,
+		setProgressStatus,
+		setFailStatus,
+
+		slippage,
+
+		tradeAsset,
+		tradeValue: { value: trValue, setValue: setTrValue },
+		coreAsset,
+		coreValue: { value: crValue },
+
+		updatePoolBalances,
+		updateExchangeRate,
+	} = usePool();
+
+	const { selectedAccount, wallet, updateBalances } = useCENNZWallet();
 
 	useEffect(() => {
 		if (poolAction === "Add") return setButtonLabel("Add to Pool");
@@ -22,14 +47,70 @@ const PoolForm: FC<IntrinsicElements["form"] & PoolFormProps> = ({
 	}, [poolAction]);
 
 	const onFormSubmit = useCallback(
-		(event) => {
+		async (event) => {
 			event.preventDefault();
 
 			if (!api) return;
+			setProgressStatus();
 
-			console.log("onFormSubmit");
+			const extrinsic =
+				poolAction === "Remove"
+					? getRemoveLiquidityExtrinsic(
+							api,
+							tradeAsset,
+							Number(trValue),
+							coreAsset,
+							Number(crValue),
+							Number(slippage)
+					  )
+					: getAddLiquidityExtrinsic(
+							api,
+							tradeAsset,
+							Number(trValue),
+							coreAsset,
+							Number(crValue),
+							Number(slippage)
+					  );
+
+			let status: UnwrapPromise<ReturnType<typeof signAndSendTx>>;
+			try {
+				status = await signAndSendTx(
+					extrinsic,
+					selectedAccount.address,
+					wallet.signer
+				);
+			} catch (error) {
+				console.info(error);
+				return setFailStatus(error?.code);
+			}
+
+			if (status === "cancelled") return setTxStatus(null);
+
+			setSuccessStatus();
+			setTrValue("");
+			updateBalances();
+			updatePoolBalances();
+			updateExchangeRate();
 		},
-		[api]
+		[
+			api,
+			setProgressStatus,
+			poolAction,
+			tradeAsset,
+			trValue,
+			coreAsset,
+			crValue,
+			slippage,
+			setTxStatus,
+			setSuccessStatus,
+			setTrValue,
+			updateBalances,
+			updatePoolBalances,
+			updateExchangeRate,
+			selectedAccount?.address,
+			wallet?.signer,
+			setFailStatus,
+		]
 	);
 
 	return (

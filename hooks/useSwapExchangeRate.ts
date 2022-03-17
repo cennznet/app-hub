@@ -4,7 +4,7 @@ import { fetchSellPrice } from "@/utils";
 import { useSwap } from "@/providers/SwapProvider";
 import debounce from "lodash/debounce";
 
-export default function useSwapExchangeRate(exchangeValue: string = "1"): {
+export default function useSwapExchangeRate(exchangeValue: string): {
 	exchangeRate: number;
 	updatingExchangeRate: boolean;
 	updateExchangeRate: () => void;

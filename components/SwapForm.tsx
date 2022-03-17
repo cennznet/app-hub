@@ -6,7 +6,7 @@ import SubmitButton from "@/components/shared/SubmitButton";
 import { useSwap } from "@/providers/SwapProvider";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
-import { getBuyAssetExtrinsic, signAndSendTx, formatBalance } from "@/utils";
+import { getBuyAssetExtrinsic, signAndSendTx } from "@/utils";
 import { UnwrapPromise } from "@/types";
 
 interface SwapFormProps {}
@@ -35,6 +35,7 @@ const SwapForm: FC<IntrinsicElements["form"] & SwapFormProps> = ({
 			event.preventDefault();
 
 			if (!api) return;
+			setProgressStatus();
 
 			const extrinsic = getBuyAssetExtrinsic(
 				api,
@@ -44,8 +45,6 @@ const SwapForm: FC<IntrinsicElements["form"] & SwapFormProps> = ({
 				Number(reValue),
 				Number(slippage)
 			);
-
-			setProgressStatus();
 
 			let status: UnwrapPromise<ReturnType<typeof signAndSendTx>>;
 			try {
@@ -63,7 +62,7 @@ const SwapForm: FC<IntrinsicElements["form"] & SwapFormProps> = ({
 
 			setSuccessStatus();
 			setExValue("");
-			await updateBalances();
+			updateBalances();
 		},
 		[
 			api,
@@ -99,7 +98,7 @@ const SwapForm: FC<IntrinsicElements["form"] & SwapFormProps> = ({
 export default SwapForm;
 
 const styles = {
-	root: ({ palette }: Theme) => css`
+	root: css`
 		width: 100%;
 		position: relative;
 	`,

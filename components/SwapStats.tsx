@@ -14,7 +14,7 @@ const SwapStats: VFC<IntrinsicElements["div"] & SwapStatsProps> = (props) => {
 		useSwap();
 
 	const { exchangeRate, updatingExchangeRate, updateExchangeRate } =
-		useSwapExchangeRate();
+		useSwapExchangeRate("1");
 	const { gasFee, gasAsset, updatingGasFee, updateGasFee } = useSwapGasFee();
 
 	useEffect(() => {

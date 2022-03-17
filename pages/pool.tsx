@@ -11,6 +11,7 @@ import PoolActionsPair from "@/components/PoolActionsPair";
 import PoolAssetsPair from "@/components/PoolAssetsPair";
 import PoolStats from "@/components/PoolStats";
 import PoolSettings from "@/components/PoolSettings";
+import PoolProgress from "@/components/PoolProgress";
 
 export async function getStaticProps() {
 	const api = await Api.create({ provider: API_URL });
@@ -33,6 +34,7 @@ const Pool: VFC<{ supportedAssets: CENNZAsset[] }> = ({ supportedAssets }) => {
 					<PoolStats />
 					<PoolSettings />
 				</PoolForm>
+				<PoolProgress />
 			</MainPanel>
 		</PoolProvider>
 	);

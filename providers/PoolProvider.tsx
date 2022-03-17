@@ -6,6 +6,8 @@ import {
 	SetStateAction,
 	useContext,
 	useState,
+	ReactElement,
+	useCallback,
 } from "react";
 import {
 	useTokenInput,
@@ -16,8 +18,15 @@ import {
 	PoolBalancesHook,
 } from "@/hooks";
 import { CENNZ_ASSET_ID, CPAY_ASSET_ID } from "@/constants";
+import { formatBalance } from "@/utils";
 
 type CENNZAssetId = CENNZAsset["assetId"];
+
+interface TxStatus {
+	status: "in-progress" | "success" | "fail";
+	title: string;
+	message: string | ReactElement;
+}
 
 interface PoolContextType extends PoolExchangeRateHook, PoolBalancesHook {
 	poolAction: PoolAction;
@@ -31,6 +40,13 @@ interface PoolContextType extends PoolExchangeRateHook, PoolBalancesHook {
 	coreValue: TokenInputHook<CENNZAssetId>[1];
 	slippage: string;
 	setSlippage: Dispatch<SetStateAction<string>>;
+
+	txStatus: TxStatus;
+	setTxStatus: Dispatch<SetStateAction<TxStatus>>;
+
+	setProgressStatus: () => void;
+	setSuccessStatus: () => void;
+	setFailStatus: (errorCode?: string) => void;
 }
 
 const PoolContext = createContext<PoolContextType>({} as PoolContextType);
@@ -74,6 +90,74 @@ const PoolProvider: FC<PoolProviderProps> = ({ supportedAssets, children }) => {
 	} = usePoolBalances(tradeAsset, coreAsset);
 
 	const [slippage, setSlippage] = useState<string>("5");
+	const [txStatus, setTxStatus] = useState<TxStatus>(null);
+
+	const setProgressStatus = useCallback(() => {
+		setTxStatus({
+			status: "in-progress",
+			title: "Transaction In Progress",
+			message: (
+				<div>
+					Please sign the transaction when prompted and wait until it is
+					completed.
+				</div>
+			),
+		});
+	}, []);
+
+	const setFailStatus = useCallback((errorCode?: string) => {
+		setTxStatus({
+			status: "fail",
+			title: "Transaction Failed",
+			message: (
+				<div>
+					An error has occurred while processing your transaction.
+					{!!errorCode && (
+						<>
+							<br />
+							<pre>#{errorCode}</pre>
+						</>
+					)}
+				</div>
+			),
+		});
+	}, []);
+
+	const setSuccessStatus = useCallback(() => {
+		const trValue = formatBalance(Number(tradeValue.value));
+		const trSymbol = tradeAsset.symbol;
+
+		const crValue = formatBalance(Number(coreValue.value));
+		const crSymbol = coreAsset.symbol;
+
+		setTxStatus({
+			status: "success",
+			title: "Transaction Completed",
+			message: (
+				<div>
+					You successfully {poolAction === "Remove" ? "withdrew" : "added"}{" "}
+					<pre>
+						<em>
+							{trValue} {trSymbol}
+						</em>
+					</pre>{" "}
+					and{" "}
+					<pre>
+						<em>
+							{crValue} {crSymbol}
+						</em>
+					</pre>{" "}
+					to the Liquidity Pool.
+				</div>
+			),
+		});
+	}, [
+		tradeValue.value,
+		tradeAsset.symbol,
+		coreValue.value,
+		coreAsset.symbol,
+		poolAction,
+	]);
 
 	return (
 		<PoolContext.Provider
@@ -100,6 +184,13 @@ const PoolProvider: FC<PoolProviderProps> = ({ supportedAssets, children }) => {
 
 				slippage,
 				setSlippage,
+
+				txStatus,
+				setTxStatus,
+
+				setProgressStatus,
+				setSuccessStatus,
+				setFailStatus,
 			}}
 		>
 			{children}

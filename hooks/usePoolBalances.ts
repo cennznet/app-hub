@@ -8,7 +8,7 @@ export interface PoolBalancesHook {
 	tradePoolBalance: number;
 	corePoolBalance: number;
 	updatingPoolBalances: boolean;
-	updatePoolBalances: () => {};
+	updatePoolBalances: () => Promise<void>;
 }
 
 export default function usePoolBalances(
