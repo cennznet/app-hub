@@ -17,15 +17,23 @@ export default function usePoolGasFee(): {
 	const { api } = useCENNZApi();
 	const [gasFee, setGasFee] = useState<number>(null);
 	const [loading, setLoading] = useState<boolean>(true);
-	const { tradeAsset, coreAsset, poolAction } = usePool();
+	const { tradeAsset, coreAsset, poolAction, exchangeInfo } = usePool();
 
 	const extrinsic = useMemo(() => {
-		if (!api) return;
+		if (!api || !exchangeInfo) return;
 		if (poolAction === "Remove")
 			return getRemoveLiquidityExtrinsic(api, tradeAsset, 1, coreAsset, 1, 5);
 
-		return getAddLiquidityExtrinsic(api, tradeAsset, 1, coreAsset, 1, 5);
-	}, [api, poolAction, tradeAsset, coreAsset]);
+		return getAddLiquidityExtrinsic(
+			api,
+			exchangeInfo,
+			tradeAsset,
+			1,
+			coreAsset,
+			1,
+			5
+		);
+	}, [api, poolAction, tradeAsset, coreAsset, exchangeInfo]);
 
 	const updateGasFee = useCallback(async () => {
 		if (!api) return;
