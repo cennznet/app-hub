@@ -35,6 +35,8 @@ const PoolForm: FC<IntrinsicElements["form"] & PoolFormProps> = ({
 		coreAsset,
 		coreValue: { value: crValue },
 
+		exchangeInfo,
+
 		updatePoolBalances,
 		updateExchangeRate,
 	} = usePool();
@@ -65,6 +67,7 @@ const PoolForm: FC<IntrinsicElements["form"] & PoolFormProps> = ({
 					  )
 					: getAddLiquidityExtrinsic(
 							api,
+							exchangeInfo,
 							tradeAsset,
 							Number(trValue),
 							coreAsset,
@@ -101,6 +104,7 @@ const PoolForm: FC<IntrinsicElements["form"] & PoolFormProps> = ({
 			coreAsset,
 			crValue,
 			slippage,
+			exchangeInfo,
 			setTxStatus,
 			setSuccessStatus,
 			setTrValue,

@@ -25,8 +25,8 @@ const PoolStats: VFC<IntrinsicElements["div"] & PoolStatsProps> = (props) => {
 	} = usePool();
 
 	const userPercentageShare =
-		corePoolBalance !== null && exchangeInfo?.coreAssetBalance !== undefined
-			? (corePoolBalance / exchangeInfo.coreAssetBalance) * 100
+		corePoolBalance !== null && exchangeInfo?.coreAssetReserve !== undefined
+			? (corePoolBalance / exchangeInfo.coreAssetReserve) * 100
 			: null;
 
 	const { gasFee, gasAsset, updatingGasFee } = usePoolGasFee();
@@ -65,9 +65,9 @@ const PoolStats: VFC<IntrinsicElements["div"] & PoolStatsProps> = (props) => {
 					<strong>Pool Liquidity:</strong>
 					{!!exchangeInfo && (
 						<span>
-							{formatBalance(exchangeInfo.tradeAssetBalance)}{" "}
+							{formatBalance(exchangeInfo.tradeAssetReserve)}{" "}
 							{tradeAsset.symbol} +{" "}
-							{formatBalance(exchangeInfo.coreAssetBalance)} {coreAsset.symbol}
+							{formatBalance(exchangeInfo.coreAssetReserve)} {coreAsset.symbol}
 						</span>
 					)}
 					{!exchangeInfo && <span>+</span>}

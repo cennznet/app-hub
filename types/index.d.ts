@@ -127,3 +127,17 @@ export type UnwrapPromise<T> = T extends Promise<infer U>
 	: T;
 
 export type PoolAction = "Add" | "Remove";
+
+export interface PoolExchangeInfo {
+	poolAddress: string;
+	poolLiquidity: number;
+	tradeAssetReserve: number;
+	coreAssetReserve: number;
+}
+
+export interface PoolUserInfo {
+	userAddress: string;
+	userLiquidity: number;
+	tradeAssetBalance: number;
+	coreAssetBalance: number;
+}

@@ -1,7 +1,7 @@
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import { useCallback, useEffect, useState } from "react";
-import { fetchPoolUserBalances } from "@/utils";
+import { fetchPoolUserInfo } from "@/utils";
 import { CENNZAsset } from "@/types";
 
 export interface PoolBalancesHook {
@@ -24,15 +24,15 @@ export default function usePoolBalances(
 	const updatePoolBalances = useCallback(async () => {
 		if (!api || !selectedAccount?.address) return;
 		setLoading(true);
-		const { tradeBalance, coreBalance } = await fetchPoolUserBalances(
+		const { tradeAssetBalance, coreAssetBalance } = await fetchPoolUserInfo(
 			api,
 			selectedAccount.address,
 			tradeAsset,
 			coreAsset
 		);
 
-		setTradeBalance(tradeBalance);
-		setCoreBalance(coreBalance);
+		setTradeBalance(tradeAssetBalance);
+		setCoreBalance(coreAssetBalance);
 		setLoading(false);
 	}, [api, selectedAccount?.address, tradeAsset, coreAsset]);
 

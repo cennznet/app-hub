@@ -1,8 +1,8 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import debounce from "lodash/debounce";
-import { fetchPoolExchangeInfo, PoolExchangeInfo } from "@/utils";
-import { CENNZAsset } from "@/types";
+import { fetchPoolExchangeInfo } from "@/utils";
+import { CENNZAsset, PoolExchangeInfo } from "@/types";
 
 export interface PoolExchangeRateHook {
 	exchangeRate: number;
@@ -29,7 +29,7 @@ export default function usePoolExchangeRate(
 			);
 			setExchangeInfo(exchangeInfo);
 			setExchangeRate(
-				exchangeInfo.tradeAssetBalance / exchangeInfo.coreAssetBalance
+				exchangeInfo.tradeAssetReserve / exchangeInfo.coreAssetReserve
 			);
 			setLoading(false);
 		}, 150);
