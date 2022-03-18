@@ -87,7 +87,7 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 					id="tradeInput"
 					required
 					scale={4}
-					min={0.0001}
+					min={formatBalance(Math.min(tradeBalance, 0.0001))}
 					max={formatBalance(tradeBalance)}
 				/>
 
