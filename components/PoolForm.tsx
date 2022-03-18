@@ -37,7 +37,7 @@ const PoolForm: FC<IntrinsicElements["form"] & PoolFormProps> = ({
 
 		exchangeInfo,
 
-		updatePoolBalances,
+		updatePoolUserInfo,
 		updateExchangeRate,
 	} = usePool();
 
@@ -92,7 +92,7 @@ const PoolForm: FC<IntrinsicElements["form"] & PoolFormProps> = ({
 			setSuccessStatus();
 			setTrValue("");
 			updateBalances();
-			updatePoolBalances();
+			updatePoolUserInfo();
 			updateExchangeRate();
 		},
 		[
@@ -109,7 +109,7 @@ const PoolForm: FC<IntrinsicElements["form"] & PoolFormProps> = ({
 			setSuccessStatus,
 			setTrValue,
 			updateBalances,
-			updatePoolBalances,
+			updatePoolUserInfo,
 			updateExchangeRate,
 			selectedAccount?.address,
 			wallet?.signer,

@@ -14,8 +14,8 @@ import {
 	TokenInputHook,
 	usePoolExchangeRate,
 	PoolExchangeRateHook,
-	usePoolBalances,
-	PoolBalancesHook,
+	usePoolUserInfo,
+	PoolUserInfoHook,
 } from "@/hooks";
 import { CENNZ_ASSET_ID, CPAY_ASSET_ID } from "@/constants";
 import { formatBalance } from "@/utils";
@@ -28,7 +28,7 @@ interface TxStatus {
 	message: string | ReactElement;
 }
 
-interface PoolContextType extends PoolExchangeRateHook, PoolBalancesHook {
+interface PoolContextType extends PoolExchangeRateHook, PoolUserInfoHook {
 	poolAction: PoolAction;
 	setPoolAction: Dispatch<SetStateAction<PoolAction>>;
 	tradeAssets: CENNZAsset[];
@@ -76,18 +76,14 @@ const PoolProvider: FC<PoolProviderProps> = ({ supportedAssets, children }) => {
 	);
 
 	const {
-		exchangeRate,
 		exchangeInfo,
+		exchangeRate,
 		updatingExchangeRate,
 		updateExchangeRate,
 	} = usePoolExchangeRate(tradeAsset, coreAsset);
 
-	const {
-		tradePoolBalance,
-		corePoolBalance,
-		updatingPoolBalances,
-		updatePoolBalances,
-	} = usePoolBalances(tradeAsset, coreAsset);
+	const { userInfo, updatingPoolUserInfo, updatePoolUserInfo } =
+		usePoolUserInfo(tradeAsset, coreAsset);
 
 	const [slippage, setSlippage] = useState<string>("5");
 	const [txStatus, setTxStatus] = useState<TxStatus>(null);
@@ -177,10 +173,9 @@ const PoolProvider: FC<PoolProviderProps> = ({ supportedAssets, children }) => {
 				updateExchangeRate,
 				updatingExchangeRate,
 
-				tradePoolBalance,
-				corePoolBalance,
-				updatingPoolBalances,
-				updatePoolBalances,
+				userInfo,
+				updatingPoolUserInfo,
+				updatePoolUserInfo,
 
 				slippage,
 				setSlippage,

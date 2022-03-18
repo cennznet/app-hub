@@ -17,12 +17,14 @@ const PoolStats: VFC<IntrinsicElements["div"] & PoolStatsProps> = (props) => {
 		exchangeRate,
 		exchangeInfo,
 		updatingExchangeRate,
-		tradePoolBalance,
-		corePoolBalance,
-		updatingPoolBalances,
+		userInfo,
+		updatingPoolUserInfo,
 		slippage,
 		poolAction,
 	} = usePool();
+
+	const tradePoolBalance = userInfo?.tradeAssetBalance ?? null;
+	const corePoolBalance = userInfo?.coreAssetBalance ?? null;
 
 	const userPercentageShare =
 		corePoolBalance !== null && exchangeInfo?.coreAssetReserve !== undefined
@@ -36,7 +38,7 @@ const PoolStats: VFC<IntrinsicElements["div"] & PoolStatsProps> = (props) => {
 			<LinearProgress
 				css={[
 					styles.formInfoProgress(
-						updatingExchangeRate || updatingPoolBalances || updatingGasFee
+						updatingExchangeRate || updatingPoolUserInfo || updatingGasFee
 					),
 				]}
 			/>

@@ -24,10 +24,11 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 		coreToken,
 		coreValue,
 		exchangeRate,
-		tradePoolBalance,
-		corePoolBalance,
-		updatePoolBalances,
+		userInfo,
+		updatePoolUserInfo,
 	} = usePool();
+	const tradePoolBalance = userInfo?.tradeAssetBalance ?? null;
+	const corePoolBalance = userInfo?.coreAssetBalance ?? null;
 
 	const { selectedAccount } = useCENNZWallet();
 	const [tradeWalletBalance, coreWalletBalance] = useWalletBalances(
@@ -57,8 +58,8 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 
 	useEffect(() => {
 		if (poolAction !== "Remove") return;
-		updatePoolBalances();
-	}, [poolAction, updatePoolBalances]);
+		updatePoolUserInfo();
+	}, [poolAction, updatePoolUserInfo]);
 
 	const coreInputRef = useRef<HTMLInputElement>();
 	useEffect(() => {
