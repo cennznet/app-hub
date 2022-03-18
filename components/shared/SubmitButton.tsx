@@ -54,34 +54,42 @@ const SubmitButton: FC<
 export default SubmitButton;
 
 const styles = {
-	root: ({ palette, transitions }: Theme) => css`
+	root: ({ transitions }: Theme) => css`
 		display: inline-block;
 		padding: 0.75em;
 		border-radius: 4px;
-		border: 1px solid ${palette.primary.default};
-		color: ${palette.primary.default};
+
 		background-color: white;
 		min-width: 240px;
 		font-weight: bold;
 		cursor: pointer;
 		transition: background-color ${transitions.duration.short}ms,
 			color ${transitions.duration.short}ms;
+	`,
+
+	submitButton: ({ palette }: Theme) => css`
+		text-align: center;
+		text-transform: uppercase;
+		border: 1px solid ${palette.primary.main};
+		color: ${palette.primary.main};
+
+		&:hover {
+			background-color: ${palette.primary.main};
+			color: white;
+		}
+	`,
+
+	cennzButton: ({ palette }: Theme) => css`
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		border: 1px solid ${palette.primary.default};
+		color: ${palette.primary.default};
 
 		&:hover {
 			background-color: ${palette.primary.default};
 			color: white;
 		}
-	`,
-
-	submitButton: css`
-		text-align: center;
-		text-transform: uppercase;
-	`,
-
-	cennzButton: css`
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
 	`,
 
 	cennzLogo: css`

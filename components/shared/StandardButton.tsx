@@ -36,10 +36,10 @@ const styles = {
 	`,
 
 	primary: ({ palette }: Theme) => css`
-		border: 1px solid ${palette.primary.default};
-		color: ${palette.primary.default};
+		border: 1px solid ${palette.primary.main};
+		color: ${palette.primary.main};
 		&:hover {
-			background-color: ${palette.primary.default};
+			background-color: ${palette.primary.main};
 			color: white;
 		}
 	`,
@@ -50,7 +50,7 @@ const styles = {
 
 		&: hover {
 			background-color: white;
-			color: ${palette.primary.default};
+			color: ${palette.primary.main};
 		}
 	`,
 };
