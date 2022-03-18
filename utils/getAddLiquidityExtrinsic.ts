@@ -16,10 +16,13 @@ export default function getAddLiquidityExtrinsic(
 	const tradeValue = new Big(tradeAssetValue);
 	const coreValue = new Big(coreAssetValue);
 
-	const minLiquidityAmount = coreValue
-		.mul(exchangeInfo.poolLiquidity)
-		.div(exchangeInfo.coreAssetReserve)
-		.mul(1 - slippagePercentage / 100);
+	const minLiquidityAmount =
+		exchangeInfo.coreAssetReserve !== 0
+			? coreValue
+					.mul(exchangeInfo.poolLiquidity)
+					.div(exchangeInfo.coreAssetReserve)
+					.mul(1 - slippagePercentage / 100)
+			: coreValue.mul(coreAsset.decimalsValue);
 
 	const maxTradeAmount = tradeValue
 		.mul(tradeAsset.decimalsValue)

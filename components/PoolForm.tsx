@@ -36,6 +36,7 @@ const PoolForm: FC<IntrinsicElements["form"] & PoolFormProps> = ({
 		coreValue: { value: crValue },
 
 		exchangeInfo,
+		userInfo,
 
 		updatePoolUserInfo,
 		updateExchangeRate,
@@ -59,6 +60,7 @@ const PoolForm: FC<IntrinsicElements["form"] & PoolFormProps> = ({
 				poolAction === "Remove"
 					? getRemoveLiquidityExtrinsic(
 							api,
+							userInfo,
 							tradeAsset,
 							Number(trValue),
 							coreAsset,
