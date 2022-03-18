@@ -4,17 +4,17 @@ import debounce from "lodash/debounce";
 import { fetchPoolExchangeInfo } from "@/utils";
 import { CENNZAsset, PoolExchangeInfo } from "@/types";
 
-export interface PoolExchangeRateHook {
+export interface PoolExchangeInfoHook {
 	exchangeRate: number;
 	exchangeInfo: PoolExchangeInfo;
 	updatingExchangeRate: boolean;
 	updateExchangeRate: () => void;
 }
 
-export default function usePoolExchangeRate(
+export default function usePoolExchangeInfo(
 	tradeAsset: CENNZAsset,
 	coreAsset: CENNZAsset
-): PoolExchangeRateHook {
+): PoolExchangeInfoHook {
 	const { api } = useCENNZApi();
 	const [exchangeRate, setExchangeRate] = useState<number>(null);
 	const [exchangeInfo, setExchangeInfo] = useState<PoolExchangeInfo>(null);

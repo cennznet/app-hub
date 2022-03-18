@@ -12,8 +12,8 @@ import {
 import {
 	useTokenInput,
 	TokenInputHook,
-	usePoolExchangeRate,
-	PoolExchangeRateHook,
+	usePoolExchangeInfo,
+	PoolExchangeInfoHook,
 	usePoolUserInfo,
 	PoolUserInfoHook,
 } from "@/hooks";
@@ -28,7 +28,7 @@ interface TxStatus {
 	message: string | ReactElement;
 }
 
-interface PoolContextType extends PoolExchangeRateHook, PoolUserInfoHook {
+interface PoolContextType extends PoolExchangeInfoHook, PoolUserInfoHook {
 	poolAction: PoolAction;
 	setPoolAction: Dispatch<SetStateAction<PoolAction>>;
 	tradeAssets: CENNZAsset[];
@@ -80,7 +80,7 @@ const PoolProvider: FC<PoolProviderProps> = ({ supportedAssets, children }) => {
 		exchangeRate,
 		updatingExchangeRate,
 		updateExchangeRate,
-	} = usePoolExchangeRate(tradeAsset, coreAsset);
+	} = usePoolExchangeInfo(tradeAsset, coreAsset);
 
 	const { userInfo, updatingPoolUserInfo, updatePoolUserInfo } =
 		usePoolUserInfo(tradeAsset, coreAsset);
