@@ -3,7 +3,7 @@ import { css } from "@emotion/react";
 import { VFC } from "react";
 import { LinearProgress, Tooltip, Theme } from "@mui/material";
 import { usePool } from "@/providers/PoolProvider";
-import { formatBalance } from "@/utils";
+import { Balance } from "@/utils";
 import { usePoolGasFee } from "@/hooks";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 
@@ -34,7 +34,7 @@ const PoolStats: VFC<IntrinsicElements["div"] & PoolStatsProps> = (props) => {
 			? coreAssetBalance.div(coreAssetReserve).mul(100).toNumber()
 			: null;
 
-	const { gasFee, gasAsset, updatingGasFee } = usePoolGasFee();
+	const { gasFee, updatingGasFee } = usePoolGasFee();
 
 	return (
 		<div {...props} css={styles.root}>
@@ -49,18 +49,18 @@ const PoolStats: VFC<IntrinsicElements["div"] & PoolStatsProps> = (props) => {
 			<ul>
 				<li>
 					<strong>Gas Fee:</strong>{" "}
-					{gasFee !== null && (
+					{gasFee?.gt(0) && (
 						<span>
-							&asymp; {gasFee} {gasAsset.symbol}
+							&asymp; {gasFee.toBalance()} {gasFee.getSymbol()}
 						</span>
 					)}
-					{gasFee === null && <span>&asymp;</span>}
+					{!gasFee?.gt(0) && <span>&asymp;</span>}
 				</li>
 				<li>
 					<strong>Exchange Rate:</strong>
 					{exchangeRate !== null && (
 						<span>
-							1 {tradeAsset.symbol} &asymp; {formatBalance(1 / exchangeRate)}{" "}
+							1 {tradeAsset.symbol} &asymp; {Balance.format(1 / exchangeRate)}{" "}
 							{coreAsset.symbol}
 						</span>
 					)}
@@ -90,26 +90,26 @@ const PoolStats: VFC<IntrinsicElements["div"] & PoolStatsProps> = (props) => {
 				</li>
 				<li>
 					<strong>Your Pool Share:</strong>
-					{coreAssetBalance !== null && (
-						<span>{formatBalance(userPercentageShare)}%</span>
+					{userPercentageShare !== null && (
+						<span>{userPercentageShare.toFixed(2)}%</span>
 					)}
-					{coreAssetBalance === null && <span>%</span>}
+					{userPercentageShare === null && <span>%</span>}
 				</li>
 				<li>
 					<strong>Slippage:</strong>{" "}
 					{poolAction === "Add" && (
 						<span>
-							{formatBalance(
-								Number(tradeValue.value) * (1 + Number(slippage) / 100)
-							)}{" "}
+							{Balance.fromInput(tradeValue?.value, tradeAsset)
+								.addPerc(Number(slippage))
+								.toBalance()}{" "}
 							{tradeAsset.symbol}
 						</span>
 					)}
 					{poolAction === "Remove" && (
 						<span>
-							{formatBalance(
-								Number(tradeValue.value) * (1 - Number(slippage) / 100)
-							)}{" "}
+							{Balance.fromInput(tradeValue?.value, tradeAsset)
+								.minusPerc(Number(slippage))
+								.toBalance()}{" "}
 							{tradeAsset.symbol}
 						</span>
 					)}

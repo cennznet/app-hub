@@ -9,14 +9,15 @@ import {
 	getRemoveLiquidityExtrinsic,
 } from "@/utils";
 
-export default function usePoolGasFee(): {
-	gasFee: number;
-	gasAsset: CENNZAsset;
+interface PoolGasFeeHook {
+	gasFee: Balance;
 	updatingGasFee: boolean;
 	updateGasFee: () => void;
-} {
+}
+
+export default function usePoolGasFee(): PoolGasFeeHook {
 	const { api } = useCENNZApi();
-	const [gasFee, setGasFee] = useState<number>(null);
+	const [gasFee, setGasFee] = useState<Balance>(null);
 	const [loading, setLoading] = useState<boolean>(true);
 	const { tradeAsset, coreAsset, poolAction, exchangeInfo, userInfo } =
 		usePool();
@@ -57,7 +58,6 @@ export default function usePoolGasFee(): {
 
 	return {
 		gasFee,
-		gasAsset: coreAsset,
 		updatingGasFee: loading,
 		updateGasFee,
 	};

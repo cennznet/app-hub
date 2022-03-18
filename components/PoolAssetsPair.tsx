@@ -27,10 +27,10 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 		userInfo,
 		updatePoolUserInfo,
 	} = usePool();
+
 	const tradePoolBalance = userInfo?.tradeAssetBalance ?? null;
 	const corePoolBalance = userInfo?.coreAssetBalance ?? null;
 
-	const { selectedAccount } = useCENNZWallet();
 	const [tradeWalletBalance, coreWalletBalance] = useWalletBalances(
 		tradeAsset,
 		coreAsset
@@ -64,7 +64,7 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 	const coreInputRef = useRef<HTMLInputElement>();
 	useEffect(() => {
 		const coreInput = coreInputRef.current;
-		if (!coreInput) return;
+		if (!coreInput || !coreBalance) return;
 		const value = Balance.fromInput(coreInput.value, coreAsset);
 		coreInput.setCustomValidity(
 			value.gt(coreBalance)
@@ -88,16 +88,16 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 					required
 					scale={4}
 					min={0.0001}
-					max={tradeBalance.gt(0) ? tradeBalance.toBalance() : null}
+					max={tradeBalance?.gt(0) ? tradeBalance.toBalance() : null}
 				/>
 
-				{!!selectedAccount && poolAction === "Add" && (
+				{!!tradeBalance && poolAction === "Add" && (
 					<div css={styles.tokenBalance}>
 						Balance: <span>{tradeBalance.toBalance()}</span>
 					</div>
 				)}
 
-				{!!selectedAccount && poolAction === "Remove" && (
+				{!!tradeBalance && poolAction === "Remove" && (
 					<div css={styles.tokenBalance}>
 						Withdrawable: <span>{tradeBalance.toBalance()}</span>
 					</div>
@@ -151,13 +151,13 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 					</Tooltip>
 				</TokenInput>
 
-				{!!selectedAccount && poolAction === "Add" && (
+				{!!coreBalance && poolAction === "Add" && (
 					<div css={styles.tokenBalance}>
 						Balance: <span>{coreBalance.toBalance()}</span>
 					</div>
 				)}
 
-				{!!selectedAccount && poolAction === "Remove" && (
+				{!!coreBalance && poolAction === "Remove" && (
 					<div css={styles.tokenBalance}>
 						Withdrawable: <span>{coreBalance.toBalance()}</span>
 					</div>

@@ -1,5 +1,6 @@
 import { GenericCoin } from "@/types";
-import { Codec } from "@cennznet/types";
+import { Codec, Balance as ApiBalance } from "@cennznet/types";
+import { PercentTwoTone } from "@mui/icons-material";
 import Big, { BigSource } from "big.js";
 import BN from "bn.js";
 
@@ -21,15 +22,23 @@ export default class Balance extends Big {
 		};
 	}
 
+	addPerc(value: number): Balance {
+		const withPercentage = this.mul(1 + value / 100);
+		return new Balance(withPercentage, this.coin);
+	}
+
+	minusPerc(value: number): Balance {
+		const withPercentage = this.mul(1 - value / 100);
+		return new Balance(withPercentage, this.coin);
+	}
+
 	toBalance(options = {} as AsBalanceOptions): string {
 		const { withSymbol } = options || {};
 		const { decimals, symbol } = this.coin;
-		const precision = this.div(Math.pow(10, decimals));
+		const output = Balance.format(this.div(Math.pow(10, decimals)));
 		const suffix = withSymbol && symbol ? ` ${symbol}` : "";
-		if (precision.eq(0)) return `0.0000${suffix}`;
-		return `${
-			precision.lt(0.0001) ? "<0.0001" : precision.toFixed(4)
-		}${suffix}`;
+
+		return `${output}${suffix}`;
 	}
 
 	getSymbol(): string {
@@ -48,8 +57,18 @@ export default class Balance extends Big {
 		return new Balance(source.toString(), coin);
 	}
 
-	static fromInput(input: string, coin: BalanceDescriptor): Balance {
-		const value = Number(input) * Math.pow(10, coin.decimals);
+	static fromApiBalance(source: ApiBalance, coin: BalanceDescriptor): Balance {
+		return new Balance(source.toString(), coin);
+	}
+
+	static fromInput(source: string, coin: BalanceDescriptor): Balance {
+		const value = Number(source || 0) * Math.pow(10, coin?.decimals || 0);
 		return new Balance(value, coin);
+	}
+
+	static format(source: number | Big): string {
+		const value = (source as Big)?.toNumber?.() ?? source;
+		if (value === 0) return "0.0000";
+		return value < 0.0001 ? "<0.0001" : value.toFixed(4);
 	}
 }
