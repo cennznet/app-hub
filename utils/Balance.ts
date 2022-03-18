@@ -1,4 +1,5 @@
 import { GenericCoin } from "@/types";
+import { Codec } from "@cennznet/types";
 import Big, { BigSource } from "big.js";
 import BN from "bn.js";
 
@@ -37,6 +38,10 @@ export default class Balance extends Big {
 
 	getDecimals(): number {
 		return this.coin?.decimals;
+	}
+
+	static fromCodec(source: Codec, coin: BalanceDescriptor): Balance {
+		return new Balance(source.toString(), coin);
 	}
 
 	static fromBN(source: BN, coin: BalanceDescriptor): Balance {

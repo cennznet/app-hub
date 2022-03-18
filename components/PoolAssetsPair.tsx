@@ -5,7 +5,7 @@ import { VFC, useMemo, useEffect, useRef } from "react";
 import TokenInput from "@/components/shared/TokenInput";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import useWalletBalances from "@/hooks/useWalletBalances";
-import { formatBalance } from "@/utils";
+import { Balance, formatBalance } from "@/utils";
 import { Theme, Tooltip } from "@mui/material";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 
@@ -43,7 +43,7 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 
 	const onTradeAssetMaxRequest = useMemo(() => {
 		const setPoolValue = tradeValue.setValue;
-		return () => setPoolValue(formatBalance(tradeBalance));
+		return () => setPoolValue(tradeBalance.toBalance());
 	}, [tradeBalance, tradeValue.setValue]);
 
 	// Update coreAsset value by tradeAsset value
@@ -65,13 +65,13 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 	useEffect(() => {
 		const coreInput = coreInputRef.current;
 		if (!coreInput) return;
-		const value = Number(coreInput.value);
+		const value = Balance.fromInput(coreInput.value, coreAsset);
 		coreInput.setCustomValidity(
-			value > coreBalance
-				? `Value must be less than or equal to ${formatBalance(coreBalance)}.`
+			value.gt(coreBalance)
+				? `Value must be less than or equal to ${coreBalance.toBalance()}.`
 				: ""
 		);
-	}, [coreBalance]);
+	}, [coreBalance, coreAsset]);
 
 	return (
 		<div {...props} css={styles.root}>
@@ -87,19 +87,19 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 					id="tradeInput"
 					required
 					scale={4}
-					min={formatBalance(Math.min(tradeBalance, 0.0001))}
-					max={formatBalance(tradeBalance)}
+					min={0.0001}
+					max={tradeBalance.gt(0) ? tradeBalance.toBalance() : null}
 				/>
 
 				{!!selectedAccount && poolAction === "Add" && (
 					<div css={styles.tokenBalance}>
-						Balance: <span>{formatBalance(tradeWalletBalance || 0)}</span>
+						Balance: <span>{tradeBalance.toBalance()}</span>
 					</div>
 				)}
 
 				{!!selectedAccount && poolAction === "Remove" && (
 					<div css={styles.tokenBalance}>
-						Withdrawable: <span>{formatBalance(tradePoolBalance || 0)}</span>
+						Withdrawable: <span>{tradeBalance.toBalance()}</span>
 					</div>
 				)}
 			</div>
@@ -153,13 +153,13 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 
 				{!!selectedAccount && poolAction === "Add" && (
 					<div css={styles.tokenBalance}>
-						Balance: <span>{formatBalance(coreWalletBalance || 0)}</span>
+						Balance: <span>{coreBalance.toBalance()}</span>
 					</div>
 				)}
 
 				{!!selectedAccount && poolAction === "Remove" && (
 					<div css={styles.tokenBalance}>
-						Withdrawable: <span>{formatBalance(corePoolBalance || 0)}</span>
+						Withdrawable: <span>{coreBalance.toBalance()}</span>
 					</div>
 				)}
 			</div>

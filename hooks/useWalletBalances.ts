@@ -1,15 +1,16 @@
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import { CENNZAsset } from "@/types";
+import { Balance } from "@/utils";
 import { useEffect, useState } from "react";
 
 export default function useWalletBalances(
 	asset1: CENNZAsset,
 	asset2?: CENNZAsset
-): [number, number] {
+): [Balance, Balance] {
 	const { balances } = useCENNZWallet();
 
-	const [balance1, setBalance1] = useState<number>(null);
-	const [balance2, setBalance2] = useState<number>(null);
+	const [balance1, setBalance1] = useState<Balance>(null);
+	const [balance2, setBalance2] = useState<Balance>(null);
 
 	useEffect(() => {
 		if (!balances?.length) {

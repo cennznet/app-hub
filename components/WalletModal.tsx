@@ -124,7 +124,7 @@ const WalletModal: FC<{
 									{balances
 										.filter(
 											(asset) =>
-												asset.value > 0 ||
+												asset.value.gt(0) ||
 												[CENNZ_ASSET_ID, CPAY_ASSET_ID].includes(asset.assetId)
 										)
 										.map((asset) => {
@@ -140,7 +140,7 @@ const WalletModal: FC<{
 															/>
 														)}
 													</figure>
-													<span>{formatBalance(asset.value)}</span>
+													<span>{asset.value.toBalance()}</span>
 													<label>{asset.symbol}</label>
 												</li>
 											);

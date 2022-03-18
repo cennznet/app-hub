@@ -1,6 +1,7 @@
 import { Api } from "@cennznet/api";
 import { CENNZAssetBalance } from "@/types";
 import fetchCENNZAssets from "@/utils/fetchCENNZAssets";
+import { Balance } from "@/utils";
 
 /**
  * Fetch balances of all registered CENNZ assets from a wallet address
@@ -25,8 +26,7 @@ export default async function fetchCENNZAssetBalances(
 
 			return {
 				...asset,
-				rawValue: balance,
-				value: (balance as any) / Math.pow(10, asset.decimals),
+				value: Balance.fromCodec(balance, asset),
 			};
 		})
 	);
