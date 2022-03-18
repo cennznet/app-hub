@@ -1,3 +1,4 @@
+import { Balance } from "@/utils";
 import fetchPoolExchangeInfo from "@/utils/fetchPoolExchangeInfo";
 
 const api = global.getCENNZApiForTest();
@@ -6,11 +7,18 @@ const { cennzAsset, cpayAsset } = global.getCENNZCoreAssetsForTest();
 
 describe("fetchPoolExchangeInfo", () => {
 	it("returns expected results", async () => {
-		const info = await fetchPoolExchangeInfo(api, cennzAsset, cpayAsset);
+		const {
+			exchangeAddress,
+			tradeAssetReserve,
+			coreAssetReserve,
+			exchangeLiquidity,
+		} = await fetchPoolExchangeInfo(api, cennzAsset, cpayAsset);
 
-		expect(typeof info.poolAddress).toBe("string");
-		expect(typeof info.tradeAssetReserve).toBe("number");
-		expect(typeof info.coreAssetReserve).toBe("number");
-		expect(typeof info.poolLiquidity).toBe("number");
+		expect(exchangeAddress).toBeDefined();
+		expect(tradeAssetReserve).toBeInstanceOf(Balance);
+		expect(tradeAssetReserve.getSymbol()).toBe(cennzAsset.symbol);
+		expect(coreAssetReserve).toBeInstanceOf(Balance);
+		expect(coreAssetReserve.getSymbol()).toBe(cpayAsset.symbol);
+		expect(exchangeLiquidity).toBeInstanceOf(Balance);
 	});
 });

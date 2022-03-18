@@ -27,10 +27,10 @@ export default function usePoolExchangeInfo(
 				tradeAsset,
 				coreAsset
 			);
+			const { tradeAssetReserve, coreAssetReserve } = exchangeInfo;
+
 			setExchangeInfo(exchangeInfo);
-			setExchangeRate(
-				exchangeInfo.tradeAssetReserve / exchangeInfo.coreAssetReserve
-			);
+			setExchangeRate(tradeAssetReserve.div(coreAssetReserve).toNumber());
 			setLoading(false);
 		}, 150);
 	}, []);

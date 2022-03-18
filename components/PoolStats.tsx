@@ -23,12 +23,15 @@ const PoolStats: VFC<IntrinsicElements["div"] & PoolStatsProps> = (props) => {
 		poolAction,
 	} = usePool();
 
-	const tradePoolBalance = userInfo?.tradeAssetBalance ?? null;
-	const corePoolBalance = userInfo?.coreAssetBalance ?? null;
+	const tradeAssetBalance = userInfo?.tradeAssetBalance ?? null;
+	const coreAssetBalance = userInfo?.coreAssetBalance ?? null;
+
+	const tradeAssetReserve = exchangeInfo?.tradeAssetReserve ?? null;
+	const coreAssetReserve = exchangeInfo?.coreAssetReserve ?? null;
 
 	const userPercentageShare =
-		corePoolBalance !== null && exchangeInfo?.coreAssetReserve !== undefined
-			? (corePoolBalance / exchangeInfo.coreAssetReserve) * 100
+		coreAssetBalance !== null && coreAssetReserve !== null
+			? coreAssetBalance.div(coreAssetReserve).mul(100).toNumber()
 			: null;
 
 	const { gasFee, gasAsset, updatingGasFee } = usePoolGasFee();
@@ -65,31 +68,32 @@ const PoolStats: VFC<IntrinsicElements["div"] & PoolStatsProps> = (props) => {
 				</li>
 				<li>
 					<strong>Pool Liquidity:</strong>
-					{!!exchangeInfo && (
+					{tradeAssetReserve !== null && (
 						<span>
-							{formatBalance(exchangeInfo.tradeAssetReserve)}{" "}
-							{tradeAsset.symbol} +{" "}
-							{formatBalance(exchangeInfo.coreAssetReserve)} {coreAsset.symbol}
+							{`${tradeAssetReserve.toBalance({
+								withSymbol: true,
+							})} + ${coreAssetReserve.toBalance({ withSymbol: true })}`}
 						</span>
 					)}
-					{!exchangeInfo && <span>+</span>}
+					{tradeAssetReserve === null && <span>+</span>}
 				</li>
 				<li>
 					<strong>Your Liquidity:</strong>
-					{tradePoolBalance !== null && (
+					{tradeAssetBalance !== null && (
 						<span>
-							{formatBalance(tradePoolBalance)} {tradeAsset.symbol} +{" "}
-							{formatBalance(corePoolBalance)} {coreAsset.symbol}
+							{`${tradeAssetBalance.toBalance({
+								withSymbol: true,
+							})} + ${coreAssetBalance.toBalance({ withSymbol: true })}`}
 						</span>
 					)}
-					{tradePoolBalance === null && <span>+</span>}
+					{tradeAssetBalance === null && <span>+</span>}
 				</li>
 				<li>
 					<strong>Your Pool Share:</strong>
-					{corePoolBalance !== null && (
+					{coreAssetBalance !== null && (
 						<span>{formatBalance(userPercentageShare)}%</span>
 					)}
-					{corePoolBalance === null && <span>%</span>}
+					{coreAssetBalance === null && <span>%</span>}
 				</li>
 				<li>
 					<strong>Slippage:</strong>{" "}

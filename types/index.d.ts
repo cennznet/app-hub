@@ -1,4 +1,5 @@
 import { Amount } from "@/utils/Amount";
+import { Balance } from "@/utils";
 import {
 	ButtonHTMLAttributes,
 	FormHTMLAttributes,
@@ -129,15 +130,15 @@ export type UnwrapPromise<T> = T extends Promise<infer U>
 export type PoolAction = "Add" | "Remove";
 
 export interface PoolExchangeInfo {
-	poolAddress: string;
-	poolLiquidity: number;
-	tradeAssetReserve: number;
-	coreAssetReserve: number;
+	exchangeAddress: string;
+	exchangeLiquidity: Balance;
+	tradeAssetReserve: Balance;
+	coreAssetReserve: Balance;
 }
 
 export interface PoolUserInfo {
 	userAddress: string;
-	userLiquidity: number;
-	tradeAssetBalance: number;
-	coreAssetBalance: number;
+	userLiquidity: Balance;
+	tradeAssetBalance: Balance;
+	coreAssetBalance: Balance;
 }

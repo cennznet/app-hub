@@ -1,11 +1,12 @@
 import { IntrinsicElements } from "@/types";
 import { css } from "@emotion/react";
-import { FC, useCallback, useEffect, useState } from "react";
+import { FC, useCallback, useEffect, useState, useMemo } from "react";
 import SubmitButton from "@/components/shared/SubmitButton";
 import { Theme } from "@mui/material";
 import { usePool } from "@/providers/PoolProvider";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import {
+	Balance,
 	getAddLiquidityExtrinsic,
 	getRemoveLiquidityExtrinsic,
 	signAndSendTx,
@@ -49,33 +50,46 @@ const PoolForm: FC<IntrinsicElements["form"] & PoolFormProps> = ({
 		if (poolAction === "Remove") return setButtonLabel("Withdraw from Pool");
 	}, [poolAction]);
 
+	const extrinsic = useMemo(() => {
+		if (!api || !userInfo || !exchangeInfo) return;
+
+		if (poolAction === "Remove") {
+			return getRemoveLiquidityExtrinsic(
+				api,
+				userInfo,
+				tradeAsset,
+				Balance.fromInput(trValue, tradeAsset),
+				Balance.fromInput(crValue, coreAsset),
+				Number(slippage)
+			);
+		}
+
+		return getAddLiquidityExtrinsic(
+			api,
+			exchangeInfo,
+			tradeAsset.assetId,
+			Balance.fromInput(trValue, tradeAsset),
+			Balance.fromInput(crValue, coreAsset),
+			Number(slippage)
+		);
+	}, [
+		api,
+		coreAsset,
+		crValue,
+		exchangeInfo,
+		poolAction,
+		slippage,
+		trValue,
+		tradeAsset,
+		userInfo,
+	]);
+
 	const onFormSubmit = useCallback(
 		async (event) => {
 			event.preventDefault();
 
-			if (!api) return;
+			if (!extrinsic) return;
 			setProgressStatus();
-
-			const extrinsic =
-				poolAction === "Remove"
-					? getRemoveLiquidityExtrinsic(
-							api,
-							userInfo,
-							tradeAsset,
-							Number(trValue),
-							coreAsset,
-							Number(crValue),
-							Number(slippage)
-					  )
-					: getAddLiquidityExtrinsic(
-							api,
-							exchangeInfo,
-							tradeAsset,
-							Number(trValue),
-							coreAsset,
-							Number(crValue),
-							Number(slippage)
-					  );
 
 			let status: UnwrapPromise<ReturnType<typeof signAndSendTx>>;
 			try {
@@ -98,15 +112,8 @@ const PoolForm: FC<IntrinsicElements["form"] & PoolFormProps> = ({
 			updateExchangeRate();
 		},
 		[
-			api,
+			extrinsic,
 			setProgressStatus,
-			poolAction,
-			tradeAsset,
-			trValue,
-			coreAsset,
-			crValue,
-			slippage,
-			exchangeInfo,
 			setTxStatus,
 			setSuccessStatus,
 			setTrValue,

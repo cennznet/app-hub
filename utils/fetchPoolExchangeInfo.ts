@@ -1,7 +1,7 @@
 import { CENNZAsset } from "@/types";
 import { Api } from "@cennznet/api";
-import Big from "big.js";
 import { PoolExchangeInfo } from "@/types";
+import { Balance } from "@/utils";
 
 /**
  * Fetch pool exchange info of a given `assetId``
@@ -16,7 +16,7 @@ export default async function fetchPoolExchangeInfo(
 	tradeAsset: CENNZAsset,
 	coreAsset: CENNZAsset
 ): Promise<PoolExchangeInfo> {
-	const [poolAddress, tradeAssetBalance, coreAssetBalance, totalLiquidity] =
+	const [exchangeAddress, tradeAssetBalance, coreAssetBalance, totalLiquidity] =
 		await Promise.all([
 			api.derive.cennzx.exchangeAddress(tradeAsset.assetId),
 			api.derive.cennzx.poolAssetBalance(tradeAsset.assetId),
@@ -24,16 +24,14 @@ export default async function fetchPoolExchangeInfo(
 			api.derive.cennzx.totalLiquidity(tradeAsset.assetId),
 		]);
 
-	const tradeReserveNumber = new Big(tradeAssetBalance.toString());
-	const coreReserveNumber = new Big(coreAssetBalance.toString());
-	const liquidityNumber = new Big(totalLiquidity.toString());
+	const tradeAssetReserve = Balance.fromBN(tradeAssetBalance, tradeAsset);
+	const coreAssetReserve = Balance.fromBN(coreAssetBalance, coreAsset);
+	const exchangeLiquidity = Balance.fromBN(totalLiquidity, null);
 
 	return {
-		poolAddress,
-		tradeAssetReserve: tradeReserveNumber
-			.div(tradeAsset.decimalsValue)
-			.toNumber(),
-		coreAssetReserve: coreReserveNumber.div(coreAsset.decimalsValue).toNumber(),
-		poolLiquidity: liquidityNumber.toNumber(),
+		exchangeAddress,
+		tradeAssetReserve,
+		coreAssetReserve,
+		exchangeLiquidity,
 	};
 }

@@ -3,6 +3,7 @@ import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import { usePool } from "@/providers/PoolProvider";
 import { CENNZAsset } from "@/types";
 import {
+	Balance,
 	fetchGasFee,
 	getAddLiquidityExtrinsic,
 	getRemoveLiquidityExtrinsic,
@@ -21,25 +22,23 @@ export default function usePoolGasFee(): {
 		usePool();
 
 	const extrinsic = useMemo(() => {
-		if (!api || !exchangeInfo) return;
+		if (!api || !exchangeInfo || !userInfo) return;
 		if (poolAction === "Remove")
 			return getRemoveLiquidityExtrinsic(
 				api,
 				userInfo,
 				tradeAsset,
-				1,
-				coreAsset,
-				1,
+				Balance.fromInput("1", tradeAsset),
+				Balance.fromInput("1", coreAsset),
 				5
 			);
 
 		return getAddLiquidityExtrinsic(
 			api,
 			exchangeInfo,
-			tradeAsset,
-			1,
-			coreAsset,
-			1,
+			tradeAsset.assetId,
+			Balance.fromInput("1", tradeAsset),
+			Balance.fromInput("1", coreAsset),
 			5
 		);
 	}, [api, exchangeInfo, poolAction, userInfo, tradeAsset, coreAsset]);

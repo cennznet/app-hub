@@ -1,6 +1,6 @@
 import { CENNZAsset } from "@/types";
 import { Api } from "@cennznet/api";
-import Big from "big.js";
+import { Balance } from "@/utils";
 import { PoolUserInfo } from "@/types";
 
 /**
@@ -26,14 +26,14 @@ export default async function fetchPoolUserInfo(
 		await api.derive.cennzx.liquidityBalance(tradeAsset.assetId, userAddress),
 	]);
 
-	const assetNumber = new Big(asset.toString());
-	const coreNumber = new Big(core.toString());
-	const liquidityNumber = new Big(currentLiquidity.toString());
+	const tradeAssetBalance = Balance.fromBN(asset, tradeAsset);
+	const coreAssetBalance = Balance.fromBN(core, coreAsset);
+	const userLiquidity = Balance.fromBN(currentLiquidity, null);
 
 	return {
 		userAddress,
-		tradeAssetBalance: assetNumber.div(tradeAsset.decimalsValue).toNumber(),
-		coreAssetBalance: coreNumber.div(coreAsset.decimalsValue).toNumber(),
-		userLiquidity: liquidityNumber.toNumber(),
+		tradeAssetBalance,
+		coreAssetBalance,
+		userLiquidity,
 	};
 }
