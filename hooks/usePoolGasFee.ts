@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState, useMemo } from "react";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import { usePool } from "@/providers/PoolProvider";
-import { CENNZAsset } from "@/types";
 import {
 	Balance,
 	fetchGasFee,

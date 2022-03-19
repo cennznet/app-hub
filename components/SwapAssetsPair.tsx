@@ -4,7 +4,6 @@ import TokenInput from "@/components/shared/TokenInput";
 import { css } from "@emotion/react";
 import { useSwap } from "@/providers/SwapProvider";
 import { formatBalance } from "@/utils";
-import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import SwitchButton from "@/components/shared/SwitchButton";
 import { Theme } from "@mui/material";
 import { useSwapExchangeRate } from "@/hooks";
@@ -26,8 +25,6 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
 		exchangeAsset,
 		receiveAsset,
 	} = useSwap();
-
-	const { selectedAccount } = useCENNZWallet();
 
 	const { exchangeRate } = useSwapExchangeRate(exchangeValue.value);
 
@@ -88,7 +85,7 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
 	const onExchangeMaxRequest = useMemo(() => {
 		if (!exchangeBalance) return;
 		const setExchangeValue = exchangeValue.setValue;
-		return () => setExchangeValue(formatBalance(exchangeBalance));
+		return () => setExchangeValue(exchangeBalance.toBalance());
 	}, [exchangeBalance, exchangeValue.setValue]);
 
 	return (
@@ -106,19 +103,16 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
 					required
 					scale={4}
 					min={0.0001}
-					max={formatBalance(exchangeBalance)}
+					max={exchangeBalance?.gt(0) ? exchangeBalance.toBalance() : null}
 				/>
 
-				{!!selectedAccount && (
+				{!!exchangeBalance && (
 					<div css={styles.tokenBalance}>
-						Balance:{" "}
-						<span>
-							{formatBalance(exchangeBalance !== null ? exchangeBalance : 0)}
-						</span>
+						Balance: <span>{exchangeBalance.toBalance()}</span>
 					</div>
 				)}
 			</div>
-			<div css={styles.formControl(!!selectedAccount)}>
+			<div css={styles.formControl(!!exchangeBalance)}>
 				<SwitchButton
 					onClick={onSwitchButtonClick}
 					vertical={true}
@@ -136,12 +130,9 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
 					disabled={true}
 					id="receiveInput"
 				/>
-				{!!selectedAccount && (
+				{!!receiveBalance && (
 					<div css={styles.tokenBalance}>
-						Balance:{" "}
-						<span>
-							{formatBalance(receiveBalance !== null ? receiveBalance : 0)}
-						</span>
+						Balance: <span>{receiveBalance.toBalance()}</span>
 					</div>
 				)}
 			</div>

@@ -3,9 +3,8 @@ import { IntrinsicElements } from "@/types";
 import { css } from "@emotion/react";
 import { VFC, useMemo, useEffect, useRef } from "react";
 import TokenInput from "@/components/shared/TokenInput";
-import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import useWalletBalances from "@/hooks/useWalletBalances";
-import { Balance, formatBalance } from "@/utils";
+import { Balance } from "@/utils";
 import { Theme, Tooltip } from "@mui/material";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 
@@ -53,7 +52,7 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 		const setCoreValue = coreValue.setValue;
 		const crValue = trValue / exchangeRate;
 		if (crValue === 0) return setCoreValue("");
-		setCoreValue(formatBalance(crValue));
+		setCoreValue(Balance.format(crValue));
 	}, [tradeValue.value, coreValue.setValue, exchangeRate]);
 
 	useEffect(() => {

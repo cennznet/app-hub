@@ -3,7 +3,7 @@ import { IntrinsicElements } from "@/types";
 import { LinearProgress, Tooltip, Theme } from "@mui/material";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import { css } from "@emotion/react";
-import { formatBalance } from "@/utils";
+import { Balance } from "@/utils";
 import { useSwap } from "@/providers/SwapProvider";
 import { useSwapExchangeRate, useSwapGasFee } from "@/hooks";
 
@@ -15,7 +15,7 @@ const SwapStats: VFC<IntrinsicElements["div"] & SwapStatsProps> = (props) => {
 
 	const { exchangeRate, updatingExchangeRate, updateExchangeRate } =
 		useSwapExchangeRate("1");
-	const { gasFee, gasAsset, updatingGasFee, updateGasFee } = useSwapGasFee();
+	const { gasFee, updatingGasFee, updateGasFee } = useSwapGasFee();
 
 	useEffect(() => {
 		if (txStatus?.status !== "success") return;
@@ -31,19 +31,19 @@ const SwapStats: VFC<IntrinsicElements["div"] & SwapStatsProps> = (props) => {
 			<ul>
 				<li>
 					<strong>Gas Fee:</strong>{" "}
-					{gasFee !== null && (
+					{gasFee?.gt(0) && (
 						<span>
-							&asymp; {gasFee} {gasAsset.symbol}
+							&asymp; {gasFee.toBalance()} {gasFee.getSymbol()}
 						</span>
 					)}
-					{gasFee === null && <span>&asymp;</span>}
+					{!gasFee?.gt(0) && <span>&asymp;</span>}
 				</li>
 				<li>
 					<strong>Exchange Rate:</strong>{" "}
 					{exchangeRate !== null && (
 						<span>
-							1 {exchangeAsset.symbol} &asymp; {formatBalance(exchangeRate)}{" "}
-							{receiveAsset.symbol}
+							1 {exchangeAsset.symbol} &asymp;{" "}
+							{Balance.format(1 / exchangeRate)} {receiveAsset.symbol}
 						</span>
 					)}
 					{exchangeRate === null && <span>&asymp;</span>}
@@ -52,9 +52,9 @@ const SwapStats: VFC<IntrinsicElements["div"] & SwapStatsProps> = (props) => {
 				<li>
 					<strong>Slippage:</strong>{" "}
 					<span>
-						{formatBalance(
-							Number(exchangeValue.value) * (1 + Number(slippage) / 100)
-						)}{" "}
+						{Balance.fromInput(exchangeValue?.value, exchangeAsset)
+							.increase(slippage)
+							.toBalance()}{" "}
 						{exchangeAsset.symbol}
 					</span>
 					<Tooltip

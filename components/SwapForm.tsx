@@ -6,7 +6,7 @@ import SubmitButton from "@/components/shared/SubmitButton";
 import { useSwap } from "@/providers/SwapProvider";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
-import { getBuyAssetExtrinsic, signAndSendTx } from "@/utils";
+import { Balance, getBuyAssetExtrinsic, signAndSendTx } from "@/utils";
 import { UnwrapPromise } from "@/types";
 
 interface SwapFormProps {}
@@ -39,10 +39,10 @@ const SwapForm: FC<IntrinsicElements["form"] & SwapFormProps> = ({
 
 			const extrinsic = getBuyAssetExtrinsic(
 				api,
-				exchangeAsset,
-				Number(exValue),
-				receiveAsset,
-				Number(reValue),
+				exchangeAsset.assetId,
+				Balance.fromInput(exValue, exchangeAsset),
+				receiveAsset.assetId,
+				Balance.fromInput(reValue, receiveAsset),
 				Number(slippage)
 			);
 

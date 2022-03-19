@@ -1,24 +1,29 @@
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
-import { fetchGasFee, getBuyAssetExtrinsic } from "@/utils";
+import { Balance, fetchGasFee, getBuyAssetExtrinsic } from "@/utils";
 import { useEffect, useState, useMemo, useCallback } from "react";
 import { useSwap } from "@/providers/SwapProvider";
-import { CENNZAsset } from "@/types";
 
 export default function useSwapGasFee(): {
-	gasFee: number;
-	gasAsset: CENNZAsset;
+	gasFee: Balance;
 	updatingGasFee: boolean;
 	updateGasFee: () => void;
 } {
 	const { api } = useCENNZApi();
-	const [gasFee, setGasFee] = useState<number>(null);
+	const [gasFee, setGasFee] = useState<Balance>(null);
 	const [loading, setLoading] = useState<boolean>(true);
 	const { exchangeAsset, receiveAsset, cpayAsset } = useSwap();
 
 	const extrinsic = useMemo(
 		() =>
 			!!api
-				? getBuyAssetExtrinsic(api, exchangeAsset, 1, receiveAsset, 1, 5)
+				? getBuyAssetExtrinsic(
+						api,
+						exchangeAsset.assetId,
+						Balance.fromInput("1", exchangeAsset),
+						receiveAsset.assetId,
+						Balance.fromInput("1", receiveAsset),
+						5
+				  )
 				: null,
 		[api, exchangeAsset, receiveAsset]
 	);
