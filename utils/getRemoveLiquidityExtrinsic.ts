@@ -1,4 +1,4 @@
-import { CENNZAsset, PoolUserInfo } from "@/types";
+import { CENNZAsset, PoolExchangeInfo } from "@/types";
 import { Balance } from "@/utils";
 import { Api } from "@cennznet/api";
 import { SubmittableExtrinsic } from "@cennznet/api/types";
@@ -6,19 +6,19 @@ import { SubmittableExtrinsic } from "@cennznet/api/types";
 // TODO: Need test
 export default function getRemoveLiquidityExtrinsic(
 	api: Api,
-	userInfo: PoolUserInfo,
+	exchangeInfo: PoolExchangeInfo,
 	tradeAsset: CENNZAsset,
 	tradeAssetValue: Balance,
 	coreAssetValue: Balance,
-	slippagePercentage: number
+	slippage: number
 ): SubmittableExtrinsic<"promise"> {
-	const { coreAssetBalance, userLiquidity } = userInfo;
+	const { tradeAssetReserve, exchangeLiquidity } = exchangeInfo;
 
-	const liquidityAmount = coreAssetBalance.gt(0)
-		? userLiquidity.mul(coreAssetValue).div(coreAssetBalance)
+	const liquidityAmount = tradeAssetReserve.gt(0)
+		? tradeAssetValue.mul(exchangeLiquidity).div(tradeAssetReserve)
 		: coreAssetValue;
-	const minTradeAmount = tradeAssetValue.mul(1 - slippagePercentage / 100);
-	const minCoreAmount = coreAssetValue.mul(1 - slippagePercentage / 100);
+	const minTradeAmount = tradeAssetValue.decrease(slippage);
+	const minCoreAmount = coreAssetValue.decrease(slippage);
 
 	return api.tx.cennzx.removeLiquidity(
 		tradeAsset.assetId,

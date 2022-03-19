@@ -1,7 +1,6 @@
 import { GenericCoin } from "@/types";
 import { Codec, Balance as ApiBalance } from "@cennznet/types";
-import { PercentTwoTone } from "@mui/icons-material";
-import Big, { BigSource } from "big.js";
+import Big, { BigSource, RoundingMode } from "big.js";
 import BN from "bn.js";
 
 interface AsBalanceOptions {
@@ -9,6 +8,7 @@ interface AsBalanceOptions {
 }
 
 type BalanceDescriptor = Pick<GenericCoin, "symbol" | "decimals">;
+type BalanceSource = BigSource | Balance;
 
 export default class Balance extends Big {
 	coin: BalanceDescriptor;
@@ -22,14 +22,56 @@ export default class Balance extends Big {
 		};
 	}
 
-	addPerc(value: number): Balance {
-		const withPercentage = this.mul(1 + value / 100);
-		return new Balance(withPercentage, this.coin);
+	override abs(): Balance {
+		return new Balance(super.abs(), this.coin);
 	}
 
-	minusPerc(value: number): Balance {
-		const withPercentage = this.mul(1 - value / 100);
-		return new Balance(withPercentage, this.coin);
+	override div(n: BalanceSource): Balance {
+		return new Balance(super.div(n), this.coin);
+	}
+
+	override minus(n: BalanceSource): Balance {
+		return new Balance(super.minus(n), this.coin);
+	}
+
+	override mod(n: BalanceSource): Balance {
+		return new Balance(super.mod(n), this.coin);
+	}
+
+	override plus(n: BalanceSource): Balance {
+		return new Balance(super.plus(n), this.coin);
+	}
+
+	override pow(n: number): Balance {
+		return new Balance(super.pow(n), this.coin);
+	}
+
+	override prec(sd: number, rm?: RoundingMode): Balance {
+		return new Balance(super.prec(sd, rm), this.coin);
+	}
+
+	override round(sd: number, rm?: RoundingMode): Balance {
+		return new Balance(super.round(sd, rm), this.coin);
+	}
+
+	override sqrt(): Balance {
+		return new Balance(super.sqrt(), this.coin);
+	}
+
+	override mul(n: BalanceSource): Balance {
+		return new Balance(super.mul(n), this.coin);
+	}
+
+	override times(n: BalanceSource): Balance {
+		return new Balance(super.times(n), this.coin);
+	}
+
+	increase(n: number | string): Balance {
+		return this.mul(1 + Number(n) / 100);
+	}
+
+	decrease(n: number | string): Balance {
+		return this.mul(1 - Number(n) / 100);
 	}
 
 	toBalance(options = {} as AsBalanceOptions): string {
@@ -66,8 +108,8 @@ export default class Balance extends Big {
 		return new Balance(value, coin);
 	}
 
-	static format(source: number | Big): string {
-		const value = (source as Big)?.toNumber?.() ?? source;
+	static format(source: number | Balance): string {
+		const value = (source as Balance)?.toNumber?.() ?? source;
 		if (value === 0) return "0.0000";
 		return value < 0.0001 ? "<0.0001" : value.toFixed(4);
 	}

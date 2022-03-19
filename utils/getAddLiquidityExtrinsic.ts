@@ -10,18 +10,18 @@ export default function getAddLiquidityExtrinsic(
 	tradeAssetId: CENNZAsset["assetId"],
 	tradeAssetValue: Balance,
 	coreAssetValue: Balance,
-	slippagePercentage: number
+	slippage: number
 ): SubmittableExtrinsic<"promise"> {
-	const { coreAssetReserve, exchangeLiquidity } = exchangeInfo;
+	const { tradeAssetReserve, exchangeLiquidity } = exchangeInfo;
 
-	const minLiquidity = coreAssetReserve.gt(0)
+	const minLiquidity = tradeAssetReserve.gt(0)
 		? coreAssetValue
 				.mul(exchangeLiquidity)
-				.div(coreAssetReserve)
-				.mul(1 - slippagePercentage / 100)
+				.div(tradeAssetReserve)
+				.decrease(slippage)
 		: coreAssetValue;
 
-	const maxTradeAmount = tradeAssetValue.mul(1 + slippagePercentage / 100);
+	const maxTradeAmount = tradeAssetValue.increase(slippage);
 
 	return api.tx.cennzx.addLiquidity(
 		tradeAssetId,

@@ -23,11 +23,11 @@ export default function usePoolGasFee(): PoolGasFeeHook {
 		usePool();
 
 	const extrinsic = useMemo(() => {
-		if (!api || !exchangeInfo || !userInfo) return;
+		if (!api || !exchangeInfo) return;
 		if (poolAction === "Remove")
 			return getRemoveLiquidityExtrinsic(
 				api,
-				userInfo,
+				exchangeInfo,
 				tradeAsset,
 				Balance.fromInput("1", tradeAsset),
 				Balance.fromInput("1", coreAsset),
@@ -42,7 +42,7 @@ export default function usePoolGasFee(): PoolGasFeeHook {
 			Balance.fromInput("1", coreAsset),
 			5
 		);
-	}, [api, exchangeInfo, poolAction, userInfo, tradeAsset, coreAsset]);
+	}, [api, exchangeInfo, poolAction, tradeAsset, coreAsset]);
 
 	const updateGasFee = useCallback(async () => {
 		if (!api) return;

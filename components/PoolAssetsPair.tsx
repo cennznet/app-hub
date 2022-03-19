@@ -66,6 +66,11 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 		const coreInput = coreInputRef.current;
 		if (!coreInput || !coreBalance) return;
 		const value = Balance.fromInput(coreInput.value, coreAsset);
+		console.log(
+			value.toNumber(),
+			coreBalance.toNumber(),
+			value.gt(coreBalance)
+		);
 		coreInput.setCustomValidity(
 			value.gt(coreBalance)
 				? `Value must be less than or equal to ${coreBalance.toBalance()}.`

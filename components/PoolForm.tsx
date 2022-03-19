@@ -51,12 +51,12 @@ const PoolForm: FC<IntrinsicElements["form"] & PoolFormProps> = ({
 	}, [poolAction]);
 
 	const extrinsic = useMemo(() => {
-		if (!api || !userInfo || !exchangeInfo) return;
+		if (!api || !exchangeInfo) return;
 
 		if (poolAction === "Remove") {
 			return getRemoveLiquidityExtrinsic(
 				api,
-				userInfo,
+				exchangeInfo,
 				tradeAsset,
 				Balance.fromInput(trValue, tradeAsset),
 				Balance.fromInput(crValue, coreAsset),
@@ -81,7 +81,6 @@ const PoolForm: FC<IntrinsicElements["form"] & PoolFormProps> = ({
 		slippage,
 		trValue,
 		tradeAsset,
-		userInfo,
 	]);
 
 	const onFormSubmit = useCallback(

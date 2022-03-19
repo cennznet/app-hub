@@ -100,7 +100,7 @@ const PoolStats: VFC<IntrinsicElements["div"] & PoolStatsProps> = (props) => {
 					{poolAction === "Add" && (
 						<span>
 							{Balance.fromInput(tradeValue?.value, tradeAsset)
-								.addPerc(Number(slippage))
+								.increase(slippage)
 								.toBalance()}{" "}
 							{tradeAsset.symbol}
 						</span>
@@ -108,7 +108,7 @@ const PoolStats: VFC<IntrinsicElements["div"] & PoolStatsProps> = (props) => {
 					{poolAction === "Remove" && (
 						<span>
 							{Balance.fromInput(tradeValue?.value, tradeAsset)
-								.minusPerc(Number(slippage))
+								.decrease(slippage)
 								.toBalance()}{" "}
 							{tradeAsset.symbol}
 						</span>
