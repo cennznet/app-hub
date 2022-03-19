@@ -63,19 +63,15 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 	const coreInputRef = useRef<HTMLInputElement>();
 	useEffect(() => {
 		const coreInput = coreInputRef.current;
+		const crValue = coreValue.value;
 		if (!coreInput || !coreBalance) return;
-		const value = Balance.fromInput(coreInput.value, coreAsset);
-		console.log(
-			value.toNumber(),
-			coreBalance.toNumber(),
-			value.gt(coreBalance)
-		);
+		const coreInputValue = Balance.fromInput(crValue, coreAsset);
 		coreInput.setCustomValidity(
-			value.gt(coreBalance)
+			coreInputValue.gt(coreBalance)
 				? `Value must be less than or equal to ${coreBalance.toBalance()}.`
 				: ""
 		);
-	}, [coreBalance, coreAsset]);
+	}, [coreBalance, coreAsset, coreValue.value]);
 
 	return (
 		<div {...props} css={styles.root}>
