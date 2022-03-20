@@ -12,13 +12,11 @@ export default function getBuyAssetExtrinsic(
 	receivedAssetValue: Balance,
 	slippage: number
 ): SubmittableExtrinsic<"promise"> {
-	const maxExchangeAssetValue = exchangeAssetValue.increase(slippage);
-
 	return api.tx.cennzx.buyAsset(
 		null,
 		exchangeAssetId,
 		receiveAssetId,
 		receivedAssetValue.toFixed(0),
-		maxExchangeAssetValue.toFixed(0)
+		exchangeAssetValue.increase(slippage).toFixed(0)
 	);
 }
