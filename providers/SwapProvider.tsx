@@ -100,7 +100,9 @@ const SwapProvider: FC<SwapProviderProps> = ({ supportedAssets, children }) => {
 					{!!errorCode && (
 						<>
 							<br />
-							<pre>#{errorCode}</pre>
+							<pre>
+								<small>#{errorCode}</small>
+							</pre>
 						</>
 					)}
 				</div>

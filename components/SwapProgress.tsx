@@ -102,10 +102,16 @@ const styles = {
 	message: ({ palette }: Theme) => css`
 		margin-top: 1em;
 		line-height: 1.5;
-		pre {
-			font-weight: bold;
+
+		small {
+			font-size: 0.85em;
+			display: inline-block;
+			padding: 0.25em 0.5em;
+			margin-top: 0.5em;
 		}
+
 		em {
+			font-weight: bold;
 			font-style: normal;
 			color: ${palette.primary.main};
 		}

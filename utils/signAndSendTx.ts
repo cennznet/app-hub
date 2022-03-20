@@ -1,6 +1,8 @@
+import { Api } from "@cennznet/api";
 import { Signer, SubmittableExtrinsic } from "@cennznet/api/types";
 
 export default async function signAndSendTx(
+	api: Api,
 	extrinsic: SubmittableExtrinsic<"promise", any>,
 	address: string,
 	signer: Signer
@@ -12,8 +14,16 @@ export default async function signAndSendTx(
 					const { dispatchError, status } = progress;
 					if (dispatchError && dispatchError?.isModule && status.isFinalized) {
 						const { index, error } = dispatchError.asModule.toJSON();
+						const errorMeta = api.registry.findMetaError(
+							new Uint8Array([index, error])
+						);
+						const errorCode =
+							errorMeta?.section && errorMeta?.name
+								? `${errorMeta.section}.${errorMeta.name}`
+								: `I${index}E${error}`;
+
 						return reject(
-							new Error(`I${index}E${error}:${status?.asFinalized?.toString()}`)
+							new Error(`${errorCode}:${status?.asFinalized?.toString()}`)
 						);
 					}
 					if (status.isFinalized) return resolve(status.asFinalized.toString());

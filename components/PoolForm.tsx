@@ -87,12 +87,13 @@ const PoolForm: FC<IntrinsicElements["form"] & PoolFormProps> = ({
 		async (event) => {
 			event.preventDefault();
 
-			if (!extrinsic) return;
+			if (!extrinsic || !api) return;
 			setProgressStatus();
 
 			let status: UnwrapPromise<ReturnType<typeof signAndSendTx>>;
 			try {
 				status = await signAndSendTx(
+					api,
 					extrinsic,
 					selectedAccount.address,
 					wallet.signer
@@ -119,6 +120,7 @@ const PoolForm: FC<IntrinsicElements["form"] & PoolFormProps> = ({
 			updateBalances,
 			updatePoolUserInfo,
 			updateExchangeRate,
+			api,
 			selectedAccount?.address,
 			wallet?.signer,
 			setFailStatus,

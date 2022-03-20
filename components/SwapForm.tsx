@@ -49,6 +49,7 @@ const SwapForm: FC<IntrinsicElements["form"] & SwapFormProps> = ({
 			let status: UnwrapPromise<ReturnType<typeof signAndSendTx>>;
 			try {
 				status = await signAndSendTx(
+					api,
 					extrinsic,
 					selectedAccount.address,
 					wallet.signer

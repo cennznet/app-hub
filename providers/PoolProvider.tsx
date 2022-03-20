@@ -8,6 +8,7 @@ import {
 	useState,
 	ReactElement,
 	useCallback,
+	useEffect,
 } from "react";
 import {
 	useTokenInput,
@@ -85,6 +86,11 @@ const PoolProvider: FC<PoolProviderProps> = ({ supportedAssets, children }) => {
 	const { userInfo, updatingPoolUserInfo, updatePoolUserInfo } =
 		usePoolUserInfo(tradeAsset, coreAsset);
 
+	useEffect(() => {
+		if (poolAction !== "Remove") return;
+		updatePoolUserInfo();
+	}, [poolAction, updatePoolUserInfo]);
+
 	const [slippage, setSlippage] = useState<string>("5");
 	const [txStatus, setTxStatus] = useState<TxStatus>(null);
 
@@ -111,7 +117,9 @@ const PoolProvider: FC<PoolProviderProps> = ({ supportedAssets, children }) => {
 					{!!errorCode && (
 						<>
 							<br />
-							<pre>#{errorCode}</pre>
+							<pre>
+								<small>#{errorCode}</small>
+							</pre>
 						</>
 					)}
 				</div>
