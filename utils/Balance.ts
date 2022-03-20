@@ -91,6 +91,18 @@ export default class Balance extends Big {
 		return this.coin?.decimals;
 	}
 
+	withDecimals(n: number): Balance {
+		return new Balance(this, { ...this.coin, decimals: n });
+	}
+
+	withSymbol(s: string): Balance {
+		return new Balance(this, { ...this.coin, symbol: s });
+	}
+
+	withCoin(c: GenericCoin): Balance {
+		return new Balance(this, c);
+	}
+
 	static fromCodec(source: Codec, coin: BalanceDescriptor): Balance {
 		return new Balance(source.toString(), coin);
 	}
@@ -111,6 +123,6 @@ export default class Balance extends Big {
 	static format(source: number | Balance): string {
 		const value = (source as Balance)?.toNumber?.() ?? source;
 		if (value === 0) return "0.0000";
-		return value < 0.0001 ? "<0.0001" : value.toFixed(4);
+		return value < 0.0001 ? "<0.0001" : value.toFixed(4, Big.roundDown);
 	}
 }
