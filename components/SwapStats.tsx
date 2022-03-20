@@ -42,8 +42,8 @@ const SwapStats: VFC<IntrinsicElements["div"] & SwapStatsProps> = (props) => {
 					<strong>Exchange Rate:</strong>{" "}
 					{exchangeRate !== null && (
 						<span>
-							1 {exchangeAsset.symbol} &asymp;{" "}
-							{Balance.format(1 / exchangeRate)} {receiveAsset.symbol}
+							1 {exchangeAsset.symbol} &asymp; {exchangeRate.div(1).toBalance()}{" "}
+							{receiveAsset.symbol}
 						</span>
 					)}
 					{exchangeRate === null && <span>&asymp;</span>}

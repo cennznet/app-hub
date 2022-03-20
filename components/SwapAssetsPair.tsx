@@ -72,15 +72,13 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
 	useEffect(() => {
 		const setReceiveValue = receiveValue.setValue;
 		if (!exchangeRate) return setReceiveValue("");
-		setReceiveValue(exchangeRate.toString());
+		setReceiveValue(exchangeRate.toBalance());
 	}, [exchangeRate, receiveValue.setValue]);
 
 	const [exchangeBalance, receiveBalance] = useWalletBalances(
 		exchangeAsset,
 		receiveAsset
 	);
-
-	const reValue = Number(receiveValue.value);
 
 	const onExchangeMaxRequest = useMemo(() => {
 		if (!exchangeBalance) return;
@@ -124,7 +122,7 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
 				<TokenInput
 					selectedTokenId={receiveToken.tokenId}
 					onTokenChange={receiveToken.onTokenChange}
-					value={reValue ? formatBalance(reValue) : ""}
+					value={receiveValue.value}
 					onValueChange={receiveValue.onValueChange}
 					tokens={receiveAssets}
 					disabled={true}

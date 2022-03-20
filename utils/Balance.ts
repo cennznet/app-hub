@@ -120,9 +120,9 @@ export default class Balance extends Big {
 		return new Balance(value, coin);
 	}
 
-	static format(source: number | Balance): string {
-		const value = (source as Balance)?.toNumber?.() ?? source;
-		if (value === 0) return "0.0000";
-		return value < 0.0001 ? "<0.0001" : value.toFixed(4, Big.roundDown);
+	static format(source: BalanceSource): string {
+		const value = new Balance(source, null);
+		if (value.lte(0)) return Number(0).toFixed(4);
+		return value.lt(0.0001) ? "<0.0001" : value.toFixed(4, Big.roundDown);
 	}
 }

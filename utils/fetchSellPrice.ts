@@ -1,31 +1,27 @@
 import { Api } from "@cennznet/api";
 import { CENNZAsset } from "@/types";
-import Big from "big.js";
+import { Balance } from "@/utils";
 
 /**
- * Query `api.rpc.cennzx.sellPrice` to get a selling price
- * from exchangeAsset -> receiveAsset
+ * Query `api.rpc.cennzx.sellPrice` to get a selling price from exchangeAsset -> receiveAsset
  *
- * @param {Api} api
- * @param {string} exchangeValue
- * @param {CENNZAsset} exchangeAsset
+ * @param {Api} api The api
+ * @param {CENNZAsset} exchangeAssetId
+ * @param {Balance} exchangeAssetValue
  * @param {CENNZAsset} receiveAsset
- * @return {Promise<number>}
+ * @return {Promise<Balance>}
  */
 export default async function fetchSellPrice(
 	api: Api,
-	exchangeValue: string,
-	exchangeAsset: CENNZAsset,
+	exchangeAssetId: CENNZAsset["assetId"],
+	exchangeAssetValue: Balance,
 	receiveAsset: CENNZAsset
-): Promise<number> {
-	const amount = new Big(exchangeValue);
+): Promise<Balance> {
 	const { price } = await (api.rpc as any).cennzx.sellPrice(
-		exchangeAsset.assetId,
-		amount.mul(exchangeAsset.decimalsValue).toFixed(0),
+		exchangeAssetId,
+		exchangeAssetValue.toFixed(0, Balance.roundDown),
 		receiveAsset.assetId
 	);
 
-	const sellPrice = new Big(price.toString()).div(receiveAsset.decimalsValue);
-
-	return sellPrice.toNumber();
+	return Balance.fromBN(price, receiveAsset);
 }
