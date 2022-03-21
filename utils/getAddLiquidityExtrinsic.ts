@@ -12,12 +12,12 @@ export default function getAddLiquidityExtrinsic(
 	coreAssetValue: Balance,
 	slippage: number
 ): SubmittableExtrinsic<"promise"> {
-	const { tradeAssetReserve, exchangeLiquidity } = exchangeInfo;
+	const { coreAssetReserve, exchangeLiquidity } = exchangeInfo;
 
-	const minLiquidity = tradeAssetReserve.gt(0)
+	const minLiquidity = coreAssetReserve.gt(0)
 		? coreAssetValue
 				.mul(exchangeLiquidity)
-				.div(tradeAssetReserve)
+				.div(coreAssetReserve)
 				.decrease(slippage)
 		: coreAssetValue;
 

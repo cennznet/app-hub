@@ -5,9 +5,8 @@ import { fetchPoolExchangeInfo } from "@/utils";
 import { CENNZAsset, PoolExchangeInfo } from "@/types";
 
 export interface PoolExchangeInfoHook {
-	exchangeRate: number;
 	exchangeInfo: PoolExchangeInfo;
-	updatingExchangeRate: boolean;
+	updatingExchangeInfo: boolean;
 	updateExchangeRate: () => void;
 }
 
@@ -16,7 +15,6 @@ export default function usePoolExchangeInfo(
 	coreAsset: CENNZAsset
 ): PoolExchangeInfoHook {
 	const { api } = useCENNZApi();
-	const [exchangeRate, setExchangeRate] = useState<number>(null);
 	const [exchangeInfo, setExchangeInfo] = useState<PoolExchangeInfo>(null);
 	const [loading, setLoading] = useState<boolean>(true);
 
@@ -27,10 +25,8 @@ export default function usePoolExchangeInfo(
 				tradeAsset,
 				coreAsset
 			);
-			const { tradeAssetReserve, coreAssetReserve } = exchangeInfo;
 
 			setExchangeInfo(exchangeInfo);
-			setExchangeRate(tradeAssetReserve.div(coreAssetReserve).toNumber());
 			setLoading(false);
 		}, 150);
 	}, []);
@@ -46,9 +42,8 @@ export default function usePoolExchangeInfo(
 	}, [updateExchangeRate]);
 
 	return {
-		exchangeRate,
 		exchangeInfo,
-		updatingExchangeRate: loading,
+		updatingExchangeInfo: loading,
 		updateExchangeRate,
 	};
 }

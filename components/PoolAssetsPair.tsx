@@ -7,6 +7,7 @@ import useWalletBalances from "@/hooks/useWalletBalances";
 import { Balance } from "@/utils";
 import { Theme, Tooltip } from "@mui/material";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import usePoolExchangeRate from "@/hooks/usePoolExchangeRate";
 
 interface PoolAssetsPairProps {}
 
@@ -22,9 +23,7 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 		coreAsset,
 		coreToken,
 		coreValue,
-		exchangeRate,
 		userInfo,
-		updatePoolUserInfo,
 	} = usePool();
 
 	const tradePoolBalance = userInfo?.tradeAssetBalance ?? null;
@@ -41,30 +40,24 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 		poolAction === "Remove" ? corePoolBalance : coreWalletBalance;
 
 	const onTradeAssetMaxRequest = useMemo(() => {
-		const setPoolValue = tradeValue.setValue;
-		return () => setPoolValue(tradeBalance.toBalance());
+		const setTradeValue = tradeValue.setValue;
+		return () => setTradeValue(tradeBalance.toBalance());
 	}, [tradeBalance, tradeValue.setValue]);
+
+	const { exchangeRate } = usePoolExchangeRate(tradeValue.value);
 
 	// Update coreAsset value by tradeAsset value
 	useEffect(() => {
-		if (!exchangeRate) return;
-		const trValue = Number(tradeValue.value);
 		const setCoreValue = coreValue.setValue;
-		const crValue = trValue / exchangeRate;
-		if (crValue === 0) return setCoreValue("");
-		setCoreValue(Balance.format(crValue));
-	}, [tradeValue.value, coreValue.setValue, exchangeRate]);
-
-	useEffect(() => {
-		if (poolAction !== "Remove") return;
-		updatePoolUserInfo();
-	}, [poolAction, updatePoolUserInfo]);
+		if (!exchangeRate || exchangeRate.eq(0)) return setCoreValue("");
+		setCoreValue(exchangeRate.toBalance());
+	}, [exchangeRate, coreValue.setValue]);
 
 	const coreInputRef = useRef<HTMLInputElement>();
 	useEffect(() => {
 		const coreInput = coreInputRef.current;
 		const crValue = coreValue.value;
-		if (!coreInput || !coreBalance) return;
+		if (!coreInput || !coreBalance || !crValue) return;
 		const coreInputValue = Balance.fromInput(crValue, coreAsset);
 		coreInput.setCustomValidity(
 			coreInputValue.gt(coreBalance)

@@ -12,10 +12,10 @@ export default function getRemoveLiquidityExtrinsic(
 	coreAssetValue: Balance,
 	slippage: number
 ): SubmittableExtrinsic<"promise"> {
-	const { tradeAssetReserve, exchangeLiquidity } = exchangeInfo;
+	const { coreAssetReserve, exchangeLiquidity } = exchangeInfo;
 
-	const liquidityAmount = tradeAssetReserve.gt(0)
-		? tradeAssetValue.mul(exchangeLiquidity).div(tradeAssetReserve)
+	const liquidityAmount = coreAssetReserve.gt(0)
+		? coreAssetValue.mul(exchangeLiquidity).div(coreAssetReserve)
 		: coreAssetValue;
 	const minTradeAmount = tradeAssetValue.decrease(slippage);
 	const minCoreAmount = coreAssetValue.decrease(slippage);

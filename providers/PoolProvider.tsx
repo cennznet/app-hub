@@ -76,12 +76,8 @@ const PoolProvider: FC<PoolProviderProps> = ({ supportedAssets, children }) => {
 		(asset) => asset.assetId === tradeToken.tokenId
 	);
 
-	const {
-		exchangeInfo,
-		exchangeRate,
-		updatingExchangeRate,
-		updateExchangeRate,
-	} = usePoolExchangeInfo(tradeAsset, coreAsset);
+	const { exchangeInfo, updatingExchangeInfo, updateExchangeRate } =
+		usePoolExchangeInfo(tradeAsset, coreAsset);
 
 	const { userInfo, updatingPoolUserInfo, updatePoolUserInfo } =
 		usePoolUserInfo(tradeAsset, coreAsset);
@@ -176,10 +172,9 @@ const PoolProvider: FC<PoolProviderProps> = ({ supportedAssets, children }) => {
 				coreToken,
 				coreValue,
 
-				exchangeRate,
 				exchangeInfo,
 				updateExchangeRate,
-				updatingExchangeRate,
+				updatingExchangeInfo,
 
 				userInfo,
 				updatingPoolUserInfo,

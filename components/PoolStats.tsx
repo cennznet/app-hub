@@ -6,6 +6,7 @@ import { usePool } from "@/providers/PoolProvider";
 import { Balance } from "@/utils";
 import { usePoolGasFee } from "@/hooks";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import usePoolExchangeRate from "@/hooks/usePoolExchangeRate";
 
 interface PoolStatsProps {}
 
@@ -14,9 +15,8 @@ const PoolStats: VFC<IntrinsicElements["div"] & PoolStatsProps> = (props) => {
 		tradeAsset,
 		tradeValue,
 		coreAsset,
-		exchangeRate,
 		exchangeInfo,
-		updatingExchangeRate,
+		updatingExchangeInfo,
 		userInfo,
 		updatingPoolUserInfo,
 		slippage,
@@ -36,12 +36,14 @@ const PoolStats: VFC<IntrinsicElements["div"] & PoolStatsProps> = (props) => {
 
 	const { gasFee, updatingGasFee } = usePoolGasFee();
 
+	const { exchangeRate } = usePoolExchangeRate("1");
+
 	return (
 		<div {...props} css={styles.root}>
 			<LinearProgress
 				css={[
 					styles.formInfoProgress(
-						updatingExchangeRate || updatingPoolUserInfo || updatingGasFee
+						updatingExchangeInfo || updatingPoolUserInfo || updatingGasFee
 					),
 				]}
 			/>
@@ -60,7 +62,7 @@ const PoolStats: VFC<IntrinsicElements["div"] & PoolStatsProps> = (props) => {
 					<strong>Exchange Rate:</strong>
 					{exchangeRate !== null && (
 						<span>
-							1 {tradeAsset.symbol} &asymp; {Balance.format(1 / exchangeRate)}{" "}
+							1 {tradeAsset.symbol} &asymp; {exchangeRate.toBalance()}{" "}
 							{coreAsset.symbol}
 						</span>
 					)}
