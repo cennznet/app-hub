@@ -2,7 +2,6 @@ import { useCallback, FC, useRef, useEffect, useState } from "react";
 import { css } from "@emotion/react";
 import { Modal, Divider, Theme, LinearProgress } from "@mui/material";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
-import { formatBalance } from "@/utils";
 import AccountIdenticon from "@/components/shared/AccountIdenticon";
 import { useCENNZExtension } from "@/providers/CENNZExtensionProvider";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
@@ -28,11 +27,15 @@ const WalletModal: FC<{
 
 	useEffect(() => {
 		if (!modalOpen) return;
-		const id = setTimeout(() => {
+		const setListHeight = () => {
 			const balanceList = ref.current;
+			if (!balanceList || !balances?.length) return setBalanceListHeight(0);
 			const rect = balanceList.getBoundingClientRect();
 			setBalanceListHeight(rect.height);
-		}, 500);
+		};
+
+		const id = setTimeout(setListHeight, 500);
+		setListHeight();
 
 		return () => clearTimeout(id);
 	}, [balances, modalOpen]);
