@@ -56,7 +56,7 @@ export default function usePoolExchangeRate(
 
 	// For "Remove" action
 	useEffect(() => {
-		if (poolAction !== "Remove") return;
+		if (poolAction !== "Remove" || !userInfo) return;
 		const { userLiquidity } = userInfo;
 		if (userLiquidity.eq(0)) return setExchangeRateByTradeAsset();
 		setExchangeRateByLiquidity();
