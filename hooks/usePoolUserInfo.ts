@@ -20,7 +20,8 @@ export default function usePoolUserInfo(
 	const [loading, setLoading] = useState<boolean>(true);
 
 	const updatePoolUserInfo = useCallback(async () => {
-		if (!api || !selectedAccount?.address) return;
+		if (!api) return;
+		if (!selectedAccount?.address) return setLoading(false);
 		setLoading(true);
 		const userInfo = await fetchPoolUserInfo(
 			api,

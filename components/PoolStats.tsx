@@ -7,6 +7,7 @@ import { Balance } from "@/utils";
 import { usePoolGasFee } from "@/hooks";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import usePoolExchangeRate from "@/hooks/usePoolExchangeRate";
+import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 
 interface PoolStatsProps {}
 
@@ -37,6 +38,8 @@ const PoolStats: VFC<IntrinsicElements["div"] & PoolStatsProps> = (props) => {
 	const { gasFee, updatingGasFee } = usePoolGasFee();
 
 	const { exchangeRate } = usePoolExchangeRate("1");
+
+	const { selectedAccount } = useCENNZWallet();
 
 	return (
 		<div {...props} css={styles.root}>
@@ -79,24 +82,28 @@ const PoolStats: VFC<IntrinsicElements["div"] & PoolStatsProps> = (props) => {
 					)}
 					{tradeAssetReserve === null && <span>+</span>}
 				</li>
-				<li>
-					<strong>Your Liquidity:</strong>
-					{tradeAssetBalance !== null && (
-						<span>
-							{`${tradeAssetBalance.toBalance({
-								withSymbol: true,
-							})} + ${coreAssetBalance.toBalance({ withSymbol: true })}`}
-						</span>
-					)}
-					{tradeAssetBalance === null && <span>+</span>}
-				</li>
-				<li>
-					<strong>Your Pool Share:</strong>
-					{userPercentageShare !== null && (
-						<span>{userPercentageShare.toFixed(2)}%</span>
-					)}
-					{userPercentageShare === null && <span>%</span>}
-				</li>
+				{!!selectedAccount?.address && (
+					<li>
+						<strong>Your Liquidity:</strong>
+						{tradeAssetBalance !== null && (
+							<span>
+								{`${tradeAssetBalance.toBalance({
+									withSymbol: true,
+								})} + ${coreAssetBalance.toBalance({ withSymbol: true })}`}
+							</span>
+						)}
+						{tradeAssetBalance === null && <span>+</span>}
+					</li>
+				)}
+				{!!selectedAccount?.address && (
+					<li>
+						<strong>Your Pool Share:</strong>
+						{userPercentageShare !== null && (
+							<span>{userPercentageShare.toFixed(2)}%</span>
+						)}
+						{userPercentageShare === null && <span>%</span>}
+					</li>
+				)}
 				<li>
 					<strong>Slippage:</strong>{" "}
 					{poolAction === "Add" && (
