@@ -21,6 +21,12 @@ import {
 import { CENNZ_ASSET_ID, CPAY_ASSET_ID } from "@/constants";
 import { formatBalance } from "@/utils";
 
+// To be removed once TokenPicker is removed
+export enum LegacyPoolAction {
+	ADD = "Add",
+	REMOVE = "Withdraw",
+}
+
 type CENNZAssetId = CENNZAsset["assetId"];
 
 interface TxStatus {

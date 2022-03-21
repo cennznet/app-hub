@@ -42,7 +42,6 @@ export default function useSwapGasFee(): {
 
 	return {
 		gasFee,
-		gasAsset: cpayAsset,
 		updatingGasFee: loading,
 		updateGasFee,
 	};

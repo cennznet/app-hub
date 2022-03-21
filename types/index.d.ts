@@ -62,14 +62,14 @@ export interface Asset {
 // 	exchangeRate: number | string;
 // }
 
-// export interface PoolConfig {
-// 	tradeAsset: CENNZAsset;
-// 	coreAsset: CENNZAsset;
-// 	userPoolShare: IUserShareInPool;
-// 	poolAction: string;
-// 	setOtherAsset: Function;
-// 	setMax: Function;
-// }
+export interface PoolConfig {
+	tradeAsset: CENNZAsset;
+	coreAsset: CENNZAsset;
+	userPoolShare: IUserShareInPool;
+	poolAction: string;
+	setOtherAsset: Function;
+	setMax: Function;
+}
 
 export type SupportedChain = "Ethereum" | "CENNZnet";
 
