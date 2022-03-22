@@ -31,7 +31,9 @@ const PoolStats: VFC<IntrinsicElements["div"] & PoolStatsProps> = (props) => {
 	const coreAssetReserve = exchangeInfo?.coreAssetReserve ?? null;
 
 	const userPercentageShare =
-		coreAssetBalance !== null && coreAssetReserve !== null
+		coreAssetBalance !== null &&
+		coreAssetReserve !== null &&
+		coreAssetReserve.gt(0)
 			? coreAssetBalance.div(coreAssetReserve).mul(100).toNumber()
 			: null;
 

@@ -1,10 +1,9 @@
 import { usePool } from "@/providers/PoolProvider";
 import { IntrinsicElements } from "@/types";
 import { css } from "@emotion/react";
-import { VFC, useMemo, useEffect, useRef } from "react";
+import { VFC, useMemo, useEffect } from "react";
 import TokenInput from "@/components/shared/TokenInput";
 import useWalletBalances from "@/hooks/useWalletBalances";
-import { Balance } from "@/utils";
 import { Theme, Tooltip } from "@mui/material";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import usePoolExchangeRate from "@/hooks/usePoolExchangeRate";
@@ -41,7 +40,7 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 
 	const onTradeAssetMaxRequest = useMemo(() => {
 		const setTradeValue = tradeValue.setValue;
-		return () => setTradeValue(tradeBalance.toBalance());
+		return () => setTradeValue(tradeBalance.toInput());
 	}, [tradeBalance, tradeValue.setValue]);
 
 	const { exchangeRate } = usePoolExchangeRate(tradeValue.value);
@@ -50,21 +49,8 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 	useEffect(() => {
 		const setCoreValue = coreValue.setValue;
 		if (!exchangeRate || exchangeRate.eq(0)) return setCoreValue("");
-		setCoreValue(exchangeRate.toBalance());
+		setCoreValue(exchangeRate.toInput());
 	}, [exchangeRate, coreValue.setValue]);
-
-	const coreInputRef = useRef<HTMLInputElement>();
-	useEffect(() => {
-		const coreInput = coreInputRef.current;
-		const crValue = coreValue.value;
-		if (!coreInput || !coreBalance || !crValue) return;
-		const coreInputValue = Balance.fromInput(crValue, coreAsset);
-		coreInput.setCustomValidity(
-			coreInputValue.gt(coreBalance)
-				? `Value must be less than or equal to ${coreBalance.toBalance()}.`
-				: ""
-		);
-	}, [coreBalance, coreAsset, coreValue.value]);
 
 	return (
 		<div {...props} css={styles.root}>
@@ -81,7 +67,7 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 					required
 					scale={4}
 					min={0.0001}
-					max={tradeBalance?.gt(0) ? tradeBalance.toBalance() : null}
+					max={tradeBalance?.gt(0) ? tradeBalance.toInput() : null}
 				/>
 
 				{!!tradeBalance && poolAction === "Add" && (
@@ -104,8 +90,10 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 					value={coreValue.value}
 					onValueChange={coreValue.onValueChange}
 					tokens={[coreAsset]}
-					disabled={true}
-					ref={coreInputRef}
+					required
+					scale={4}
+					min={0.0001}
+					max={coreBalance?.gt(0) ? coreBalance.toInput() : null}
 				>
 					<Tooltip
 						css={styles.inputTooltip}

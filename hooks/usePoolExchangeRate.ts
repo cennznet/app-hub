@@ -10,16 +10,25 @@ export default function usePoolExchangeRate(
 	tradeAssetValue: string
 ): PoolExchangeRateHook {
 	const [exchangeRate, setExchangeRate] = useState<Balance>(null);
-	const { tradeAsset, coreAsset, exchangeInfo, userInfo, poolAction } =
-		usePool();
+	const {
+		tradeAsset,
+		coreAsset,
+		exchangeInfo,
+		userInfo,
+		poolAction,
+		tradeValue,
+		coreValue,
+	} = usePool();
 
 	const setExchangeRateByTradeAsset = useCallback(() => {
-		if (!exchangeInfo || poolAction !== "Add") return;
+		if (!exchangeInfo) return;
+		const zeroValue = Balance.fromInput("0", coreAsset);
 		const { coreAssetReserve, tradeAssetReserve } = exchangeInfo;
-		const zeroCoreValue = Balance.fromInput("0", coreAsset);
 		const trValue = Balance.fromInput(tradeAssetValue, tradeAsset);
 
-		if (tradeAssetReserve.eq(0)) return setExchangeRate(zeroCoreValue);
+		if (tradeAsset.symbol !== tradeAssetReserve.getSymbol()) return;
+
+		if (tradeAssetReserve.eq(0)) return setExchangeRate(zeroValue);
 
 		const crValue = trValue
 			.mul(coreAssetReserve)
@@ -27,17 +36,17 @@ export default function usePoolExchangeRate(
 			.minus(1)
 			.withCoin(coreAsset);
 
-		setExchangeRate(crValue.lt(0) ? zeroCoreValue : crValue);
-	}, [exchangeInfo, tradeAssetValue, poolAction, tradeAsset, coreAsset]);
+		setExchangeRate(crValue.lt(0) ? zeroValue : crValue);
+	}, [exchangeInfo, tradeAssetValue, tradeAsset, coreAsset]);
 
 	const setExchangeRateByLiquidity = useCallback(() => {
 		if (!exchangeInfo || !userInfo) return;
 		const { exchangeLiquidity, coreAssetReserve } = exchangeInfo;
 		const { tradeAssetBalance, userLiquidity } = userInfo;
-		const zeroCoreValue = Balance.fromInput("0", coreAsset);
+		const zeroValue = Balance.fromInput("0", coreAsset);
 		const trValue = Balance.fromInput(tradeAssetValue, tradeAsset);
 
-		if (exchangeLiquidity.eq(0)) return setExchangeRate(zeroCoreValue);
+		if (exchangeLiquidity.eq(0)) return setExchangeRate(zeroValue);
 
 		const liquidityValue = trValue.div(tradeAssetBalance).mul(userLiquidity);
 		const crValue = liquidityValue
@@ -45,25 +54,67 @@ export default function usePoolExchangeRate(
 			.div(exchangeLiquidity)
 			.withCoin(coreAsset);
 
-		setExchangeRate(crValue.lt(0) ? zeroCoreValue : crValue);
+		setExchangeRate(crValue.lt(0) ? zeroValue : crValue);
 	}, [exchangeInfo, tradeAssetValue, userInfo, tradeAsset, coreAsset]);
+
+	const setExchangeRateByInput = useCallback(() => {
+		const crInputValue = Balance.fromInput(
+			coreValue.value,
+			coreAsset
+		).withDecimals(0);
+
+		const trInputValue = Balance.fromInput(
+			tradeValue.value,
+			tradeAsset
+		).withDecimals(0);
+		const trValue = Balance.fromInput(tradeAssetValue, tradeAsset);
+		const zeroValue = Balance.fromInput("0", coreAsset);
+
+		if (trInputValue.eq(0)) return setExchangeRate(zeroValue);
+
+		const crValue = crInputValue
+			.mul(trValue)
+			.div(trInputValue)
+			.withCoin(coreAsset);
+
+		setExchangeRate(crValue.lt(0) ? zeroValue : crValue);
+	}, [
+		coreValue.value,
+		coreAsset,
+		tradeValue.value,
+		tradeAsset,
+		tradeAssetValue,
+	]);
 
 	// For "Add" action
 	useEffect(() => {
-		if (poolAction !== "Add") return;
+		if (poolAction !== "Add" || !exchangeInfo) return;
+		const { exchangeLiquidity } = exchangeInfo;
+		if (exchangeLiquidity.eq(0)) return setExchangeRateByInput();
 		setExchangeRateByTradeAsset();
-	}, [setExchangeRateByTradeAsset, poolAction]);
+	}, [
+		setExchangeRateByTradeAsset,
+		setExchangeRateByInput,
+		poolAction,
+		exchangeInfo,
+	]);
 
 	// For "Remove" action
 	useEffect(() => {
-		if (poolAction !== "Remove" || !userInfo) return;
+		if (poolAction !== "Remove" || !userInfo || !exchangeInfo) return;
+
+		const { exchangeLiquidity } = exchangeInfo;
+		if (exchangeLiquidity.eq(0)) return setExchangeRateByInput();
+
 		const { userLiquidity } = userInfo;
 		if (userLiquidity.eq(0)) return setExchangeRateByTradeAsset();
 		setExchangeRateByLiquidity();
 	}, [
 		userInfo,
+		exchangeInfo,
 		setExchangeRateByLiquidity,
 		setExchangeRateByTradeAsset,
+		setExchangeRateByInput,
 		poolAction,
 	]);
 
