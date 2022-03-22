@@ -7,8 +7,10 @@ import {
 	AccordionSummary,
 	AccordionDetails,
 	TextField,
+	Tooltip,
 } from "@mui/material";
 import ExpandMore from "@mui/icons-material/ExpandMore";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 
 interface BridgeAdvancedProps {
 	historicalEventProofId: number;
@@ -40,6 +42,9 @@ const BridgeAdvanced: VFC<IntrinsicElements["div"] & BridgeAdvancedProps> = (
 							}
 							required
 							type="number"
+							InputProps={{
+								endAdornment: <EventProofToolTip />,
+							}}
 						/>
 					</div>
 				</AccordionDetails>
@@ -47,6 +52,29 @@ const BridgeAdvanced: VFC<IntrinsicElements["div"] & BridgeAdvancedProps> = (
 		</div>
 	);
 };
+
+const EventProofToolTip: VFC<IntrinsicElements["div"]> = () => (
+	<div style={{ cursor: "pointer" }}>
+		<Tooltip
+			disableFocusListener
+			PopperProps={
+				{
+					sx: styles.toolTip,
+				} as any
+			}
+			title={
+				<div>
+					If a previous withdraw has failed you can enter the event proof id
+					here to claim it. Make sure to select the right token and amount!
+				</div>
+			}
+			arrow
+			placement="right"
+		>
+			<HelpOutlineIcon fontSize={"0.5em" as any} />
+		</Tooltip>
+	</div>
+);
 
 export default BridgeAdvanced;
 
@@ -96,5 +124,9 @@ const styles = {
 
 	input: css`
 		width: 200px;
+	`,
+
+	toolTip: css`
+		max-width: 200px;
 	`,
 };
