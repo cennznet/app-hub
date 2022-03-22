@@ -7,7 +7,6 @@ import { useSwap } from "@/providers/SwapProvider";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import { Balance, getBuyAssetExtrinsic, signAndSendTx } from "@/utils";
-import { UnwrapPromise } from "@/types";
 
 interface SwapFormProps {}
 
@@ -46,7 +45,7 @@ const SwapForm: FC<IntrinsicElements["form"] & SwapFormProps> = ({
 				Number(slippage)
 			);
 
-			let status: UnwrapPromise<ReturnType<typeof signAndSendTx>>;
+			let status: Awaited<ReturnType<typeof signAndSendTx>>;
 			try {
 				status = await signAndSendTx(
 					api,
