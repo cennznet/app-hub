@@ -1,11 +1,13 @@
 import { usePool } from "@/providers/PoolProvider";
 import { IntrinsicElements } from "@/types";
 import { css } from "@emotion/react";
-import { VFC, useMemo, useEffect, useRef } from "react";
+import { VFC, useMemo, useEffect } from "react";
 import TokenInput from "@/components/shared/TokenInput";
 import { useWalletBalances, usePoolCoreAssetValue } from "@/hooks";
 import { Theme, Tooltip } from "@mui/material";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import useBalanceValidation from "@/hooks/useBalanceValidation";
+import { Balance } from "@/utils";
 
 interface PoolAssetsPairProps {}
 
@@ -51,6 +53,16 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 		setCoreValue(coreAssetValue.toInput());
 	}, [coreAssetValue, coreValue.setValue]);
 
+	const { inputRef: tradeInputRef } = useBalanceValidation(
+		Balance.fromInput(tradeValue.value, tradeAsset),
+		tradeBalance
+	);
+
+	const { inputRef: coreInputRef } = useBalanceValidation(
+		Balance.fromInput(tradeValue.value, tradeAsset),
+		coreBalance
+	);
+
 	return (
 		<div {...props} css={styles.root}>
 			<div css={styles.formField}>
@@ -63,10 +75,10 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 					onValueChange={tradeValue.onValueChange}
 					tokens={tradeAssets}
 					id="tradeInput"
+					ref={tradeInputRef}
 					required
 					scale={4}
 					min={0.0001}
-					max={tradeBalance?.gt(0) ? tradeBalance.toInput() : null}
 				/>
 
 				{!!tradeBalance && poolAction === "Add" && (
@@ -93,6 +105,7 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 					scale={4}
 					min={0.0001}
 					max={coreBalance?.gt(0) ? coreBalance.toBalance() : null}
+					ref={coreInputRef}
 				>
 					<Tooltip
 						css={styles.inputTooltip}

@@ -5,6 +5,7 @@ import {
 	useMemo,
 	useEffect,
 	forwardRef,
+	useImperativeHandle,
 } from "react";
 import { css, SerializedStyles } from "@emotion/react";
 import { SelectChangeEvent, MenuItem, Theme } from "@mui/material";
@@ -65,6 +66,8 @@ const TokenInput = forwardRef<
 		const { ref: inputRef, setValue } = useIMask(imaskOptions, {
 			onAccept: onIMaskAccept,
 		});
+
+		useImperativeHandle(ref, () => inputRef.current as HTMLInputElement);
 
 		useEffect(() => {
 			setValue?.((value === "0" ? "" : value) as string);

@@ -7,6 +7,8 @@ import SwitchButton from "@/components/shared/SwitchButton";
 import { Theme } from "@mui/material";
 import { useSwapExchangeRate } from "@/hooks";
 import useWalletBalances from "@/hooks/useWalletBalances";
+import useBalanceValidation from "@/hooks/useBalanceValidation";
+import { Balance } from "@/utils";
 
 interface SwapAssetsPairProps {}
 
@@ -85,6 +87,16 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
 		return () => setExchangeValue(exchangeBalance.toBalance());
 	}, [exchangeBalance, exchangeValue.setValue]);
 
+	const { inputRef: exchangeInputRef } = useBalanceValidation(
+		Balance.fromInput(exchangeValue.value, exchangeAsset),
+		exchangeBalance
+	);
+
+	const { inputRef: receiveInputRef } = useBalanceValidation(
+		Balance.fromInput(receiveValue.value, receiveAsset),
+		receiveBalance
+	);
+
 	return (
 		<div {...props} css={styles.root}>
 			<div css={styles.formField}>
@@ -97,10 +109,10 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
 					onValueChange={exchangeValue.onValueChange}
 					tokens={exchangeAssets}
 					id="exchangeInput"
+					ref={exchangeInputRef}
 					required
 					scale={4}
 					min={0.0001}
-					max={exchangeBalance?.gt(0) ? exchangeBalance.toBalance() : null}
 				/>
 
 				{!!exchangeBalance && (
@@ -124,11 +136,12 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
 					value={receiveValue.value}
 					onValueChange={receiveValue.onValueChange}
 					tokens={receiveAssets}
+					id="receiveInput"
+					ref={receiveInputRef}
 					readOnly={true}
+					required
 					scale={4}
 					min={0.0001}
-					max={receiveBalance?.gt(0) ? receiveBalance.toBalance() : null}
-					id="receiveInput"
 				/>
 				{!!receiveBalance && (
 					<div css={styles.tokenBalance}>
