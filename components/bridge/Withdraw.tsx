@@ -9,6 +9,8 @@ import ErrorModal from "@/components/bridge/ErrorModal";
 import { CENNZAsset, CENNZAccount, TxModalAttributes } from "@/types";
 import ConnectWalletButton from "@/components/shared/ConnectWalletButton";
 import { checkWithdrawStatus, fetchEstimatedFee } from "@/utils/bridge";
+import Advanced from "@/components/bridge/Advanced";
+import { Divider } from "@mui/material";
 
 const Withdraw: React.FC<{
 	token: CENNZAsset;
@@ -26,8 +28,10 @@ const Withdraw: React.FC<{
 	setEstimatedFee,
 }) => {
 	const [modalOpen, setModalOpen] = useState(false);
-	const [errorModalOpen, setErrorModalOpen] = useState(false);
+	const [errorModalOpen, setErrorModalOpen] = useState<boolean>(false);
 	const [modal, setModal] = useState<TxModalAttributes>(null);
+	const [historicalEventProofId, setHistoricalEventProofId] =
+		useState<number>();
 	const { Contracts, Account, Signer }: any = useBridge();
 	const { api }: any = useCENNZApi();
 	const { wallet, balances, updateBalances } = useCENNZWallet();
@@ -72,6 +76,17 @@ const Withdraw: React.FC<{
 			);
 			if (!!tokenAddress) {
 				setModal(defineTxModal("withdrawCENNZside", "", setModalOpen));
+
+				if (!!historicalEventProofId) {
+					//TODO: fetch event proof and send tx
+					// const eventProof = await api.derive.query.fetchEventProof?
+					// await withdrawEthSide(
+					// 	withdrawAmount,
+					// 	eventProof,
+					// 	Account,
+					// 	tokenAddress.toString()
+					// );
+				}
 
 				const withdrawAmount = ethers.utils
 					.parseUnits(String(amount), token.decimals)
@@ -220,6 +235,11 @@ const Withdraw: React.FC<{
 			{errorModalOpen && (
 				<ErrorModal setModalOpen={setErrorModalOpen} modalState={modal.state} />
 			)}
+			<Advanced
+				historicalEventProofId={historicalEventProofId}
+				setHistoricalEventProofId={setHistoricalEventProofId}
+			/>
+			<Divider sx={{ width: "550px", m: "2em 0 2em" }} />
 			<ConnectWalletButton
 				disabled={disabled}
 				onClick={withdraw}
