@@ -305,6 +305,13 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
+"@babel/runtime@^7.17.8":
+  version "7.17.8"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.17.8.tgz#3e56e4aff81befa55ac3ac6a0967349fd1c5bca2"
+  integrity sha512-dQpEpK0O9o6lj6oPu0gRDbbnk+4LeHlNcBpspf6Olzt3GIX4P1lWF1gS+pHLDFlaJvbR6q7jCfQ08zA4QJBnmA==
+  dependencies:
+    regenerator-runtime "^0.13.4"
+
 "@babel/template@^7.16.7", "@babel/template@^7.3.3":
   version "7.16.7"
   resolved "https://registry.yarnpkg.com/@babel/template/-/template-7.16.7.tgz#8d126c8701fde4d66b264b3eba3d96f07666d155"
@@ -367,12 +374,14 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@cennznet/api@^2.1.0-alpha.1":
-  version "2.1.0-alpha.1"
-  resolved "https://registry.yarnpkg.com/@cennznet/api/-/api-2.1.0-alpha.1.tgz#d1b33b183428114d416da26a7f222c9fe41f991d"
-  integrity sha512-07g8aIKkHYAj4O5gK7P/ki5IrTtYcLveuHhoz7eAn+VDd7UeefyKK9RPcpIaH9ECDD3v6cZJQwq4C18dmtM6/w==
+"@cennznet/api@^2.1.0-rc.1":
+  version "2.1.0-rc.1"
+  resolved "https://registry.yarnpkg.com/@cennznet/api/-/api-2.1.0-rc.1.tgz#2ecb3ebd9638958feb1edb79f3b649f497852b37"
+  integrity sha512-UcXjVhmtq2MELxM0W9XS0xUpdC/6JgxAUpPswYqlTynwEePOaSjWl3YDlcK0oawE9rAJtaIL2TkB7DpuFhP/og==
   dependencies:
-    "@cennznet/types" "^2.1.0-alpha.1"
+    "@cennznet/types" "^2.1.0-rc.1"
+    "@ethersproject/keccak256" "^5.5.0"
+    "@ethersproject/signing-key" "^5.5.0"
     "@polkadot/api" "^7.7.1"
     "@polkadot/extension-dapp" "^0.36.1"
     "@polkadot/rpc-core" "^7.7.1"
@@ -390,6 +399,16 @@
     "@polkadot/types" "^7.7.1"
     "@polkadot/util" "^8.2.2"
     "@polkadot/util-crypto" "^8.2.2"
+
+"@cennznet/types@^2.1.0-rc.1":
+  version "2.1.0-rc.1"
+  resolved "https://registry.yarnpkg.com/@cennznet/types/-/types-2.1.0-rc.1.tgz#592256ab5d4227255169b18fcdc83aab494c474e"
+  integrity sha512-rvHouo5QCka6ybUn8Vo8/D9b2RFs/Jtnvo7LBzez/j/uKrIz7oDsPqAq+96Wj6rqxmQZDEoD8+rae6ka5aYPtw==
+  dependencies:
+    "@polkadot/keyring" "^8.3.3"
+    "@polkadot/types" "^7.7.1"
+    "@polkadot/util" "^8.3.3"
+    "@polkadot/util-crypto" "^8.3.3"
 
 "@depay/web3-blockchains@^4.2.0":
   version "4.2.0"
@@ -1364,6 +1383,15 @@
     "@polkadot/util" "8.4.1"
     "@polkadot/util-crypto" "8.4.1"
 
+"@polkadot/keyring@^8.3.3":
+  version "8.6.1"
+  resolved "https://registry.yarnpkg.com/@polkadot/keyring/-/keyring-8.6.1.tgz#ab1d4e31268317daabf7fe0d951254b770ba194c"
+  integrity sha512-Ra3L6JwMMnlnmpGIOanMT7XqWtqp2gXpGEmA6eE9bL9xUo6e3RPudFncYrWizUjzbYXnaO4bFExRcp2RIBuvWA==
+  dependencies:
+    "@babel/runtime" "^7.17.8"
+    "@polkadot/util" "8.6.1"
+    "@polkadot/util-crypto" "8.6.1"
+
 "@polkadot/networks@8.4.1", "@polkadot/networks@^8.4.1":
   version "8.4.1"
   resolved "https://registry.yarnpkg.com/@polkadot/networks/-/networks-8.4.1.tgz#c22585edb38f5ae0a329a1f471577d8b35bf64e4"
@@ -1511,7 +1539,7 @@
     "@babel/runtime" "^7.17.2"
     color "^3.2.1"
 
-"@polkadot/util-crypto@8.4.1", "@polkadot/util-crypto@^5.2.3", "@polkadot/util-crypto@^8.2.2", "@polkadot/util-crypto@^8.4.1":
+"@polkadot/util-crypto@8.4.1", "@polkadot/util-crypto@8.6.1", "@polkadot/util-crypto@^5.2.3", "@polkadot/util-crypto@^8.2.2", "@polkadot/util-crypto@^8.3.3", "@polkadot/util-crypto@^8.4.1":
   version "8.4.1"
   resolved "https://registry.yarnpkg.com/@polkadot/util-crypto/-/util-crypto-8.4.1.tgz#41ff754dc995b681913fc0a484bb0d309221a703"
   integrity sha512-mWjp83aIWw+EhKN9RkUDmubXibo25q5yHJl4BGm2gT71yTZcABB7q1SGfpDqLH9AB3eXJiutqhC4L3SH7YZ+6Q==
@@ -1528,7 +1556,7 @@
     ed2curve "^0.3.0"
     tweetnacl "^1.0.3"
 
-"@polkadot/util@8.4.1", "@polkadot/util@^5.2.3", "@polkadot/util@^8.2.2", "@polkadot/util@^8.4.1":
+"@polkadot/util@8.4.1", "@polkadot/util@8.6.1", "@polkadot/util@^5.2.3", "@polkadot/util@^8.2.2", "@polkadot/util@^8.3.3", "@polkadot/util@^8.4.1":
   version "8.4.1"
   resolved "https://registry.yarnpkg.com/@polkadot/util/-/util-8.4.1.tgz#b84835c55585c8b5fc5608a99aa62ac815292ae7"
   integrity sha512-8+wqHgFbFWI5TfrvtcL888w0nWvFpbTTYIcbpEw+zYGp3n1YZTAMMP26bXWAaQX5AttxynJRij7JP3ySxYY1fg==
