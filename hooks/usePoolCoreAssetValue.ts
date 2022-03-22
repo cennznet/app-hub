@@ -6,6 +6,17 @@ interface PoolCoreAssetValueHook {
 	coreAssetValue: Balance;
 }
 
+/**
+ * This hook is used to determine the `coreAssetValue` based on the `tradeAssetValue`.
+ * Depends on different situations, `coreAssetValue` can be calculated in different ways
+ *
+ * 1) setCoreAssetValueByTradeAsset - If it's "Add" action and there is liquidity of a given assets pair
+ * 2) setCoreAssetValueByLiquidity - If it's "Remove" action and user already has liquidity in
+ * 3) setCoreAssetValueByInput - If there is zero liquidity in either the assets paire pool or user pool
+ *
+ * @param {string} tradeAssetValue The trade asset value
+ * @return {PoolCoreAssetValueHook} The pool core asset value hook.
+ */
 export default function usePoolCoreAssetValue(
 	tradeAssetValue: string
 ): PoolCoreAssetValueHook {
@@ -26,6 +37,9 @@ export default function usePoolCoreAssetValue(
 		const { coreAssetReserve, tradeAssetReserve } = exchangeInfo;
 		const trValue = Balance.fromInput(tradeAssetValue, tradeAsset);
 
+		// This prevents a bug due to `exchangeInfo` is lagged behind
+		// and `tradeAssetReserve` is holding different value / symbol
+		// compares to the current `tradeAsset`
 		if (tradeAsset.symbol !== tradeAssetReserve.getSymbol()) return;
 
 		if (tradeAssetReserve.eq(0)) return setCoreAssetValue(zeroValue);
@@ -108,6 +122,7 @@ export default function usePoolCoreAssetValue(
 
 		const { userLiquidity } = userInfo;
 		if (userLiquidity.eq(0)) return setCoreAssetValueByTradeAsset();
+
 		setCoreAssetValueByLiquidity();
 	}, [
 		userInfo,
