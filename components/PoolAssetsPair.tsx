@@ -1,7 +1,7 @@
 import { usePool } from "@/providers/PoolProvider";
 import { IntrinsicElements } from "@/types";
 import { css } from "@emotion/react";
-import { VFC, useMemo, useEffect } from "react";
+import { VFC, useMemo, useEffect, useRef } from "react";
 import TokenInput from "@/components/shared/TokenInput";
 import { useWalletBalances, usePoolCoreAssetValue } from "@/hooks";
 import { Theme, Tooltip } from "@mui/material";
@@ -92,7 +92,7 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 					required
 					scale={4}
 					min={0.0001}
-					max={coreBalance?.gt(0) ? coreBalance.toInput() : null}
+					max={coreBalance?.gt(0) ? coreBalance.toBalance() : null}
 				>
 					<Tooltip
 						css={styles.inputTooltip}

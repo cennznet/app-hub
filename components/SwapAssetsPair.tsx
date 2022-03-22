@@ -3,7 +3,6 @@ import { IntrinsicElements } from "@/types";
 import TokenInput from "@/components/shared/TokenInput";
 import { css } from "@emotion/react";
 import { useSwap } from "@/providers/SwapProvider";
-import { formatBalance } from "@/utils";
 import SwitchButton from "@/components/shared/SwitchButton";
 import { Theme } from "@mui/material";
 import { useSwapExchangeRate } from "@/hooks";
@@ -72,7 +71,7 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
 	useEffect(() => {
 		const setReceiveValue = receiveValue.setValue;
 		if (!exchangeRate || exchangeRate?.eq(0)) return setReceiveValue("");
-		setReceiveValue(exchangeRate.toBalance());
+		setReceiveValue(exchangeRate.toInput());
 	}, [exchangeRate, receiveValue.setValue]);
 
 	const [exchangeBalance, receiveBalance] = useWalletBalances(
@@ -121,11 +120,14 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
 				<label htmlFor="receiveInput">To</label>
 				<TokenInput
 					selectedTokenId={receiveToken.tokenId}
-					onTokenChange={receiveToken.onTokenChange}
+					onTokenChange={() => {}}
 					value={receiveValue.value}
 					onValueChange={receiveValue.onValueChange}
 					tokens={receiveAssets}
-					disabled={true}
+					readOnly={true}
+					scale={4}
+					min={0.0001}
+					max={receiveBalance?.gt(0) ? receiveBalance.toBalance() : null}
 					id="receiveInput"
 				/>
 				{!!receiveBalance && (
