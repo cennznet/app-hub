@@ -2,14 +2,14 @@ import { usePool } from "@/providers/PoolProvider";
 import { Balance } from "@/utils";
 import { useCallback, useEffect, useState } from "react";
 
-interface PoolExchangeRateHook {
-	exchangeRate: Balance;
+interface PoolCoreAssetValueHook {
+	coreAssetValue: Balance;
 }
 
-export default function usePoolExchangeRate(
+export default function usePoolCoreAssetValue(
 	tradeAssetValue: string
-): PoolExchangeRateHook {
-	const [exchangeRate, setExchangeRate] = useState<Balance>(null);
+): PoolCoreAssetValueHook {
+	const [coreAssetValue, setCoreAssetValue] = useState<Balance>(null);
 	const {
 		tradeAsset,
 		coreAsset,
@@ -20,7 +20,7 @@ export default function usePoolExchangeRate(
 		coreValue,
 	} = usePool();
 
-	const setExchangeRateByTradeAsset = useCallback(() => {
+	const setCoreAssetValueByTradeAsset = useCallback(() => {
 		if (!exchangeInfo) return;
 		const zeroValue = Balance.fromInput("0", coreAsset);
 		const { coreAssetReserve, tradeAssetReserve } = exchangeInfo;
@@ -28,7 +28,7 @@ export default function usePoolExchangeRate(
 
 		if (tradeAsset.symbol !== tradeAssetReserve.getSymbol()) return;
 
-		if (tradeAssetReserve.eq(0)) return setExchangeRate(zeroValue);
+		if (tradeAssetReserve.eq(0)) return setCoreAssetValue(zeroValue);
 
 		const crValue = trValue
 			.mul(coreAssetReserve)
@@ -36,17 +36,17 @@ export default function usePoolExchangeRate(
 			.minus(1)
 			.withCoin(coreAsset);
 
-		setExchangeRate(crValue.lt(0) ? zeroValue : crValue);
+		setCoreAssetValue(crValue.lt(0) ? zeroValue : crValue);
 	}, [exchangeInfo, tradeAssetValue, tradeAsset, coreAsset]);
 
-	const setExchangeRateByLiquidity = useCallback(() => {
+	const setCoreAssetValueByLiquidity = useCallback(() => {
 		if (!exchangeInfo || !userInfo) return;
 		const { exchangeLiquidity, coreAssetReserve } = exchangeInfo;
 		const { tradeAssetBalance, userLiquidity } = userInfo;
 		const zeroValue = Balance.fromInput("0", coreAsset);
 		const trValue = Balance.fromInput(tradeAssetValue, tradeAsset);
 
-		if (exchangeLiquidity.eq(0)) return setExchangeRate(zeroValue);
+		if (exchangeLiquidity.eq(0)) return setCoreAssetValue(zeroValue);
 
 		const liquidityValue = trValue.div(tradeAssetBalance).mul(userLiquidity);
 		const crValue = liquidityValue
@@ -54,10 +54,10 @@ export default function usePoolExchangeRate(
 			.div(exchangeLiquidity)
 			.withCoin(coreAsset);
 
-		setExchangeRate(crValue.lt(0) ? zeroValue : crValue);
+		setCoreAssetValue(crValue.lt(0) ? zeroValue : crValue);
 	}, [exchangeInfo, tradeAssetValue, userInfo, tradeAsset, coreAsset]);
 
-	const setExchangeRateByInput = useCallback(() => {
+	const setCoreAssetValueByInput = useCallback(() => {
 		const crInputValue = Balance.fromInput(
 			coreValue.value,
 			coreAsset
@@ -70,14 +70,14 @@ export default function usePoolExchangeRate(
 		const trValue = Balance.fromInput(tradeAssetValue, tradeAsset);
 		const zeroValue = Balance.fromInput("0", coreAsset);
 
-		if (trInputValue.eq(0)) return setExchangeRate(zeroValue);
+		if (trInputValue.eq(0)) return setCoreAssetValue(zeroValue);
 
 		const crValue = crInputValue
 			.mul(trValue)
 			.div(trInputValue)
 			.withCoin(coreAsset);
 
-		setExchangeRate(crValue.lt(0) ? zeroValue : crValue);
+		setCoreAssetValue(crValue.lt(0) ? zeroValue : crValue);
 	}, [
 		coreValue.value,
 		coreAsset,
@@ -90,11 +90,11 @@ export default function usePoolExchangeRate(
 	useEffect(() => {
 		if (poolAction !== "Add" || !exchangeInfo) return;
 		const { exchangeLiquidity } = exchangeInfo;
-		if (exchangeLiquidity.eq(0)) return setExchangeRateByInput();
-		setExchangeRateByTradeAsset();
+		if (exchangeLiquidity.eq(0)) return setCoreAssetValueByInput();
+		setCoreAssetValueByTradeAsset();
 	}, [
-		setExchangeRateByTradeAsset,
-		setExchangeRateByInput,
+		setCoreAssetValueByTradeAsset,
+		setCoreAssetValueByInput,
 		poolAction,
 		exchangeInfo,
 	]);
@@ -104,19 +104,19 @@ export default function usePoolExchangeRate(
 		if (poolAction !== "Remove" || !userInfo || !exchangeInfo) return;
 
 		const { exchangeLiquidity } = exchangeInfo;
-		if (exchangeLiquidity.eq(0)) return setExchangeRateByInput();
+		if (exchangeLiquidity.eq(0)) return setCoreAssetValueByInput();
 
 		const { userLiquidity } = userInfo;
-		if (userLiquidity.eq(0)) return setExchangeRateByTradeAsset();
-		setExchangeRateByLiquidity();
+		if (userLiquidity.eq(0)) return setCoreAssetValueByTradeAsset();
+		setCoreAssetValueByLiquidity();
 	}, [
 		userInfo,
 		exchangeInfo,
-		setExchangeRateByLiquidity,
-		setExchangeRateByTradeAsset,
-		setExchangeRateByInput,
+		setCoreAssetValueByLiquidity,
+		setCoreAssetValueByTradeAsset,
+		setCoreAssetValueByInput,
 		poolAction,
 	]);
 
-	return { exchangeRate };
+	return { coreAssetValue };
 }

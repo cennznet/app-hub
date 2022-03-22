@@ -3,10 +3,9 @@ import { IntrinsicElements } from "@/types";
 import { css } from "@emotion/react";
 import { VFC, useMemo, useEffect } from "react";
 import TokenInput from "@/components/shared/TokenInput";
-import useWalletBalances from "@/hooks/useWalletBalances";
+import { useWalletBalances, usePoolCoreAssetValue } from "@/hooks";
 import { Theme, Tooltip } from "@mui/material";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-import usePoolExchangeRate from "@/hooks/usePoolExchangeRate";
 
 interface PoolAssetsPairProps {}
 
@@ -43,14 +42,14 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 		return () => setTradeValue(tradeBalance.toInput());
 	}, [tradeBalance, tradeValue.setValue]);
 
-	const { exchangeRate } = usePoolExchangeRate(tradeValue.value);
+	const { coreAssetValue } = usePoolCoreAssetValue(tradeValue.value);
 
 	// Update coreAsset value by tradeAsset value
 	useEffect(() => {
 		const setCoreValue = coreValue.setValue;
-		if (!exchangeRate || exchangeRate.eq(0)) return setCoreValue("");
-		setCoreValue(exchangeRate.toInput());
-	}, [exchangeRate, coreValue.setValue]);
+		if (!coreAssetValue || coreAssetValue.eq(0)) return setCoreValue("");
+		setCoreValue(coreAssetValue.toInput());
+	}, [coreAssetValue, coreValue.setValue]);
 
 	return (
 		<div {...props} css={styles.root}>
