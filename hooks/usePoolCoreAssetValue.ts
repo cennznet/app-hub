@@ -102,23 +102,24 @@ export default function usePoolCoreAssetValue(
 
 	// For "Add" action
 	useEffect(() => {
-		if (poolAction !== "Add" || !exchangeInfo) return;
-		const { exchangeLiquidity } = exchangeInfo;
-		if (exchangeLiquidity.eq(0)) return setCoreAssetValueByInput();
+		if (
+			poolAction !== "Add" ||
+			!exchangeInfo ||
+			exchangeInfo?.exchangeLiquidity?.eq(0)
+		)
+			return;
 		setCoreAssetValueByTradeAsset();
-	}, [
-		setCoreAssetValueByTradeAsset,
-		setCoreAssetValueByInput,
-		poolAction,
-		exchangeInfo,
-	]);
+	}, [setCoreAssetValueByTradeAsset, poolAction, exchangeInfo]);
 
 	// For "Remove" action
 	useEffect(() => {
-		if (poolAction !== "Remove" || !userInfo || !exchangeInfo) return;
-
-		const { exchangeLiquidity } = exchangeInfo;
-		if (exchangeLiquidity.eq(0)) return setCoreAssetValueByInput();
+		if (
+			poolAction !== "Remove" ||
+			!userInfo ||
+			!exchangeInfo ||
+			exchangeInfo?.exchangeLiquidity?.eq(0)
+		)
+			return;
 
 		const { userLiquidity } = userInfo;
 		if (userLiquidity.eq(0)) return setCoreAssetValueByTradeAsset();
@@ -129,9 +130,14 @@ export default function usePoolCoreAssetValue(
 		exchangeInfo,
 		setCoreAssetValueByLiquidity,
 		setCoreAssetValueByTradeAsset,
-		setCoreAssetValueByInput,
 		poolAction,
 	]);
+
+	// For zero liquidty
+	useEffect(() => {
+		if (!exchangeInfo || exchangeInfo?.exchangeLiquidity?.gt(0)) return;
+		setCoreAssetValueByInput();
+	}, [setCoreAssetValueByInput, exchangeInfo]);
 
 	return { coreAssetValue };
 }
