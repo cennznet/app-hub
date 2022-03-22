@@ -88,13 +88,13 @@ const Withdraw: React.FC<{
 						historicalEventProofId
 					);
 
-					void (await withdrawEthSide(
+					return await withdrawEthSide(
 						withdrawAmount,
 						eventProof,
 						Account,
 						tokenAddress.toString(),
 						blockHash
-					));
+					);
 				}
 
 				eventProof = await withdrawCENNZside(
