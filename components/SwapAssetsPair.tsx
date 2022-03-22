@@ -71,7 +71,7 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
 	// Sync up value for receive input
 	useEffect(() => {
 		const setReceiveValue = receiveValue.setValue;
-		if (!exchangeRate?.eq(0)) return setReceiveValue("");
+		if (!exchangeRate || exchangeRate?.eq(0)) return setReceiveValue("");
 		setReceiveValue(exchangeRate.toBalance());
 	}, [exchangeRate, receiveValue.setValue]);
 
