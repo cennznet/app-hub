@@ -1,7 +1,7 @@
 import { CENNZAsset } from "@/types";
 import { Api } from "@cennznet/api";
 import { SubmittableExtrinsic } from "@cennznet/api/types";
-import Big from "big.js";
+import { Balance } from "@/utils";
 
 /**
  * Query `api.derive.fees.estimateFee` for a given extrinsic
@@ -10,20 +10,18 @@ import Big from "big.js";
  * @param {Api} api
  * @param {SubmittableExtrinsic<"promise">} extrinsic
  * @param {CENNZAsset} userFeeAsset
- * @return {Promise<number>}
+ * @return {Promise<Balance>}
  */
 export default async function fetchGasFee(
 	api: Api,
 	extrinsic: SubmittableExtrinsic<"promise">,
 	userFeeAsset: CENNZAsset
-): Promise<number> {
+): Promise<Balance> {
 	const response = await api.derive.fees.estimateFee({
 		extrinsic,
 		userFeeAssetId: userFeeAsset.assetId,
 	});
 
-	if (response instanceof Error) return 0;
-
-	const fee = new Big(response.toString());
-	return fee.div(userFeeAsset.decimalsValue).toNumber();
+	if (response instanceof Error) return Balance.fromInput("0", null);
+	return Balance.fromApiBalance(response, userFeeAsset);
 }

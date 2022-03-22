@@ -1,35 +1,32 @@
-import { VFC, useEffect, useCallback } from "react";
+import { VFC, useEffect, useCallback, useMemo } from "react";
 import { IntrinsicElements } from "@/types";
 import TokenInput from "@/components/shared/TokenInput";
 import { css } from "@emotion/react";
 import { useSwap } from "@/providers/SwapProvider";
 import { formatBalance } from "@/utils";
-import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
-import SwapButton from "@/components/shared/SwapButton";
+import SwitchButton from "@/components/shared/SwitchButton";
 import { Theme } from "@mui/material";
-
 import { useSwapExchangeRate } from "@/hooks";
+import useWalletBalances from "@/hooks/useWalletBalances";
 
 interface SwapAssetsPairProps {}
 
-const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = ({
-	...props
-}) => {
+const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
+	props
+) => {
 	const {
-		exchangeTokens,
-		receiveTokens,
+		exchangeAssets,
+		receiveAssets,
 		exchangeToken,
 		receiveToken,
 		exchangeValue,
 		receiveValue,
-		setReceiveTokens,
-		exchangeBalance,
-		receiveBalance,
+		setReceiveAssets,
+		exchangeAsset,
+		receiveAsset,
 	} = useSwap();
 
-	const { selectedAccount } = useCENNZWallet();
-
-	const [exchangeRate] = useSwapExchangeRate(exchangeValue.value);
+	const { exchangeRate } = useSwapExchangeRate(exchangeValue.value);
 
 	const setTokensPair = useCallback(
 		(exchangeTokenId, receiveTokenId = null) => {
@@ -38,7 +35,7 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = ({
 
 			setExchangeTokenId(exchangeTokenId);
 
-			const receiveTokens = exchangeTokens.filter(
+			const receiveTokens = exchangeAssets.filter(
 				(token) => token.assetId !== exchangeTokenId
 			);
 
@@ -51,18 +48,18 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = ({
 				return receiveTokens[0].assetId;
 			});
 
-			setReceiveTokens(receiveTokens);
+			setReceiveAssets(receiveTokens);
 		},
 
 		[
 			exchangeToken.setTokenId,
 			receiveToken.setTokenId,
-			exchangeTokens,
-			setReceiveTokens,
+			exchangeAssets,
+			setReceiveAssets,
 		]
 	);
 
-	const onSwapButtonClick = useCallback(() => {
+	const onSwitchButtonClick = useCallback(() => {
 		setTokensPair(receiveToken.tokenId, exchangeToken.tokenId);
 	}, [setTokensPair, receiveToken.tokenId, exchangeToken.tokenId]);
 
@@ -74,63 +71,66 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = ({
 	// Sync up value for receive input
 	useEffect(() => {
 		const setReceiveValue = receiveValue.setValue;
-		if (!exchangeRate) return setReceiveValue("");
-		setReceiveValue(exchangeRate.toString());
+		if (!exchangeRate?.eq(0)) return setReceiveValue("");
+		setReceiveValue(exchangeRate.toBalance());
 	}, [exchangeRate, receiveValue.setValue]);
 
-	const reValue = Number(receiveValue.value);
+	const [exchangeBalance, receiveBalance] = useWalletBalances(
+		exchangeAsset,
+		receiveAsset
+	);
+
+	const onExchangeMaxRequest = useMemo(() => {
+		if (!exchangeBalance) return;
+		const setExchangeValue = exchangeValue.setValue;
+		return () => setExchangeValue(exchangeBalance.toBalance());
+	}, [exchangeBalance, exchangeValue.setValue]);
 
 	return (
 		<div {...props} css={styles.root}>
 			<div css={styles.formField}>
-				<label htmlFor="exchangeInput">You Send</label>
+				<label htmlFor="exchangeInput">From</label>
 				<TokenInput
-					onMaxValueRequest={
-						!!exchangeBalance
-							? () => exchangeValue.setValue(formatBalance(exchangeBalance))
-							: null
-					}
+					onMaxValueRequest={onExchangeMaxRequest}
 					selectedTokenId={exchangeToken.tokenId}
 					onTokenChange={exchangeToken.onTokenChange}
 					value={exchangeValue.value}
 					onValueChange={exchangeValue.onValueChange}
-					tokens={exchangeTokens}
+					tokens={exchangeAssets}
 					id="exchangeInput"
 					required
 					scale={4}
 					min={0.0001}
-					max={Number(exchangeBalance)}
+					max={exchangeBalance?.gt(0) ? exchangeBalance.toBalance() : null}
 				/>
 
-				{!!selectedAccount && (
+				{!!exchangeBalance && (
 					<div css={styles.tokenBalance}>
-						Balance:{" "}
-						<span>
-							{formatBalance(exchangeBalance !== null ? exchangeBalance : 0)}
-						</span>
+						Balance: <span>{exchangeBalance.toBalance()}</span>
 					</div>
 				)}
 			</div>
-			<div css={styles.formControl}>
-				<SwapButton onClick={onSwapButtonClick} vertical={true} type="button" />
+			<div css={styles.formControl(!!exchangeBalance)}>
+				<SwitchButton
+					onClick={onSwitchButtonClick}
+					vertical={true}
+					type="button"
+				/>
 			</div>
 			<div css={styles.formField}>
-				<label htmlFor="receiveInput">You Get</label>
+				<label htmlFor="receiveInput">To</label>
 				<TokenInput
 					selectedTokenId={receiveToken.tokenId}
 					onTokenChange={receiveToken.onTokenChange}
-					value={reValue ? formatBalance(reValue) : ""}
+					value={receiveValue.value}
 					onValueChange={receiveValue.onValueChange}
-					tokens={receiveTokens}
+					tokens={receiveAssets}
 					disabled={true}
 					id="receiveInput"
 				/>
-				{!!selectedAccount && (
+				{!!receiveBalance && (
 					<div css={styles.tokenBalance}>
-						Balance:{" "}
-						<span>
-							{formatBalance(exchangeBalance !== null ? receiveBalance : 0)}
-						</span>
+						Balance: <span>{receiveBalance.toBalance()}</span>
 					</div>
 				)}
 			</div>
@@ -143,31 +143,33 @@ export default SwapAssetsPair;
 const styles = {
 	root: css``,
 
-	formField: css`
+	formField: ({ palette }: Theme) => css`
 		margin-bottom: 1em;
 
 		label {
 			font-weight: bold;
-			font-size: 0.875em;
+			font-size: 14px;
 			text-transform: uppercase;
 			margin-bottom: 0.5em;
 			display: block;
+			color: ${palette.primary.main};
 		}
 	`,
 
-	formControl: css`
-		margin-top: 1em;
+	formControl: (isConnected: boolean) => css`
+		margin-bottom: 1em;
+		margin-top: ${isConnected ? "1em" : "2em"};
 		text-align: center;
 	`,
 
 	tokenBalance: ({ palette }: Theme) => css`
-		margin-top: 0.5em;
+		margin-top: 0.25em;
 		font-weight: 500;
 		color: ${palette.grey["700"]};
+		font-size: 14px;
 
 		span {
 			font-family: "Roboto Mono", monospace;
-			font-size: 14px;
 			font-weight: bold;
 		}
 	`,

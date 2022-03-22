@@ -5,7 +5,7 @@ import { Theme } from "@mui/material";
 
 const globalStyles = (
 	<GlobalStyles
-		styles={({ palette }: Theme) => css`
+		styles={({ palette, transitions, shadows }: Theme) => css`
 			html {
 				scroll-behavior: smooth;
 				-webkit-font-smoothing: antialiased;
@@ -15,6 +15,8 @@ const globalStyles = (
 			body {
 				font-size: 16px;
 				line-height: 1.25;
+				letter-spacing: 0;
+				color: ${palette.text.primary};
 			}
 
 			input {
@@ -60,34 +62,59 @@ const globalStyles = (
 					padding: 0;
 				}
 
-				.MuiTextField-root {
-					.MuiOutlinedInput-root {
-						border-radius: 4px;
-						line-height: 1;
+				.MuiOutlinedInput-root {
+					border-radius: 4px;
+					line-height: 1;
 
-						&:hover,
-						&:active,
-						&.Mui-focused {
-							.MuiOutlinedInput-notchedOutline {
-								border-color: ${palette.primary.main};
-								border-width: 1px;
-							}
-						}
-
-						.MuiOutlinedInput-input {
-							padding: 0.75em;
-							font-family: "Roboto Mono", monospace;
-						}
-
+					&:hover,
+					&:active,
+					&.Mui-focused {
 						.MuiOutlinedInput-notchedOutline {
-							border-color: ${palette.text.secondary};
+							border-color: ${palette.primary.main};
+							border-width: 1px;
 						}
+					}
+
+					.MuiOutlinedInput-input {
+						padding: 0.78125em;
+					}
+
+					.MuiOutlinedInput-input:not(.MuiSelect-select) {
+						font-family: "Roboto Mono", monospace;
+					}
+
+					.MuiOutlinedInput-notchedOutline {
+						border-color: ${palette.text.secondary};
+					}
+
+					.MuiSelect-select[aria-expanded="true"] {
+						color: ${palette.primary.main};
+
+						.MuiSvgIcon-root {
+							color: ${palette.primary.main};
+						}
+					}
+
+					.MuiList-root {
+						padding: 0;
+					}
+
+					.MuiSvgIcon-root {
+						transition: transform ${transitions.duration.shortest}ms
+							${transitions.easing.easeInOut};
+					}
+
+					.MuiSelect-iconOpen {
+						color: ${palette.primary.main};
 					}
 				}
 			}
 
-			.MuiTooltip-popper {
-				font-weight: normal;
+			#__next ~ .MuiTooltip-popper {
+				> div {
+					font-weight: 400 !important;
+				}
+
 				.MuiTooltip-tooltip {
 					border-radius: 4px;
 					background-color: white;

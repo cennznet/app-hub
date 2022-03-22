@@ -54,7 +54,7 @@ const Withdraw: React.FC<{
 			(balance) => balance.symbol === token.symbol
 		);
 
-		setEnoughBalance(foundToken?.value >= Number(amount));
+		setEnoughBalance(foundToken?.value.gte(Number(amount)));
 	}, [token, balances, api, amount, setEnoughBalance]);
 
 	const resetModal = () => {

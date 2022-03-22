@@ -12,12 +12,14 @@ declare module "@mui/material/styles/createPalette" {
 	}
 
 	export interface SimplePaletteColorOptions {
+		default?: string;
 		swap?: string;
 		pool?: string;
 		bridge?: string;
 	}
 
 	export interface PaletteColor {
+		default?: string;
 		swap?: string;
 		pool?: string;
 		bridge?: string;
@@ -34,25 +36,25 @@ declare module "@mui/material/styles/createPalette" {
 const config = {
 	palette: {
 		primary: {
-			main: "#1130FF",
+			default: "#1130FF",
 			swap: "#1130FF",
 			pool: "#9847FF",
 			bridge: "#2DC8CB",
 		},
 		secondary: {
-			main: "#B3BDFF",
+			default: "#B3BDFF",
 			swap: "#B3BDFF",
 			pool: "#E4D1FF",
 			bridge: "#B1EAEB",
 		},
 		info: {
-			main: "#E4E7FF",
+			default: "#E4E7FF",
 			swap: "#E4E7FF",
 			pool: "#F5ECFF",
 			bridge: "#E8F8F9",
 		},
 		background: {
-			main: "rgba(228, 231, 255, 0.4)",
+			default: "rgba(228, 231, 255, 0.4)",
 			swap: "rgba(228, 231, 255, 0.4)",
 			pool: "rgba(245, 236, 255, 0.4)",
 			bridge: "rgba(232, 248, 249, 0.4)",
@@ -60,11 +62,12 @@ const config = {
 		text: {
 			primary: "#020202",
 			secondary: "#979797",
-			highlight: "#1130FF",
 			disabled: "rgba(151, 151, 151, 0.25)",
 		},
 	},
 	typography: {
+		htmlFontSize: 16,
+		fontSize: 14,
 		fontFamily: ["Roboto", "sans-serif"].join(","),
 	},
 	shape: {
@@ -93,25 +96,27 @@ const ThemeProvider: FC<{}> = (props) => {
 				...config.palette,
 				primary: {
 					...config.palette.primary,
-					main: config.palette.primary[section] || config.palette.primary.swap,
+					main:
+						config.palette.primary[section] || config.palette.primary.default,
 				},
 
 				secondary: {
 					...config.palette.secondary,
 					main:
-						config.palette.secondary[section] || config.palette.secondary.swap,
+						config.palette.secondary[section] ||
+						config.palette.secondary.default,
 				},
 
 				info: {
 					...config.palette.info,
-					main: config.palette.info[section] || config.palette.info.swap,
+					main: config.palette.info[section] || config.palette.info.default,
 				},
 
 				background: {
 					...config.palette.background,
 					main:
 						config.palette.background[section] ||
-						config.palette.background.swap,
+						config.palette.background.default,
 				},
 			},
 			shadows: [

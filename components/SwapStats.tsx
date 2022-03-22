@@ -1,22 +1,21 @@
 import { useEffect, VFC } from "react";
 import { IntrinsicElements } from "@/types";
 import { LinearProgress, Tooltip, Theme } from "@mui/material";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import { css } from "@emotion/react";
-import { formatBalance } from "@/utils";
+import { Balance } from "@/utils";
 import { useSwap } from "@/providers/SwapProvider";
 import { useSwapExchangeRate, useSwapGasFee } from "@/hooks";
 
 interface SwapStatsProps {}
 
-const SwapStats: VFC<IntrinsicElements["div"] & SwapStatsProps> = ({
-	...props
-}) => {
+const SwapStats: VFC<IntrinsicElements["div"] & SwapStatsProps> = (props) => {
 	const { exchangeValue, exchangeAsset, receiveAsset, slippage, txStatus } =
 		useSwap();
 
-	const [exchangeRate, updateExchangeRate] = useSwapExchangeRate();
-	const [gasFee, gasAsset, updateGasFee] = useSwapGasFee();
+	const { exchangeRate, updatingExchangeRate, updateExchangeRate } =
+		useSwapExchangeRate("1");
+	const { gasFee, updatingGasFee, updateGasFee } = useSwapGasFee();
 
 	useEffect(() => {
 		if (txStatus?.status !== "success") return;
@@ -27,34 +26,35 @@ const SwapStats: VFC<IntrinsicElements["div"] & SwapStatsProps> = ({
 	return (
 		<div {...props} css={styles.root}>
 			<LinearProgress
-				css={[styles.formInfoProgress(!!exchangeRate && !!gasFee)]}
+				css={[styles.formInfoProgress(updatingGasFee || updatingExchangeRate)]}
 			/>
 			<ul>
 				<li>
-					<strong>Exchange Rate:</strong>{" "}
-					{!!exchangeRate && (
+					<strong>Gas Fee:</strong>{" "}
+					{gasFee?.gt(0) && (
 						<span>
-							1 {exchangeAsset.symbol} &asymp; {formatBalance(exchangeRate)}{" "}
+							&asymp; {gasFee.toBalance()} {gasFee.getSymbol()}
+						</span>
+					)}
+					{!gasFee?.gt(0) && <span>&asymp;</span>}
+				</li>
+				<li>
+					<strong>Exchange Rate:</strong>{" "}
+					{exchangeRate !== null && (
+						<span>
+							1 {exchangeAsset.symbol} &asymp; {exchangeRate.div(1).toBalance()}{" "}
 							{receiveAsset.symbol}
 						</span>
 					)}
-					{!exchangeRate && <span>&asymp;</span>}
+					{exchangeRate === null && <span>&asymp;</span>}
 				</li>
-				<li>
-					<strong>Gas Fee:</strong>{" "}
-					{!!gasFee && (
-						<span>
-							&asymp; {gasFee} {gasAsset.symbol}
-						</span>
-					)}
-					{!gasFee && <span>&asymp;</span>}
-				</li>
+
 				<li>
 					<strong>Slippage:</strong>{" "}
 					<span>
-						{formatBalance(
-							Number(exchangeValue.value) * (1 + Number(slippage) / 100)
-						)}{" "}
+						{Balance.fromInput(exchangeValue?.value, exchangeAsset)
+							.increase(slippage)
+							.toBalance()}{" "}
 						{exchangeAsset.symbol}
 					</span>
 					<Tooltip
@@ -66,15 +66,16 @@ const SwapStats: VFC<IntrinsicElements["div"] & SwapStatsProps> = ({
 						}
 						title={
 							<div>
-								If the amount of {exchangeAsset.symbol} used for swapping is
-								greater than Slippage value, the transaction will not proceed.
-								You can update the Slippage percentage under Settings.
+								If the amount of <strong>{exchangeAsset.symbol}</strong> used
+								for swapping is greater than Slippage value, the transaction
+								will not proceed. You can update the Slippage percentage under
+								Settings.
 							</div>
 						}
 						arrow
 						placement="right"
 					>
-						<InfoOutlinedIcon fontSize={"0.5em" as any} />
+						<HelpOutlineIcon fontSize={"0.5em" as any} />
 					</Tooltip>
 				</li>
 			</ul>
@@ -108,13 +109,14 @@ const styles = {
 			margin-bottom: 0.5em;
 			display: flex;
 			align-items: center;
+			font-size: 14px;
 			&:last-child {
 				margin-bottom: 0;
 			}
 
 			strong {
 				margin-right: 0.5em;
-				color: ${palette.text.highlight};
+				color: ${palette.primary.main};
 				display: flex;
 				align-items: center;
 			}
@@ -134,10 +136,10 @@ const styles = {
 		}
 	`,
 
-	formInfoProgress: (hide: boolean) => css`
+	formInfoProgress: (show: boolean) => css`
 		width: 25px;
 		border-radius: 10px;
-		opacity: ${hide ? 0 : 0.5};
+		opacity: ${show ? 0.5 : 0};
 		position: absolute;
 		top: 1em;
 		right: 1em;

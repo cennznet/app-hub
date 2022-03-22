@@ -2,7 +2,6 @@ import { useCallback, FC, useRef, useEffect, useState } from "react";
 import { css } from "@emotion/react";
 import { Modal, Divider, Theme, LinearProgress } from "@mui/material";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
-import { formatBalance } from "@/utils";
 import AccountIdenticon from "@/components/shared/AccountIdenticon";
 import { useCENNZExtension } from "@/providers/CENNZExtensionProvider";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
@@ -28,11 +27,15 @@ const WalletModal: FC<{
 
 	useEffect(() => {
 		if (!modalOpen) return;
-		const id = setTimeout(() => {
+		const setListHeight = () => {
 			const balanceList = ref.current;
+			if (!balanceList || !balances?.length) return setBalanceListHeight(0);
 			const rect = balanceList.getBoundingClientRect();
 			setBalanceListHeight(rect.height);
-		}, 500);
+		};
+
+		const id = setTimeout(setListHeight, 500);
+		setListHeight();
 
 		return () => clearTimeout(id);
 	}, [balances, modalOpen]);
@@ -124,7 +127,7 @@ const WalletModal: FC<{
 									{balances
 										.filter(
 											(asset) =>
-												asset.value > 0 ||
+												asset.value.gt(0) ||
 												[CENNZ_ASSET_ID, CPAY_ASSET_ID].includes(asset.assetId)
 										)
 										.map((asset) => {
@@ -140,7 +143,7 @@ const WalletModal: FC<{
 															/>
 														)}
 													</figure>
-													<span>{formatBalance(asset.value)}</span>
+													<span>{asset.value.toBalance()}</span>
 													<label>{asset.symbol}</label>
 												</li>
 											);
@@ -189,7 +192,7 @@ export const styles = {
 	`,
 
 	accountName: ({ palette }: any) => css`
-		color: ${palette.primary.main};
+		color: ${palette.primary.default};
 		font-weight: bold;
 		font-size: 24px;
 		text-transform: uppercase;
@@ -206,7 +209,7 @@ export const styles = {
 		font-size: 14px;
 		position: relative;
 		margin-top: 0.25em;
-		color: ${palette.primary.main};
+		color: ${palette.primary.default};
 	`,
 
 	swtichAccountSelect: css`
@@ -248,7 +251,7 @@ export const styles = {
 
 	accountBalancesProgress:
 		(show: boolean) =>
-		({ transitions }: Theme) =>
+		({ transitions, palette }: Theme) =>
 			css`
 				height: 2px;
 				border-radius: 2px;
@@ -259,6 +262,10 @@ export const styles = {
 					${transitions.easing.easeInOut};
 				margin-bottom: -2px;
 				transition-delay: ${show ? transitions.duration.standard : 0}ms;
+				background-color: ${palette.secondary.default};
+				.MuiLinearProgress-bar {
+					background-color: ${palette.primary.default};
+				}
 			`,
 
 	balanceHeading: css`
@@ -317,13 +324,13 @@ export const styles = {
 
 	walletActions: ({ palette }) => css`
 		padding: 1em 1.5em 1.5em;
-		color: rgba(59, 59, 59, 0.75);
+		color: ${palette.grey["700"]};
 
 		> span {
 			transition: color 0.2s;
 			cursor: pointer;
 			&:hover {
-				color: ${palette.primary.main};
+				color: ${palette.primary.default};
 			}
 		}
 	`,

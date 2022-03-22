@@ -15,6 +15,8 @@ describe("fetchPoolAssets", () => {
 		const assets = await fetchPoolAssets(api);
 
 		const cpay = assets.find(({ symbol }) => symbol === "CPAY");
-		expect(cpay).toBeUndefined();
+		const cennz = assets.find(({ symbol }) => symbol === "CENNZ");
+		expect(cpay).toBeDefined();
+		expect(cennz).toBeDefined();
 	});
 });

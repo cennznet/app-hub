@@ -18,7 +18,7 @@ import {
 import { useBridge } from "@/providers/BridgeProvider";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
-import { PoolAction } from "@/providers/PoolProvider";
+import { LegacyPoolAction as PoolAction } from "@/providers/PoolProvider";
 
 const TokenPicker: React.FC<{
 	assets?: Asset[];
@@ -124,8 +124,8 @@ const TokenPicker: React.FC<{
 		const foundTokenBalance = balances.find(
 			(asset) => asset.symbol === tokens[selectedTokenIdx]?.symbol
 		);
-		setSelectedTokenBalance(foundTokenBalance?.value);
-		setDisplayTokenBalance(formatBalance(foundTokenBalance?.value));
+		setSelectedTokenBalance(foundTokenBalance?.value.toNumber());
+		setDisplayTokenBalance(formatBalance(foundTokenBalance?.value.toNumber()));
 	}, [balances, selectedTokenIdx, tokens, Account, toChain]);
 
 	const getBalanceDisplayText = () => {

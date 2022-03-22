@@ -1,17 +1,17 @@
 import {
-	FC,
 	MutableRefObject,
 	InputHTMLAttributes,
 	useCallback,
 	useMemo,
 	useEffect,
+	forwardRef,
 } from "react";
-import { css } from "@emotion/react";
-import { Select, SelectChangeEvent, MenuItem, Theme } from "@mui/material";
+import { css, SerializedStyles } from "@emotion/react";
+import { SelectChangeEvent, MenuItem, Theme } from "@mui/material";
 import { CENNZAsset, EthereumToken } from "@/types";
 import getTokenLogo from "@/utils/getTokenLogo";
-import ExpandMore from "@mui/icons-material/ExpandMore";
 import { useIMask, IMask } from "react-imask";
+import SelectInput from "@/components/shared/SelectInput";
 
 interface TokenInputProps {
 	tokens: Partial<CENNZAsset & EthereumToken>[];
@@ -19,106 +19,122 @@ interface TokenInputProps {
 	onTokenChange: (event: SelectChangeEvent) => void;
 	onMaxValueRequest?: () => void;
 	onValueChange: (value: string) => void;
+	css?: SerializedStyles;
 }
 
-const TokenInput: FC<
+const TokenInput = forwardRef<
+	HTMLInputElement,
 	Omit<InputHTMLAttributes<HTMLInputElement>, "onChange"> &
 		Pick<IMask.MaskedNumberOptions, "scale" | "padFractionalZeros"> &
 		TokenInputProps
-> = ({
-	selectedTokenId,
-	onTokenChange,
-	tokens,
-	onMaxValueRequest,
-	placeholder = "0",
-	onValueChange,
-	scale,
-	padFractionalZeros,
-	disabled,
-	value,
-	...props
-}) => {
-	const imaskOptions = useMemo(
-		() => ({
+>(
+	(
+		{
+			selectedTokenId,
+			onTokenChange,
+			tokens,
+			onMaxValueRequest,
+			placeholder = "0.0",
+			onValueChange,
 			scale,
 			padFractionalZeros,
-			radix: ".",
-			mask: Number,
-		}),
-		[padFractionalZeros, scale]
-	);
-
-	const onIMaskAccept = useCallback(
-		(value) => {
-			onValueChange?.(value);
+			disabled,
+			value,
+			css,
+			children,
+			...props
 		},
-		[onValueChange]
-	);
+		ref
+	) => {
+		const imaskOptions = useMemo(
+			() => ({
+				scale,
+				padFractionalZeros,
+				radix: ".",
+				mask: Number,
+			}),
+			[padFractionalZeros, scale]
+		);
 
-	const { ref: inputRef, setValue } = useIMask(imaskOptions, {
-		onAccept: onIMaskAccept,
-	});
+		const onIMaskAccept = useCallback(
+			(value) => {
+				onValueChange?.(value);
+			},
+			[onValueChange]
+		);
 
-	useEffect(() => {
-		setValue?.(value as string);
-	}, [value, setValue]);
-	return (
-		<div css={[styles.root, !disabled && styles.rootHover]}>
-			<Select
-				css={styles.select}
-				value={selectedTokenId}
-				onChange={onTokenChange}
-				MenuProps={{ sx: styles.selectDropdown as any }}
-				IconComponent={ExpandMore}
-				autoWidth={false}
-			>
-				{!!tokens?.length &&
-					tokens.map((coin) => {
-						const { symbol, assetId, address } = coin;
-						const logo = getTokenLogo(symbol);
-						const value = address || assetId;
-						return (
-							<MenuItem key={value} value={value} css={styles.selectItem}>
-								{logo && <img src={logo.src} alt={symbol} />}
-								<span>{coin.symbol}</span>
-							</MenuItem>
-						);
-					})}
-			</Select>
-			{onMaxValueRequest && (
-				<div css={styles.maxButton} onClick={onMaxValueRequest}>
-					Max
-				</div>
-			)}
-			{!disabled && (
-				<input
-					{...props}
-					ref={inputRef as MutableRefObject<HTMLInputElement>}
-					css={styles.input}
-					type="number"
-					autoComplete="off"
-					autoCorrect="off"
-					step="any"
-					placeholder={placeholder}
-				/>
-			)}
+		const { ref: inputRef, setValue } = useIMask(imaskOptions, {
+			onAccept: onIMaskAccept,
+		});
 
-			{disabled && (
-				<input
-					{...props}
-					disabled={true}
-					css={styles.input}
-					type="text"
-					autoComplete="off"
-					autoCorrect="off"
-					placeholder={placeholder}
-					value={value}
-					onChange={(event) => onValueChange(event.target.value)}
-				/>
-			)}
-		</div>
-	);
-};
+		useEffect(() => {
+			setValue?.((value === "0" ? "" : value) as string);
+		}, [value, setValue]);
+		return (
+			<div css={[styles.root, !disabled && styles.rootHover, css]}>
+				<SelectInput
+					css={styles.select}
+					value={selectedTokenId}
+					onChange={onTokenChange}
+					inputProps={{ sx: styles.selectItem as any }}
+					readOnly={tokens?.length <= 1}
+				>
+					{!!tokens?.length &&
+						tokens.map((coin) => {
+							const { symbol, assetId, address } = coin;
+							const logo = getTokenLogo(symbol);
+							const value = address || assetId;
+							return (
+								<MenuItem key={value} value={value} css={styles.selectItem}>
+									{logo && <img src={logo.src} alt={symbol} />}
+									<span>{coin.symbol}</span>
+								</MenuItem>
+							);
+						})}
+				</SelectInput>
+				{onMaxValueRequest && (
+					<div css={styles.maxButton} onClick={onMaxValueRequest}>
+						Max
+					</div>
+				)}
+				{!disabled && (
+					<input
+						{...props}
+						ref={inputRef as MutableRefObject<HTMLInputElement>}
+						css={styles.input}
+						type="number"
+						autoComplete="off"
+						autoCorrect="off"
+						step="any"
+						placeholder={placeholder}
+					/>
+				)}
+
+				{disabled && (
+					<>
+						<input
+							{...props}
+							css={styles.input}
+							type="text"
+							autoComplete="off"
+							autoCorrect="off"
+							placeholder={placeholder}
+							value={value}
+							ref={ref}
+							onChange={(event) => onValueChange(event.target.value)}
+						/>
+
+						<div css={styles.inputCurtain}></div>
+					</>
+				)}
+
+				{children}
+			</div>
+		);
+	}
+);
+
+TokenInput.displayName = "TokenInput";
 
 export default TokenInput;
 
@@ -131,28 +147,10 @@ export const styles = {
 		display: flex;
 		align-items: center;
 		transition: border-color 0.2s;
+		position: relative;
 
 		.MuiOutlinedInput-notchedOutline {
 			border: none;
-		}
-
-		.MuiSelect-select {
-			display: flex;
-			align-items: center;
-			padding-top: 0.75em;
-			padding-bottom: 0.75em;
-			> img {
-				width: 2em;
-				height: 2em;
-				object-fit: contain;
-				margin-right: 0.5em;
-			}
-
-			> span {
-				font-size: 0.875em;
-				font-weight: bold;
-				flex: 1;
-			}
 		}
 	`,
 
@@ -163,49 +161,13 @@ export const styles = {
 		}
 	`,
 
-	select: ({ palette, transitions }: Theme) => css`
-		border: none;
+	select: css`
 		min-width: 135px;
-
-		&:hover,
-		& .MuiSelect-select[aria-expanded="true"] {
-			color: ${palette.text.highlight};
-
-			.MuiSvgIcon-root {
-				color: ${palette.text.highlight};
-			}
-		}
-
-		.MuiList-root {
-			padding: 0;
-		}
-
-		.MuiSvgIcon-root {
-			transition: transform ${transitions.duration.shortest}ms
-				${transitions.easing.easeInOut};
-		}
-
-		.MuiSelect-iconOpen {
-			color: ${palette.primary.main};
-		}
-	`,
-
-	selectDropdown: ({ palette, shadows }: Theme) => css`
-		.MuiPaper-root {
-			border-radius: 4px;
-			overflow: hidden;
-			transform: translate(-1px, 5px) !important;
-			box-shadow: ${shadows[1]};
-			border: 1px solid ${palette.secondary.main};
-		}
-
-		.MuiMenu-list {
-			padding: 0;
-		}
 	`,
 
 	selectItem: css`
 		display: flex;
+		align-items: center;
 		padding-top: 0.75em;
 		padding-bottom: 0.75em;
 
@@ -217,7 +179,7 @@ export const styles = {
 		}
 
 		> span {
-			font-size: 0.875em;
+			font-size: 14px;
 			font-weight: bold;
 			flex: 1;
 		}
@@ -257,12 +219,20 @@ export const styles = {
 		text-transform: uppercase;
 		padding: 0 0.5em;
 		cursor: pointer;
-		font-size: 0.875em;
+		font-size: 14px;
 		color: ${palette.text.primary};
 		transition: color 0.2s;
 
 		&:hover {
 			color: ${palette.primary.main};
 		}
+	`,
+
+	inputCurtain: css`
+		position: absolute;
+		inset: 0 0 0 135px;
+		background-color: red;
+		opacity: 0;
+		cursor: not-allowed;
 	`,
 };

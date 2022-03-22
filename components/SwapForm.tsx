@@ -6,7 +6,7 @@ import SubmitButton from "@/components/shared/SubmitButton";
 import { useSwap } from "@/providers/SwapProvider";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
-import { getBuyAssetExtrinsic, signAndSendTx, formatBalance } from "@/utils";
+import { Balance, getBuyAssetExtrinsic, signAndSendTx } from "@/utils";
 import { UnwrapPromise } from "@/types";
 
 interface SwapFormProps {}
@@ -24,6 +24,9 @@ const SwapForm: FC<IntrinsicElements["form"] & SwapFormProps> = ({
 		receiveValue: { value: reValue },
 		slippage,
 		setTxStatus,
+		setSuccessStatus,
+		setProgressStatus,
+		setFailStatus,
 	} = useSwap();
 	const { selectedAccount, wallet, updateBalances } = useCENNZWallet();
 
@@ -32,60 +35,35 @@ const SwapForm: FC<IntrinsicElements["form"] & SwapFormProps> = ({
 			event.preventDefault();
 
 			if (!api) return;
+			setProgressStatus();
 
 			const extrinsic = getBuyAssetExtrinsic(
 				api,
-				exchangeAsset,
-				Number(exValue),
-				receiveAsset,
-				Number(reValue),
+				exchangeAsset.assetId,
+				Balance.fromInput(exValue, exchangeAsset),
+				receiveAsset.assetId,
+				Balance.fromInput(reValue, receiveAsset),
 				Number(slippage)
 			);
-
-			setTxStatus({
-				status: "in-progress",
-				message:
-					"Please sign the transaction when prompted and wait until it is finished.",
-			});
 
 			let status: UnwrapPromise<ReturnType<typeof signAndSendTx>>;
 			try {
 				status = await signAndSendTx(
+					api,
 					extrinsic,
 					selectedAccount.address,
 					wallet.signer
 				);
 			} catch (error) {
 				console.info(error);
-				return setTxStatus({
-					status: "fail",
-					message: `An error${
-						error?.code ? ` (#${error.code})` : ""
-					} has occurred while processing your transaction.`,
-				});
+				return setFailStatus(error?.code);
 			}
 
 			if (status === "cancelled") return setTxStatus(null);
 
-			setTxStatus({
-				status: "success",
-				message: (
-					<div>
-						You successfully swapped{" "}
-						<pre css={styles.highlightText}>
-							{formatBalance(Number(exValue))} {exchangeAsset.symbol}
-						</pre>{" "}
-						for{" "}
-						<pre css={styles.highlightText}>
-							{formatBalance(Number(reValue))} {receiveAsset.symbol}
-						</pre>
-						.
-					</div>
-				),
-			});
-
+			setSuccessStatus();
 			setExValue("");
-			await updateBalances();
+			updateBalances();
 		},
 		[
 			api,
@@ -99,6 +77,9 @@ const SwapForm: FC<IntrinsicElements["form"] & SwapFormProps> = ({
 			setTxStatus,
 			updateBalances,
 			setExValue,
+			setSuccessStatus,
+			setFailStatus,
+			setProgressStatus,
 		]
 	);
 
@@ -128,9 +109,5 @@ const styles = {
 		border-top: 1px solid ${palette.divider};
 		padding-top: 2em;
 		margin: 2em -2.5em 0;
-	`,
-
-	highlightText: ({ palette }: Theme) => css`
-		color: ${palette.text.highlight};
 	`,
 };

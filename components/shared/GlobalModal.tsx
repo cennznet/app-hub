@@ -68,7 +68,7 @@ export const styles = {
 	`,
 
 	modalTitle: ({ palette }: Theme) => css`
-		color: ${palette.text.highlight};
+		color: ${palette.primary.default};
 	`,
 
 	modalActions: ({ palette }: Theme) => css`

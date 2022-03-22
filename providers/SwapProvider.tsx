@@ -1,44 +1,46 @@
 import {
 	createContext,
-	useEffect,
 	useContext,
 	useState,
 	SetStateAction,
 	Dispatch,
 	FC,
 	ReactElement,
+	useCallback,
 } from "react";
 import { CENNZAsset } from "@/types";
-import { fetchSwapAssets } from "@/utils";
+import { fetchSwapAssets, formatBalance } from "@/utils";
 import { useTokensFetcher } from "@/hooks";
 import { CENNZ_ASSET_ID, CPAY_ASSET_ID } from "@/constants";
-import { useTokenInput, TokenInputHookType } from "@/hooks";
-import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
+import { useTokenInput, TokenInputHook } from "@/hooks";
 
 type CENNZAssetId = CENNZAsset["assetId"];
 
 interface TxStatus {
 	status: "in-progress" | "success" | "fail";
+	title: string;
 	message: string | ReactElement;
 }
 
 interface SwapContextType {
-	exchangeTokens: CENNZAsset[];
-	receiveTokens: CENNZAsset[];
+	exchangeAssets: CENNZAsset[];
+	receiveAssets: CENNZAsset[];
 	cpayAsset: CENNZAsset;
-	setReceiveTokens: Dispatch<SetStateAction<CENNZAsset[]>>;
-	exchangeToken: TokenInputHookType<CENNZAssetId>[0];
-	exchangeValue: TokenInputHookType<CENNZAssetId>[1];
-	receiveToken: TokenInputHookType<CENNZAssetId>[0];
-	receiveValue: TokenInputHookType<CENNZAssetId>[1];
+	setReceiveAssets: Dispatch<SetStateAction<CENNZAsset[]>>;
+	exchangeToken: TokenInputHook<CENNZAssetId>[0];
+	exchangeValue: TokenInputHook<CENNZAssetId>[1];
+	receiveToken: TokenInputHook<CENNZAssetId>[0];
+	receiveValue: TokenInputHook<CENNZAssetId>[1];
 	exchangeAsset: CENNZAsset;
 	receiveAsset: CENNZAsset;
-	exchangeBalance: number;
-	receiveBalance: number;
 	slippage: string;
 	setSlippage: Dispatch<SetStateAction<string>>;
 	txStatus: TxStatus;
 	setTxStatus: Dispatch<SetStateAction<TxStatus>>;
+
+	setProgressStatus: () => void;
+	setSuccessStatus: () => void;
+	setFailStatus: (errorCode?: string) => void;
 }
 
 const SwapContext = createContext<SwapContextType>({} as SwapContextType);
@@ -48,64 +50,107 @@ interface SwapProviderProps {
 }
 
 const SwapProvider: FC<SwapProviderProps> = ({ supportedAssets, children }) => {
-	const { balances } = useCENNZWallet();
-	const [exchangeTokens] = useTokensFetcher<CENNZAsset[]>(
+	const [exchangeAssets] = useTokensFetcher<CENNZAsset[]>(
 		fetchSwapAssets,
 		supportedAssets
 	);
-	const [receiveTokens, setReceiveTokens] =
-		useState<CENNZAsset[]>(exchangeTokens);
+	const [receiveAssets, setReceiveAssets] =
+		useState<CENNZAsset[]>(exchangeAssets);
 
-	const cennzAsset = exchangeTokens?.find(
-		(token) => token.assetId === CENNZ_ASSET_ID
+	const cennzAsset = exchangeAssets?.find(
+		(asset) => asset.assetId === CENNZ_ASSET_ID
 	);
-	const cpayAsset = exchangeTokens?.find(
-		(token) => token.assetId === CPAY_ASSET_ID
+	const cpayAsset = exchangeAssets?.find(
+		(asset) => asset.assetId === CPAY_ASSET_ID
 	);
 
 	const [exchangeToken, exchangeValue] = useTokenInput(cennzAsset.assetId);
 	const [receiveToken, receiveValue] = useTokenInput(cpayAsset.assetId);
 
-	const exchangeAsset = exchangeTokens?.find(
-		(token) => token.assetId === exchangeToken.tokenId
+	const exchangeAsset = exchangeAssets?.find(
+		(asset) => asset.assetId === exchangeToken.tokenId
 	);
-	const receiveAsset = exchangeTokens?.find(
-		(token) => token.assetId === receiveToken.tokenId
+	const receiveAsset = exchangeAssets?.find(
+		(asset) => asset.assetId === receiveToken.tokenId
 	);
-
-	const [exchangeBalance, setExchangeBalance] = useState<number>(null);
-	const [receiveBalance, setReceiveBalance] = useState<number>(null);
 
 	const [slippage, setSlippage] = useState<string>("5");
-
 	const [txStatus, setTxStatus] = useState<TxStatus>(null);
 
-	// Update asset balances for both send and receive assets
-	useEffect(() => {
-		if (!balances?.length) {
-			setExchangeBalance(null);
-			setReceiveBalance(null);
-			return;
-		}
+	const setProgressStatus = useCallback(() => {
+		setTxStatus({
+			status: "in-progress",
+			title: "Transaction In Progress",
+			message: (
+				<div>
+					Please sign the transaction when prompted and wait until it is
+					completed.
+				</div>
+			),
+		});
+	}, []);
 
-		const sendBalance = balances.find(
-			(balance) => balance.assetId === exchangeToken.tokenId
-		);
+	const setFailStatus = useCallback((errorCode?: string) => {
+		setTxStatus({
+			status: "fail",
+			title: "Transaction Failed",
+			message: (
+				<div>
+					An error has occurred while processing your transaction.
+					{!!errorCode && (
+						<>
+							<br />
+							<pre>
+								<small>#{errorCode}</small>
+							</pre>
+						</>
+					)}
+				</div>
+			),
+		});
+	}, []);
 
-		const receiveBalance = balances.find(
-			(balance) => balance.assetId === receiveToken.tokenId
-		);
+	const setSuccessStatus = useCallback(() => {
+		const exValue = formatBalance(Number(exchangeValue.value));
+		const exSymbol = exchangeAsset.symbol;
 
-		setExchangeBalance(sendBalance.value);
-		setReceiveBalance(receiveBalance.value);
-	}, [balances, exchangeToken.tokenId, receiveToken.tokenId]);
+		const reValue = formatBalance(Number(receiveValue.value));
+		const reSymbol = receiveAsset.symbol;
+
+		setTxStatus({
+			status: "success",
+			title: "Transaction Completed",
+			message: (
+				<div>
+					You successfully swapped{" "}
+					<pre>
+						<em>
+							{exValue} {exSymbol}
+						</em>
+					</pre>{" "}
+					for{" "}
+					<pre>
+						<em>
+							{reValue} {reSymbol}
+						</em>
+					</pre>
+					.
+				</div>
+			),
+		});
+	}, [
+		exchangeValue.value,
+		exchangeAsset.symbol,
+		receiveValue.value,
+		receiveAsset.symbol,
+	]);
 
 	return (
 		<SwapContext.Provider
 			value={{
-				exchangeTokens,
-				receiveTokens,
-				setReceiveTokens,
+				exchangeAssets,
+				receiveAssets,
+				setReceiveAssets,
 				exchangeToken,
 				exchangeValue,
 				receiveToken,
@@ -113,12 +158,13 @@ const SwapProvider: FC<SwapProviderProps> = ({ supportedAssets, children }) => {
 				exchangeAsset,
 				receiveAsset,
 				cpayAsset,
-				exchangeBalance,
-				receiveBalance,
 				slippage,
 				setSlippage,
 				txStatus,
 				setTxStatus,
+				setProgressStatus,
+				setSuccessStatus,
+				setFailStatus,
 			}}
 		>
 			{children}

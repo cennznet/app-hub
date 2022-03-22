@@ -1,18 +1,18 @@
 import { VFC } from "react";
 import { IntrinsicElements } from "@/types";
 import { css } from "@emotion/react";
-import { useSwap } from "@/providers/SwapProvider";
+import { usePool } from "@/providers/PoolProvider";
 import { Theme, CircularProgress } from "@mui/material";
 import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
 import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
 import StandardButton from "@/components/shared/StandardButton";
 
-interface SwapProgressProps {}
+interface PoolProgressProps {}
 
-const SwapProgress: VFC<IntrinsicElements["div"] & SwapProgressProps> = (
+const PoolProgress: VFC<IntrinsicElements["div"] & PoolProgressProps> = (
 	props
 ) => {
-	const { txStatus, setTxStatus } = useSwap();
+	const { txStatus, setTxStatus } = usePool();
 
 	return (
 		<div {...props} css={styles.root(!!txStatus)}>
@@ -49,7 +49,7 @@ const SwapProgress: VFC<IntrinsicElements["div"] & SwapProgressProps> = (
 	);
 };
 
-export default SwapProgress;
+export default PoolProgress;
 
 const styles = {
 	root:

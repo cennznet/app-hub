@@ -1,57 +1,43 @@
 import { Api } from "@cennznet/api";
 import { CENNZAsset } from "@/types";
-import fetchSwapAssets from "@/utils/fetchSwapAssets";
-import { css } from "@emotion/react";
-import { Theme } from "@mui/material";
+import fetchPoolAssets from "@/utils/fetchPoolAssets";
 import { API_URL } from "@/constants";
 import generateGlobalProps from "@/utils/generateGlobalProps";
+import MainPanel from "@/components/MainPanel";
+import PoolProvider from "@/providers/PoolProvider";
+import { VFC } from "react";
+import PoolForm from "@/components/PoolForm";
+import PoolActionsPair from "@/components/PoolActionsPair";
+import PoolAssetsPair from "@/components/PoolAssetsPair";
+import PoolStats from "@/components/PoolStats";
+import PoolSettings from "@/components/PoolSettings";
+import PoolProgress from "@/components/PoolProgress";
 
 export async function getStaticProps() {
 	const api = await Api.create({ provider: API_URL });
 
 	return {
 		props: {
-			supportedAssets: await fetchSwapAssets(api),
+			supportedAssets: await fetchPoolAssets(api),
 			...(await generateGlobalProps("pool")),
 		},
 	};
 }
 
-const Pool: React.FC<{ supportedAssets: CENNZAsset[] }> = ({
-	supportedAssets,
-}) => {
+const Pool: VFC<{ supportedAssets: CENNZAsset[] }> = ({ supportedAssets }) => {
 	return (
-		<div css={styles.root}>
-			<h1 css={styles.heading}>SWAP</h1>
-		</div>
+		<PoolProvider supportedAssets={supportedAssets}>
+			<MainPanel defaultTitle="Pool">
+				<PoolForm>
+					<PoolActionsPair />
+					<PoolAssetsPair />
+					<PoolStats />
+					<PoolSettings />
+				</PoolForm>
+				<PoolProgress />
+			</MainPanel>
+		</PoolProvider>
 	);
 };
 
 export default Pool;
-
-const styles = {
-	root: ({ shadows }: Theme) => css`
-		display: flex;
-		flex-direction: column;
-		justify-content: flex-start;
-		align-items: center;
-		width: 550px;
-		border-radius: 4px;
-		margin: 0 auto 5em;
-		position: relative;
-		background-color: #ffffff;
-		box-shadow: ${shadows[1]};
-		padding: 1.5em 2.5em 2.5em;
-		overflow: hidden;
-	`,
-
-	heading: ({ palette }: Theme) => css`
-		font-weight: bold;
-		font-size: 20px;
-		line-height: 1;
-		text-align: center;
-		text-transform: uppercase;
-		color: ${palette.primary.main};
-		margin-bottom: 1.5em;
-	`,
-};
