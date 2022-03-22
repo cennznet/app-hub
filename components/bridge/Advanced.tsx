@@ -15,6 +15,8 @@ import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 interface BridgeAdvancedProps {
 	historicalEventProofId: number;
 	setHistoricalEventProofId: Function;
+	blockHash: string;
+	setBlockHash: Function;
 }
 
 const BridgeAdvanced: VFC<IntrinsicElements["div"] & BridgeAdvancedProps> = (
@@ -43,7 +45,18 @@ const BridgeAdvanced: VFC<IntrinsicElements["div"] & BridgeAdvancedProps> = (
 							required
 							type="number"
 							InputProps={{
-								endAdornment: <EventProofToolTip />,
+								endAdornment: <EventProofToolTip field="id" />,
+							}}
+						/>
+						<label htmlFor="blockHash">Block Hash</label>
+						<TextField
+							css={styles.input}
+							value={props.blockHash}
+							onChange={(event) => props.setBlockHash(event.target.value)}
+							required
+							type="string"
+							InputProps={{
+								endAdornment: <EventProofToolTip field="hash" />,
 							}}
 						/>
 					</div>
@@ -53,7 +66,13 @@ const BridgeAdvanced: VFC<IntrinsicElements["div"] & BridgeAdvancedProps> = (
 	);
 };
 
-const EventProofToolTip: VFC<IntrinsicElements["div"]> = () => (
+interface EventProofToolTipProps {
+	field: string;
+}
+
+const EventProofToolTip: VFC<
+	IntrinsicElements["div"] & EventProofToolTipProps
+> = (props) => (
 	<div style={{ cursor: "pointer" }}>
 		<Tooltip
 			disableFocusListener
@@ -64,8 +83,15 @@ const EventProofToolTip: VFC<IntrinsicElements["div"]> = () => (
 			}
 			title={
 				<div>
-					If a previous withdraw has failed you can enter the event proof id
-					here to claim it. Make sure to select the right token and amount!
+					{props.field === "id" && (
+						<>
+							If a previous withdraw has failed you can enter the event proof id
+							here to claim it. Make sure to select the right token and amount!
+						</>
+					)}
+					{props.field === "hash" && (
+						<>The CENNZnet block hash at the time of the withdrawal event.</>
+					)}
 				</div>
 			}
 			arrow
@@ -124,6 +150,7 @@ const styles = {
 
 	input: css`
 		width: 200px;
+		margin-bottom: 1em;
 	`,
 
 	toolTip: css`

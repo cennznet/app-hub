@@ -32,6 +32,7 @@ const Withdraw: React.FC<{
 	const [modal, setModal] = useState<TxModalAttributes>(null);
 	const [historicalEventProofId, setHistoricalEventProofId] =
 		useState<number>();
+	const [blockHash, setBlockHash] = useState<string>();
 	const { Contracts, Account, Signer }: any = useBridge();
 	const { api }: any = useCENNZApi();
 	const { wallet, balances, updateBalances } = useCENNZWallet();
@@ -77,21 +78,26 @@ const Withdraw: React.FC<{
 			if (!!tokenAddress) {
 				setModal(defineTxModal("withdrawCENNZside", "", setModalOpen));
 
-				if (!!historicalEventProofId) {
-					//TODO: fetch event proof and send tx
-					// const eventProof = await api.derive.query.fetchEventProof?
-					// await withdrawEthSide(
-					// 	withdrawAmount,
-					// 	eventProof,
-					// 	Account,
-					// 	tokenAddress.toString()
-					// );
-				}
-
 				const withdrawAmount = ethers.utils
 					.parseUnits(String(amount), token.decimals)
 					.toString();
-				const eventProof = await withdrawCENNZside(
+
+				let eventProof;
+				if (!!historicalEventProofId && !!blockHash) {
+					eventProof = await api.derive.ethBridge.eventProof(
+						historicalEventProofId
+					);
+
+					void (await withdrawEthSide(
+						withdrawAmount,
+						eventProof,
+						Account,
+						tokenAddress.toString(),
+						blockHash
+					));
+				}
+
+				eventProof = await withdrawCENNZside(
 					withdrawAmount,
 					Account,
 					token.assetId
@@ -160,25 +166,31 @@ const Withdraw: React.FC<{
 		withdrawAmount: any,
 		eventProof: any,
 		ethAddress: string,
-		tokenAddress: string
+		tokenAddress: string,
+		blockHash?: string
 	) => {
 		setModalOpen(false);
 
 		const verificationFee = await Contracts.bridge.verificationFee();
-		const validators = (await api.query.ethBridge.notaryKeys()).map(
-			(validator: ethers.utils.BytesLike) => {
-				// session key is not set
-				if (
-					ethers.utils.hexlify(validator) ===
-					ethers.utils.hexlify(
-						"0x000000000000000000000000000000000000000000000000000000000000000000"
-					)
-				) {
-					return ethers.constants.AddressZero;
-				}
-				return ethers.utils.computeAddress(validator);
+		let notaryKeys;
+		if (!!blockHash) {
+			notaryKeys = await api.query.ethBridge.notaryKeys.at(blockHash);
+		} else {
+			notaryKeys = await api.query.ethBridge.notaryKeys();
+		}
+
+		const validators = notaryKeys.map((validator: ethers.utils.BytesLike) => {
+			// session key is not set
+			if (
+				ethers.utils.hexlify(validator) ===
+				ethers.utils.hexlify(
+					"0x000000000000000000000000000000000000000000000000000000000000000000"
+				)
+			) {
+				return ethers.constants.AddressZero;
 			}
-		);
+			return ethers.utils.computeAddress(validator);
+		});
 
 		let gasEstimate = await Contracts.peg.estimateGas.withdraw(
 			tokenAddress,
@@ -238,10 +250,12 @@ const Withdraw: React.FC<{
 			<Advanced
 				historicalEventProofId={historicalEventProofId}
 				setHistoricalEventProofId={setHistoricalEventProofId}
+				blockHash={blockHash}
+				setBlockHash={setBlockHash}
 			/>
 			<Divider sx={{ width: "550px", m: "2em 0 2em" }} />
 			<ConnectWalletButton
-				disabled={disabled}
+				disabled={!!historicalEventProofId ? !blockHash : disabled}
 				onClick={withdraw}
 				buttonText={"CONFIRM"}
 				requireCennznet={false}
