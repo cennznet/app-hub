@@ -4,9 +4,8 @@ import { VFC } from "react";
 import { LinearProgress, Tooltip, Theme } from "@mui/material";
 import { usePool } from "@/providers/PoolProvider";
 import { Balance } from "@/utils";
-import { usePoolGasFee } from "@/hooks";
+import { usePoolGasFee, usePoolCoreAssetValue } from "@/hooks";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-import usePoolExchangeRate from "@/hooks/usePoolExchangeRate";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 
 interface PoolStatsProps {}
@@ -31,13 +30,15 @@ const PoolStats: VFC<IntrinsicElements["div"] & PoolStatsProps> = (props) => {
 	const coreAssetReserve = exchangeInfo?.coreAssetReserve ?? null;
 
 	const userPercentageShare =
-		coreAssetBalance !== null && coreAssetReserve !== null
+		coreAssetBalance !== null &&
+		coreAssetReserve !== null &&
+		coreAssetReserve.gt(0)
 			? coreAssetBalance.div(coreAssetReserve).mul(100).toNumber()
 			: null;
 
 	const { gasFee, updatingGasFee } = usePoolGasFee();
 
-	const { exchangeRate } = usePoolExchangeRate("1");
+	const { coreAssetValue } = usePoolCoreAssetValue("1");
 
 	const { selectedAccount } = useCENNZWallet();
 
@@ -63,13 +64,13 @@ const PoolStats: VFC<IntrinsicElements["div"] & PoolStatsProps> = (props) => {
 				</li>
 				<li>
 					<strong>Exchange Rate:</strong>
-					{exchangeRate !== null && (
+					{coreAssetValue !== null && (
 						<span>
-							1 {tradeAsset.symbol} &asymp; {exchangeRate.toBalance()}{" "}
+							1 {tradeAsset.symbol} &asymp; {coreAssetValue.toBalance()}{" "}
 							{coreAsset.symbol}
 						</span>
 					)}
-					{exchangeRate === null && <span>&asymp;</span>}
+					{coreAssetValue === null && <span>&asymp;</span>}
 				</li>
 				<li>
 					<strong>Pool Liquidity:</strong>
