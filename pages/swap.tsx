@@ -26,7 +26,7 @@ export async function getStaticProps() {
 const Swap: VFC<{ supportedAssets: CENNZAsset[] }> = ({ supportedAssets }) => {
 	return (
 		<SwapProvider supportedAssets={supportedAssets}>
-			<MainPanel defaultTitle="Swap">
+			<MainPanel defaultTitle="CENNZX Exchange">
 				<SwapForm>
 					<SwapAssetsPair />
 					<SwapStats />

@@ -30,7 +30,7 @@ const Bridge: VFC<{
 			depositTokens={depositTokens}
 			withdrawTokens={withdrawTokens}
 		>
-			<MainPanel defaultTitle="Bridge">
+			<MainPanel defaultTitle="Emery Bridge">
 				<BridgeForm>
 					<BridgeActionsPair />
 					<BridgeTokenDestination />
