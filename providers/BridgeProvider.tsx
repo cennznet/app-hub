@@ -23,6 +23,9 @@ interface BridgeContextType {
 	erc20Value: TokenInputHook<ERC20TokenAddress>[1];
 
 	transferToken: EthereumToken | BridgedEthereumToken;
+
+	transferAddress: string;
+	setTransferAddress: Dispatch<SetStateAction<string>>;
 }
 
 const BridgeContext = createContext<BridgeContextType>({} as BridgeContextType);
@@ -40,6 +43,8 @@ const BridgeProvider: FC<BridgeProviderProps> = ({
 	const [bridgeAction, setBridgeAction] = useState<BridgeAction>("Deposit");
 	const [erc20Tokens, setERC20Tokens] =
 		useState<BridgeContextType["erc20Tokens"]>(depositTokens);
+	const [transferAddress, setTransferAddress] =
+		useState<BridgeContextType["transferAddress"]>("");
 
 	const ethToken = (erc20Tokens as EthereumToken[])?.find(
 		(token) => token.address === ETH_TOKEN_ADDRESS
@@ -66,6 +71,9 @@ const BridgeProvider: FC<BridgeProviderProps> = ({
 				erc20Value,
 
 				transferToken,
+
+				transferAddress,
+				setTransferAddress,
 			}}
 		>
 			{children}

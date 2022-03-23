@@ -4,21 +4,29 @@ import {
 	IntrinsicElements,
 } from "@/types";
 import { css } from "@emotion/react";
-import { useMemo, VFC } from "react";
+import { useCallback, useMemo, VFC } from "react";
 import TokenInput from "@/components/shared/TokenInput";
 import { Theme } from "@mui/material";
 import { useBridge } from "@/providers/BridgeProvider";
 import { useBalanceValidation, useCENNZBalances } from "@/hooks";
 import useMetaMaskBalances from "@/hooks/useMetaMaskBalances";
 import { Balance } from "@/utils";
+import AddressInput from "@/components/shared/AddressInput";
 
 interface BridgeTokenDestinationProps {}
 
 const BridgeTokenDestination: VFC<
 	IntrinsicElements["div"] & BridgeTokenDestinationProps
 > = (props) => {
-	const { erc20Token, erc20Value, erc20Tokens, transferToken, bridgeAction } =
-		useBridge();
+	const {
+		erc20Token,
+		erc20Value,
+		erc20Tokens,
+		transferToken,
+		bridgeAction,
+		transferAddress,
+		setTransferAddress,
+	} = useBridge();
 
 	const [cennzBalance] = useCENNZBalances(
 		transferToken as BridgedEthereumToken
@@ -27,12 +35,19 @@ const BridgeTokenDestination: VFC<
 	const [metaMaskBalance] = useMetaMaskBalances(transferToken as EthereumToken);
 
 	const transferBalance =
-		bridgeAction === "Deposit" ? metaMaskBalance : cennzBalance;
+		bridgeAction === "Withdraw" ? cennzBalance : metaMaskBalance;
 
 	const onTransferMaxRequest = useMemo(() => {
 		const setErc20Value = erc20Value.setValue;
 		return () => setErc20Value(transferBalance.toInput());
 	}, [transferBalance, erc20Value.setValue]);
+
+	const onTransferAddressChange = useCallback(
+		(event) => {
+			setTransferAddress(event.target.value);
+		},
+		[setTransferAddress]
+	);
 
 	const { inputRef: transferInputRef } = useBalanceValidation(
 		Balance.fromInput(erc20Value.value, transferToken),
@@ -59,6 +74,14 @@ const BridgeTokenDestination: VFC<
 				<div css={styles.tokenBalance}>
 					Balance: <span>{transferBalance?.toBalance() ?? "0.0000"}</span>
 				</div>
+			</div>
+			<div css={styles.formField}>
+				<label htmlFor="transferInput">Address</label>
+				<AddressInput
+					value={transferAddress}
+					onChange={onTransferAddressChange}
+					addressType={bridgeAction === "Withdraw" ? "Ethereum" : "CENNZnet"}
+				/>
 			</div>
 		</div>
 	);

@@ -5,6 +5,7 @@ import {
 	FormHTMLAttributes,
 	HTMLAttributes,
 	HTMLFormElement,
+	InputHTMLAttributes,
 } from "react";
 
 export interface Asset {
@@ -77,6 +78,7 @@ export interface IntrinsicElements {
 	div: HTMLAttributes<HTMLDivElement>;
 	form: FormHTMLAttributes<HTMLFormElement>;
 	button: ButtonHTMLAttributes<HTMLButtonElement>;
+	input: InputHTMLAttributes<HTMLInputElement>;
 }
 
 export type PoolAction = "Add" | "Remove";
