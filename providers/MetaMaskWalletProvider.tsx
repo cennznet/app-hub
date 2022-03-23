@@ -41,9 +41,9 @@ const MetaMaskWalletProvider: FC<MetaMaskWalletProviderProps> = ({
 
 			await ensureEthereumChain(extension);
 
-			const accounts = await ethereum.request({
+			const accounts = (await extension.request({
 				method: "eth_requestAccounts",
-			});
+			})) as string[];
 
 			if (!accounts?.length)
 				return alert(
@@ -57,6 +57,21 @@ const MetaMaskWalletProvider: FC<MetaMaskWalletProviderProps> = ({
 	);
 
 	useEffect(() => {
+		if (!extension) return;
+		const checkAccounts = async () => {
+			const accounts = (await extension.request({
+				method: "eth_accounts",
+			})) as string[];
+			if (!accounts?.length) return;
+
+			setSelectedAccount({ address: accounts[0] });
+			setWallet(new ethers.providers.Web3Provider(extension as any));
+		};
+
+		checkAccounts();
+	}, [extension]);
+
+	useEffect(() => {
 		if (!selectedAccount?.address || !extension) return;
 
 		const onAccountsChanged = (accounts: string[]) => {
@@ -67,7 +82,7 @@ const MetaMaskWalletProvider: FC<MetaMaskWalletProviderProps> = ({
 		extension.on("accountsChanged", onAccountsChanged);
 
 		return () => {
-			extension.off("accountsChanged", onAccountsChanged);
+			extension.removeListener("accountsChanged", onAccountsChanged);
 		};
 	}, [selectedAccount?.address, extension]);
 
