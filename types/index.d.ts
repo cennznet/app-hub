@@ -142,3 +142,7 @@ export interface PoolUserInfo {
 	tradeAssetBalance: Balance;
 	coreAssetBalance: Balance;
 }
+
+export interface MetaMaskAccount {
+	address: string;
+}

@@ -13,11 +13,11 @@ import {
 import type * as Extension from "@polkadot/extension-dapp";
 import { useUserAgent } from "@/providers/UserAgentProvider";
 
-type ExtensionContext = typeof Extension & {
-	accounts: Array<InjectedAccountWithMeta>;
+interface ExtensionContext {
+	accounts: InjectedAccountWithMeta[];
 	extension: InjectedExtension;
 	promptInstallExtension: () => void;
-};
+}
 
 const CENNZExtensionContext = createContext<ExtensionContext>(
 	{} as ExtensionContext
@@ -33,7 +33,7 @@ export default function CENNZExtensionProvider({
 	const [extension, setExtension] = useState<InjectedExtension>();
 	const [accounts, setAccounts] = useState<Array<InjectedAccountWithMeta>>();
 
-	const promptInstallExtension = useCallback(async () => {
+	const promptInstallExtension = useCallback(() => {
 		const url =
 			browser?.name === "Firefox"
 				? "https://addons.mozilla.org/en-US/firefox/addon/cennznet-browser-extension/"
@@ -57,7 +57,7 @@ export default function CENNZExtensionProvider({
 
 		const getExtension = async () => {
 			const { web3Enable, web3FromSource } = module;
-			await web3Enable("CENNZnet Hub");
+			await web3Enable("CENNZnet App Hub");
 			const extension = await web3FromSource("cennznet-extension").catch(
 				() => null
 			);
@@ -75,7 +75,7 @@ export default function CENNZExtensionProvider({
 		const fetchAccounts = async () => {
 			const { web3Enable, web3Accounts, web3AccountsSubscribe } = module;
 
-			await web3Enable("CENNZnet Hub");
+			await web3Enable("CENNZnet App Hub");
 			const accounts = (await web3Accounts()) || [];
 			if (!accounts.length)
 				return alert(

@@ -14,6 +14,9 @@ import PageBackdrop from "@/components/shared/PageBackdrop";
 import PageFrame from "@/components/shared/PageFrame";
 import GlobalModalProvider from "@/providers/GlobalModalProvider";
 import CssGlobal from "@/components/CssGlobal";
+import MetaMaskExtensionProvider from "@/providers/MetaMaskExtenstionProvider";
+import { API_URL, ETH_CHAIN_ID } from "@/constants";
+import MetaMaskWalletProvider from "@/providers/MetaMaskWalletProvider";
 
 type MyAppProps = Omit<AppProps, "pageProps"> & {
 	pageProps: {} & GlobalProps;
@@ -32,21 +35,23 @@ function MyApp({ Component, pageProps }: MyAppProps) {
 				<CssGlobal />
 				<UserAgentProvider>
 					<CENNZExtensionProvider>
-						<CENNZApiProvider endpoint={process.env.NEXT_PUBLIC_API_URL}>
-							<CENNZWalletProvider>
-								<BridgeProvider
-									ethChainId={process.env.NEXT_PUBLIC_ETH_CHAIN_ID}
-								>
-									<GlobalModalProvider>
-										<PageBackdrop />
-										<WalletButton />
-										<AppSwitch />
-										<Component {...pageProps} />
-										<PageFrame />
-									</GlobalModalProvider>
-								</BridgeProvider>
-							</CENNZWalletProvider>
-						</CENNZApiProvider>
+						<MetaMaskExtensionProvider>
+							<CENNZApiProvider endpoint={API_URL}>
+								<CENNZWalletProvider>
+									<MetaMaskWalletProvider>
+										<BridgeProvider ethChainId={ETH_CHAIN_ID.toString()}>
+											<GlobalModalProvider>
+												<PageBackdrop />
+												<WalletButton />
+												<AppSwitch />
+												<Component {...pageProps} />
+												<PageFrame />
+											</GlobalModalProvider>
+										</BridgeProvider>
+									</MetaMaskWalletProvider>
+								</CENNZWalletProvider>
+							</CENNZApiProvider>
+						</MetaMaskExtensionProvider>
 					</CENNZExtensionProvider>
 				</UserAgentProvider>
 			</ThemeProvider>

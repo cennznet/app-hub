@@ -7,4 +7,6 @@ export declare global {
 		cennzAsset: CENNZAsset;
 		cpayAsset: CENNZAsset;
 	};
+
+	var ethereum: MetaMaskInpageProvider;
 }
