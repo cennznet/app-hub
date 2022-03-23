@@ -3,11 +3,12 @@ import { IntrinsicElements } from "@/types";
 import TokenInput from "@/components/shared/TokenInput";
 import { css } from "@emotion/react";
 import { useSwap } from "@/providers/SwapProvider";
-import { formatBalance } from "@/utils";
 import SwitchButton from "@/components/shared/SwitchButton";
 import { Theme } from "@mui/material";
 import { useSwapExchangeRate } from "@/hooks";
 import useWalletBalances from "@/hooks/useWalletBalances";
+import useBalanceValidation from "@/hooks/useBalanceValidation";
+import { Balance } from "@/utils";
 
 interface SwapAssetsPairProps {}
 
@@ -71,8 +72,8 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
 	// Sync up value for receive input
 	useEffect(() => {
 		const setReceiveValue = receiveValue.setValue;
-		if (!exchangeRate?.eq(0)) return setReceiveValue("");
-		setReceiveValue(exchangeRate.toBalance());
+		if (!exchangeRate || exchangeRate?.eq(0)) return setReceiveValue("");
+		setReceiveValue(exchangeRate.toInput());
 	}, [exchangeRate, receiveValue.setValue]);
 
 	const [exchangeBalance, receiveBalance] = useWalletBalances(
@@ -86,6 +87,16 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
 		return () => setExchangeValue(exchangeBalance.toBalance());
 	}, [exchangeBalance, exchangeValue.setValue]);
 
+	const { inputRef: exchangeInputRef } = useBalanceValidation(
+		Balance.fromInput(exchangeValue.value, exchangeAsset),
+		exchangeBalance
+	);
+
+	const { inputRef: receiveInputRef } = useBalanceValidation(
+		Balance.fromInput(receiveValue.value, receiveAsset),
+		receiveBalance
+	);
+
 	return (
 		<div {...props} css={styles.root}>
 			<div css={styles.formField}>
@@ -98,10 +109,10 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
 					onValueChange={exchangeValue.onValueChange}
 					tokens={exchangeAssets}
 					id="exchangeInput"
+					ref={exchangeInputRef}
 					required
 					scale={4}
 					min={0.0001}
-					max={exchangeBalance?.gt(0) ? exchangeBalance.toBalance() : null}
 				/>
 
 				{!!exchangeBalance && (
@@ -121,12 +132,16 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
 				<label htmlFor="receiveInput">To</label>
 				<TokenInput
 					selectedTokenId={receiveToken.tokenId}
-					onTokenChange={receiveToken.onTokenChange}
+					onTokenChange={() => {}}
 					value={receiveValue.value}
 					onValueChange={receiveValue.onValueChange}
 					tokens={receiveAssets}
-					disabled={true}
 					id="receiveInput"
+					ref={receiveInputRef}
+					readOnly={true}
+					required
+					scale={4}
+					min={0.0001}
 				/>
 				{!!receiveBalance && (
 					<div css={styles.tokenBalance}>

@@ -18,8 +18,8 @@ import {
 	usePoolUserInfo,
 	PoolUserInfoHook,
 } from "@/hooks";
+import { Balance } from "@/utils";
 import { CENNZ_ASSET_ID, CPAY_ASSET_ID } from "@/constants";
-import { formatBalance } from "@/utils";
 
 // To be removed once TokenPicker is removed
 export enum LegacyPoolAction {
@@ -130,10 +130,10 @@ const PoolProvider: FC<PoolProviderProps> = ({ supportedAssets, children }) => {
 	}, []);
 
 	const setSuccessStatus = useCallback(() => {
-		const trValue = formatBalance(Number(tradeValue.value));
+		const trValue = Balance.format(tradeValue.value);
 		const trSymbol = tradeAsset.symbol;
 
-		const crValue = formatBalance(Number(coreValue.value));
+		const crValue = Balance.format(coreValue.value);
 		const crSymbol = coreAsset.symbol;
 
 		setTxStatus({

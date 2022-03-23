@@ -11,7 +11,6 @@ import {
 	getRemoveLiquidityExtrinsic,
 	signAndSendTx,
 } from "@/utils";
-import { UnwrapPromise } from "@/types";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 
 interface PoolFormProps {}
@@ -37,7 +36,6 @@ const PoolForm: FC<IntrinsicElements["form"] & PoolFormProps> = ({
 		coreValue: { value: crValue },
 
 		exchangeInfo,
-		userInfo,
 
 		updatePoolUserInfo,
 		updateExchangeRate,
@@ -90,7 +88,7 @@ const PoolForm: FC<IntrinsicElements["form"] & PoolFormProps> = ({
 			if (!extrinsic || !api) return;
 			setProgressStatus();
 
-			let status: UnwrapPromise<ReturnType<typeof signAndSendTx>>;
+			let status: Awaited<ReturnType<typeof signAndSendTx>>;
 			try {
 				status = await signAndSendTx(
 					api,

@@ -5,6 +5,7 @@ import {
 	useMemo,
 	useEffect,
 	forwardRef,
+	useImperativeHandle,
 } from "react";
 import { css, SerializedStyles } from "@emotion/react";
 import { SelectChangeEvent, MenuItem, Theme } from "@mui/material";
@@ -38,7 +39,6 @@ const TokenInput = forwardRef<
 			onValueChange,
 			scale,
 			padFractionalZeros,
-			disabled,
 			value,
 			css,
 			children,
@@ -67,11 +67,13 @@ const TokenInput = forwardRef<
 			onAccept: onIMaskAccept,
 		});
 
+		useImperativeHandle(ref, () => inputRef.current as HTMLInputElement);
+
 		useEffect(() => {
 			setValue?.((value === "0" ? "" : value) as string);
 		}, [value, setValue]);
 		return (
-			<div css={[styles.root, !disabled && styles.rootHover, css]}>
+			<div css={[styles.root, styles.rootHover, css]}>
 				<SelectInput
 					css={styles.select}
 					value={selectedTokenId}
@@ -97,36 +99,16 @@ const TokenInput = forwardRef<
 						Max
 					</div>
 				)}
-				{!disabled && (
-					<input
-						{...props}
-						ref={inputRef as MutableRefObject<HTMLInputElement>}
-						css={styles.input}
-						type="number"
-						autoComplete="off"
-						autoCorrect="off"
-						step="any"
-						placeholder={placeholder}
-					/>
-				)}
-
-				{disabled && (
-					<>
-						<input
-							{...props}
-							css={styles.input}
-							type="text"
-							autoComplete="off"
-							autoCorrect="off"
-							placeholder={placeholder}
-							value={value}
-							ref={ref}
-							onChange={(event) => onValueChange(event.target.value)}
-						/>
-
-						<div css={styles.inputCurtain}></div>
-					</>
-				)}
+				<input
+					{...props}
+					ref={inputRef as MutableRefObject<HTMLInputElement>}
+					css={styles.input}
+					type="number"
+					autoComplete="off"
+					autoCorrect="off"
+					step="any"
+					placeholder={placeholder}
+				/>
 
 				{children}
 			</div>
@@ -226,13 +208,5 @@ export const styles = {
 		&:hover {
 			color: ${palette.primary.main};
 		}
-	`,
-
-	inputCurtain: css`
-		position: absolute;
-		inset: 0 0 0 135px;
-		background-color: red;
-		opacity: 0;
-		cursor: not-allowed;
 	`,
 };
