@@ -57,7 +57,7 @@ const BridgeTokenDestination: VFC<
 	return (
 		<div {...props} css={styles.root}>
 			<div css={styles.formField}>
-				<label htmlFor="transferInput">Token</label>
+				<label htmlFor="transferInput">TRANSFER TOKEN</label>
 				<TokenInput
 					onMaxValueRequest={onTransferMaxRequest}
 					selectedTokenId={erc20Token.tokenId}
@@ -76,7 +76,11 @@ const BridgeTokenDestination: VFC<
 				</div>
 			</div>
 			<div css={styles.formField}>
-				<label htmlFor="transferInput">Address</label>
+				<label htmlFor="transferInput">
+					{bridgeAction === "Withdraw"
+						? "ETHEREUM ADDRESS"
+						: "CENNZnet ADDRESS"}
+				</label>
 				<AddressInput
 					value={transferAddress}
 					onChange={onTransferAddressChange}
@@ -102,7 +106,6 @@ const styles = {
 		label {
 			font-weight: bold;
 			font-size: 14px;
-			text-transform: uppercase;
 			margin-bottom: 0.5em;
 			display: block;
 			color: ${palette.primary.main};
