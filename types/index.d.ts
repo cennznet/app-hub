@@ -84,6 +84,7 @@ export interface CENNZAccount {
 }
 
 export type BridgeState = "Deposit" | "Withdraw";
+export type BridgeAction = "Deposit" | "Withdraw";
 
 export interface GenericCoin {
 	decimals: number;
