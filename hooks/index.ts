@@ -1,4 +1,4 @@
-export { default as useWalletBalances } from "@/hooks/useWalletBalances";
+export { default as useCENNZBalances } from "@/hooks/useCENNZBalances";
 export { default as useSwapGasFee } from "@/hooks/useSwapGasFee";
 export { default as useSectionUri } from "@/hooks/useSectionUri";
 export { default as useSwapExchangeRate } from "@/hooks/useSwapExchangeRate";

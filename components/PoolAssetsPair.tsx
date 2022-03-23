@@ -4,7 +4,7 @@ import { css } from "@emotion/react";
 import { VFC, useMemo, useEffect } from "react";
 import TokenInput from "@/components/shared/TokenInput";
 import {
-	useWalletBalances,
+	useCENNZBalances,
 	usePoolCoreAssetValue,
 	useBalanceValidation,
 } from "@/hooks";
@@ -32,7 +32,7 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 	const tradePoolBalance = userInfo?.tradeAssetBalance ?? null;
 	const corePoolBalance = userInfo?.coreAssetBalance ?? null;
 
-	const [tradeWalletBalance, coreWalletBalance] = useWalletBalances(
+	const [tradeWalletBalance, coreWalletBalance] = useCENNZBalances(
 		tradeAsset,
 		coreAsset
 	);

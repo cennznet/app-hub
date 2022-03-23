@@ -3,7 +3,7 @@ import { BridgedEthereumToken, CENNZAsset } from "@/types";
 import { Balance } from "@/utils";
 import { useEffect, useState } from "react";
 
-export default function useWalletBalances(
+export default function useCENNZBalances(
 	asset1: CENNZAsset | BridgedEthereumToken,
 	asset2?: CENNZAsset | BridgedEthereumToken
 ): [Balance, Balance] {

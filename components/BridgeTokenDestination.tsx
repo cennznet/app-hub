@@ -8,7 +8,7 @@ import { useMemo, VFC } from "react";
 import TokenInput from "@/components/shared/TokenInput";
 import { Theme } from "@mui/material";
 import { useBridge } from "@/providers/BridgeProvider";
-import { useBalanceValidation, useWalletBalances } from "@/hooks";
+import { useBalanceValidation, useCENNZBalances } from "@/hooks";
 import useMetaMaskBalances from "@/hooks/useMetaMaskBalances";
 import { Balance } from "@/utils";
 
@@ -20,7 +20,7 @@ const BridgeTokenDestination: VFC<
 	const { erc20Token, erc20Value, erc20Tokens, transferToken, bridgeAction } =
 		useBridge();
 
-	const [cennzBalance] = useWalletBalances(
+	const [cennzBalance] = useCENNZBalances(
 		transferToken as BridgedEthereumToken
 	);
 
@@ -42,7 +42,7 @@ const BridgeTokenDestination: VFC<
 	return (
 		<div {...props} css={styles.root}>
 			<div css={styles.formField}>
-				<label htmlFor="transferInput">Liquidity Asset</label>
+				<label htmlFor="transferInput">Token</label>
 				<TokenInput
 					onMaxValueRequest={onTransferMaxRequest}
 					selectedTokenId={erc20Token.tokenId}
