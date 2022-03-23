@@ -1,12 +1,20 @@
+import { EthereumToken } from "@/types";
 import { createContext, FC, useContext } from "react";
 
 interface BridgeContextType {}
 
 const BridgeContext = createContext<BridgeContextType>({} as BridgeContextType);
 
-interface BridgeProviderProps {}
+interface BridgeProviderProps {
+	depositTokens: EthereumToken[];
+	withdrawTokens: EthereumToken[];
+}
 
-const BridgeProvider: FC<BridgeProviderProps> = ({ children }) => {
+const BridgeProvider: FC<BridgeProviderProps> = ({
+	depositTokens,
+	withdrawTokens,
+	children,
+}) => {
 	return <BridgeContext.Provider value={{}}>{children}</BridgeContext.Provider>;
 };
 
