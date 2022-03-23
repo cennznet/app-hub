@@ -75,6 +75,11 @@ export default class Balance extends Big {
 		return this.mul(1 - Number(n) / 100);
 	}
 
+	toInput(): string {
+		const { decimals } = this.coin;
+		return this.div(Math.pow(10, decimals)).toString();
+	}
+
 	toBalance(options = {} as AsBalanceOptions): string {
 		const { withSymbol } = options || {};
 		const { decimals, symbol } = this.coin;
