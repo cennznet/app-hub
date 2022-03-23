@@ -1,4 +1,5 @@
 import {
+	BridgeChain,
 	BridgedEthereumToken,
 	EthereumToken,
 	IntrinsicElements,
@@ -12,6 +13,7 @@ import { useBalanceValidation, useCENNZBalances } from "@/hooks";
 import useMetaMaskBalances from "@/hooks/useMetaMaskBalances";
 import { Balance } from "@/utils";
 import AddressInput from "@/components/shared/AddressInput";
+import useAddressValidation from "@/hooks/useAddressValidation";
 
 interface BridgeTokenDestinationProps {}
 
@@ -54,6 +56,14 @@ const BridgeTokenDestination: VFC<
 		transferBalance
 	);
 
+	const addressType: BridgeChain =
+		bridgeAction === "Withdraw" ? "Ethereum" : "CENNZnet";
+
+	const { inputRef: addressInputRef } = useAddressValidation(
+		transferAddress,
+		addressType
+	);
+
 	return (
 		<div {...props} css={styles.root}>
 			<div css={styles.formField}>
@@ -84,7 +94,8 @@ const BridgeTokenDestination: VFC<
 				<AddressInput
 					value={transferAddress}
 					onChange={onTransferAddressChange}
-					addressType={bridgeAction === "Withdraw" ? "Ethereum" : "CENNZnet"}
+					addressType={addressType}
+					ref={addressInputRef}
 				/>
 			</div>
 		</div>

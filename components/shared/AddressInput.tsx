@@ -6,7 +6,7 @@ import {
 	TextFieldProps,
 	Theme,
 } from "@mui/material";
-import { useMemo, VFC } from "react";
+import { useMemo, forwardRef } from "react";
 import Jazzicon, { jsNumberForAddress } from "react-jazzicon";
 import AccountIdenticon from "@/components/shared/AccountIdenticon";
 import isEthereumAddress from "@/utils/isEthereumAddress";
@@ -16,9 +16,10 @@ interface AddressInputProps {
 	addressType: BridgeChain;
 }
 
-const AddressInput: VFC<
+const AddressInput = forwardRef<
+	HTMLInputElement,
 	IntrinsicElements["input"] & AddressInputProps & TextFieldProps
-> = ({ addressType, value, ...props }) => {
+>(({ addressType, value, ...props }, ref) => {
 	const topAdorment = useMemo(() => {
 		if (addressType === "Ethereum" && !isEthereumAddress(value as string))
 			return;
@@ -28,8 +29,6 @@ const AddressInput: VFC<
 			return (
 				<Jazzicon diameter={28} seed={jsNumberForAddress(value as string)} />
 			);
-
-		console.log("pass");
 
 		if (addressType === "CENNZnet")
 			return (
@@ -43,6 +42,7 @@ const AddressInput: VFC<
 		<TextField
 			multiline={true}
 			type="text"
+			inputRef={ref}
 			css={styles.root}
 			value={value}
 			required
@@ -56,7 +56,9 @@ const AddressInput: VFC<
 			{...props}
 		/>
 	);
-};
+});
+
+AddressInput.displayName = "AddressInput";
 
 export default AddressInput;
 
