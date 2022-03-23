@@ -8,22 +8,22 @@ import BridgeTokenDestination from "@/components/BridgeTokenDestination";
 import MainPanel from "@/components/MainPanel";
 import BridgeProvider from "@/providers/BridgeProvider";
 import { fetchBridgeTokens } from "@/utils";
-import { EthereumToken } from "@/types";
+import { BridgedEthereumToken, EthereumToken } from "@/types";
 
 export async function getStaticProps() {
 	const api = await Api.create({ provider: API_URL });
 
 	return {
 		props: {
-			depositTokens: await fetchBridgeTokens(api, "Deposit"),
-			withdrawTokens: await fetchBridgeTokens(api, "Withdraw"),
+			depositTokens: await fetchBridgeTokens<"Deposit">(api, "Deposit"),
+			withdrawTokens: await fetchBridgeTokens<"Withdraw">(api, "Withdraw"),
 		},
 	};
 }
 
 const Bridge: VFC<{
 	depositTokens: EthereumToken[];
-	withdrawTokens: EthereumToken[];
+	withdrawTokens: BridgedEthereumToken[];
 }> = ({ depositTokens, withdrawTokens }) => {
 	return (
 		<BridgeProvider

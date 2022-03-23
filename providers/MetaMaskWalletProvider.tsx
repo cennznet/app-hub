@@ -8,13 +8,13 @@ import {
 	useState,
 } from "react";
 import { ethers } from "ethers";
-import { MetaMaskAccount } from "@/types";
+import { EthersProvider, MetaMaskAccount } from "@/types";
 import { ensureEthereumChain } from "@/utils";
 
 interface MetaMaskWalletContextType {
 	connectWallet: (callback?: () => void) => Promise<void>;
 	selectedAccount: MetaMaskAccount;
-	wallet: ethers.providers.Web3Provider;
+	wallet: EthersProvider;
 }
 
 const MetaMaskWalletContext = createContext<MetaMaskWalletContextType>(

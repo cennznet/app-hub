@@ -42,7 +42,7 @@ const Emery: React.FC<{}> = () => {
 		if (!toChain) return;
 		setAssets(null);
 		if (toChain.name === "CENNZnet") {
-			(async () => setAssets(await fetchBridgeTokens()))();
+			(async () => setAssets(await fetchBridgeTokens(api, "Deposit")))();
 			return;
 		}
 		if (api && toChain.name === "Ethereum") {

@@ -16,6 +16,7 @@ export { default as getAddLiquidityExtrinsic } from "@/utils/getAddLiquidityExtr
 export { default as getRemoveLiquidityExtrinsic } from "@/utils/getRemoveLiquidityExtrinsic";
 export { default as Balance } from "@/utils/Balance";
 export { default as ensureEthereumChain } from "@/utils/ensureEthereumChain";
+export { default as fetchMetaMaskBalance } from "@/utils/fetchMetaMaskBalance";
 
 export const formatBalance = (balance: number): string => {
 	if (balance === 0 || !balance) return "0.0000";

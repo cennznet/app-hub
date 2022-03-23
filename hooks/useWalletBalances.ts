@@ -1,11 +1,11 @@
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
-import { CENNZAsset } from "@/types";
+import { BridgedEthereumToken, CENNZAsset } from "@/types";
 import { Balance } from "@/utils";
 import { useEffect, useState } from "react";
 
 export default function useWalletBalances(
-	asset1: CENNZAsset,
-	asset2?: CENNZAsset
+	asset1: CENNZAsset | BridgedEthereumToken,
+	asset2?: CENNZAsset | BridgedEthereumToken
 ): [Balance, Balance] {
 	const { balances } = useCENNZWallet();
 
@@ -24,7 +24,7 @@ export default function useWalletBalances(
 		);
 
 		const balance2Value = balances.find(
-			(balance) => balance.assetId === asset2.assetId
+			(balance) => balance.assetId === asset2?.assetId
 		);
 
 		setBalance1(balance1Value?.value || null);

@@ -1,4 +1,4 @@
-import { Amount } from "@/utils/Amount";
+import { ethers } from "ethers";
 import { Balance } from "@/utils";
 import {
 	ButtonHTMLAttributes,
@@ -56,6 +56,10 @@ export interface EthereumToken extends GenericCoin {
 	address: string;
 }
 
+export interface BridgedEthereumToken extends GenericCoin {
+	assetId: CENNZAsset["assetId"];
+}
+
 export interface CENNZAssetBalance extends CENNZAsset {
 	value: Balance;
 }
@@ -94,3 +98,6 @@ export interface PoolUserInfo {
 export interface MetaMaskAccount {
 	address: string;
 }
+
+export type EthersProvider = ethers.providers.Web3Provider;
+export type EthersContract = ethers.Contract;

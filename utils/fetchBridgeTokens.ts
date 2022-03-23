@@ -1,16 +1,24 @@
-import { BridgeAction, EthereumToken } from "@/types";
+import { BridgeAction, BridgedEthereumToken, EthereumToken } from "@/types";
 import { AssetId, AssetInfoV41 as AssetInfo } from "@cennznet/types";
 import fetchEthereumTokens from "@/utils/fetchEthereumTokens";
 import { ETH_CHAIN_ID } from "@/constants";
 import { Api } from "@cennznet/api";
 import { hexToString } from "@polkadot/util";
 
-export default async function fetchBridgeTokens(
+type BridgeTokens<T> = T extends "Deposit"
+	? EthereumToken
+	: T extends "Withdraw"
+	? BridgedEthereumToken
+	: never;
+
+export default async function fetchBridgeTokens<T extends BridgeAction>(
 	api: Api,
 	action: BridgeAction
-): Promise<EthereumToken[]> {
+): Promise<BridgeTokens<T>[]> {
 	if (action === "Deposit")
-		return Promise.resolve(fetchEthereumTokens(ETH_CHAIN_ID));
+		return (await Promise.resolve(
+			fetchEthereumTokens(ETH_CHAIN_ID)
+		)) as BridgeTokens<T>[];
 
 	const registeredAssets: [AssetId, AssetInfo][] = await (
 		api.rpc as any
@@ -22,12 +30,13 @@ export default async function fetchBridgeTokens(
 				const tokenAddress = await api.query.erc20Peg.assetIdToErc20(assetId);
 				if (!tokenAddress.toString() || symbol?.toJSON() === "0x") return null;
 				return {
+					assetId: assetId.toJSON() as number,
 					address: tokenAddress.toString(),
 					symbol: hexToString(symbol.toJSON()),
 					decimals: decimalPlaces.toNumber(),
 					decimalsValue: Math.pow(10, decimalPlaces.toNumber()),
-				};
+				} as BridgedEthereumToken;
 			})
 		)
-	).filter(Boolean);
+	).filter(Boolean) as BridgeTokens<T>[];
 }
