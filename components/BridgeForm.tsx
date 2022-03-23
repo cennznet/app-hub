@@ -1,8 +1,9 @@
 import { IntrinsicElements } from "@/types";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import SubmitButton from "@/components/shared/SubmitButton";
 import { css } from "@emotion/react";
 import { Theme } from "@mui/material";
+import { useBridge } from "@/providers/BridgeProvider";
 
 interface BridgeFormProps {}
 
@@ -10,7 +11,13 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 	children,
 	...props
 }) => {
+	const { bridgeAction } = useBridge();
 	const [buttonLabel, setButtonLabel] = useState<string>("Deposit");
+
+	useEffect(() => {
+		if (bridgeAction === "Deposit") return setButtonLabel("Deposit");
+		if (bridgeAction === "Withdraw") return setButtonLabel("Withdraw");
+	}, [bridgeAction]);
 
 	return (
 		<form {...props} css={styles.root}>

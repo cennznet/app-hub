@@ -27,6 +27,7 @@ export interface PoolConfig {
 }
 
 export type SupportedChain = "Ethereum" | "CENNZnet";
+export type BridgeChain = "Ethereum" | "CENNZnet";
 
 export interface Chain {
 	name: SupportedChain;

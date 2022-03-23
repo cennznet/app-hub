@@ -1,7 +1,17 @@
-import { EthereumToken } from "@/types";
-import { createContext, FC, useContext } from "react";
+import { BridgeAction, EthereumToken } from "@/types";
+import {
+	createContext,
+	Dispatch,
+	FC,
+	SetStateAction,
+	useContext,
+	useState,
+} from "react";
 
-interface BridgeContextType {}
+interface BridgeContextType {
+	bridgeAction: BridgeAction;
+	setBridgeAction: Dispatch<SetStateAction<BridgeAction>>;
+}
 
 const BridgeContext = createContext<BridgeContextType>({} as BridgeContextType);
 
@@ -15,7 +25,13 @@ const BridgeProvider: FC<BridgeProviderProps> = ({
 	withdrawTokens,
 	children,
 }) => {
-	return <BridgeContext.Provider value={{}}>{children}</BridgeContext.Provider>;
+	const [bridgeAction, setBridgeAction] = useState<BridgeAction>(null);
+
+	return (
+		<BridgeContext.Provider value={{ bridgeAction, setBridgeAction }}>
+			{children}
+		</BridgeContext.Provider>
+	);
 };
 
 export default BridgeProvider;
