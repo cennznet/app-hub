@@ -1,4 +1,3 @@
-import { Amount } from "@/utils/Amount";
 import { Balance } from "@/utils";
 import {
 	ButtonHTMLAttributes,
@@ -87,4 +86,11 @@ export interface PoolUserInfo {
 	userLiquidity: Balance;
 	tradeAssetBalance: Balance;
 	coreAssetBalance: Balance;
+}
+
+export interface WithdrawClaim {
+	token: string;
+	amount: number;
+	eventProofId: number;
+	blockHash: string;
 }

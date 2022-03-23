@@ -1,16 +1,14 @@
-import { VFC } from "react";
-import { IntrinsicElements } from "@/types";
+import { useEffect, useState, VFC } from "react";
+import { IntrinsicElements, WithdrawClaim } from "@/types";
 import { css } from "@emotion/react";
 import {
-	Theme,
 	Accordion,
-	AccordionSummary,
 	AccordionDetails,
-	TextField,
-	Tooltip,
+	AccordionSummary,
+	Divider,
+	Theme,
 } from "@mui/material";
 import ExpandMore from "@mui/icons-material/ExpandMore";
-import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 
 interface BridgeAdvancedProps {
 	historicalEventProofId: number;
@@ -19,88 +17,69 @@ interface BridgeAdvancedProps {
 	setBlockHash: Function;
 }
 
+const testArr: WithdrawClaim[] = [
+	{ token: "DAI", amount: 300, eventProofId: 1, blockHash: "test-block-hash" },
+	{ token: "ETH", amount: 0.5, eventProofId: 1, blockHash: "test-block-hash" },
+];
+
 const BridgeAdvanced: VFC<IntrinsicElements["div"] & BridgeAdvancedProps> = (
 	props
 ) => {
+	// const { selectedAccount } = useCENNZWallet();
+	const [unclaimedWithdrawals, setUnclaimedWithdrawals] =
+		useState<WithdrawClaim[]>(testArr);
+
+	// useEffect(() => {
+	// 	if (!selectedAccount) return;
+	//
+	// 	(async () =>
+	// 		setUnclaimedWithdrawals(
+	// 			await fetchUnclaimedWithdrawals(selectedAccount.address)
+	// 		))();
+	// }, [selectedAccount, setUnclaimedWithdrawals]);
+
+	const submitHistoricalClaim = async (unclaimed: WithdrawClaim) => {
+		console.log("unclaimed.token", unclaimed.token);
+		console.log("unclaimed.amount", unclaimed.amount);
+		console.log("unclaimed.eventProofId", unclaimed.eventProofId);
+		console.log("unclaimed.blockHash", unclaimed.blockHash);
+	};
+
 	return (
 		<div {...props} css={styles.root}>
-			<Accordion css={[styles.formSettings]}>
+			<Accordion css={[styles.accordion]}>
 				<AccordionSummary
-					css={styles.formSettingsSummary}
+					css={styles.accordionSummary}
 					expandIcon={<ExpandMore />}
 				>
 					Advanced
 				</AccordionSummary>
 				<AccordionDetails>
-					<div css={styles.formField}>
-						<label htmlFor="historicalEventProofId">
-							Historical Event Proof Id
-						</label>
-						<TextField
-							css={styles.input}
-							value={props.historicalEventProofId}
-							onChange={(event) =>
-								props.setHistoricalEventProofId(event.target.value)
-							}
-							required
-							type="number"
-							InputProps={{
-								endAdornment: <EventProofToolTip field="id" />,
-							}}
-						/>
-						<label htmlFor="blockHash">Block Hash</label>
-						<TextField
-							css={styles.input}
-							value={props.blockHash}
-							onChange={(event) => props.setBlockHash(event.target.value)}
-							required
-							type="string"
-							InputProps={{
-								endAdornment: <EventProofToolTip field="hash" />,
-							}}
-						/>
+					<div css={styles.unclaimedWithdrawals}>
+						<p>UNclaimed Withdrawals:</p>
+						{unclaimedWithdrawals?.map((unclaimed, i) => (
+							<div key={i}>
+								<div css={styles.unclaimed}>
+									<p>
+										UNclaimed: {unclaimed.amount} {unclaimed.token}
+									</p>
+									<button
+										css={styles.claimButton}
+										onClick={() => submitHistoricalClaim(unclaimed)}
+									>
+										claim
+									</button>
+								</div>
+
+								<Divider css={styles.unclaimedDivider} />
+							</div>
+						))}
 					</div>
 				</AccordionDetails>
 			</Accordion>
 		</div>
 	);
 };
-
-interface EventProofToolTipProps {
-	field: string;
-}
-
-const EventProofToolTip: VFC<
-	IntrinsicElements["div"] & EventProofToolTipProps
-> = (props) => (
-	<div style={{ cursor: "pointer" }}>
-		<Tooltip
-			disableFocusListener
-			PopperProps={
-				{
-					sx: styles.toolTip,
-				} as any
-			}
-			title={
-				<div>
-					{props.field === "id" && (
-						<>
-							If a previous withdraw has failed you can enter the event proof id
-							here to claim it. Make sure to select the right token and amount!
-						</>
-					)}
-					{props.field === "hash" && (
-						<>The CENNZnet block hash at the time of the withdrawal event.</>
-					)}
-				</div>
-			}
-			arrow
-			placement="right"
-		>
-			<HelpOutlineIcon fontSize={"0.5em" as any} />
-		</Tooltip>
-	</div>
-);
 
 export default BridgeAdvanced;
 
@@ -110,7 +89,7 @@ const styles = {
 		width: 90%;
 	`,
 
-	formSettings: css`
+	accordion: css`
 		box-shadow: none;
 
 		&:before {
@@ -118,20 +97,7 @@ const styles = {
 		}
 	`,
 
-	formField: css`
-		margin-top: 1em;
-		margin-bottom: 1em;
-
-		label {
-			font-weight: bold;
-			font-size: 14px;
-			text-transform: uppercase;
-			margin-bottom: 0.5em;
-			display: block;
-		}
-	`,
-
-	formSettingsSummary: ({ palette }: Theme) => css`
+	accordionSummary: ({ palette }: Theme) => css`
 		text-transform: uppercase;
 		font-weight: bold;
 		padding: 0;
@@ -148,12 +114,55 @@ const styles = {
 		}
 	`,
 
-	input: css`
-		width: 200px;
+	unclaimedWithdrawals: css`
+		margin-top: 1em;
 		margin-bottom: 1em;
+		display: block;
+
+		p {
+			font-weight: bold;
+			font-size: 14px;
+			display: block;
+		}
 	`,
 
-	toolTip: css`
-		max-width: 200px;
+	unclaimed: css`
+		margin-bottom: 0.5em;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+
+		p {
+			font-family: "Roboto Mono", monospace;
+			margin-bottom: 1em;
+		}
+	`,
+
+	claimButton: ({ palette, transitions }: Theme) => css`
+		display: inline-block;
+		border-radius: 4px;
+		height: 2em;
+		width: 5em;
+		//align-self: center;
+
+		background-color: white;
+		font-weight: bold;
+		cursor: pointer;
+		transition: background-color ${transitions.duration.short}ms,
+			color ${transitions.duration.short}ms;
+
+		font-size: 14px;
+		text-transform: uppercase;
+		border: 1px solid ${palette.primary.main};
+		color: ${palette.primary.main};
+
+		&:hover {
+			background-color: ${palette.primary.main};
+			color: white;
+		}
+	`,
+
+	unclaimedDivider: css`
+		margin-bottom: 1em;
 	`,
 };
