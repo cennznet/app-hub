@@ -37,7 +37,6 @@ const PoolForm: FC<IntrinsicElements["form"] & PoolFormProps> = ({
 		coreValue: { value: crValue },
 
 		exchangeInfo,
-		userInfo,
 
 		updatePoolUserInfo,
 		updateExchangeRate,
