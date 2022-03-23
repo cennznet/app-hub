@@ -1,5 +1,5 @@
 import { act, renderHook } from "@testing-library/react-hooks";
-import BridgeProvider, { useBridge } from "@/providers/BridgeProvider";
+import BridgeProvider, { useBridge } from "@/providers/BridgeCurrentProvider";
 import { mock } from "@depay/web3-mock";
 
 const blockchain = "ethereum";

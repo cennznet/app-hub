@@ -6,7 +6,7 @@ import CENNZApiProvider from "@/providers/CENNZApiProvider";
 import CENNZWalletProvider from "@/providers/CENNZWalletProvider";
 import AppSwitch from "@/components/AppSwitch";
 import WalletButton from "@/components/WalletButton";
-import BridgeProvider from "@/providers/BridgeProvider";
+import BridgeProvider from "@/providers/BridgeCurrentProvider";
 import { GlobalProps } from "@/utils/generateGlobalProps";
 import UserAgentProvider from "@/providers/UserAgentProvider";
 import CENNZExtensionProvider from "@/providers/CENNZExtensionProvider";

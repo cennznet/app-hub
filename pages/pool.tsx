@@ -4,7 +4,7 @@ import fetchPoolAssets from "@/utils/fetchPoolAssets";
 import { API_URL } from "@/constants";
 import generateGlobalProps from "@/utils/generateGlobalProps";
 import MainPanel from "@/components/MainPanel";
-import PoolProvider from "@/providers/PoolProvider";
+import PoolProvider from "@/providers/PoolCurrentProvider";
 import { VFC } from "react";
 import PoolForm from "@/components/PoolForm";
 import PoolActionsPair from "@/components/PoolActionsPair";

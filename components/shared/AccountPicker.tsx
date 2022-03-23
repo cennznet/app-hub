@@ -3,7 +3,7 @@ import { useCENNZExtension } from "@/providers/CENNZExtensionProvider";
 import { css } from "@emotion/react";
 import AccountIdenticon from "@/components/shared/AccountIdenticon";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
-import { useBridge } from "@/providers/BridgeProvider";
+import { useBridge } from "@/providers/BridgeCurrentProvider";
 import Jazzicon, { jsNumberForAddress } from "react-jazzicon";
 import ClearIcon from "@mui/icons-material/Clear";
 import { SupportedChain } from "@/types";

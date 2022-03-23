@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import GenericERC20TokenAbi from "@/artifacts/GenericERC20Token.json";
 import { defineTxModal } from "@/utils/bridge/modal";
 import { checkDepositStatus, ETH, getDepositValues } from "@/utils/bridge";
-import { useBridge } from "@/providers/BridgeProvider";
+import { useBridge } from "@/providers/BridgeCurrentProvider";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import TxModal from "@/components/bridge/TxModal";
 import ErrorModal from "@/components/bridge/ErrorModal";

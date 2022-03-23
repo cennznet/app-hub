@@ -15,7 +15,7 @@ import {
 	CENNZAssetBalance,
 	EthereumToken,
 } from "@/types";
-import { useBridge } from "@/providers/BridgeProvider";
+import { useBridge } from "@/providers/BridgeCurrentProvider";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import { LegacyPoolAction as PoolAction } from "@/providers/PoolProvider";

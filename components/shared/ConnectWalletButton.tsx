@@ -1,6 +1,6 @@
 import React, { FC, MouseEventHandler, useEffect, useState } from "react";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
-import { useBridge } from "@/providers/BridgeProvider";
+import { useBridge } from "@/providers/BridgeCurrentProvider";
 import { Button } from "@mui/material";
 import { css } from "@emotion/react";
 

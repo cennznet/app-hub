@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { defineTxModal } from "@/utils/bridge/modal";
-import { useBridge } from "@/providers/BridgeProvider";
+import { useBridge } from "@/providers/BridgeCurrentProvider";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import TxModal from "@/components/bridge/TxModal";

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { css } from "@emotion/react";
-import { useBridge } from "@/providers/BridgeProvider";
+import { useBridge } from "@/providers/BridgeCurrentProvider";
 import Deposit from "@/components/bridge/Deposit";
 import Withdraw from "@/components/bridge/Withdraw";
 import AccountPicker from "@/components/shared/AccountPicker";
