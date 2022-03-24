@@ -17,6 +17,7 @@ import { withdrawETHSide } from "@/utils/bridge";
 import { useBridge } from "@/providers/BridgeProvider";
 import { defineTxModal } from "@/utils/bridge/modal";
 import { TransactionResponse } from "@ethersproject/abstract-provider";
+import ThreeDots from "@/components/shared/ThreeDots";
 
 interface BridgeAdvancedProps {
 	setModal: Function;
@@ -30,6 +31,7 @@ const BridgeAdvanced: VFC<IntrinsicElements["div"] & BridgeAdvancedProps> = (
 	const { selectedAccount } = useCENNZWallet();
 	const { Contracts, Account }: any = useBridge();
 	const { updateBalances } = useCENNZWallet();
+	const [mounted, setMounted] = useState<boolean>(false);
 	const [unclaimedWithdrawals, setUnclaimedWithdrawals] =
 		useState<WithdrawClaim[]>();
 
@@ -37,12 +39,14 @@ const BridgeAdvanced: VFC<IntrinsicElements["div"] & BridgeAdvancedProps> = (
 		if (!api || !selectedAccount) return;
 
 		setUnclaimedWithdrawals(null);
+		setMounted(false);
 
 		(async () => {
 			const unclaimed: Awaited<ReturnType<typeof fetchUnclaimedWithdrawals>> =
 				await fetchUnclaimedWithdrawals(selectedAccount.address, api);
 
 			if (!!unclaimed) setUnclaimedWithdrawals(unclaimed);
+			setMounted(true);
 		})();
 	}, [api, selectedAccount, setUnclaimedWithdrawals]);
 
@@ -85,27 +89,41 @@ const BridgeAdvanced: VFC<IntrinsicElements["div"] & BridgeAdvancedProps> = (
 				</AccordionSummary>
 				<AccordionDetails>
 					<div css={styles.unclaimedWithdrawals}>
-						<p>UNclaimed Withdrawals:</p>
-						{unclaimedWithdrawals?.map((unclaimed, i) => (
-							<div key={i}>
-								<div css={styles.unclaimed}>
-									<span style={{ display: "block" }}>
-										<p>
-											UNclaimed: {unclaimed.amount} {unclaimed.tokenSymbol}
-										</p>
-										<p>{unclaimed.expiry}</p>
-									</span>
-									<button
-										css={styles.claimButton}
-										onClick={() => submitHistoricalClaim(unclaimed)}
-									>
-										claim
-									</button>
-								</div>
+						{!mounted && (
+							<span style={{ display: "inline-flex" }}>
+								<p>Checking for UNclaimed withdrawals</p>
+								<ThreeDots rootCss={styles.threeDots} />
+							</span>
+						)}
+						{mounted && !unclaimedWithdrawals && (
+							<p>No UNclaimed Withdrawals &nbsp;&#127881;</p>
+						)}
+						{mounted && unclaimedWithdrawals && (
+							<>
+								<p>UNclaimed Withdrawals: </p>
+								{unclaimedWithdrawals.map((unclaimed, i) => (
+									<div key={i}>
+										<div css={styles.unclaimed}>
+											<span style={{ display: "block" }}>
+												<p>
+													UNclaimed: {unclaimed.amount} {unclaimed.tokenSymbol}
+												</p>
+												<p>{unclaimed.expiry}</p>
+											</span>
 
-								<Divider css={styles.unclaimedDivider} />
-							</div>
-						))}
+											<button
+												css={styles.claimButton}
+												onClick={() => submitHistoricalClaim(unclaimed)}
+											>
+												claim
+											</button>
+										</div>
+
+										<Divider css={styles.unclaimedDivider} />
+									</div>
+								))}
+							</>
+						)}
 					</div>
 				</AccordionDetails>
 			</Accordion>
@@ -156,6 +174,11 @@ const styles = {
 			font-size: 14px;
 			display: block;
 		}
+	`,
+
+	threeDots: css`
+		align-self: center;
+		margin-left: 0.2em;
 	`,
 
 	unclaimed: css`
