@@ -2,7 +2,7 @@ import { GenericCoin } from "@/types";
 import { Codec, Balance as ApiBalance } from "@cennznet/types";
 import Big, { BigSource, RoundingMode } from "big.js";
 import BN from "bn.js";
-import { BigNumber } from "ethers";
+import { BigNumber, ethers } from "ethers";
 
 interface AsBalanceOptions {
 	withSymbol: boolean;
@@ -88,6 +88,10 @@ export default class Balance extends Big {
 		const suffix = withSymbol && symbol ? ` ${symbol}` : "";
 
 		return `${output}${suffix}`;
+	}
+
+	toBigNumber(): BigNumber {
+		return ethers.utils.parseUnits(this.toInput(), this.getDecimals());
 	}
 
 	getSymbol(): string {

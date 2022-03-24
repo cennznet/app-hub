@@ -1,16 +1,10 @@
-import {
-	BridgeChain,
-	BridgedEthereumToken,
-	EthereumToken,
-	IntrinsicElements,
-} from "@/types";
+import { BridgeChain, BridgedEthereumToken, IntrinsicElements } from "@/types";
 import { css } from "@emotion/react";
 import { useCallback, useMemo, VFC } from "react";
 import TokenInput from "@/components/shared/TokenInput";
 import { Theme } from "@mui/material";
 import { useBridge } from "@/providers/BridgeProvider";
 import { useBalanceValidation, useCENNZBalances } from "@/hooks";
-import useMetaMaskBalances from "@/hooks/useMetaMaskBalances";
 import { Balance } from "@/utils";
 import AddressInput from "@/components/shared/AddressInput";
 import useAddressValidation from "@/hooks/useAddressValidation";
@@ -28,13 +22,12 @@ const BridgeTokenDestination: VFC<
 		bridgeAction,
 		transferAddress,
 		setTransferAddress,
+		metaMaskBalance,
 	} = useBridge();
 
 	const [cennzBalance] = useCENNZBalances(
 		transferAsset as BridgedEthereumToken
 	);
-
-	const [metaMaskBalance] = useMetaMaskBalances(transferAsset as EthereumToken);
 
 	const transferBalance =
 		bridgeAction === "Withdraw" ? cennzBalance : metaMaskBalance;
@@ -51,13 +44,13 @@ const BridgeTokenDestination: VFC<
 		[setTransferAddress]
 	);
 
+	const addressType: BridgeChain =
+		bridgeAction === "Withdraw" ? "Ethereum" : "CENNZnet";
+
 	const { inputRef: transferInputRef } = useBalanceValidation(
 		Balance.fromInput(transferValue.value, transferAsset),
 		transferBalance
 	);
-
-	const addressType: BridgeChain =
-		bridgeAction === "Withdraw" ? "Ethereum" : "CENNZnet";
 
 	const { inputRef: addressInputRef } = useAddressValidation(
 		transferAddress,

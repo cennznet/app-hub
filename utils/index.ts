@@ -21,6 +21,8 @@ export { default as fetchBridgeDepositStatus } from "@/utils/fetchBridgeDepositS
 export { default as fetchBridgeWithdrawStatus } from "@/utils/fetchBridgeWithdrawStatus";
 export { default as getERC20PegContract } from "@/utils/getERC20PegContract";
 export { default as getBridgeContract } from "@/utils/getBridgeContract";
+export { default as getERC20TokenContract } from "@/utils/getERC20TokenContract";
+export { default as sendDepositRequest } from "@/utils/sendDepositRequest";
 
 //TODO: Remove after Bridge work done
 export const formatBalance = (balance: number): string => {

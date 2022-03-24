@@ -5,6 +5,10 @@ import { css } from "@emotion/react";
 import { Theme } from "@mui/material";
 import { useBridge } from "@/providers/BridgeProvider";
 import useBridgeStatus from "@/hooks/useBridgeStatus";
+import { useCENNZApi } from "@/providers/CENNZApiProvider";
+import { useMetaMaskWallet } from "@/providers/MetaMaskWalletProvider";
+import { Balance, sendDepositRequest } from "@/utils";
+import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 
 interface BridgeFormProps {}
 
@@ -12,12 +16,61 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 	children,
 	...props
 }) => {
-	const { bridgeAction } = useBridge();
+	const { api } = useCENNZApi();
+	const { wallet } = useMetaMaskWallet();
+	const {
+		bridgeAction,
+		transferValue,
+		transferAsset,
+		transferAddress,
+		setProgressStatus,
+		setSuccessStatus,
+		setTxStatus,
+		updateMetaMaskBalances,
+	} = useBridge();
 	const [buttonLabel, setButtonLabel] = useState<string>("Deposit");
-	const onFormSubmit = useCallback(async (event) => {
-		event.preventDefault();
-		console.log("onFormSubmit");
-	}, []);
+	const { updateBalances: updateCENNZBalances } = useCENNZWallet();
+
+	const processDepositRequest = useCallback(async () => {
+		const setTrValue = transferValue.setValue;
+		const transferAmount = Balance.fromInput(
+			transferValue.value,
+			transferAsset
+		);
+		setProgressStatus();
+
+		const tx = await sendDepositRequest(
+			transferAmount,
+			transferAsset,
+			transferAddress,
+			wallet.getSigner()
+		);
+
+		if (tx === "cancelled") return setTxStatus(null);
+
+		setSuccessStatus();
+		setTrValue("");
+		updateMetaMaskBalances();
+		updateCENNZBalances();
+	}, [
+		transferValue,
+		transferAsset,
+		transferAddress,
+		wallet,
+		setProgressStatus,
+		setSuccessStatus,
+		setTxStatus,
+		updateMetaMaskBalances,
+		updateCENNZBalances,
+	]);
+
+	const onFormSubmit = useCallback(
+		async (event) => {
+			event.preventDefault();
+			if (bridgeAction === "Deposit") return processDepositRequest();
+		},
+		[bridgeAction, processDepositRequest]
+	);
 
 	const status = useBridgeStatus();
 

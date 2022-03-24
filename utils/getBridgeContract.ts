@@ -10,6 +10,7 @@ type ContractSigner<T> = T extends "ReadOnly"
 	? ethers.Signer
 	: never;
 
+// TODO: Needs test
 export default function getBridgeContract<T extends ContractType>(
 	signer: ContractSigner<T>
 ): ethers.Contract {

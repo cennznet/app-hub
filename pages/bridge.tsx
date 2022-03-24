@@ -9,6 +9,7 @@ import MainPanel from "@/components/MainPanel";
 import BridgeProvider from "@/providers/BridgeProvider";
 import { fetchBridgeTokens } from "@/utils";
 import { BridgedEthereumToken, EthereumToken } from "@/types";
+import BridgeProgress from "@/components/BridgeProgress";
 
 export async function getStaticProps() {
 	const api = await Api.create({ provider: API_URL });
@@ -36,6 +37,7 @@ const Bridge: VFC<{
 					<BridgeTokenDestination />
 					<BridgeStats />
 				</BridgeForm>
+				<BridgeProgress />
 			</MainPanel>
 		</BridgeProvider>
 	);

@@ -1,5 +1,6 @@
 import { ETH_TOKEN_ADDRESS } from "@/constants";
 import { TokenInputHook, useTokenInput } from "@/hooks";
+import useMetaMaskBalances from "@/hooks/useMetaMaskBalances";
 import {
 	BridgeAction,
 	BridgedEthereumToken,
@@ -40,6 +41,9 @@ interface BridgeContextType {
 	setProgressStatus: () => void;
 	setSuccessStatus: () => void;
 	setFailStatus: (errorCode?: string) => void;
+
+	metaMaskBalance: Balance;
+	updateMetaMaskBalances: () => void;
 }
 
 const BridgeContext = createContext<BridgeContextType>({} as BridgeContextType);
@@ -108,24 +112,42 @@ const BridgeProvider: FC<BridgeProviderProps> = ({
 	const setSuccessStatus = useCallback(() => {
 		const trValue = Balance.format(transferValue.value);
 		const trSymbol = transferAsset.symbol;
-		const action = bridgeAction === "Withdraw" ? "withdrew" : "deposited";
 
 		setTxStatus({
 			status: "success",
 			title: "Transaction Completed",
-			message: (
-				<div>
-					You successfully {action}{" "}
-					<pre>
-						<em>
-							{trValue} {trSymbol}
-						</em>
-					</pre>
-					.
-				</div>
-			),
+			...(bridgeAction === "Withdraw" && {
+				message: (
+					<div>
+						You successfully withdrew{" "}
+						<pre>
+							<em>
+								{trValue} {trSymbol}
+							</em>
+						</pre>{" "}
+						from CENNZnet.
+					</div>
+				),
+			}),
+
+			...(bridgeAction === "Deposit" && {
+				message: (
+					<div>
+						You successfully deposited{" "}
+						<pre>
+							<em>
+								{trValue} {trSymbol}
+							</em>
+						</pre>{" "}
+						to CENNZnet.
+					</div>
+				),
+			}),
 		});
-	}, [transferValue.value, transferAsset.symbol, bridgeAction]);
+	}, [transferValue.value, transferAsset?.symbol, bridgeAction]);
+
+	const [metaMaskBalance, , updateMetaMaskBalances] =
+		useMetaMaskBalances(transferAsset);
 
 	useEffect(() => {
 		if (bridgeAction === "Deposit") return setEthereumTokens(depositTokens);
@@ -153,6 +175,9 @@ const BridgeProvider: FC<BridgeProviderProps> = ({
 				setProgressStatus,
 				setSuccessStatus,
 				setFailStatus,
+
+				metaMaskBalance,
+				updateMetaMaskBalances,
 			}}
 		>
 			{children}

@@ -63,7 +63,7 @@ export interface EthereumToken extends GenericCoin {
 	address: string;
 }
 
-export interface BridgedEthereumToken extends GenericCoin {
+export interface BridgedEthereumToken extends EthereumToken {
 	assetId: CENNZAsset["assetId"];
 }
 
