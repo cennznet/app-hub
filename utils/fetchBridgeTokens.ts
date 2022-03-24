@@ -16,9 +16,13 @@ export default async function fetchBridgeTokens<T extends BridgeAction>(
 	action: BridgeAction
 ): Promise<BridgeTokens<T>[]> {
 	if (action === "Deposit")
-		return (await Promise.resolve(
-			fetchEthereumTokens(ETH_CHAIN_ID)
-		)) as BridgeTokens<T>[];
+		return (await Promise.resolve(fetchEthereumTokens(ETH_CHAIN_ID))).sort(
+			(a, b) => {
+				if (a.address > b.address) return 1;
+				if (a.address < b.address) return -1;
+				return 0;
+			}
+		) as BridgeTokens<T>[];
 
 	const registeredAssets: [AssetId, AssetInfo][] = await (
 		api.rpc as any
@@ -38,5 +42,11 @@ export default async function fetchBridgeTokens<T extends BridgeAction>(
 				} as BridgedEthereumToken;
 			})
 		)
-	).filter(Boolean) as BridgeTokens<T>[];
+	)
+		.filter(Boolean)
+		.sort((a, b) => {
+			if (a.address > b.address) return 1;
+			if (a.address < b.address) return -1;
+			return 0;
+		}) as BridgeTokens<T>[];
 }
