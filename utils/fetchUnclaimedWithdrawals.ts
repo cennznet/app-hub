@@ -23,11 +23,13 @@ export default async function fetchUnclaimedWithdrawals(
 			apiPrefix = "https://bridge-contracts.centralityapp.com";
 			break;
 		case 42:
-			apiPrefix = "https://bridge-contracts.nikau.centrality.me/withdrawals";
+			apiPrefix = "https://bridge-contracts.nikau.centrality.me";
 			break;
 	}
 
-	const unclaimedRaw = await fetch(`${apiPrefix}/${selectedAccount}`)
+	const unclaimedRaw = await fetch(
+		`${apiPrefix}/withdrawals/${selectedAccount}`
+	)
 		.then((response) => {
 			if (!response.ok) {
 				throw new Error("No UNclaimed withdrawals found");
@@ -48,7 +50,7 @@ export default async function fetchUnclaimedWithdrawals(
 			);
 			const expiry = getExpiryString(withdrawal.expiresAt);
 
-			const tx = await fetch(`${apiPrefix}/${withdrawal.txHash}`)
+			const tx = await fetch(`${apiPrefix}/transactions/${withdrawal.txHash}`)
 				.then((response) => {
 					if (!response.ok) {
 						throw new Error("Error: Transaction not found");
