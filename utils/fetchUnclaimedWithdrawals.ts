@@ -41,6 +41,7 @@ export default async function fetchUnclaimedWithdrawals(
 
 	return await Promise.all<WithdrawClaim[]>(
 		unclaimedRaw.withdrawals.map(async (withdrawal) => {
+			if (withdrawal.hasClaimed) return;
 			const tokenAddress = await api.query.erc20Peg.assetIdToErc20(
 				withdrawal.assetId
 			);
