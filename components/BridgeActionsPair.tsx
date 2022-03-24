@@ -14,7 +14,7 @@ const BridgeActionsPair: VFC<
 	const selectOptions = [
 		{
 			value: "Ethereum",
-			label: "Ethereum",
+			label: "ETHEREUM",
 		},
 		{
 			value: "CENNZnet",
@@ -156,7 +156,6 @@ const styles = {
 		padding-bottom: 0.75em;
 
 		> span {
-			text-transform: uppercase;
 			font-size: 14px;
 			font-weight: bold;
 			flex: 1;
