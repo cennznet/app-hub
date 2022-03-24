@@ -15,8 +15,8 @@ const BridgeTokenDestination: VFC<
 	IntrinsicElements["div"] & BridgeTokenDestinationProps
 > = (props) => {
 	const {
-		transferToken,
-		transferValue,
+		transferSelect,
+		transferInput,
 		ethereumTokens,
 		transferAsset,
 		bridgeAction,
@@ -33,9 +33,9 @@ const BridgeTokenDestination: VFC<
 		bridgeAction === "Withdraw" ? cennzBalance : metaMaskBalance;
 
 	const onTransferMaxRequest = useMemo(() => {
-		const setErc20Value = transferValue.setValue;
+		const setErc20Value = transferInput.setValue;
 		return () => setErc20Value(transferBalance.toInput());
-	}, [transferBalance, transferValue.setValue]);
+	}, [transferBalance, transferInput.setValue]);
 
 	const onTransferAddressChange = useCallback(
 		(event) => {
@@ -48,7 +48,7 @@ const BridgeTokenDestination: VFC<
 		bridgeAction === "Withdraw" ? "Ethereum" : "CENNZnet";
 
 	const { inputRef: transferInputRef } = useBalanceValidation(
-		Balance.fromInput(transferValue.value, transferAsset),
+		Balance.fromInput(transferInput.value, transferAsset),
 		transferBalance
 	);
 
@@ -63,10 +63,10 @@ const BridgeTokenDestination: VFC<
 				<label htmlFor="transferInput">TRANSFER TOKEN</label>
 				<TokenInput
 					onMaxValueRequest={onTransferMaxRequest}
-					selectedTokenId={transferToken.tokenId}
-					onTokenChange={transferToken.onTokenChange}
-					value={transferValue.value}
-					onValueChange={transferValue.onValueChange}
+					selectedTokenId={transferSelect.tokenId}
+					onTokenChange={transferSelect.onTokenChange}
+					value={transferInput.value}
+					onValueChange={transferInput.onValueChange}
 					tokens={ethereumTokens}
 					id="transferInput"
 					ref={transferInputRef}

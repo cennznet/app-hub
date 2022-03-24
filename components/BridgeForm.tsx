@@ -20,7 +20,7 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 	const { wallet } = useMetaMaskWallet();
 	const {
 		bridgeAction,
-		transferValue,
+		transferInput,
 		transferAsset,
 		transferAddress,
 		setProgressStatus,
@@ -32,9 +32,9 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 	const { updateBalances: updateCENNZBalances } = useCENNZWallet();
 
 	const processDepositRequest = useCallback(async () => {
-		const setTrValue = transferValue.setValue;
+		const setTrValue = transferInput.setValue;
 		const transferAmount = Balance.fromInput(
-			transferValue.value,
+			transferInput.value,
 			transferAsset
 		);
 		setProgressStatus();
@@ -53,7 +53,7 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 		updateMetaMaskBalances();
 		updateCENNZBalances();
 	}, [
-		transferValue,
+		transferInput,
 		transferAsset,
 		transferAddress,
 		wallet,

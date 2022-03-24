@@ -27,8 +27,8 @@ interface BridgeContextType {
 
 	ethereumTokens: EthereumToken[] | BridgedEthereumToken[];
 
-	transferToken: TokenInputHook<ERC20TokenAddress>[0];
-	transferValue: TokenInputHook<ERC20TokenAddress>[1];
+	transferSelect: TokenInputHook<ERC20TokenAddress>[0];
+	transferInput: TokenInputHook<ERC20TokenAddress>[1];
 
 	transferAsset: EthereumToken | BridgedEthereumToken;
 
@@ -68,11 +68,11 @@ const BridgeProvider: FC<BridgeProviderProps> = ({
 		(token) => token.address === ETH_TOKEN_ADDRESS
 	);
 
-	const [transferToken, transferValue] = useTokenInput(ethAsset.address);
+	const [transferSelect, transferInput] = useTokenInput(ethAsset.address);
 
 	const transferAsset =
 		(ethereumTokens as EthereumToken[])?.find(
-			(token) => token.address === transferToken.tokenId
+			(token) => token.address === transferSelect.tokenId
 		) || ethAsset;
 
 	const [txStatus, setTxStatus] = useState<TxStatus>(null);
@@ -111,7 +111,7 @@ const BridgeProvider: FC<BridgeProviderProps> = ({
 	}, []);
 
 	const setSuccessStatus = useCallback(() => {
-		const trValue = Balance.format(transferValue.value);
+		const trValue = Balance.format(transferInput.value);
 		const trSymbol = transferAsset.symbol;
 
 		setTxStatus({
@@ -145,7 +145,7 @@ const BridgeProvider: FC<BridgeProviderProps> = ({
 				),
 			}),
 		});
-	}, [transferValue.value, transferAsset?.symbol, bridgeAction]);
+	}, [transferInput.value, transferAsset?.symbol, bridgeAction]);
 
 	const [metaMaskBalance, , updateMetaMaskBalances] =
 		useMetaMaskBalances(transferAsset);
@@ -156,12 +156,12 @@ const BridgeProvider: FC<BridgeProviderProps> = ({
 	}, [depositTokens, withdrawTokens, bridgeAction]);
 
 	useEffect(() => {
-		const setTransferToken = transferToken.setTokenId;
+		const setTransferToken = transferSelect.setTokenId;
 		setTransferToken((previous) => {
 			if (previous !== transferAsset.address) return transferAsset.address;
 			return previous;
 		});
-	}, [transferAsset, transferToken.setTokenId]);
+	}, [transferAsset, transferSelect.setTokenId]);
 
 	return (
 		<BridgeContext.Provider
@@ -171,8 +171,8 @@ const BridgeProvider: FC<BridgeProviderProps> = ({
 
 				ethereumTokens,
 
-				transferToken,
-				transferValue,
+				transferSelect,
+				transferInput,
 
 				transferAsset,
 
