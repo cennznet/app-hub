@@ -1,6 +1,8 @@
 import { ETH_TOKEN_ADDRESS } from "@/constants";
 import { TokenInputHook, useTokenInput } from "@/hooks";
+import { useMetaMaskWallet } from "@/providers/MetaMaskWalletProvider";
 import { BridgeAction, BridgedEthereumToken, EthereumToken } from "@/types";
+import getERC20PegContract from "@/utils/getERC20PegContract";
 import {
 	createContext,
 	Dispatch,

@@ -13,7 +13,7 @@ interface SubmitButtonProps {
 
 const SubmitButton: FC<
 	ButtonHTMLAttributes<HTMLButtonElement> & SubmitButtonProps
-> = ({ children, requireCENNZnet, requireMetaMask, ...props }) => {
+> = ({ children, requireCENNZnet, requireMetaMask, disabled, ...props }) => {
 	const { selectedAccount: cennzAccount, connectWallet: connectCENNZWallet } =
 		useCENNZWallet();
 	const {
@@ -65,6 +65,7 @@ const SubmitButton: FC<
 				<button
 					css={[styles.root, styles.submitButton]}
 					type="submit"
+					disabled={disabled}
 					{...props}
 				>
 					{children}
@@ -96,9 +97,15 @@ const styles = {
 		border: 1px solid ${palette.primary.main};
 		color: ${palette.primary.main};
 
-		&:hover {
+		&:hover:not(:disabled) {
 			background-color: ${palette.primary.main};
 			color: white;
+		}
+
+		&:disabled {
+			color: ${palette.grey["500"]};
+			border-color: ${palette.grey["500"]};
+			cursor: not-allowed;
 		}
 	`,
 

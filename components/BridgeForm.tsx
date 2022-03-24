@@ -4,6 +4,7 @@ import SubmitButton from "@/components/shared/SubmitButton";
 import { css } from "@emotion/react";
 import { Theme } from "@mui/material";
 import { useBridge } from "@/providers/BridgeProvider";
+import useBridgeStatus from "@/hooks/useBridgeStatus";
 
 interface BridgeFormProps {}
 
@@ -15,7 +16,10 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 	const [buttonLabel, setButtonLabel] = useState<string>("Deposit");
 	const onFormSubmit = useCallback(async (event) => {
 		event.preventDefault();
+		console.log("onFormSubmit");
 	}, []);
+
+	const status = useBridgeStatus();
 
 	useEffect(() => {
 		if (bridgeAction === "Deposit") return setButtonLabel("Deposit");
@@ -27,9 +31,19 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 			{children}
 
 			<div css={styles.formSubmit}>
-				<SubmitButton requireCENNZnet={true} requireMetaMask={true}>
+				<SubmitButton
+					requireCENNZnet={true}
+					requireMetaMask={true}
+					disabled={status === "Inactive"}
+				>
 					{buttonLabel}
 				</SubmitButton>
+
+				{status === "Inactive" && (
+					<div css={styles.formNote}>
+						{bridgeAction} is temporarily deactivated, please try again later.
+					</div>
+				)}
 			</div>
 		</form>
 	);
@@ -48,5 +62,12 @@ const styles = {
 		border-top: 1px solid ${palette.divider};
 		padding-top: 2em;
 		margin: 2em -2.5em 0;
+	`,
+
+	formNote: ({ palette }: Theme) => css`
+		font-size: 14px;
+		margin: 1em auto 0em;
+		color: ${palette.grey["800"]};
+		width: 240px;
 	`,
 };

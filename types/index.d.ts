@@ -8,6 +8,7 @@ import {
 	InputHTMLAttributes,
 } from "react";
 
+//TODO: Remove after Bridge work done
 export interface Asset {
 	symbol: string;
 	assetId?: number;
@@ -18,6 +19,7 @@ export interface Asset {
 	name?: string;
 }
 
+//TODO: Remove after Bridge work done
 export interface PoolConfig {
 	tradeAsset: CENNZAsset;
 	coreAsset: CENNZAsset;
@@ -27,21 +29,24 @@ export interface PoolConfig {
 	setMax: Function;
 }
 
-export type SupportedChain = "Ethereum" | "CENNZnet";
+export type SupportedChain = "Ethereum" | "CENNZnet"; //TODO: Remove after Bridge work done
 export type BridgeChain = "Ethereum" | "CENNZnet";
 
+//TODO: Remove after Bridge work done
 export interface Chain {
 	name: SupportedChain;
 	logo: string;
 }
 
+//TODO: Remove after Bridge work done
 export interface CENNZAccount {
 	name: string;
 	address: string;
 }
 
-export type BridgeState = "Deposit" | "Withdraw";
+export type BridgeState = "Deposit" | "Withdraw"; //TODO: Remove after Bridge work done
 export type BridgeAction = "Deposit" | "Withdraw";
+export type BridgeStatus = "Inactive" | "Active";
 
 export interface GenericCoin {
 	decimals: number;
@@ -67,6 +72,7 @@ export interface CENNZAssetBalance extends CENNZAsset {
 
 export type SectionUri = "swap" | "pool" | "bridge";
 
+//TODO: Remove after Bridge work done
 export interface TxModalAttributes {
 	state: string;
 	title: string;
@@ -100,6 +106,3 @@ export interface PoolUserInfo {
 export interface MetaMaskAccount {
 	address: string;
 }
-
-export type EthersProvider = ethers.providers.Web3Provider;
-export type EthersContract = ethers.Contract;
