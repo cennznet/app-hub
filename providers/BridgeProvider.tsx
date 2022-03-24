@@ -70,9 +70,10 @@ const BridgeProvider: FC<BridgeProviderProps> = ({
 
 	const [transferToken, transferValue] = useTokenInput(ethAsset.address);
 
-	const transferAsset = (ethereumTokens as EthereumToken[])?.find(
-		(token) => token.address === transferToken.tokenId
-	);
+	const transferAsset =
+		(ethereumTokens as EthereumToken[])?.find(
+			(token) => token.address === transferToken.tokenId
+		) || ethAsset;
 
 	const [txStatus, setTxStatus] = useState<TxStatus>(null);
 
@@ -153,6 +154,14 @@ const BridgeProvider: FC<BridgeProviderProps> = ({
 		if (bridgeAction === "Deposit") return setEthereumTokens(depositTokens);
 		if (bridgeAction === "Withdraw") return setEthereumTokens(withdrawTokens);
 	}, [depositTokens, withdrawTokens, bridgeAction]);
+
+	useEffect(() => {
+		const setTransferToken = transferToken.setTokenId;
+		setTransferToken((previous) => {
+			if (previous !== transferAsset.address) return transferAsset.address;
+			return previous;
+		});
+	}, [transferAsset, transferToken.setTokenId]);
 
 	return (
 		<BridgeContext.Provider
