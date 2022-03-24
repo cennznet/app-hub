@@ -6,6 +6,7 @@ import {
 	HTMLAttributes,
 	HTMLFormElement,
 	InputHTMLAttributes,
+	ReactElement,
 } from "react";
 
 //TODO: Remove after Bridge work done
@@ -105,4 +106,10 @@ export interface PoolUserInfo {
 
 export interface MetaMaskAccount {
 	address: string;
+}
+
+export interface TxStatus {
+	status: "in-progress" | "success" | "fail";
+	title: string;
+	message: string | ReactElement;
 }

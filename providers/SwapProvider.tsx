@@ -5,22 +5,15 @@ import {
 	SetStateAction,
 	Dispatch,
 	FC,
-	ReactElement,
 	useCallback,
 } from "react";
-import { CENNZAsset } from "@/types";
-import { fetchSwapAssets, formatBalance } from "@/utils";
+import { CENNZAsset, TxStatus } from "@/types";
+import { Balance, fetchSwapAssets } from "@/utils";
 import { useTokensFetcher } from "@/hooks";
 import { CENNZ_ASSET_ID, CPAY_ASSET_ID } from "@/constants";
 import { useTokenInput, TokenInputHook } from "@/hooks";
 
 type CENNZAssetId = CENNZAsset["assetId"];
-
-interface TxStatus {
-	status: "in-progress" | "success" | "fail";
-	title: string;
-	message: string | ReactElement;
-}
 
 interface SwapContextType {
 	exchangeAssets: CENNZAsset[];
@@ -35,6 +28,7 @@ interface SwapContextType {
 	receiveAsset: CENNZAsset;
 	slippage: string;
 	setSlippage: Dispatch<SetStateAction<string>>;
+
 	txStatus: TxStatus;
 	setTxStatus: Dispatch<SetStateAction<TxStatus>>;
 
@@ -111,10 +105,10 @@ const SwapProvider: FC<SwapProviderProps> = ({ supportedAssets, children }) => {
 	}, []);
 
 	const setSuccessStatus = useCallback(() => {
-		const exValue = formatBalance(Number(exchangeValue.value));
+		const exValue = Balance.format(exchangeValue.value);
 		const exSymbol = exchangeAsset.symbol;
 
-		const reValue = formatBalance(Number(receiveValue.value));
+		const reValue = Balance.format(receiveValue.value);
 		const reSymbol = receiveAsset.symbol;
 
 		setTxStatus({

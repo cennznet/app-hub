@@ -22,6 +22,7 @@ export { default as fetchBridgeWithdrawStatus } from "@/utils/fetchBridgeWithdra
 export { default as getERC20PegContract } from "@/utils/getERC20PegContract";
 export { default as getBridgeContract } from "@/utils/getBridgeContract";
 
+//TODO: Remove after Bridge work done
 export const formatBalance = (balance: number): string => {
 	if (balance === 0 || !balance) return "0.0000";
 	return balance < 0.0001 ? "<0.0001" : balance.toFixed(4);

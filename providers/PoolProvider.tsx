@@ -1,4 +1,4 @@
-import { CENNZAsset, PoolAction } from "@/types";
+import { CENNZAsset, PoolAction, TxStatus } from "@/types";
 import {
 	createContext,
 	Dispatch,
@@ -6,7 +6,6 @@ import {
 	SetStateAction,
 	useContext,
 	useState,
-	ReactElement,
 	useCallback,
 	useEffect,
 } from "react";
@@ -21,19 +20,13 @@ import {
 import { Balance } from "@/utils";
 import { CENNZ_ASSET_ID, CPAY_ASSET_ID } from "@/constants";
 
-// To be removed once TokenPicker is removed
+// TODO: Remove after Bridge work done
 export enum LegacyPoolAction {
 	ADD = "Add",
 	REMOVE = "Withdraw",
 }
 
 type CENNZAssetId = CENNZAsset["assetId"];
-
-interface TxStatus {
-	status: "in-progress" | "success" | "fail";
-	title: string;
-	message: string | ReactElement;
-}
 
 interface PoolContextType extends PoolExchangeInfoHook, PoolUserInfoHook {
 	poolAction: PoolAction;
