@@ -5,6 +5,8 @@ import { decodeAddress } from "@polkadot/keyring";
 import { Api } from "@cennznet/api";
 import getTokenLogo from "@/utils/getTokenLogo";
 
+export { default as withdrawETHSide } from "@/utils/bridge/withdrawETHSide";
+
 export const ETH = "0x0000000000000000000000000000000000000000";
 
 export const CHAINS: Chain[] = [

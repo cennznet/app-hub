@@ -42,7 +42,7 @@ export default async function fetchUnclaimedWithdrawals(
 			const tokenAddress = await api.query.erc20Peg.assetIdToErc20(
 				withdrawal.assetId
 			);
-			const { token, amount } = await parseERC20Meta(
+			const { tokenSymbol, amount } = await parseERC20Meta(
 				tokenAddress.toString(),
 				withdrawal.amount.trim()
 			);
@@ -60,8 +60,10 @@ export default async function fetchUnclaimedWithdrawals(
 			console.log("tx", tx);
 
 			return {
-				token,
+				tokenAddress: tokenAddress.toString(),
+				tokenSymbol,
 				amount,
+				rawAmount: withdrawal.amount.trim(),
 				expiry,
 				eventProofId: withdrawal.proofId,
 				//blockHash
@@ -72,7 +74,7 @@ export default async function fetchUnclaimedWithdrawals(
 
 const parseERC20Meta = async (tokenAddress: string, amount: string) => {
 	if (tokenAddress === ETH)
-		return { token: "ETH", amount: ethers.formatEther(amount) };
+		return { tokenSymbol: "ETH", amount: ethers.formatEther(amount) };
 
 	const provider = new providers.Web3Provider(global.ethereum);
 	const signer = provider.getSigner();
@@ -86,7 +88,7 @@ const parseERC20Meta = async (tokenAddress: string, amount: string) => {
 	const decimals = await token.decimals();
 	const symbol = await token.symbol();
 
-	return { token: symbol, amount: ethers.formatUnits(amount, decimals) };
+	return { tokenSymbol: symbol, amount: ethers.formatUnits(amount, decimals) };
 };
 
 const getExpiryString = (expiresAt: number): String => {

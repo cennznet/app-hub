@@ -1,4 +1,4 @@
-import { useEffect, useState, VFC } from "react";
+import { useCallback, useEffect, useState, VFC } from "react";
 import { IntrinsicElements, WithdrawClaim } from "@/types";
 import { css } from "@emotion/react";
 import {
@@ -10,14 +10,17 @@ import {
 } from "@mui/material";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import fetchUnclaimedWithdrawals from "@/utils/fetchUnclaimedWithdrawals";
+import { EthyEventId } from "@cennznet/types";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
+import { withdrawETHSide } from "@/utils/bridge";
+import { useBridge } from "@/providers/BridgeProvider";
+import { defineTxModal } from "@/utils/bridge/modal";
+import { TransactionResponse } from "@ethersproject/abstract-provider";
 
 interface BridgeAdvancedProps {
-	historicalEventProofId: number;
-	setHistoricalEventProofId: Function;
-	blockHash: string;
-	setBlockHash: Function;
+	setModal: Function;
+	setModalOpen: Function;
 }
 
 const BridgeAdvanced: VFC<IntrinsicElements["div"] & BridgeAdvancedProps> = (
@@ -25,6 +28,8 @@ const BridgeAdvanced: VFC<IntrinsicElements["div"] & BridgeAdvancedProps> = (
 ) => {
 	const { api } = useCENNZApi();
 	const { selectedAccount } = useCENNZWallet();
+	const { Contracts, Account }: any = useBridge();
+	const { updateBalances } = useCENNZWallet();
 	const [unclaimedWithdrawals, setUnclaimedWithdrawals] =
 		useState<WithdrawClaim[]>();
 
@@ -41,13 +46,35 @@ const BridgeAdvanced: VFC<IntrinsicElements["div"] & BridgeAdvancedProps> = (
 		})();
 	}, [api, selectedAccount, setUnclaimedWithdrawals]);
 
-	const submitHistoricalClaim = async (unclaimed: WithdrawClaim) => {
-		// TODO: format new claim transaction
-		console.log("unclaimed.token", unclaimed.token);
-		console.log("unclaimed.amount", unclaimed.amount);
-		console.log("unclaimed.eventProofId", unclaimed.eventProofId);
-		console.log("unclaimed.blockHash", unclaimed.blockHash);
-	};
+	const submitHistoricalClaim = useCallback(
+		async (unclaimed: WithdrawClaim) => {
+			if (!api || !Account || !Contracts) return;
+
+			const eventProof = await api.derive.ethBridge.eventProof(
+				unclaimed.eventProofId as unknown as EthyEventId
+			);
+
+			// TODO: fetch blockHash from txHash
+
+			const tx: TransactionResponse = await withdrawETHSide(
+				unclaimed.rawAmount,
+				eventProof,
+				Account,
+				unclaimed.tokenAddress,
+				api,
+				Contracts.bridge,
+				Contracts.peg
+				//blockHash
+			);
+			props.setModal(
+				defineTxModal("withdrawETHside", tx.hash, props.setModalOpen)
+			);
+			await tx.wait();
+			props.setModal(defineTxModal("finished", "", props.setModalOpen));
+			await updateBalances();
+		},
+		[api, Account, Contracts, updateBalances, props]
+	);
 
 	return (
 		<div {...props} css={styles.root}>
@@ -66,7 +93,7 @@ const BridgeAdvanced: VFC<IntrinsicElements["div"] & BridgeAdvancedProps> = (
 								<div css={styles.unclaimed}>
 									<span style={{ display: "block" }}>
 										<p>
-											UNclaimed: {unclaimed.amount} {unclaimed.token}
+											UNclaimed: {unclaimed.amount} {unclaimed.tokenSymbol}
 										</p>
 										<p>{unclaimed.expiry}</p>
 									</span>
