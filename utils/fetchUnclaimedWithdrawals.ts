@@ -51,17 +51,6 @@ export default async function fetchUnclaimedWithdrawals(
 			);
 			const expiry = getExpiryString(withdrawal.expiresAt);
 
-			const tx = await fetch(`${apiPrefix}/transactions/${withdrawal.txHash}`)
-				.then((response) => {
-					if (!response.ok) {
-						throw new Error("Error: Transaction not found");
-					} else return response.json();
-				})
-				.catch((err) => console.log(err.message));
-
-			// TODO: Get blockHash from tx
-			console.log("tx", tx);
-
 			return {
 				tokenAddress: tokenAddress.toString(),
 				tokenSymbol,
@@ -69,7 +58,6 @@ export default async function fetchUnclaimedWithdrawals(
 				rawAmount: withdrawal.amount.trim(),
 				expiry,
 				eventProofId: withdrawal.proofId,
-				//blockHash
 			};
 		})
 	);

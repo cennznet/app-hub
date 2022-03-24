@@ -54,8 +54,6 @@ const BridgeAdvanced: VFC<IntrinsicElements["div"] & BridgeAdvancedProps> = (
 				unclaimed.eventProofId as unknown as EthyEventId
 			);
 
-			// TODO: fetch blockHash from txHash
-
 			const tx: TransactionResponse = await withdrawETHSide(
 				unclaimed.rawAmount,
 				eventProof,
@@ -63,8 +61,8 @@ const BridgeAdvanced: VFC<IntrinsicElements["div"] & BridgeAdvancedProps> = (
 				unclaimed.tokenAddress,
 				api,
 				Contracts.bridge,
-				Contracts.peg
-				//blockHash
+				Contracts.peg,
+				eventProof.blockHash
 			);
 			props.setModal(
 				defineTxModal("withdrawETHside", tx.hash, props.setModalOpen)

@@ -1,4 +1,4 @@
-import ethers, { BytesLike, Contract } from "ethers";
+import { utils, constants, BytesLike, Contract } from "ethers";
 import { Api } from "@cennznet/api";
 import { TransactionResponse } from "@ethersproject/abstract-provider";
 import { EthEventProof } from "@cennznet/api/derives/ethBridge/types";
@@ -24,14 +24,14 @@ export default async function withdrawETHSide(
 	const validators = notaryKeys.map((validator: BytesLike) => {
 		// session key is not set
 		if (
-			ethers.utils.hexlify(validator) ===
-			ethers.utils.hexlify(
+			utils.hexlify(validator) ===
+			utils.hexlify(
 				"0x000000000000000000000000000000000000000000000000000000000000000000"
 			)
 		) {
-			return ethers.constants.AddressZero;
+			return constants.AddressZero;
 		}
-		return ethers.utils.computeAddress(validator);
+		return utils.computeAddress(validator);
 	});
 
 	let gasEstimate = await pegContract.estimateGas.withdraw(
