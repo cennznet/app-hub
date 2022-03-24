@@ -24,12 +24,12 @@ interface BridgeContextType {
 	bridgeAction: BridgeAction;
 	setBridgeAction: Dispatch<SetStateAction<BridgeAction>>;
 
-	erc20Tokens: EthereumToken[] | BridgedEthereumToken[];
+	ethereumTokens: EthereumToken[] | BridgedEthereumToken[];
 
-	erc20Token: TokenInputHook<ERC20TokenAddress>[0];
-	erc20Value: TokenInputHook<ERC20TokenAddress>[1];
+	transferToken: TokenInputHook<ERC20TokenAddress>[0];
+	transferValue: TokenInputHook<ERC20TokenAddress>[1];
 
-	transferToken: EthereumToken | BridgedEthereumToken;
+	transferAsset: EthereumToken | BridgedEthereumToken;
 
 	transferAddress: string;
 	setTransferAddress: Dispatch<SetStateAction<string>>;
@@ -55,19 +55,19 @@ const BridgeProvider: FC<BridgeProviderProps> = ({
 	children,
 }) => {
 	const [bridgeAction, setBridgeAction] = useState<BridgeAction>("Deposit");
-	const [erc20Tokens, setERC20Tokens] =
-		useState<BridgeContextType["erc20Tokens"]>(depositTokens);
+	const [ethereumTokens, setEthereumTokens] =
+		useState<BridgeContextType["ethereumTokens"]>(depositTokens);
 	const [transferAddress, setTransferAddress] =
 		useState<BridgeContextType["transferAddress"]>("");
 
-	const ethToken = (erc20Tokens as EthereumToken[])?.find(
+	const ethAsset = (ethereumTokens as EthereumToken[])?.find(
 		(token) => token.address === ETH_TOKEN_ADDRESS
 	);
 
-	const [erc20Token, erc20Value] = useTokenInput(ethToken.address);
+	const [transferToken, transferValue] = useTokenInput(ethAsset.address);
 
-	const transferToken = (erc20Tokens as EthereumToken[])?.find(
-		(token) => token.address === erc20Token.tokenId
+	const transferAsset = (ethereumTokens as EthereumToken[])?.find(
+		(token) => token.address === transferToken.tokenId
 	);
 
 	const [txStatus, setTxStatus] = useState<TxStatus>(null);
@@ -106,8 +106,8 @@ const BridgeProvider: FC<BridgeProviderProps> = ({
 	}, []);
 
 	const setSuccessStatus = useCallback(() => {
-		const trValue = Balance.format(erc20Value.value);
-		const trSymbol = transferToken.symbol;
+		const trValue = Balance.format(transferValue.value);
+		const trSymbol = transferAsset.symbol;
 		const action = bridgeAction === "Withdraw" ? "withdrew" : "deposited";
 
 		setTxStatus({
@@ -125,11 +125,11 @@ const BridgeProvider: FC<BridgeProviderProps> = ({
 				</div>
 			),
 		});
-	}, [erc20Value.value, transferToken.symbol, bridgeAction]);
+	}, [transferValue.value, transferAsset.symbol, bridgeAction]);
 
 	useEffect(() => {
-		if (bridgeAction === "Deposit") return setERC20Tokens(depositTokens);
-		if (bridgeAction === "Withdraw") return setERC20Tokens(withdrawTokens);
+		if (bridgeAction === "Deposit") return setEthereumTokens(depositTokens);
+		if (bridgeAction === "Withdraw") return setEthereumTokens(withdrawTokens);
 	}, [depositTokens, withdrawTokens, bridgeAction]);
 
 	return (
@@ -137,11 +137,13 @@ const BridgeProvider: FC<BridgeProviderProps> = ({
 			value={{
 				bridgeAction,
 				setBridgeAction,
-				erc20Tokens,
-				erc20Token,
-				erc20Value,
+
+				ethereumTokens,
 
 				transferToken,
+				transferValue,
+
+				transferAsset,
 
 				transferAddress,
 				setTransferAddress,

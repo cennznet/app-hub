@@ -21,28 +21,28 @@ const BridgeTokenDestination: VFC<
 	IntrinsicElements["div"] & BridgeTokenDestinationProps
 > = (props) => {
 	const {
-		erc20Token,
-		erc20Value,
-		erc20Tokens,
 		transferToken,
+		transferValue,
+		ethereumTokens,
+		transferAsset,
 		bridgeAction,
 		transferAddress,
 		setTransferAddress,
 	} = useBridge();
 
 	const [cennzBalance] = useCENNZBalances(
-		transferToken as BridgedEthereumToken
+		transferAsset as BridgedEthereumToken
 	);
 
-	const [metaMaskBalance] = useMetaMaskBalances(transferToken as EthereumToken);
+	const [metaMaskBalance] = useMetaMaskBalances(transferAsset as EthereumToken);
 
 	const transferBalance =
 		bridgeAction === "Withdraw" ? cennzBalance : metaMaskBalance;
 
 	const onTransferMaxRequest = useMemo(() => {
-		const setErc20Value = erc20Value.setValue;
+		const setErc20Value = transferValue.setValue;
 		return () => setErc20Value(transferBalance.toInput());
-	}, [transferBalance, erc20Value.setValue]);
+	}, [transferBalance, transferValue.setValue]);
 
 	const onTransferAddressChange = useCallback(
 		(event) => {
@@ -52,7 +52,7 @@ const BridgeTokenDestination: VFC<
 	);
 
 	const { inputRef: transferInputRef } = useBalanceValidation(
-		Balance.fromInput(erc20Value.value, transferToken),
+		Balance.fromInput(transferValue.value, transferAsset),
 		transferBalance
 	);
 
@@ -70,11 +70,11 @@ const BridgeTokenDestination: VFC<
 				<label htmlFor="transferInput">TRANSFER TOKEN</label>
 				<TokenInput
 					onMaxValueRequest={onTransferMaxRequest}
-					selectedTokenId={erc20Token.tokenId}
-					onTokenChange={erc20Token.onTokenChange}
-					value={erc20Value.value}
-					onValueChange={erc20Value.onValueChange}
-					tokens={erc20Tokens}
+					selectedTokenId={transferToken.tokenId}
+					onTokenChange={transferToken.onTokenChange}
+					value={transferValue.value}
+					onValueChange={transferValue.onValueChange}
+					tokens={ethereumTokens}
 					id="transferInput"
 					ref={transferInputRef}
 					required
