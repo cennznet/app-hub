@@ -3,6 +3,7 @@ import { Api } from "@cennznet/api";
 import { Contract, providers, utils as ethers } from "ethers";
 import GenericERC20TokenAbi from "@/artifacts/GenericERC20Token.json";
 import { ETH } from "@/utils/bridge";
+import { ETH_CHAIN_ID } from "@/constants";
 
 /**
  * Fetch unclaimed withdraws for the selected account
@@ -15,9 +16,18 @@ export default async function fetchUnclaimedWithdrawals(
 	selectedAccount: string,
 	api: Api
 ): Promise<WithdrawClaim[]> {
-	const unclaimedRaw = await fetch(
-		`https://bridge-contracts.nikau.centrality.me/withdrawals/${selectedAccount}`
-	)
+	let apiPrefix: string;
+
+	switch (ETH_CHAIN_ID) {
+		case 1:
+			apiPrefix = "https://bridge-contracts.centralityapp.com";
+			break;
+		case 42:
+			apiPrefix = "https://bridge-contracts.nikau.centrality.me/withdrawals";
+			break;
+	}
+
+	const unclaimedRaw = await fetch(`${apiPrefix}/${selectedAccount}`)
 		.then((response) => {
 			if (!response.ok) {
 				throw new Error("No UNclaimed withdrawals found");
@@ -38,9 +48,7 @@ export default async function fetchUnclaimedWithdrawals(
 			);
 			const expiry = getExpiryString(withdrawal.expiresAt);
 
-			const tx = await fetch(
-				`https://bridge-contracts.nikau.centrality.me/transactions/${withdrawal.txHash}`
-			)
+			const tx = await fetch(`${apiPrefix}/${withdrawal.txHash}`)
 				.then((response) => {
 					if (!response.ok) {
 						throw new Error("Error: Transaction not found");
