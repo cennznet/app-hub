@@ -9,6 +9,9 @@ import {
 	Theme,
 } from "@mui/material";
 import ExpandMore from "@mui/icons-material/ExpandMore";
+import fetchUnclaimedWithdrawals from "@/utils/fetchUnclaimedWithdrawals";
+import { useCENNZApi } from "@/providers/CENNZApiProvider";
+import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 
 interface BridgeAdvancedProps {
 	historicalEventProofId: number;
@@ -17,28 +20,29 @@ interface BridgeAdvancedProps {
 	setBlockHash: Function;
 }
 
-const testArr: WithdrawClaim[] = [
-	{ token: "DAI", amount: 300, eventProofId: 1, blockHash: "test-block-hash" },
-	{ token: "ETH", amount: 0.5, eventProofId: 1, blockHash: "test-block-hash" },
-];
-
 const BridgeAdvanced: VFC<IntrinsicElements["div"] & BridgeAdvancedProps> = (
 	props
 ) => {
-	// const { selectedAccount } = useCENNZWallet();
+	const { api } = useCENNZApi();
+	const { selectedAccount } = useCENNZWallet();
 	const [unclaimedWithdrawals, setUnclaimedWithdrawals] =
-		useState<WithdrawClaim[]>(testArr);
+		useState<WithdrawClaim[]>();
 
-	// useEffect(() => {
-	// 	if (!selectedAccount) return;
-	//
-	// 	(async () =>
-	// 		setUnclaimedWithdrawals(
-	// 			await fetchUnclaimedWithdrawals(selectedAccount.address)
-	// 		))();
-	// }, [selectedAccount, setUnclaimedWithdrawals]);
+	useEffect(() => {
+		if (!api || !selectedAccount) return;
+
+		setUnclaimedWithdrawals(null);
+
+		(async () => {
+			const unclaimed: Awaited<ReturnType<typeof fetchUnclaimedWithdrawals>> =
+				await fetchUnclaimedWithdrawals(selectedAccount.address, api);
+
+			if (!!unclaimed) setUnclaimedWithdrawals(unclaimed);
+		})();
+	}, [api, selectedAccount, setUnclaimedWithdrawals]);
 
 	const submitHistoricalClaim = async (unclaimed: WithdrawClaim) => {
+		// TODO: format new claim transaction
 		console.log("unclaimed.token", unclaimed.token);
 		console.log("unclaimed.amount", unclaimed.amount);
 		console.log("unclaimed.eventProofId", unclaimed.eventProofId);
@@ -60,9 +64,12 @@ const BridgeAdvanced: VFC<IntrinsicElements["div"] & BridgeAdvancedProps> = (
 						{unclaimedWithdrawals?.map((unclaimed, i) => (
 							<div key={i}>
 								<div css={styles.unclaimed}>
-									<p>
-										UNclaimed: {unclaimed.amount} {unclaimed.token}
-									</p>
+									<span style={{ display: "block" }}>
+										<p>
+											UNclaimed: {unclaimed.amount} {unclaimed.token}
+										</p>
+										<p>{unclaimed.expiry}</p>
+									</span>
 									<button
 										css={styles.claimButton}
 										onClick={() => submitHistoricalClaim(unclaimed)}

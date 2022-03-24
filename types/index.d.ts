@@ -91,6 +91,7 @@ export interface PoolUserInfo {
 export interface WithdrawClaim {
 	token: string;
 	amount: number;
+	expiry: string;
 	eventProofId: number;
-	blockHash: string;
+	blockHash?: string;
 }
