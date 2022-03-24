@@ -31,7 +31,7 @@ export default async function fetchBridgeTokens<T extends BridgeAction>(
 				if (!tokenAddress.toString() || symbol?.toJSON() === "0x") return null;
 				return {
 					assetId: assetId.toJSON() as number,
-					address: tokenAddress.toString(),
+					address: tokenAddress.toString().toLowerCase(),
 					symbol: hexToString(symbol.toJSON()),
 					decimals: decimalPlaces.toNumber(),
 					decimalsValue: Math.pow(10, decimalPlaces.toNumber()),
