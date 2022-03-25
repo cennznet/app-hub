@@ -22,7 +22,7 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 		bridgeAction,
 		transferInput,
 		transferAsset,
-		transferAddress,
+		transferCENNZAddress,
 		setProgressStatus,
 		setSuccessStatus,
 		setTxStatus,
@@ -42,7 +42,7 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 		const tx = await sendDepositRequest(
 			transferAmount,
 			transferAsset,
-			transferAddress,
+			transferCENNZAddress,
 			wallet.getSigner()
 		);
 
@@ -55,7 +55,7 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 	}, [
 		transferInput,
 		transferAsset,
-		transferAddress,
+		transferCENNZAddress,
 		wallet,
 		setProgressStatus,
 		setSuccessStatus,

@@ -32,8 +32,11 @@ interface BridgeContextType {
 
 	transferAsset: EthereumToken | BridgedEthereumToken;
 
-	transferAddress: string;
-	setTransferAddress: Dispatch<SetStateAction<string>>;
+	transferCENNZAddress: string;
+	setTransferCENNZAddress: Dispatch<SetStateAction<string>>;
+
+	transferMetaMaskAddress: string;
+	setTransferMetaMaskAddress: Dispatch<SetStateAction<string>>;
 
 	txStatus: TxStatus;
 	setTxStatus: Dispatch<SetStateAction<TxStatus>>;
@@ -61,8 +64,10 @@ const BridgeProvider: FC<BridgeProviderProps> = ({
 	const [bridgeAction, setBridgeAction] = useState<BridgeAction>("Deposit");
 	const [ethereumTokens, setEthereumTokens] =
 		useState<BridgeContextType["ethereumTokens"]>(depositTokens);
-	const [transferAddress, setTransferAddress] =
-		useState<BridgeContextType["transferAddress"]>("");
+	const [transferCENNZAddress, setTransferCENNZAddress] =
+		useState<BridgeContextType["transferCENNZAddress"]>("");
+	const [transferMetaMaskAddress, setTransferMetaMaskAddress] =
+		useState<BridgeContextType["transferMetaMaskAddress"]>("");
 
 	const ethAsset = (ethereumTokens as EthereumToken[])?.find(
 		(token) => token.address === ETH_TOKEN_ADDRESS
@@ -176,8 +181,11 @@ const BridgeProvider: FC<BridgeProviderProps> = ({
 
 				transferAsset,
 
-				transferAddress,
-				setTransferAddress,
+				transferCENNZAddress,
+				setTransferCENNZAddress,
+
+				transferMetaMaskAddress,
+				setTransferMetaMaskAddress,
 
 				txStatus,
 				setTxStatus,

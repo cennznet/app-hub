@@ -1,6 +1,6 @@
-import { BridgeChain, BridgedEthereumToken, IntrinsicElements } from "@/types";
+import { BridgedEthereumToken, IntrinsicElements } from "@/types";
 import { css } from "@emotion/react";
-import { useCallback, useMemo, VFC } from "react";
+import { useCallback, useEffect, useMemo, VFC } from "react";
 import TokenInput from "@/components/shared/TokenInput";
 import { Theme } from "@mui/material";
 import { useBridge } from "@/providers/BridgeProvider";
@@ -8,6 +8,8 @@ import { useBalanceValidation, useCENNZBalances } from "@/hooks";
 import { Balance } from "@/utils";
 import AddressInput from "@/components/shared/AddressInput";
 import useAddressValidation from "@/hooks/useAddressValidation";
+import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
+import { useMetaMaskWallet } from "@/providers/MetaMaskWalletProvider";
 
 interface BridgeTokenDestinationProps {}
 
@@ -20,8 +22,10 @@ const BridgeTokenDestination: VFC<
 		ethereumTokens,
 		transferAsset,
 		bridgeAction,
-		transferAddress,
-		setTransferAddress,
+		transferCENNZAddress,
+		setTransferCENNZAddress,
+		transferMetaMaskAddress,
+		setTransferMetaMaskAddress,
 		metaMaskBalance,
 	} = useBridge();
 
@@ -37,25 +41,48 @@ const BridgeTokenDestination: VFC<
 		return () => setErc20Value(transferBalance.toInput());
 	}, [transferBalance, transferInput.setValue]);
 
-	const onTransferAddressChange = useCallback(
+	const onTransferCENNZAddressChange = useCallback(
 		(event) => {
-			setTransferAddress(event.target.value);
+			setTransferCENNZAddress(event.target.value);
 		},
-		[setTransferAddress]
+		[setTransferCENNZAddress]
 	);
 
-	const addressType: BridgeChain =
-		bridgeAction === "Withdraw" ? "Ethereum" : "CENNZnet";
+	const onTransferMetaMaskAddressChange = useCallback(
+		(event) => {
+			setTransferMetaMaskAddress(event.target.value);
+		},
+		[setTransferMetaMaskAddress]
+	);
 
 	const { inputRef: transferInputRef } = useBalanceValidation(
 		Balance.fromInput(transferInput.value, transferAsset),
 		transferBalance
 	);
 
-	const { inputRef: addressInputRef } = useAddressValidation(
-		transferAddress,
-		addressType
+	const { inputRef: cennzAddressInputRef } = useAddressValidation(
+		transferCENNZAddress,
+		"CENNZnet"
 	);
+
+	const { inputRef: metaMaskAddressInputRef } = useAddressValidation(
+		transferMetaMaskAddress,
+		"Ethereum"
+	);
+
+	// Sync CENNZ selected account with `transferCENNZAddressInput`
+	const { selectedAccount: cennzAccount } = useCENNZWallet();
+	useEffect(() => {
+		if (!cennzAccount?.address) return;
+		setTransferCENNZAddress(cennzAccount.address);
+	}, [cennzAccount?.address, setTransferCENNZAddress]);
+
+	// Synce MetaMask selected account with `transferMetaMaskAddressInput`
+	const { selectedAccount: metaMaskAccount } = useMetaMaskWallet();
+	useEffect(() => {
+		if (!metaMaskAccount?.address) return;
+		setTransferMetaMaskAddress(metaMaskAccount.address);
+	}, [metaMaskAccount?.address, setTransferMetaMaskAddress]);
 
 	return (
 		<div {...props} css={styles.root}>
@@ -78,17 +105,25 @@ const BridgeTokenDestination: VFC<
 					Balance: <span>{transferBalance?.toBalance() ?? "0.0000"}</span>
 				</div>
 			</div>
-			<div css={styles.formField}>
-				<label htmlFor="transferInput">
-					{bridgeAction === "Withdraw"
-						? "ETHEREUM ADDRESS"
-						: "CENNZnet ADDRESS"}
-				</label>
+			<div css={styles.formField(bridgeAction === "Deposit")}>
+				<label htmlFor="transferCENNZAddressInput">CENNZnet ADDRESS</label>
 				<AddressInput
-					value={transferAddress}
-					onChange={onTransferAddressChange}
-					addressType={addressType}
-					ref={addressInputRef}
+					id="transferCENNZAddressInput"
+					value={transferCENNZAddress}
+					onChange={onTransferCENNZAddressChange}
+					addressType="CENNZnet"
+					ref={cennzAddressInputRef}
+				/>
+			</div>
+
+			<div css={styles.formField(bridgeAction === "Withdraw")}>
+				<label htmlFor="transferMetaMaskAddressInput">ETHEREUM ADDRESS</label>
+				<AddressInput
+					id="transferMetaMaskAddressInput"
+					value={transferMetaMaskAddress}
+					onChange={onTransferMetaMaskAddressChange}
+					addressType="Ethereum"
+					ref={metaMaskAddressInputRef}
 				/>
 			</div>
 		</div>
@@ -100,21 +135,25 @@ export default BridgeTokenDestination;
 const styles = {
 	root: css``,
 
-	formField: ({ palette }: Theme) => css`
-		margin-bottom: 1.5em;
+	formField:
+		(show: boolean) =>
+		({ palette }: Theme) =>
+			css`
+				display: ${show ? "block" : "none"};
+				margin-bottom: 1.5em;
 
-		&:last-child {
-			margin-bottom: 0;
-		}
+				&:last-child {
+					margin-bottom: 0;
+				}
 
-		label {
-			font-weight: bold;
-			font-size: 14px;
-			margin-bottom: 0.5em;
-			display: block;
-			color: ${palette.primary.main};
-		}
-	`,
+				label {
+					font-weight: bold;
+					font-size: 14px;
+					margin-bottom: 0.5em;
+					display: block;
+					color: ${palette.primary.main};
+				}
+			`,
 
 	tokenBalance: ({ palette }: Theme) => css`
 		margin-top: 0.25em;
