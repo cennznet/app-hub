@@ -2,7 +2,7 @@ import { BridgedEthereumToken, IntrinsicElements } from "@/types";
 import { css } from "@emotion/react";
 import { useCallback, useEffect, useMemo, VFC } from "react";
 import TokenInput from "@/components/shared/TokenInput";
-import { Theme } from "@mui/material";
+import { LinearProgress, Theme } from "@mui/material";
 import { useBridge } from "@/providers/BridgeProvider";
 import { useBalanceValidation, useCENNZBalances } from "@/hooks";
 import { Balance } from "@/utils";
@@ -101,9 +101,16 @@ const BridgeTokenDestination: VFC<
 					scale={4}
 					min={0.0001}
 				/>
-				<div css={styles.tokenBalance}>
-					Balance: <span>{transferBalance?.toBalance() ?? "0.0000"}</span>
-				</div>
+				{transferBalance !== null && (
+					<div css={styles.tokenBalance}>
+						Balance: <span>{transferBalance?.toBalance() ?? "0.0000"}</span>
+					</div>
+				)}
+				{transferBalance === null && (
+					<div css={styles.tokenBalance}>
+						Balance: <LinearProgress css={[styles.formInfoProgress]} />
+					</div>
+				)}
 			</div>
 			<div css={styles.formField(bridgeAction === "Deposit")}>
 				<label htmlFor="transferCENNZAddressInput">CENNZnet ADDRESS</label>
@@ -160,10 +167,19 @@ const styles = {
 		font-weight: 500;
 		color: ${palette.grey["700"]};
 		font-size: 14px;
+		display: flex;
+		align-items: center;
 
 		span {
 			font-family: "Roboto Mono", monospace;
 			font-weight: bold;
+			margin-left: 0.25em;
 		}
+	`,
+	formInfoProgress: css`
+		display: inline-block;
+		width: 25px;
+		border-radius: 10px;
+		opacity: 0.5;
 	`,
 };
