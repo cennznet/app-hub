@@ -15,11 +15,13 @@ export default function useMetaMaskBalances(
 		if (!wallet || !selectedAccount?.address) return;
 
 		return async () => {
+			setBalance1(null);
 			fetchMetaMaskBalance(wallet, selectedAccount.address, token1).then(
 				setBalance1
 			);
 
 			if (token2) {
+				setBalance2(null);
 				fetchMetaMaskBalance(wallet, selectedAccount.address, token2).then(
 					setBalance2
 				);
