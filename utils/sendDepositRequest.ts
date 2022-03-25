@@ -8,11 +8,11 @@ import getERC20PegContract from "@/utils/getERC20PegContract";
 export default async function sendDepositRequest(
 	transferAmount: Balance,
 	transferToken: EthereumToken | BridgedEthereumToken,
-	accountAddress: string,
+	cennzAddress: string,
 	signer: ethers.Signer
 ): Promise<ethers.Transaction | "cancelled"> {
 	const pegContract = getERC20PegContract<"OnBehalf">(signer);
-	const decodedAddress = decodeAddress(accountAddress);
+	const decodedAddress = decodeAddress(cennzAddress);
 	const transferValue = transferAmount.toBigNumber();
 
 	try {

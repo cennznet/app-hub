@@ -1,17 +1,22 @@
 import { Api } from "@cennznet/api";
 import { Signer, SubmittableExtrinsic } from "@cennznet/api/types";
 
+interface TxReceipt {
+	hash: string;
+	events: any[];
+}
+
 export default async function signAndSendTx(
 	api: Api,
 	extrinsic: SubmittableExtrinsic<"promise", any>,
 	address: string,
 	signer: Signer
-): Promise<string | "cancelled"> {
+): Promise<TxReceipt | "cancelled"> {
 	const signAndSend = async () => {
-		return new Promise((resolve, reject) => {
+		return new Promise<TxReceipt>((resolve, reject) => {
 			extrinsic
 				.signAndSend(address, { signer }, (progress) => {
-					const { dispatchError, status } = progress;
+					const { dispatchError, status, events } = progress;
 					if (dispatchError && dispatchError?.isModule && status.isFinalized) {
 						const { index, error } = dispatchError.asModule.toJSON();
 						const errorMeta = api.registry.findMetaError(
@@ -26,16 +31,20 @@ export default async function signAndSendTx(
 							new Error(`${errorCode}:${status?.asFinalized?.toString()}`)
 						);
 					}
-					if (status.isFinalized) return resolve(status.asFinalized.toString());
+					if (status.isFinalized)
+						return resolve({
+							hash: status.asFinalized.toString(),
+							events,
+						} as TxReceipt);
 				})
 				.catch((error) => reject(error));
 		});
 	};
 
 	try {
-		return await signAndSend().then((status) => {
-			console.info(`Transaction Finalized: ${status}`);
-			return status as string;
+		return await signAndSend().then((receipt) => {
+			console.info(`Transaction Finalized: ${receipt.hash}`);
+			return receipt;
 		});
 	} catch (error) {
 		if (error?.message === "Cancelled") return "cancelled";
