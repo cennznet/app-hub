@@ -22,3 +22,12 @@ export default async function fetchBridgeWithdrawStatus(
 		? "Active"
 		: "Inactive";
 }
+
+export async function ensureBridgeWithdrawActive(
+	api: Api,
+	provider: ethers.providers.Web3Provider
+) {
+	const status = await fetchBridgeWithdrawStatus(api, provider);
+
+	if (status === "Inactive") throw { code: "WITHDRAW_INACTIVE" };
+}

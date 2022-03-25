@@ -22,3 +22,12 @@ export default async function fetchBridgeDepositStatus(
 		? "Active"
 		: "Inactive";
 }
+
+export async function ensureBridgeDepositActive(
+	api: Api,
+	provider: ethers.providers.Web3Provider
+) {
+	const status = await fetchBridgeDepositStatus(api, provider);
+
+	if (status === "Inactive") throw { code: "DEPOSIT_INACTIVE" };
+}

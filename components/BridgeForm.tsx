@@ -7,7 +7,13 @@ import { useBridge } from "@/providers/BridgeProvider";
 import useBridgeStatus from "@/hooks/useBridgeStatus";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import { useMetaMaskWallet } from "@/providers/MetaMaskWalletProvider";
-import { Balance, sendDepositRequest, sendWithdrawCENNZRequest } from "@/utils";
+import {
+	Balance,
+	ensureBridgeDepositActive,
+	ensureBridgeWithdrawActive,
+	sendDepositRequest,
+	sendWithdrawCENNZRequest,
+} from "@/utils";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import sendWithdrawEthereumRequest from "@/utils/sendWithdrawEthereumRequest";
 
@@ -49,6 +55,7 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 		let tx: Awaited<ReturnType<typeof sendDepositRequest>>;
 
 		try {
+			await ensureBridgeDepositActive(api, metaMaskWallet);
 			tx = await sendDepositRequest(
 				transferAmount,
 				transferAsset,
@@ -67,6 +74,7 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 		updateMetaMaskBalances();
 		updateCENNZBalances();
 	}, [
+		api,
 		transferInput,
 		transferAsset,
 		transferCENNZAddress,
@@ -89,6 +97,7 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 
 		let eventProof: Awaited<ReturnType<typeof sendWithdrawCENNZRequest>>;
 		try {
+			await ensureBridgeWithdrawActive(api, metaMaskWallet);
 			eventProof = await sendWithdrawCENNZRequest(
 				api,
 				transferAmount,

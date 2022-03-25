@@ -17,8 +17,14 @@ export { default as getRemoveLiquidityExtrinsic } from "@/utils/getRemoveLiquidi
 export { default as Balance } from "@/utils/Balance";
 export { default as ensureEthereumChain } from "@/utils/ensureEthereumChain";
 export { default as fetchMetaMaskBalance } from "@/utils/fetchMetaMaskBalance";
-export { default as fetchBridgeDepositStatus } from "@/utils/fetchBridgeDepositStatus";
-export { default as fetchBridgeWithdrawStatus } from "@/utils/fetchBridgeWithdrawStatus";
+export {
+	default as fetchBridgeDepositStatus,
+	ensureBridgeDepositActive,
+} from "@/utils/fetchBridgeDepositStatus";
+export {
+	default as fetchBridgeWithdrawStatus,
+	ensureBridgeWithdrawActive,
+} from "@/utils/fetchBridgeWithdrawStatus";
 export { default as getERC20PegContract } from "@/utils/getERC20PegContract";
 export { default as getBridgeContract } from "@/utils/getBridgeContract";
 export { default as getERC20TokenContract } from "@/utils/getERC20TokenContract";
