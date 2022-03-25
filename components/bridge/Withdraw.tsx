@@ -6,7 +6,7 @@ import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import TxModal from "@/components/bridge/TxModal";
 import ErrorModal from "@/components/bridge/ErrorModal";
-import { CENNZAsset, CENNZAccount, TxModalAttributes } from "@/types";
+import { CENNZAccount, CENNZAsset, TxModalAttributes } from "@/types";
 import ConnectWalletButton from "@/components/shared/ConnectWalletButton";
 import { checkWithdrawStatus, fetchEstimatedFee } from "@/utils/bridge";
 import Advanced from "@/components/bridge/Advanced";
@@ -71,49 +71,46 @@ const Withdraw: React.FC<{
 		setModalOpen(false);
 		const bridgeActive = await checkWithdrawStatus(api, Contracts.peg);
 
-		if (bridgeActive) {
-			const tokenAddress = await api.query.erc20Peg.assetIdToErc20(
-				token.assetId
+		if (!bridgeActive)
+			return setModal(defineTxModal("bridgePaused", "", setModalOpen));
+
+		const tokenAddress = await api.query.erc20Peg.assetIdToErc20(token.assetId);
+
+		if (!tokenAddress)
+			return setModal(defineTxModal("error", "noTokenSelected", setModalOpen));
+
+		setModal(defineTxModal("withdrawCENNZside", "", setModalOpen));
+
+		const withdrawAmount = ethers.utils
+			.parseUnits(String(amount), token.decimals)
+			.toString();
+
+		let eventProof;
+		if (!!historicalEventProofId && !!blockHash) {
+			eventProof = await api.derive.ethBridge.eventProof(
+				historicalEventProofId
 			);
-			if (!!tokenAddress) {
-				setModal(defineTxModal("withdrawCENNZside", "", setModalOpen));
 
-				const withdrawAmount = ethers.utils
-					.parseUnits(String(amount), token.decimals)
-					.toString();
-
-				let eventProof;
-				if (!!historicalEventProofId && !!blockHash) {
-					eventProof = await api.derive.ethBridge.eventProof(
-						historicalEventProofId
-					);
-
-					return await withdrawEthSide(
-						withdrawAmount,
-						eventProof,
-						Account,
-						tokenAddress.toString(),
-						blockHash
-					);
-				}
-
-				eventProof = await withdrawCENNZside(
-					withdrawAmount,
-					Account,
-					token.assetId
-				);
-				await withdrawEthSide(
-					withdrawAmount,
-					eventProof,
-					Account,
-					tokenAddress.toString()
-				);
-			} else {
-				setModal(defineTxModal("error", "noTokenSelected", setModalOpen));
-			}
-		} else {
-			setModal(defineTxModal("bridgePaused", "", setModalOpen));
+			return await withdrawEthSide(
+				withdrawAmount,
+				eventProof,
+				Account,
+				tokenAddress.toString(),
+				blockHash
+			);
 		}
+
+		eventProof = await withdrawCENNZside(
+			withdrawAmount,
+			Account,
+			token.assetId
+		);
+		await withdrawEthSide(
+			withdrawAmount,
+			eventProof,
+			Account,
+			tokenAddress.toString()
+		);
 	};
 
 	const withdrawCENNZside = async (
