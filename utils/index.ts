@@ -32,6 +32,8 @@ export { default as sendDepositRequest } from "@/utils/sendDepositRequest";
 export { default as getPegWithdrawExtrinsic } from "@/utils/getPegWithdrawExtrinsic";
 export { default as sendWithdrawCENNZRequest } from "@/utils/sendWithdrawCENNZRequest";
 export { default as waitUntil } from "@/utils/waitUntil";
+export { default as fetchDepositRelayerStatus } from "@/utils/fetchDepositRelayerStatus";
+export { default as ensureRelayerDepositDone } from "@/utils/ensureRelayerDepositDone";
 
 //TODO: Remove after Bridge work done
 export const formatBalance = (balance: number): string => {

@@ -14,3 +14,6 @@ export const API_URL: string = process.env.NEXT_PUBLIC_API_URL;
 export const ETH_CHAIN_ID: number = Number(
 	process.env.NEXT_PUBLIC_ETH_CHAIN_ID
 );
+
+export const BRIDGE_RELAYER_URL: string =
+	process.env.NEXT_PUBLIC_BRIDGE_RELAYER_URL;

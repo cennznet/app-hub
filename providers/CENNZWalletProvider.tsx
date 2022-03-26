@@ -105,9 +105,7 @@ export default function CENNZWalletProvider({
 	}, [selectedAccount, api]);
 
 	useEffect(() => {
-		(async () => {
-			await updateBalances();
-		})();
+		updateBalances?.();
 	}, [updateBalances]);
 
 	return (

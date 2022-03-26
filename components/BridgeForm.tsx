@@ -13,6 +13,7 @@ import {
 	ensureBridgeWithdrawActive,
 	sendDepositRequest,
 	sendWithdrawCENNZRequest,
+	ensureRelayerDepositDone,
 } from "@/utils";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import sendWithdrawEthereumRequest from "@/utils/sendWithdrawEthereumRequest";
@@ -62,6 +63,8 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 				transferCENNZAddress,
 				metaMaskWallet.getSigner()
 			);
+
+			if (tx !== "cancelled") await ensureRelayerDepositDone(tx.hash);
 		} catch (error) {
 			console.info(error);
 			return setFailStatus(error?.code);
