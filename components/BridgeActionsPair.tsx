@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState, VFC } from "react";
 import SelectInput from "@/components/shared/SelectInput";
 import SwitchButton from "@/components/shared/SwitchButton";
 import { MenuItem, Theme } from "@mui/material";
+import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 
 interface BridgeActionsPairProps {}
 
@@ -22,7 +23,8 @@ const BridgeActionsPair: VFC<
 		},
 	];
 
-	const { setBridgeAction } = useBridge();
+	const { bridgeAction, setBridgeAction, updateMetaMaskBalances } = useBridge();
+	const { updateBalances: updateCENNZBalances } = useCENNZWallet();
 	const [fromOption, setFromOption] = useState<string>("Ethereum");
 	const [toOption, setToOption] = useState<string>("CENNZnet");
 
@@ -63,6 +65,12 @@ const BridgeActionsPair: VFC<
 		if (fromOption === "Ethereum") return setBridgeAction("Deposit");
 		if (fromOption === "CENNZnet") return setBridgeAction("Withdraw");
 	}, [fromOption, setBridgeAction]);
+
+	useEffect(() => {
+		if (!fromOption) return;
+		if (fromOption === "Ethereum") return updateMetaMaskBalances?.();
+		if (fromOption === "CENNZnet") return updateCENNZBalances?.();
+	}, [fromOption, updateMetaMaskBalances, updateCENNZBalances]);
 
 	return (
 		<div {...props} css={styles.root}>
