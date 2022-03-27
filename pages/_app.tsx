@@ -16,12 +16,26 @@ import CssGlobal from "@/components/CssGlobal";
 import MetaMaskExtensionProvider from "@/providers/MetaMaskExtensionProvider";
 import { API_URL } from "@/constants";
 import MetaMaskWalletProvider from "@/providers/MetaMaskWalletProvider";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
+import { trackPageView } from "@/utils";
 
 type MyAppProps = Omit<AppProps, "pageProps"> & {
 	pageProps: {} & GlobalProps;
 };
 
 function MyApp({ Component, pageProps }: MyAppProps) {
+	const { events } = useRouter();
+
+	useEffect(() => {
+		if (!events) return;
+
+		events.on("routeChangeComplete", trackPageView);
+		return () => {
+			events.off("routeChangeComplete", trackPageView);
+		};
+	}, [events]);
+
 	return (
 		<>
 			<Head>
