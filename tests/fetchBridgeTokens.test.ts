@@ -20,10 +20,10 @@ describe("fetchBridgeTokens", () => {
 	it("returns expected result on Withdraw action", async () => {
 		process.env.NEXT_PUBLIC_ETH_CHAIN_ID = "1";
 		const tokens = await fetchBridgeTokens(api, "Withdraw");
-		console.log(tokens);
 		expect(tokens.length).toBeGreaterThan(0);
 		tokens.forEach((token) =>
 			expect(Object.keys(token)).toEqual([
+				"assetId",
 				"address",
 				"symbol",
 				"decimals",
