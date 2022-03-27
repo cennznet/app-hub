@@ -94,14 +94,16 @@ export default function CENNZWalletProvider({
 	//3. Fetch asset balance
 	const updateBalances = useCallback(async () => {
 		if (!selectedAccount?.address || !api) return;
-		(async () => {
+		const updateCENNZBalances = async () => {
 			const balances = await fetchCENNZAssetBalances(
 				api,
 				selectedAccount.address
 			);
 
 			setBalances(balances);
-		})();
+		};
+
+		updateCENNZBalances();
 	}, [selectedAccount, api]);
 
 	useEffect(() => {
