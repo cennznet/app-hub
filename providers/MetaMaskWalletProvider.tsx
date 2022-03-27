@@ -1,4 +1,4 @@
-import { useMetaMaskExtension } from "@/providers/MetaMaskExtenstionProvider";
+import { useMetaMaskExtension } from "@/providers/MetaMaskExtensionProvider";
 import {
 	createContext,
 	FC,
