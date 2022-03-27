@@ -13,7 +13,7 @@ import PageBackdrop from "@/components/shared/PageBackdrop";
 import PageFrame from "@/components/shared/PageFrame";
 import GlobalModalProvider from "@/providers/GlobalModalProvider";
 import CssGlobal from "@/components/CssGlobal";
-import MetaMaskExtensionProvider from "@/providers/MetaMaskExtenstionProvider";
+import MetaMaskExtensionProvider from "@/providers/MetaMaskExtensionProvider";
 import { API_URL } from "@/constants";
 import MetaMaskWalletProvider from "@/providers/MetaMaskWalletProvider";
 
