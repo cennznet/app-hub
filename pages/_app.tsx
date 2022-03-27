@@ -6,7 +6,6 @@ import CENNZApiProvider from "@/providers/CENNZApiProvider";
 import CENNZWalletProvider from "@/providers/CENNZWalletProvider";
 import AppSwitch from "@/components/AppSwitch";
 import WalletButton from "@/components/WalletButton";
-import BridgeProvider from "@/providers/BridgeProvider";
 import { GlobalProps } from "@/utils/generateGlobalProps";
 import UserAgentProvider from "@/providers/UserAgentProvider";
 import CENNZExtensionProvider from "@/providers/CENNZExtensionProvider";
@@ -14,6 +13,9 @@ import PageBackdrop from "@/components/shared/PageBackdrop";
 import PageFrame from "@/components/shared/PageFrame";
 import GlobalModalProvider from "@/providers/GlobalModalProvider";
 import CssGlobal from "@/components/CssGlobal";
+import MetaMaskExtensionProvider from "@/providers/MetaMaskExtensionProvider";
+import { API_URL } from "@/constants";
+import MetaMaskWalletProvider from "@/providers/MetaMaskWalletProvider";
 
 type MyAppProps = Omit<AppProps, "pageProps"> & {
 	pageProps: {} & GlobalProps;
@@ -32,21 +34,21 @@ function MyApp({ Component, pageProps }: MyAppProps) {
 				<CssGlobal />
 				<UserAgentProvider>
 					<CENNZExtensionProvider>
-						<CENNZApiProvider endpoint={process.env.NEXT_PUBLIC_API_URL}>
-							<CENNZWalletProvider>
-								<BridgeProvider
-									ethChainId={process.env.NEXT_PUBLIC_ETH_CHAIN_ID}
-								>
-									<GlobalModalProvider>
-										<PageBackdrop />
-										<WalletButton />
-										<AppSwitch />
-										<Component {...pageProps} />
-										<PageFrame />
-									</GlobalModalProvider>
-								</BridgeProvider>
-							</CENNZWalletProvider>
-						</CENNZApiProvider>
+						<MetaMaskExtensionProvider>
+							<CENNZApiProvider endpoint={API_URL}>
+								<CENNZWalletProvider>
+									<MetaMaskWalletProvider>
+										<GlobalModalProvider>
+											<PageBackdrop />
+											<WalletButton />
+											<AppSwitch />
+											<Component {...pageProps} />
+											<PageFrame />
+										</GlobalModalProvider>
+									</MetaMaskWalletProvider>
+								</CENNZWalletProvider>
+							</CENNZApiProvider>
+						</MetaMaskExtensionProvider>
 					</CENNZExtensionProvider>
 				</UserAgentProvider>
 			</ThemeProvider>

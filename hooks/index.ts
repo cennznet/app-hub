@@ -1,4 +1,4 @@
-export { default as useWalletBalances } from "@/hooks/useWalletBalances";
+export { default as useCENNZBalances } from "@/hooks/useCENNZBalances";
 export { default as useSwapGasFee } from "@/hooks/useSwapGasFee";
 export { default as useSectionUri } from "@/hooks/useSectionUri";
 export { default as useSwapExchangeRate } from "@/hooks/useSwapExchangeRate";
@@ -8,6 +8,9 @@ export { default as usePoolExchangeInfo } from "@/hooks/usePoolExchangeInfo";
 export { default as usePoolUserInfo } from "@/hooks/usePoolUserInfo";
 export { default as usePoolGasFee } from "@/hooks/usePoolGasFee";
 export { default as usePoolCoreAssetValue } from "@/hooks/usePoolCoreAssetValue";
+export { default as useBalanceValidation } from "@/hooks/useBalanceValidation";
+export { default as useBridgeGasFee } from "@/hooks/useBridgeGasFee";
+export { default as useBridgeVerificationFee } from "@/hooks/useBridgeVerificationFee";
 
 export type { TokenInputHook } from "@/hooks/useTokenInput";
 export type { PoolExchangeInfoHook } from "@/hooks/usePoolExchangeInfo";

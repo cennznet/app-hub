@@ -16,7 +16,7 @@ import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import fetchCENNZAssetBalances from "@/utils/fetchCENNZAssetBalances";
 import { CENNZAssetBalance } from "@/types";
 
-type WalletContext = {
+interface WalletContext {
 	balances: CENNZAssetBalance[];
 	updateBalances: Function;
 	selectedAccount: InjectedAccountWithMeta;
@@ -24,19 +24,11 @@ type WalletContext = {
 	connectWallet: (callback?: () => void) => Promise<void>;
 	disconnectWallet: () => void;
 	selectAccount: (account: InjectedAccountWithMeta) => void;
-};
+}
 
-const CENNZWalletContext = createContext<WalletContext>({
-	balances: null,
-	updateBalances: null,
-	selectedAccount: null,
-	wallet: null,
-	connectWallet: null,
-	disconnectWallet: null,
-	selectAccount: null,
-});
+const CENNZWalletContext = createContext<WalletContext>({} as WalletContext);
 
-type ProviderProps = {};
+interface ProviderProps {}
 
 export default function CENNZWalletProvider({
 	children,
@@ -102,20 +94,20 @@ export default function CENNZWalletProvider({
 	//3. Fetch asset balance
 	const updateBalances = useCallback(async () => {
 		if (!selectedAccount?.address || !api) return;
-		(async () => {
+		const updateCENNZBalances = async () => {
 			const balances = await fetchCENNZAssetBalances(
 				api,
 				selectedAccount.address
 			);
 
 			setBalances(balances);
-		})();
+		};
+
+		updateCENNZBalances();
 	}, [selectedAccount, api]);
 
 	useEffect(() => {
-		(async () => {
-			await updateBalances();
-		})();
+		updateBalances?.();
 	}, [updateBalances]);
 
 	return (

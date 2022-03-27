@@ -5,9 +5,11 @@ import { css } from "@emotion/react";
 import { useSwap } from "@/providers/SwapProvider";
 import SwitchButton from "@/components/shared/SwitchButton";
 import { Theme } from "@mui/material";
-import { useSwapExchangeRate } from "@/hooks";
-import useWalletBalances from "@/hooks/useWalletBalances";
-import useBalanceValidation from "@/hooks/useBalanceValidation";
+import {
+	useSwapExchangeRate,
+	useCENNZBalances,
+	useBalanceValidation,
+} from "@/hooks";
 import { Balance } from "@/utils";
 
 interface SwapAssetsPairProps {}
@@ -76,7 +78,7 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
 		setReceiveValue(exchangeRate.toInput());
 	}, [exchangeRate, receiveValue.setValue]);
 
-	const [exchangeBalance, receiveBalance] = useWalletBalances(
+	const [exchangeBalance, receiveBalance] = useCENNZBalances(
 		exchangeAsset,
 		receiveAsset
 	);

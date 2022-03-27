@@ -75,8 +75,12 @@ const globalStyles = (
 						}
 					}
 
-					.MuiOutlinedInput-input {
+					.MuiOutlinedInput-input:not(textarea) {
 						padding: 0.78125em;
+					}
+
+					textarea.MuiOutlinedInput-input {
+						line-height: 1.25;
 					}
 
 					.MuiOutlinedInput-input:not(.MuiSelect-select) {
