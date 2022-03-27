@@ -63,7 +63,7 @@ export const styles = {
 		({ palette, shadows, transitions }: Theme) =>
 			css`
 				position: absolute;
-				top: 3em;
+				top: 0;
 				right: 3em;
 				cursor: pointer;
 				box-shadow: ${shadows[1]};

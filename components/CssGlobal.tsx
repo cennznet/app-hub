@@ -42,6 +42,8 @@ const globalStyles = (
 			}
 
 			#__next {
+				position: relative;
+				min-width: 960px;
 				.MuiCircularProgress-root {
 					animation-duration: 0.7s;
 				}
