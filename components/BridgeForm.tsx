@@ -15,9 +15,9 @@ import {
 	sendWithdrawCENNZRequest,
 	ensureRelayerDepositDone,
 	ensureEthereumChain,
+	sendWithdrawEthereumRequest,
 } from "@/utils";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
-import sendWithdrawEthereumRequest from "@/utils/sendWithdrawEthereumRequest";
 import { useMetaMaskExtension } from "@/providers/MetaMaskExtenstionProvider";
 
 interface BridgeFormProps {}

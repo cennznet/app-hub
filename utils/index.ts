@@ -34,3 +34,4 @@ export { default as sendWithdrawCENNZRequest } from "@/utils/sendWithdrawCENNZRe
 export { default as waitUntil } from "@/utils/waitUntil";
 export { default as fetchDepositRelayerStatus } from "@/utils/fetchDepositRelayerStatus";
 export { default as ensureRelayerDepositDone } from "@/utils/ensureRelayerDepositDone";
+export { default as sendWithdrawEthereumRequest } from "@/utils/sendWithdrawEthereumRequest";
