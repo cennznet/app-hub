@@ -12,11 +12,17 @@ export default async function sendWithdrawEthereumRequest(
 	transferAmount: Balance,
 	transferAsset: BridgedEthereumToken,
 	ethereumAddress: string,
-	signer: ethers.Signer
+	signer: ethers.Signer,
+	blockHash?: string
 ): Promise<TransactionResponse | "cancelled"> {
-	const notaryKeys = (
-		await api.query.ethBridge.notaryKeys()
-	).toJSON() as string[];
+	let notaryKeys: string[];
+	if (!!blockHash) {
+		notaryKeys = (
+			await api.query.ethBridge.notaryKeys.at(blockHash)
+		).toJSON() as string[];
+	} else {
+		notaryKeys = (await api.query.ethBridge.notaryKeys()).toJSON() as string[];
+	}
 
 	const validators = notaryKeys.map((validator) => {
 		if (

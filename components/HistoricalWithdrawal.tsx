@@ -12,16 +12,16 @@ import {
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 
-interface BridgeAdvancedProps {
+interface HistoricalWithdrawalProps {
 	historicalEventProofId: number;
 	setHistoricalEventProofId: Function;
-	blockHash: string;
-	setBlockHash: Function;
+	historicalBlockHash: string;
+	setHistoricalBlockHash: Function;
 }
 
-const BridgeAdvanced: VFC<IntrinsicElements["div"] & BridgeAdvancedProps> = (
-	props
-) => {
+const HistoricalWithdrawal: VFC<
+	IntrinsicElements["div"] & HistoricalWithdrawalProps
+> = (props) => {
 	return (
 		<div {...props} css={styles.root}>
 			<Accordion css={[styles.formSettings]}>
@@ -48,11 +48,13 @@ const BridgeAdvanced: VFC<IntrinsicElements["div"] & BridgeAdvancedProps> = (
 								endAdornment: <EventProofToolTip field="id" />,
 							}}
 						/>
-						<label htmlFor="blockHash">Block Hash</label>
+						<label htmlFor="historicalBlockHash">Block Hash</label>
 						<TextField
 							css={styles.input}
-							value={props.blockHash}
-							onChange={(event) => props.setBlockHash(event.target.value)}
+							value={props.historicalBlockHash}
+							onChange={(event) =>
+								props.setHistoricalBlockHash(event.target.value)
+							}
 							required
 							type="string"
 							InputProps={{
@@ -102,7 +104,7 @@ const EventProofToolTip: VFC<
 	</div>
 );
 
-export default BridgeAdvanced;
+export default HistoricalWithdrawal;
 
 const styles = {
 	root: css`
