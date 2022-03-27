@@ -52,8 +52,8 @@ export default class Balance extends Big {
 		return new Balance(super.prec(sd, rm), this.coin);
 	}
 
-	override round(sd: number, rm?: RoundingMode): Balance {
-		return new Balance(super.round(sd, rm), this.coin);
+	override round(dp?: number, rm?: RoundingMode): Balance {
+		return new Balance(super.round(dp, rm), this.coin);
 	}
 
 	override sqrt(): Balance {
