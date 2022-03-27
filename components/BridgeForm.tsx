@@ -51,9 +51,9 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 	} = useCENNZWallet();
 	const { extension } = useMetaMaskExtension();
 
+	const [historicalBlockHash, setHistoricalBlockHash] = useState<string>();
 	const [historicalEventProofId, setHistoricalEventProofId] =
 		useState<number>();
-	const [historicalBlockHash, setHistoricalBlockHash] = useState<string>();
 
 	const processDepositRequest = useCallback(async () => {
 		const setTrValue = transferInput.setValue;
@@ -214,8 +214,8 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 		updateMetaMaskBalances,
 		updateCENNZBalances,
 		metaMaskWallet,
-		historicalEventProofId,
 		historicalBlockHash,
+		historicalEventProofId,
 	]);
 
 	const onFormSubmit = useCallback(
