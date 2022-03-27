@@ -27,11 +27,15 @@ interface PoolContextType extends PoolExchangeInfoHook, PoolUserInfoHook {
 	setPoolAction: Dispatch<SetStateAction<PoolAction>>;
 	tradeAssets: CENNZAsset[];
 	tradeAsset: CENNZAsset;
-	tradeToken: TokenInputHook<CENNZAssetId>[0];
-	tradeValue: TokenInputHook<CENNZAssetId>[1];
+
+	tradeSelect: TokenInputHook<CENNZAssetId>[0];
+	tradeInput: TokenInputHook<CENNZAssetId>[1];
+
 	coreAsset: CENNZAsset;
-	coreToken: TokenInputHook<CENNZAssetId>[0];
-	coreValue: TokenInputHook<CENNZAssetId>[1];
+
+	coreSelect: TokenInputHook<CENNZAssetId>[0];
+	coreInput: TokenInputHook<CENNZAssetId>[1];
+
 	slippage: string;
 	setSlippage: Dispatch<SetStateAction<string>>;
 
@@ -62,11 +66,11 @@ const PoolProvider: FC<PoolProviderProps> = ({ supportedAssets, children }) => {
 		(asset) => asset.assetId === CPAY_ASSET_ID
 	);
 
-	const [tradeToken, tradeValue] = useTokenInput(cennzAsset.assetId);
-	const [coreToken, coreValue] = useTokenInput(coreAsset.assetId);
+	const [tradeSelect, tradeInput] = useTokenInput(cennzAsset.assetId);
+	const [coreSelect, coreInput] = useTokenInput(coreAsset.assetId);
 
 	const tradeAsset = tradeAssets?.find(
-		(asset) => asset.assetId === tradeToken.tokenId
+		(asset) => asset.assetId === tradeSelect.tokenId
 	);
 
 	const { exchangeInfo, updatingExchangeInfo, updateExchangeRate } =
@@ -117,10 +121,10 @@ const PoolProvider: FC<PoolProviderProps> = ({ supportedAssets, children }) => {
 	}, []);
 
 	const setSuccessStatus = useCallback(() => {
-		const trValue = Balance.format(tradeValue.value);
+		const trValue = Balance.format(tradeInput.value);
 		const trSymbol = tradeAsset.symbol;
 
-		const crValue = Balance.format(coreValue.value);
+		const crValue = Balance.format(coreInput.value);
 		const crSymbol = coreAsset.symbol;
 
 		setTxStatus({
@@ -145,9 +149,9 @@ const PoolProvider: FC<PoolProviderProps> = ({ supportedAssets, children }) => {
 			),
 		});
 	}, [
-		tradeValue.value,
+		tradeInput.value,
 		tradeAsset.symbol,
-		coreValue.value,
+		coreInput.value,
 		coreAsset.symbol,
 		poolAction,
 	]);
@@ -160,10 +164,10 @@ const PoolProvider: FC<PoolProviderProps> = ({ supportedAssets, children }) => {
 				tradeAssets,
 				coreAsset,
 				tradeAsset,
-				tradeToken,
-				tradeValue,
-				coreToken,
-				coreValue,
+				tradeSelect,
+				tradeInput,
+				coreSelect,
+				coreInput,
 
 				exchangeInfo,
 				updateExchangeRate,

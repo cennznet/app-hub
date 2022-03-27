@@ -20,10 +20,10 @@ interface SwapContextType {
 	receiveAssets: CENNZAsset[];
 	cpayAsset: CENNZAsset;
 	setReceiveAssets: Dispatch<SetStateAction<CENNZAsset[]>>;
-	exchangeToken: TokenInputHook<CENNZAssetId>[0];
-	exchangeValue: TokenInputHook<CENNZAssetId>[1];
-	receiveToken: TokenInputHook<CENNZAssetId>[0];
-	receiveValue: TokenInputHook<CENNZAssetId>[1];
+	exchangeSelect: TokenInputHook<CENNZAssetId>[0];
+	exchangeInput: TokenInputHook<CENNZAssetId>[1];
+	receiveSelect: TokenInputHook<CENNZAssetId>[0];
+	receiveInput: TokenInputHook<CENNZAssetId>[1];
 	exchangeAsset: CENNZAsset;
 	receiveAsset: CENNZAsset;
 	slippage: string;
@@ -58,14 +58,14 @@ const SwapProvider: FC<SwapProviderProps> = ({ supportedAssets, children }) => {
 		(asset) => asset.assetId === CPAY_ASSET_ID
 	);
 
-	const [exchangeToken, exchangeValue] = useTokenInput(cennzAsset.assetId);
-	const [receiveToken, receiveValue] = useTokenInput(cpayAsset.assetId);
+	const [exchangeSelect, exchangeInput] = useTokenInput(cennzAsset.assetId);
+	const [receiveSelect, receiveInput] = useTokenInput(cpayAsset.assetId);
 
 	const exchangeAsset = exchangeAssets?.find(
-		(asset) => asset.assetId === exchangeToken.tokenId
+		(asset) => asset.assetId === exchangeSelect.tokenId
 	);
 	const receiveAsset = exchangeAssets?.find(
-		(asset) => asset.assetId === receiveToken.tokenId
+		(asset) => asset.assetId === receiveSelect.tokenId
 	);
 
 	const [slippage, setSlippage] = useState<string>("5");
@@ -105,10 +105,10 @@ const SwapProvider: FC<SwapProviderProps> = ({ supportedAssets, children }) => {
 	}, []);
 
 	const setSuccessStatus = useCallback(() => {
-		const exValue = Balance.format(exchangeValue.value);
+		const exValue = Balance.format(exchangeInput.value);
 		const exSymbol = exchangeAsset.symbol;
 
-		const reValue = Balance.format(receiveValue.value);
+		const reValue = Balance.format(receiveInput.value);
 		const reSymbol = receiveAsset.symbol;
 
 		setTxStatus({
@@ -133,9 +133,9 @@ const SwapProvider: FC<SwapProviderProps> = ({ supportedAssets, children }) => {
 			),
 		});
 	}, [
-		exchangeValue.value,
+		exchangeInput.value,
 		exchangeAsset.symbol,
-		receiveValue.value,
+		receiveInput.value,
 		receiveAsset.symbol,
 	]);
 
@@ -145,10 +145,10 @@ const SwapProvider: FC<SwapProviderProps> = ({ supportedAssets, children }) => {
 				exchangeAssets,
 				receiveAssets,
 				setReceiveAssets,
-				exchangeToken,
-				exchangeValue,
-				receiveToken,
-				receiveValue,
+				exchangeSelect,
+				exchangeInput,
+				receiveSelect,
+				receiveInput,
 				exchangeAsset,
 				receiveAsset,
 				cpayAsset,

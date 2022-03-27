@@ -10,7 +10,7 @@ import { useSwapExchangeRate, useSwapGasFee } from "@/hooks";
 interface SwapStatsProps {}
 
 const SwapStats: VFC<IntrinsicElements["div"] & SwapStatsProps> = (props) => {
-	const { exchangeValue, exchangeAsset, receiveAsset, slippage, txStatus } =
+	const { exchangeInput, exchangeAsset, receiveAsset, slippage, txStatus } =
 		useSwap();
 
 	const { exchangeRate, updatingExchangeRate, updateExchangeRate } =
@@ -52,7 +52,7 @@ const SwapStats: VFC<IntrinsicElements["div"] & SwapStatsProps> = (props) => {
 				<li>
 					<strong>Slippage:</strong>{" "}
 					<span>
-						{Balance.fromInput(exchangeValue?.value, exchangeAsset)
+						{Balance.fromInput(exchangeInput?.value, exchangeAsset)
 							.increase(slippage)
 							.toBalance()}{" "}
 						{exchangeAsset.symbol}
