@@ -157,17 +157,20 @@ const BridgeProvider: FC<BridgeProviderProps> = ({
 		useMetaMaskBalances(transferAsset);
 
 	useEffect(() => {
-		if (bridgeAction === "Deposit") return setEthereumTokens(depositTokens);
-		if (bridgeAction === "Withdraw") return setEthereumTokens(withdrawTokens);
-	}, [depositTokens, withdrawTokens, bridgeAction]);
+		const setTransferSelectTokenId = transferSelect.setTokenId;
+		const ethereumTokens =
+			bridgeAction === "Withdraw" ? withdrawTokens : depositTokens;
 
-	useEffect(() => {
-		const setTransferToken = transferSelect.setTokenId;
-		setTransferToken((previous) => {
-			if (previous !== transferAsset.address) return transferAsset.address;
-			return previous;
+		setTransferSelectTokenId((curentTokenId) => {
+			const token = ethereumTokens.find(
+				(token) => token.address === curentTokenId
+			);
+			if (token) return curentTokenId;
+			return ethereumTokens[0].address;
 		});
-	}, [transferAsset, transferSelect.setTokenId]);
+
+		setEthereumTokens(ethereumTokens);
+	}, [depositTokens, withdrawTokens, bridgeAction, transferSelect.setTokenId]);
 
 	return (
 		<BridgeContext.Provider
