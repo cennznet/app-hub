@@ -4,6 +4,7 @@ import getERC20PegContract from "@/utils/getERC20PegContract";
 import { Api } from "@cennznet/api";
 import { EthEventProof } from "@cennznet/api/derives/ethBridge/types";
 import { BigNumber, ethers } from "ethers";
+import { TransactionResponse } from "@ethersproject/abstract-provider";
 
 export default async function sendWithdrawEthereumRequest(
 	api: Api,
@@ -12,7 +13,7 @@ export default async function sendWithdrawEthereumRequest(
 	transferAsset: BridgedEthereumToken,
 	ethereumAddress: string,
 	signer: ethers.Signer
-): Promise<ethers.Transaction | "cancelled"> {
+): Promise<TransactionResponse | "cancelled"> {
 	const notaryKeys = (
 		await api.query.ethBridge.notaryKeys()
 	).toJSON() as string[];
@@ -39,7 +40,7 @@ export default async function sendWithdrawEthereumRequest(
 	);
 
 	try {
-		const tx = await pegContract.withdraw(
+		const tx: TransactionResponse = await pegContract.withdraw(
 			transferAsset.address,
 			transferAmount.toBigNumber(),
 			ethereumAddress,

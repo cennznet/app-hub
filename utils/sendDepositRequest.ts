@@ -1,23 +1,23 @@
 import { BridgedEthereumToken, EthereumToken } from "@/types";
-import { Balance, getERC20TokenContract } from "@/utils";
+import { Balance, getERC20TokenContract, getERC20PegContract } from "@/utils";
 import { ethers } from "ethers";
 import { ETH_TOKEN_ADDRESS } from "@/constants";
 import { decodeAddress } from "@polkadot/keyring";
-import getERC20PegContract from "@/utils/getERC20PegContract";
+import { TransactionResponse } from "@ethersproject/abstract-provider";
 
 export default async function sendDepositRequest(
 	transferAmount: Balance,
 	transferToken: EthereumToken | BridgedEthereumToken,
 	cennzAddress: string,
 	signer: ethers.Signer
-): Promise<ethers.Transaction | "cancelled"> {
+): Promise<TransactionResponse | "cancelled"> {
 	const pegContract = getERC20PegContract<"OnBehalf">(signer);
 	const decodedAddress = decodeAddress(cennzAddress);
 	const transferValue = transferAmount.toBigNumber();
 
 	try {
 		if (transferToken.address === ETH_TOKEN_ADDRESS) {
-			const tx = await pegContract.deposit(
+			const tx: TransactionResponse = await pegContract.deposit(
 				transferToken.address,
 				transferValue,
 				decodedAddress,
@@ -35,14 +35,14 @@ export default async function sendDepositRequest(
 			signer
 		);
 
-		const approveTx = await tokenContract.approve(
+		const approveTx: TransactionResponse = await tokenContract.approve(
 			pegContract.address,
 			transferValue
 		);
 
 		await approveTx.wait();
 
-		const tx = await pegContract.deposit(
+		const tx: TransactionResponse = await pegContract.deposit(
 			transferToken.address,
 			transferValue,
 			decodedAddress
