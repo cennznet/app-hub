@@ -42,7 +42,6 @@ const HistoricalWithdrawal: VFC<
 							onChange={(event) =>
 								props.setHistoricalEventProofId(event.target.value)
 							}
-							required
 							type="number"
 							InputProps={{
 								endAdornment: <EventProofToolTip field="id" />,
@@ -55,7 +54,6 @@ const HistoricalWithdrawal: VFC<
 							onChange={(event) =>
 								props.setHistoricalBlockHash(event.target.value)
 							}
-							required
 							type="string"
 							InputProps={{
 								endAdornment: <EventProofToolTip field="hash" />,
