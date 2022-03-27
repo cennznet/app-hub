@@ -14,9 +14,11 @@ import {
 	sendDepositRequest,
 	sendWithdrawCENNZRequest,
 	ensureRelayerDepositDone,
+	ensureEthereumChain,
 } from "@/utils";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import sendWithdrawEthereumRequest from "@/utils/sendWithdrawEthereumRequest";
+import { useMetaMaskExtension } from "@/providers/MetaMaskExtenstionProvider";
 
 interface BridgeFormProps {}
 
@@ -44,6 +46,7 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 		selectedAccount: cennzAccount,
 		wallet: cennzWallet,
 	} = useCENNZWallet();
+	const { extension } = useMetaMaskExtension();
 
 	const processDepositRequest = useCallback(async () => {
 		const setTrValue = transferInput.setValue;
@@ -56,6 +59,7 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 		let tx: Awaited<ReturnType<typeof sendDepositRequest>>;
 
 		try {
+			await ensureEthereumChain(extension);
 			await ensureBridgeDepositActive(api, metaMaskWallet);
 			tx = await sendDepositRequest(
 				transferAmount,
@@ -88,6 +92,7 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 		setTxStatus,
 		updateMetaMaskBalances,
 		updateCENNZBalances,
+		extension,
 	]);
 
 	const processWithdrawRequest = useCallback(async () => {
@@ -100,6 +105,7 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 
 		let eventProof: Awaited<ReturnType<typeof sendWithdrawCENNZRequest>>;
 		try {
+			await ensureEthereumChain(extension);
 			await ensureBridgeWithdrawActive(api, metaMaskWallet);
 			eventProof = await sendWithdrawCENNZRequest(
 				api,
@@ -151,6 +157,7 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 		updateMetaMaskBalances,
 		updateCENNZBalances,
 		metaMaskWallet,
+		extension,
 	]);
 
 	const onFormSubmit = useCallback(

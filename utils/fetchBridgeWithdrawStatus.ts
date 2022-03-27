@@ -30,4 +30,6 @@ export async function ensureBridgeWithdrawActive(
 	const status = await fetchBridgeWithdrawStatus(api, provider);
 
 	if (status === "Inactive") throw { code: "WITHDRAW_INACTIVE" };
+
+	return status;
 }

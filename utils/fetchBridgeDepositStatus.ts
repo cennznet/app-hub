@@ -30,4 +30,6 @@ export async function ensureBridgeDepositActive(
 	const status = await fetchBridgeDepositStatus(api, provider);
 
 	if (status === "Inactive") throw { code: "DEPOSIT_INACTIVE" };
+
+	return status;
 }
