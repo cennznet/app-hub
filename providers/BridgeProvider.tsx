@@ -30,6 +30,7 @@ interface BridgeContextType {
 	transferSelect: TokenInputHook<ERC20TokenAddress>[0];
 	transferInput: TokenInputHook<ERC20TokenAddress>[1];
 
+	ethAsset: EthereumToken | BridgedEthereumToken;
 	transferAsset: EthereumToken | BridgedEthereumToken;
 
 	transferCENNZAddress: string;
@@ -179,6 +180,7 @@ const BridgeProvider: FC<BridgeProviderProps> = ({
 				transferSelect,
 				transferInput,
 
+				ethAsset,
 				transferAsset,
 
 				transferCENNZAddress,
