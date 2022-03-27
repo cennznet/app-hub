@@ -3,6 +3,8 @@ import { css } from "@emotion/react";
 import { Theme } from "@mui/material";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import CENNZBlueSVG from "@/assets/vectors/cennznet-blue.svg";
+import MetaMaskSVG from "@/assets/vectors/metamask.svg";
+import { useMetaMaskWallet } from "@/providers/MetaMaskWalletProvider";
 
 interface SubmitButtonProps {
 	requireCENNZnet: boolean;
@@ -11,37 +13,59 @@ interface SubmitButtonProps {
 
 const SubmitButton: FC<
 	ButtonHTMLAttributes<HTMLButtonElement> & SubmitButtonProps
-> = ({ children, requireCENNZnet, requireMetaMask, ...props }) => {
-	const { selectedAccount, connectWallet } = useCENNZWallet();
+> = ({ children, requireCENNZnet, requireMetaMask, disabled, ...props }) => {
+	const { selectedAccount: cennzAccount, connectWallet: connectCENNZWallet } =
+		useCENNZWallet();
+	const {
+		selectedAccount: metaMaskAccount,
+		connectWallet: connectMetaMaskWallet,
+	} = useMetaMaskWallet();
 
 	const isSubmittable = useMemo(() => {
-		if (requireCENNZnet && !selectedAccount) return false;
+		if (requireCENNZnet && !cennzAccount) return false;
 
-		if (requireMetaMask) return false;
+		if (requireMetaMask && !metaMaskAccount) return false;
 
 		return true;
-	}, [requireCENNZnet, selectedAccount, requireMetaMask]);
+	}, [requireCENNZnet, cennzAccount, requireMetaMask, metaMaskAccount]);
 
 	return (
 		<>
-			{!selectedAccount && requireCENNZnet && (
+			{!cennzAccount && requireCENNZnet && (
 				<button
 					type="button"
 					css={[styles.root, styles.cennzButton]}
-					onClick={() => connectWallet()}
+					onClick={() => connectCENNZWallet()}
 				>
 					<img
 						src={CENNZBlueSVG.src}
 						alt="CENNZnet Logo"
-						css={styles.cennzLogo}
+						css={styles.brandLogo}
 					/>
 					CONNECT CENNZnet
 				</button>
 			)}
+
+			{!metaMaskAccount && requireMetaMask && !!cennzAccount && (
+				<button
+					type="button"
+					css={[styles.root, styles.metaMaskButton]}
+					onClick={() => connectMetaMaskWallet()}
+				>
+					<img
+						src={MetaMaskSVG.src}
+						alt="MetaMask Logo"
+						css={styles.brandLogo}
+					/>
+					CONNECT METAMASK
+				</button>
+			)}
+
 			{isSubmittable && (
 				<button
 					css={[styles.root, styles.submitButton]}
 					type="submit"
+					disabled={disabled}
 					{...props}
 				>
 					{children}
@@ -73,9 +97,15 @@ const styles = {
 		border: 1px solid ${palette.primary.main};
 		color: ${palette.primary.main};
 
-		&:hover {
+		&:hover:not(:disabled) {
 			background-color: ${palette.primary.main};
 			color: white;
+		}
+
+		&:disabled {
+			color: ${palette.grey["500"]};
+			border-color: ${palette.grey["500"]};
+			cursor: not-allowed;
 		}
 	`,
 
@@ -92,7 +122,20 @@ const styles = {
 		}
 	`,
 
-	cennzLogo: css`
+	metaMaskButton: css`
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		border: 1px solid #e2761b;
+		color: #e2761b;
+
+		&:hover {
+			background-color: #e2761b;
+			color: white;
+		}
+	`,
+
+	brandLogo: css`
 		width: 28px;
 		margin-right: 0.5em;
 	`,

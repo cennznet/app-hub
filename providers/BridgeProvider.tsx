@@ -1,107 +1,214 @@
-import { FC, createContext, useContext, useState, useEffect } from "react";
-import { ethers } from "ethers";
-import CENNZnetBridge from "@/artifacts/CENNZnetBridge.json";
-import ERC20Peg from "@/artifacts/ERC20Peg.json";
+import { ETH_TOKEN_ADDRESS } from "@/constants";
+import { TokenInputHook, useTokenInput } from "@/hooks";
+import useMetaMaskBalances from "@/hooks/useMetaMaskBalances";
+import {
+	BridgeAction,
+	BridgedEthereumToken,
+	EthereumToken,
+	TxStatus,
+} from "@/types";
+import { Balance } from "@/utils";
+import {
+	createContext,
+	Dispatch,
+	FC,
+	SetStateAction,
+	useCallback,
+	useContext,
+	useEffect,
+	useState,
+} from "react";
 
-type bridgeContextType = {
-	Contracts: object;
-	Account: string;
-	initBridge: Function;
-};
+type ERC20TokenAddress = EthereumToken["address"];
 
-const bridgeContextDefaultValues: bridgeContextType = {
-	Contracts: null,
-	Account: null,
-	initBridge: null,
-};
+interface BridgeContextType {
+	bridgeAction: BridgeAction;
+	setBridgeAction: Dispatch<SetStateAction<BridgeAction>>;
 
-const BridgeContext = createContext<bridgeContextType>(
-	bridgeContextDefaultValues
-);
+	ethereumTokens: EthereumToken[] | BridgedEthereumToken[];
 
-export function useBridge() {
-	return useContext(BridgeContext);
+	transferSelect: TokenInputHook<ERC20TokenAddress>[0];
+	transferInput: TokenInputHook<ERC20TokenAddress>[1];
+
+	ethAsset: EthereumToken | BridgedEthereumToken;
+	transferAsset: EthereumToken | BridgedEthereumToken;
+
+	transferCENNZAddress: string;
+	setTransferCENNZAddress: Dispatch<SetStateAction<string>>;
+
+	transferMetaMaskAddress: string;
+	setTransferMetaMaskAddress: Dispatch<SetStateAction<string>>;
+
+	txStatus: TxStatus;
+	setTxStatus: Dispatch<SetStateAction<TxStatus>>;
+
+	setProgressStatus: () => void;
+	setSuccessStatus: () => void;
+	setFailStatus: (errorCode?: string) => void;
+
+	metaMaskBalance: Balance;
+	updateMetaMaskBalances: () => void;
 }
 
-const BridgeProvider: FC<{ ethChainId: string }> = ({
+const BridgeContext = createContext<BridgeContextType>({} as BridgeContextType);
+
+interface BridgeProviderProps {
+	depositTokens: EthereumToken[];
+	withdrawTokens: BridgedEthereumToken[];
+}
+
+const BridgeProvider: FC<BridgeProviderProps> = ({
+	depositTokens,
+	withdrawTokens,
 	children,
-	ethChainId,
 }) => {
-	useEffect(() => {
-		async function listenMMAccountChange() {
-			const { ethereum } = window as any;
-			const accounts = await ethereum.request({
-				method: "eth_requestAccounts",
-			});
-			setValue({ ...value, Account: accounts[0] });
-		}
-		global.ethereum.on("accountsChanged", listenMMAccountChange);
-		return function cleanup() {
-			global.ethereum.removeListener("accountsChanged", listenMMAccountChange);
-		};
-	});
+	const [bridgeAction, setBridgeAction] = useState<BridgeAction>("Deposit");
+	const [ethereumTokens, setEthereumTokens] =
+		useState<BridgeContextType["ethereumTokens"]>(depositTokens);
+	const [transferCENNZAddress, setTransferCENNZAddress] =
+		useState<BridgeContextType["transferCENNZAddress"]>("");
+	const [transferMetaMaskAddress, setTransferMetaMaskAddress] =
+		useState<BridgeContextType["transferMetaMaskAddress"]>("");
 
-	const [value, setValue] = useState({
-		Contracts: {
-			bridge: {} as ethers.Contract,
-			peg: {} as ethers.Contract,
-		},
-		Account: "",
-		Signer: {} as ethers.providers.JsonRpcSigner,
-	});
+	const ethAsset = (ethereumTokens as EthereumToken[])?.find(
+		(token) => token.address === ETH_TOKEN_ADDRESS
+	);
 
-	const initBridge = (ethereum: any, accounts: string[]) => {
-		return new Promise(async (resolve, reject) => {
-			try {
-				const provider = new ethers.providers.Web3Provider(ethereum);
-				const signer = provider.getSigner();
-				let BridgeAddress: string, ERC20PegAddress: string;
+	const [transferSelect, transferInput] = useTokenInput(ethAsset.address);
 
-				switch (ethChainId) {
-					default:
-					case "1":
-						BridgeAddress = "0xf7997B93437d5d2AC226f362EBF0573ce7a53930";
-						ERC20PegAddress = "0x76BAc85e1E82cd677faa2b3f00C4a2626C4c6E32";
-						break;
-					case "42":
-						BridgeAddress = "0x6484A31Df401792c784cD93aAAb3E933B406DdB3";
-						ERC20PegAddress = "0xa39E871e6e24f2d1Dd6AdA830538aBBE7b30F78F";
-						break;
-				}
+	const transferAsset =
+		(ethereumTokens as EthereumToken[])?.find(
+			(token) => token.address === transferSelect.tokenId
+		) || ethAsset;
 
-				const bridge: ethers.Contract = new ethers.Contract(
-					BridgeAddress,
-					CENNZnetBridge,
-					signer
-				);
+	const [txStatus, setTxStatus] = useState<TxStatus>(null);
 
-				const peg: ethers.Contract = new ethers.Contract(
-					ERC20PegAddress,
-					ERC20Peg,
-					signer
-				);
-
-				setValue({
-					Contracts: {
-						bridge,
-						peg,
-					},
-					Account: accounts[0],
-					Signer: signer,
-				});
-
-				resolve({ bridge, peg, accounts, signer });
-			} catch (err) {
-				reject(err);
-			}
+	const setProgressStatus = useCallback(() => {
+		setTxStatus({
+			status: "in-progress",
+			title: "Transaction In Progress",
+			message: (
+				<div>
+					Please sign the transaction when prompted and wait until it is
+					completed.
+				</div>
+			),
 		});
-	};
+	}, []);
+
+	const setFailStatus = useCallback((errorCode?: string) => {
+		setTxStatus({
+			status: "fail",
+			title: "Transaction Failed",
+			message: (
+				<div>
+					An error has occurred while processing your transaction.
+					{!!errorCode && (
+						<>
+							<br />
+							<pre>
+								<small>#{errorCode}</small>
+							</pre>
+						</>
+					)}
+				</div>
+			),
+		});
+	}, []);
+
+	const setSuccessStatus = useCallback(() => {
+		const trValue = Balance.format(transferInput.value);
+		const trSymbol = transferAsset.symbol;
+
+		setTxStatus({
+			status: "success",
+			title: "Transaction Completed",
+			...(bridgeAction === "Withdraw" && {
+				message: (
+					<div>
+						You successfully withdrew{" "}
+						<pre>
+							<em>
+								{trValue} {trSymbol}
+							</em>
+						</pre>{" "}
+						from CENNZnet.
+					</div>
+				),
+			}),
+
+			...(bridgeAction === "Deposit" && {
+				message: (
+					<div>
+						You successfully deposited{" "}
+						<pre>
+							<em>
+								{trValue} {trSymbol}
+							</em>
+						</pre>{" "}
+						to CENNZnet.
+					</div>
+				),
+			}),
+		});
+	}, [transferInput.value, transferAsset?.symbol, bridgeAction]);
+
+	const [metaMaskBalance, , updateMetaMaskBalances] =
+		useMetaMaskBalances(transferAsset);
+
+	useEffect(() => {
+		const setTransferSelectTokenId = transferSelect.setTokenId;
+		const ethereumTokens =
+			bridgeAction === "Withdraw" ? withdrawTokens : depositTokens;
+
+		setTransferSelectTokenId((currentTokenId) => {
+			const token = ethereumTokens.find(
+				(token) => token.address === currentTokenId
+			);
+			if (token) return currentTokenId;
+			return ethereumTokens[0].address;
+		});
+
+		setEthereumTokens(ethereumTokens);
+	}, [depositTokens, withdrawTokens, bridgeAction, transferSelect.setTokenId]);
 
 	return (
-		<BridgeContext.Provider value={{ ...value, initBridge }}>
+		<BridgeContext.Provider
+			value={{
+				bridgeAction,
+				setBridgeAction,
+
+				ethereumTokens,
+
+				transferSelect,
+				transferInput,
+
+				ethAsset,
+				transferAsset,
+
+				transferCENNZAddress,
+				setTransferCENNZAddress,
+
+				transferMetaMaskAddress,
+				setTransferMetaMaskAddress,
+
+				txStatus,
+				setTxStatus,
+				setProgressStatus,
+				setSuccessStatus,
+				setFailStatus,
+
+				metaMaskBalance,
+				updateMetaMaskBalances,
+			}}
+		>
 			{children}
 		</BridgeContext.Provider>
 	);
 };
 
 export default BridgeProvider;
+
+export function useBridge(): BridgeContextType {
+	return useContext(BridgeContext);
+}

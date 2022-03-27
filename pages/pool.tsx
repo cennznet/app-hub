@@ -27,7 +27,7 @@ export async function getStaticProps() {
 const Pool: VFC<{ supportedAssets: CENNZAsset[] }> = ({ supportedAssets }) => {
 	return (
 		<PoolProvider supportedAssets={supportedAssets}>
-			<MainPanel defaultTitle="Pool">
+			<MainPanel defaultTitle="CENNZX Liquidity">
 				<PoolForm>
 					<PoolActionsPair />
 					<PoolAssetsPair />

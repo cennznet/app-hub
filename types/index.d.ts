@@ -1,44 +1,17 @@
-import { Amount } from "@/utils/Amount";
+import { ethers } from "ethers";
 import { Balance } from "@/utils";
 import {
 	ButtonHTMLAttributes,
 	FormHTMLAttributes,
 	HTMLAttributes,
 	HTMLFormElement,
+	InputHTMLAttributes,
+	ReactElement,
 } from "react";
 
-export interface Asset {
-	symbol: string;
-	assetId?: number;
-	decimals?: number;
-	logo?: string;
-	amount?: number;
-	address?: string;
-	name?: string;
-}
-
-export interface PoolConfig {
-	tradeAsset: CENNZAsset;
-	coreAsset: CENNZAsset;
-	userPoolShare: IUserShareInPool;
-	poolAction: string;
-	setOtherAsset: Function;
-	setMax: Function;
-}
-
-export type SupportedChain = "Ethereum" | "CENNZnet";
-
-export interface Chain {
-	name: SupportedChain;
-	logo: string;
-}
-
-export interface CENNZAccount {
-	name: string;
-	address: string;
-}
-
-export type BridgeState = "Deposit" | "Withdraw";
+export type BridgeChain = "Ethereum" | "CENNZnet";
+export type BridgeAction = "Deposit" | "Withdraw";
+export type BridgeStatus = "Inactive" | "Active";
 
 export interface GenericCoin {
 	decimals: number;
@@ -54,12 +27,17 @@ export interface EthereumToken extends GenericCoin {
 	address: string;
 }
 
+export interface BridgedEthereumToken extends EthereumToken {
+	assetId: CENNZAsset["assetId"];
+}
+
 export interface CENNZAssetBalance extends CENNZAsset {
 	value: Balance;
 }
 
 export type SectionUri = "swap" | "pool" | "bridge";
 
+//TODO: Remove after Bridge work done
 export interface TxModalAttributes {
 	state: string;
 	title: string;
@@ -71,6 +49,7 @@ export interface IntrinsicElements {
 	div: HTMLAttributes<HTMLDivElement>;
 	form: FormHTMLAttributes<HTMLFormElement>;
 	button: ButtonHTMLAttributes<HTMLButtonElement>;
+	input: InputHTMLAttributes<HTMLInputElement>;
 }
 
 export type PoolAction = "Add" | "Remove";
@@ -87,4 +66,14 @@ export interface PoolUserInfo {
 	userLiquidity: Balance;
 	tradeAssetBalance: Balance;
 	coreAssetBalance: Balance;
+}
+
+export interface MetaMaskAccount {
+	address: string;
+}
+
+export interface TxStatus {
+	status: "in-progress" | "success" | "fail";
+	title: string;
+	message: string | ReactElement;
 }

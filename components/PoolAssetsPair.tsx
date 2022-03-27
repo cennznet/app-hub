@@ -3,10 +3,13 @@ import { IntrinsicElements } from "@/types";
 import { css } from "@emotion/react";
 import { VFC, useMemo, useEffect } from "react";
 import TokenInput from "@/components/shared/TokenInput";
-import { useWalletBalances, usePoolCoreAssetValue } from "@/hooks";
+import {
+	useCENNZBalances,
+	usePoolCoreAssetValue,
+	useBalanceValidation,
+} from "@/hooks";
 import { Theme, Tooltip } from "@mui/material";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-import useBalanceValidation from "@/hooks/useBalanceValidation";
 import { Balance } from "@/utils";
 
 interface PoolAssetsPairProps {}
@@ -29,7 +32,7 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 	const tradePoolBalance = userInfo?.tradeAssetBalance ?? null;
 	const corePoolBalance = userInfo?.coreAssetBalance ?? null;
 
-	const [tradeWalletBalance, coreWalletBalance] = useWalletBalances(
+	const [tradeWalletBalance, coreWalletBalance] = useCENNZBalances(
 		tradeAsset,
 		coreAsset
 	);
