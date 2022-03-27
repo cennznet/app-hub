@@ -34,9 +34,3 @@ export { default as sendWithdrawCENNZRequest } from "@/utils/sendWithdrawCENNZRe
 export { default as waitUntil } from "@/utils/waitUntil";
 export { default as fetchDepositRelayerStatus } from "@/utils/fetchDepositRelayerStatus";
 export { default as ensureRelayerDepositDone } from "@/utils/ensureRelayerDepositDone";
-
-//TODO: Remove after Bridge work done
-export const formatBalance = (balance: number): string => {
-	if (balance === 0 || !balance) return "0.0000";
-	return balance < 0.0001 ? "<0.0001" : balance.toFixed(4);
-};

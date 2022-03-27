@@ -20,12 +20,6 @@ import {
 import { Balance } from "@/utils";
 import { CENNZ_ASSET_ID, CPAY_ASSET_ID } from "@/constants";
 
-// TODO: Remove after Bridge work done
-export enum LegacyPoolAction {
-	ADD = "Add",
-	REMOVE = "Withdraw",
-}
-
 type CENNZAssetId = CENNZAsset["assetId"];
 
 interface PoolContextType extends PoolExchangeInfoHook, PoolUserInfoHook {

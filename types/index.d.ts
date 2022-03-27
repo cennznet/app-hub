@@ -9,43 +9,7 @@ import {
 	ReactElement,
 } from "react";
 
-//TODO: Remove after Bridge work done
-export interface Asset {
-	symbol: string;
-	assetId?: number;
-	decimals?: number;
-	logo?: string;
-	amount?: number;
-	address?: string;
-	name?: string;
-}
-
-//TODO: Remove after Bridge work done
-export interface PoolConfig {
-	tradeAsset: CENNZAsset;
-	coreAsset: CENNZAsset;
-	userPoolShare: IUserShareInPool;
-	poolAction: string;
-	setOtherAsset: Function;
-	setMax: Function;
-}
-
-export type SupportedChain = "Ethereum" | "CENNZnet"; //TODO: Remove after Bridge work done
 export type BridgeChain = "Ethereum" | "CENNZnet";
-
-//TODO: Remove after Bridge work done
-export interface Chain {
-	name: SupportedChain;
-	logo: string;
-}
-
-//TODO: Remove after Bridge work done
-export interface CENNZAccount {
-	name: string;
-	address: string;
-}
-
-export type BridgeState = "Deposit" | "Withdraw"; //TODO: Remove after Bridge work done
 export type BridgeAction = "Deposit" | "Withdraw";
 export type BridgeStatus = "Inactive" | "Active";
 
