@@ -10,6 +10,7 @@ import BridgeProvider from "@/providers/BridgeProvider";
 import { fetchBridgeTokens } from "@/utils";
 import { BridgedEthereumToken, EthereumToken } from "@/types";
 import BridgeProgress from "@/components/BridgeProgress";
+import { NextSeo } from "next-seo";
 
 export async function getStaticProps() {
 	const api = await Api.create({ provider: API_URL });
@@ -31,6 +32,7 @@ const Bridge: VFC<{
 			depositTokens={depositTokens}
 			withdrawTokens={withdrawTokens}
 		>
+			<NextSeo title="Emery Bridge" />
 			<MainPanel defaultTitle="Emery Bridge">
 				<BridgeForm>
 					<BridgeActionsPair />

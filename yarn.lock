@@ -561,6 +561,7 @@ __metadata:
     jest: ^27.5.1
     lodash: ^4.17.21
     next: ^12.1.0
+    next-seo: ^5.2.0
     prettier: ^2.5.1
     react: ^17.0.2
     react-device-detect: ^2.1.2
@@ -6551,6 +6552,17 @@ __metadata:
   version: 0.6.3
   resolution: "negotiator@npm:0.6.3"
   checksum: b8ffeb1e262eff7968fc90a2b6767b04cfd9842582a9d0ece0af7049537266e7b2506dfb1d107a32f06dd849ab2aea834d5830f7f4d0e5cb7d36e1ae55d021d9
+  languageName: node
+  linkType: hard
+
+"next-seo@npm:^5.2.0":
+  version: 5.2.0
+  resolution: "next-seo@npm:5.2.0"
+  peerDependencies:
+    next: ^8.1.1-canary.54 || >=9.0.0
+    react: ">=16.0.0"
+    react-dom: ">=16.0.0"
+  checksum: 392f0b4b9d2d2d6873c163c39ca470580ec0031c3941c8da5bdbce154368ceda10aee97a639d1e209318e4c878bafc9bf4a1600355205eac6ac9ca9102ad1801
   languageName: node
   linkType: hard
 
