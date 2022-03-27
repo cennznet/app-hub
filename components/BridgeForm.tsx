@@ -18,7 +18,7 @@ import {
 	sendWithdrawEthereumRequest,
 } from "@/utils";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
-import { useMetaMaskExtension } from "@/providers/MetaMaskExtenstionProvider";
+import { useMetaMaskExtension } from "@/providers/MetaMaskExtensionProvider";
 
 interface BridgeFormProps {}
 
