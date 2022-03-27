@@ -77,7 +77,7 @@ const BridgeTokenDestination: VFC<
 		setTransferCENNZAddress(cennzAccount.address);
 	}, [cennzAccount?.address, setTransferCENNZAddress]);
 
-	// Synce MetaMask selected account with `transferMetaMaskAddressInput`
+	// Sync MetaMask selected account with `transferMetaMaskAddressInput`
 	const { selectedAccount: metaMaskAccount } = useMetaMaskWallet();
 	useEffect(() => {
 		if (!metaMaskAccount?.address) return;

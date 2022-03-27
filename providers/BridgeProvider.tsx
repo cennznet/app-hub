@@ -161,11 +161,11 @@ const BridgeProvider: FC<BridgeProviderProps> = ({
 		const ethereumTokens =
 			bridgeAction === "Withdraw" ? withdrawTokens : depositTokens;
 
-		setTransferSelectTokenId((curentTokenId) => {
+		setTransferSelectTokenId((currentTokenId) => {
 			const token = ethereumTokens.find(
-				(token) => token.address === curentTokenId
+				(token) => token.address === currentTokenId
 			);
-			if (token) return curentTokenId;
+			if (token) return currentTokenId;
 			return ethereumTokens[0].address;
 		});
 
