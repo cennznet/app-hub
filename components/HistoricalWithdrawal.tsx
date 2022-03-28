@@ -1,23 +1,26 @@
-import { VFC } from "react";
+import { Dispatch, SetStateAction, useEffect, VFC } from "react";
 import { IntrinsicElements } from "@/types";
 import { css } from "@emotion/react";
 import {
-	Theme,
 	Accordion,
-	AccordionSummary,
 	AccordionDetails,
+	AccordionSummary,
 	TextField,
+	Theme,
 	Tooltip,
 } from "@mui/material";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import { useBridge } from "@/providers/BridgeProvider";
 
-interface HistoricalWithdrawalProps {}
+interface HistoricalWithdrawalProps {
+	expanded: boolean;
+	setExpanded: Dispatch<SetStateAction<boolean>>;
+}
 
 const HistoricalWithdrawal: VFC<
 	IntrinsicElements["div"] & HistoricalWithdrawalProps
-> = (props) => {
+> = ({ expanded, setExpanded, ...props }) => {
 	const {
 		historicalBlockHash,
 		setHistoricalBlockHash,
@@ -25,9 +28,20 @@ const HistoricalWithdrawal: VFC<
 		setHistoricalEventProofId,
 	} = useBridge();
 
+	useEffect(() => {
+		if (expanded) return;
+
+		setHistoricalBlockHash(null);
+		setHistoricalEventProofId(null);
+	}, [expanded, setHistoricalBlockHash, setHistoricalEventProofId]);
+
 	return (
 		<div {...props} css={styles.root}>
-			<Accordion css={[styles.formSettings]}>
+			<Accordion
+				css={[styles.formSettings]}
+				expanded={expanded}
+				onChange={() => setExpanded(!expanded)}
+			>
 				<AccordionSummary
 					css={styles.formSettingsSummary}
 					expandIcon={<ExpandMore />}
@@ -40,22 +54,24 @@ const HistoricalWithdrawal: VFC<
 							Historical Event Proof Id
 						</label>
 						<TextField
+							type="number"
 							css={styles.input}
+							required={expanded}
 							value={historicalEventProofId ?? 0}
 							onChange={(event) =>
 								setHistoricalEventProofId(Number(event.target.value))
 							}
-							type="number"
 							InputProps={{
 								endAdornment: <EventProofToolTip field="id" />,
 							}}
 						/>
 						<label htmlFor="historicalBlockHash">Block Hash</label>
 						<TextField
+							type="string"
 							css={styles.input}
+							required={expanded}
 							value={historicalBlockHash ?? ""}
 							onChange={(event) => setHistoricalBlockHash(event.target.value)}
-							type="string"
 							InputProps={{
 								endAdornment: <EventProofToolTip field="hash" />,
 							}}
