@@ -27,7 +27,11 @@ const BridgeTokenDestination: VFC<
 		transferMetaMaskAddress,
 		setTransferMetaMaskAddress,
 		metaMaskBalance,
+		historicalBlockHash,
+		historicalEventProofId,
 	} = useBridge();
+
+	const historicalWithdrawal = historicalBlockHash && historicalEventProofId;
 
 	const [cennzBalance] = useCENNZBalances(
 		transferAsset as BridgedEthereumToken
@@ -96,7 +100,8 @@ const BridgeTokenDestination: VFC<
 					onValueChange={transferInput.onValueChange}
 					tokens={ethereumTokens}
 					id="transferInput"
-					ref={transferInputRef}
+					ref={!historicalWithdrawal ? transferInputRef : null}
+					padFractionalZeros={false}
 					required
 					scale={4}
 					min={0.0001}
