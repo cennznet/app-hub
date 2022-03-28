@@ -11,17 +11,20 @@ import {
 } from "@mui/material";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import { useBridge } from "@/providers/BridgeProvider";
 
-interface HistoricalWithdrawalProps {
-	historicalEventProofId: number;
-	setHistoricalEventProofId: Function;
-	historicalBlockHash: string;
-	setHistoricalBlockHash: Function;
-}
+interface HistoricalWithdrawalProps {}
 
 const HistoricalWithdrawal: VFC<
 	IntrinsicElements["div"] & HistoricalWithdrawalProps
 > = (props) => {
+	const {
+		historicalBlockHash,
+		setHistoricalBlockHash,
+		historicalEventProofId,
+		setHistoricalEventProofId,
+	} = useBridge();
+
 	return (
 		<div {...props} css={styles.root}>
 			<Accordion css={[styles.formSettings]}>
@@ -38,9 +41,9 @@ const HistoricalWithdrawal: VFC<
 						</label>
 						<TextField
 							css={styles.input}
-							value={props.historicalEventProofId}
+							value={historicalEventProofId ?? 0}
 							onChange={(event) =>
-								props.setHistoricalEventProofId(event.target.value)
+								setHistoricalEventProofId(Number(event.target.value))
 							}
 							type="number"
 							InputProps={{
@@ -50,10 +53,8 @@ const HistoricalWithdrawal: VFC<
 						<label htmlFor="historicalBlockHash">Block Hash</label>
 						<TextField
 							css={styles.input}
-							value={props.historicalBlockHash}
-							onChange={(event) =>
-								props.setHistoricalBlockHash(event.target.value)
-							}
+							value={historicalBlockHash ?? ""}
+							onChange={(event) => setHistoricalBlockHash(event.target.value)}
 							type="string"
 							InputProps={{
 								endAdornment: <EventProofToolTip field="hash" />,

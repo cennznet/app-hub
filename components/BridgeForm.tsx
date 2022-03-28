@@ -42,6 +42,10 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 		setTxStatus,
 		updateMetaMaskBalances,
 		transferMetaMaskAddress,
+		historicalBlockHash,
+		setHistoricalBlockHash,
+		historicalEventProofId,
+		setHistoricalEventProofId,
 	} = useBridge();
 	const [buttonLabel, setButtonLabel] = useState<string>("Deposit");
 	const {
@@ -50,10 +54,6 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 		wallet: cennzWallet,
 	} = useCENNZWallet();
 	const { extension } = useMetaMaskExtension();
-
-	const [historicalBlockHash, setHistoricalBlockHash] = useState<string>();
-	const [historicalEventProofId, setHistoricalEventProofId] =
-		useState<number>();
 
 	const processDepositRequest = useCallback(async () => {
 		const setTrValue = transferInput.setValue;
@@ -202,6 +202,8 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 		setTrValue("");
 		updateMetaMaskBalances();
 		updateCENNZBalances();
+		setHistoricalBlockHash(null);
+		setHistoricalEventProofId(null);
 	}, [
 		api,
 		transferAsset,
@@ -215,7 +217,9 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 		updateCENNZBalances,
 		metaMaskWallet,
 		historicalBlockHash,
+		setHistoricalBlockHash,
 		historicalEventProofId,
+		setHistoricalEventProofId,
 	]);
 
 	const onFormSubmit = useCallback(
@@ -223,9 +227,8 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 			event.preventDefault();
 			if (bridgeAction === "Deposit") return processDepositRequest();
 			if (bridgeAction === "Withdraw") {
-				if (historicalBlockHash && historicalEventProofId) {
+				if (historicalBlockHash && historicalEventProofId > 0)
 					return processHistoricalWithdrawRequest();
-				}
 				return processWithdrawRequest();
 			}
 		},
@@ -250,14 +253,7 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 		<form {...props} css={styles.root} onSubmit={onFormSubmit}>
 			{children}
 
-			{bridgeAction === "Withdraw" && (
-				<HistoricalWithdrawal
-					historicalEventProofId={historicalEventProofId}
-					setHistoricalEventProofId={setHistoricalEventProofId}
-					historicalBlockHash={historicalBlockHash}
-					setHistoricalBlockHash={setHistoricalBlockHash}
-				/>
-			)}
+			{bridgeAction === "Withdraw" && <HistoricalWithdrawal />}
 
 			<div css={styles.formSubmit}>
 				<SubmitButton

@@ -48,6 +48,11 @@ interface BridgeContextType {
 
 	metaMaskBalance: Balance;
 	updateMetaMaskBalances: () => void;
+
+	historicalBlockHash: string;
+	setHistoricalBlockHash: Dispatch<SetStateAction<string>>;
+	historicalEventProofId: number;
+	setHistoricalEventProofId: Dispatch<SetStateAction<number>>;
 }
 
 const BridgeContext = createContext<BridgeContextType>({} as BridgeContextType);
@@ -69,6 +74,9 @@ const BridgeProvider: FC<BridgeProviderProps> = ({
 		useState<BridgeContextType["transferCENNZAddress"]>("");
 	const [transferMetaMaskAddress, setTransferMetaMaskAddress] =
 		useState<BridgeContextType["transferMetaMaskAddress"]>("");
+	const [historicalBlockHash, setHistoricalBlockHash] = useState<string>();
+	const [historicalEventProofId, setHistoricalEventProofId] =
+		useState<number>();
 
 	const ethAsset = (ethereumTokens as EthereumToken[])?.find(
 		(token) => token.address === ETH_TOKEN_ADDRESS
@@ -200,6 +208,11 @@ const BridgeProvider: FC<BridgeProviderProps> = ({
 
 				metaMaskBalance,
 				updateMetaMaskBalances,
+
+				historicalBlockHash,
+				setHistoricalBlockHash,
+				historicalEventProofId,
+				setHistoricalEventProofId,
 			}}
 		>
 			{children}
