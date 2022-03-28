@@ -18,7 +18,7 @@ export default function useBalanceValidation(
 
 		input.setCustomValidity(
 			currentValue.round(0, Balance.roundDown).gt(maxValue)
-				? "Insufficient fund"
+				? "Insufficient funds"
 				: ""
 		);
 	}, [currentValue, maxValue]);
