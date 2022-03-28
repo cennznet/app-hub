@@ -31,8 +31,6 @@ const BridgeTokenDestination: VFC<
 		historicalEventProofId,
 	} = useBridge();
 
-	const historicalWithdrawal = historicalBlockHash || historicalEventProofId;
-
 	const [cennzBalance] = useCENNZBalances(
 		transferAsset as BridgedEthereumToken
 	);
@@ -61,7 +59,8 @@ const BridgeTokenDestination: VFC<
 
 	const { inputRef: transferInputRef } = useBalanceValidation(
 		Balance.fromInput(transferInput.value, transferAsset),
-		transferBalance
+		transferBalance,
+		!!historicalBlockHash || !!historicalEventProofId
 	);
 
 	const { inputRef: cennzAddressInputRef } = useAddressValidation(
@@ -100,7 +99,7 @@ const BridgeTokenDestination: VFC<
 					onValueChange={transferInput.onValueChange}
 					tokens={ethereumTokens}
 					id="transferInput"
-					ref={!historicalWithdrawal ? transferInputRef : null}
+					ref={transferInputRef}
 					required
 					scale={4}
 					min={0.0001}

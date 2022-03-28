@@ -28,8 +28,10 @@ const HistoricalWithdrawal: VFC<
 		historicalEventProofId,
 		setHistoricalEventProofId,
 	} = useBridge();
-	const { inputRef: blockHashRef } =
-		useBlockHashValidation(historicalBlockHash);
+	const { inputRef: blockHashRef } = useBlockHashValidation(
+		historicalBlockHash,
+		expanded
+	);
 
 	useEffect(() => {
 		if (expanded) return;
