@@ -15,14 +15,11 @@ export default async function sendWithdrawEthereumRequest(
 	signer: ethers.Signer,
 	blockHash?: string
 ): Promise<TransactionResponse | "cancelled"> {
-	let notaryKeys: string[];
-	if (!!blockHash) {
-		notaryKeys = (
-			await api.query.ethBridge.notaryKeys.at(blockHash)
-		).toJSON() as string[];
-	} else {
-		notaryKeys = (await api.query.ethBridge.notaryKeys()).toJSON() as string[];
-	}
+	const notaryKeys = !!blockHash
+		? ((
+				await api.query.ethBridge.notaryKeys.at(blockHash)
+		  ).toJSON() as string[])
+		: ((await api.query.ethBridge.notaryKeys()).toJSON() as string[]);
 
 	const validators = notaryKeys.map((validator) => {
 		if (
