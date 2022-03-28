@@ -55,7 +55,7 @@ const HistoricalWithdrawal: VFC<
 						</label>
 						<TextField
 							type="number"
-							css={styles.input}
+							css={styles.proofId}
 							required={expanded}
 							value={historicalEventProofId ?? 0}
 							onChange={(event) =>
@@ -68,13 +68,14 @@ const HistoricalWithdrawal: VFC<
 						<label htmlFor="historicalBlockHash">Block Hash</label>
 						<TextField
 							type="string"
-							css={styles.input}
+							css={styles.blockHash}
 							required={expanded}
 							value={historicalBlockHash ?? ""}
 							onChange={(event) => setHistoricalBlockHash(event.target.value)}
 							InputProps={{
 								endAdornment: <EventProofToolTip field="hash" />,
 							}}
+							multiline
 						/>
 					</div>
 				</AccordionDetails>
@@ -124,7 +125,6 @@ export default HistoricalWithdrawal;
 const styles = {
 	root: css`
 		margin-top: 1em;
-		width: 90%;
 	`,
 
 	formSettings: css`
@@ -165,9 +165,13 @@ const styles = {
 		}
 	`,
 
-	input: css`
+	proofId: css`
 		width: 200px;
 		margin-bottom: 1em;
+	`,
+
+	blockHash: css`
+		width: 470px;
 	`,
 
 	toolTip: css`
