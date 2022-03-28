@@ -12,6 +12,7 @@ import {
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import { useBridge } from "@/providers/BridgeProvider";
+import { useBlockHashValidation } from "@/hooks";
 
 interface HistoricalWithdrawalProps {
 	expanded: boolean;
@@ -27,6 +28,8 @@ const HistoricalWithdrawal: VFC<
 		historicalEventProofId,
 		setHistoricalEventProofId,
 	} = useBridge();
+	const { inputRef: blockHashRef } =
+		useBlockHashValidation(historicalBlockHash);
 
 	useEffect(() => {
 		if (expanded) return;
@@ -71,12 +74,14 @@ const HistoricalWithdrawal: VFC<
 							type="text"
 							css={styles.blockHash}
 							required={expanded}
+							inputRef={blockHashRef}
 							value={historicalBlockHash ?? ""}
 							onChange={(event) => setHistoricalBlockHash(event.target.value)}
 							InputProps={{
 								endAdornment: <EventProofToolTip field="hash" />,
 							}}
 							multiline
+							fullWidth
 						/>
 					</div>
 				</AccordionDetails>
@@ -111,6 +116,7 @@ const EventProofToolTip: VFC<
 					{props.field === "hash" && (
 						<>The CENNZnet block hash at the time of the withdrawal event.</>
 					)}
+					{props.field === "invalidHash" && <>Invalid block hash!</>}
 				</div>
 			}
 			arrow
@@ -172,7 +178,7 @@ const styles = {
 	`,
 
 	blockHash: css`
-		width: 470px;
+		//width: 470px;
 	`,
 
 	toolTip: css`
