@@ -225,8 +225,7 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 			event.preventDefault();
 			if (bridgeAction === "Deposit") return processDepositRequest();
 			if (bridgeAction === "Withdraw") {
-				if (historicalBlockHash && historicalEventProofId > 0)
-					return processHistoricalWithdrawRequest();
+				if (advancedExpanded) return processHistoricalWithdrawRequest();
 				return processWithdrawRequest();
 			}
 		},
@@ -235,8 +234,7 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 			processDepositRequest,
 			processWithdrawRequest,
 			processHistoricalWithdrawRequest,
-			historicalBlockHash,
-			historicalEventProofId,
+			advancedExpanded,
 		]
 	);
 
