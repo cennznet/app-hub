@@ -174,6 +174,7 @@ const styles = {
 			font-family: "Roboto Mono", monospace;
 			font-weight: bold;
 			margin-left: 0.25em;
+			letter-spacing: -0.025em;
 		}
 	`,
 	formInfoProgress: css`

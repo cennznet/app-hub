@@ -97,6 +97,7 @@ const styles = {
 
 			span {
 				font-family: "Roboto Mono", monospace;
+				letter-spacing: -0.025em;
 			}
 
 			svg {

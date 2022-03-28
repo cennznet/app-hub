@@ -188,6 +188,7 @@ const styles = {
 		span {
 			font-family: "Roboto Mono", monospace;
 			font-weight: bold;
+			letter-spacing: -0.025em;
 		}
 	`,
 };

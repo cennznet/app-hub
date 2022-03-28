@@ -284,6 +284,7 @@ export const styles = {
 		display: flex;
 		align-items: center;
 		font-family: "Roboto Mono", monospace;
+		letter-spacing: -0.025em;
 
 		&:last-child {
 			margin-bottom: 0;

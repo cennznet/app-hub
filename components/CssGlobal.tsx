@@ -87,6 +87,7 @@ const globalStyles = (
 
 					.MuiOutlinedInput-input:not(.MuiSelect-select) {
 						font-family: "Roboto Mono", monospace;
+						letter-spacing: -0.025em;
 					}
 
 					.MuiOutlinedInput-notchedOutline {

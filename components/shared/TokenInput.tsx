@@ -178,6 +178,7 @@ export const styles = {
 		font-family: "Roboto Mono", monospace;
 		font-weight: 600;
 		-moz-appearance: textfield;
+		letter-spacing: -0.025em;
 
 		&:disabled {
 			background-color: white;
