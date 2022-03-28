@@ -43,11 +43,11 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 		updateMetaMaskBalances,
 		transferMetaMaskAddress,
 		historicalBlockHash,
-		setHistoricalBlockHash,
 		historicalEventProofId,
-		setHistoricalEventProofId,
 	} = useBridge();
 	const [buttonLabel, setButtonLabel] = useState<string>("Deposit");
+	const [advancedExpanded, setAdvancedExpanded] = useState<boolean>(false);
+
 	const {
 		updateBalances: updateCENNZBalances,
 		selectedAccount: cennzAccount,
@@ -202,8 +202,7 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 		setTrValue("");
 		updateMetaMaskBalances();
 		updateCENNZBalances();
-		setHistoricalBlockHash(null);
-		setHistoricalEventProofId(null);
+		setAdvancedExpanded(false);
 	}, [
 		api,
 		transferAsset,
@@ -217,9 +216,8 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 		updateCENNZBalances,
 		metaMaskWallet,
 		historicalBlockHash,
-		setHistoricalBlockHash,
 		historicalEventProofId,
-		setHistoricalEventProofId,
+		setAdvancedExpanded,
 	]);
 
 	const onFormSubmit = useCallback(
@@ -253,7 +251,12 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 		<form {...props} css={styles.root} onSubmit={onFormSubmit}>
 			{children}
 
-			{bridgeAction === "Withdraw" && <HistoricalWithdrawal />}
+			{bridgeAction === "Withdraw" && (
+				<HistoricalWithdrawal
+					expanded={advancedExpanded}
+					setExpanded={setAdvancedExpanded}
+				/>
+			)}
 
 			<div css={styles.formSubmit}>
 				<SubmitButton
