@@ -38,7 +38,7 @@ const TokenInput = forwardRef<
 			placeholder = "0.0",
 			onValueChange,
 			scale,
-			padFractionalZeros,
+			padFractionalZeros = false,
 			value,
 			css,
 			children,
