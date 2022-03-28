@@ -31,7 +31,7 @@ const BridgeTokenDestination: VFC<
 		historicalEventProofId,
 	} = useBridge();
 
-	const historicalWithdrawal = historicalBlockHash && historicalEventProofId;
+	const historicalWithdrawal = historicalBlockHash || historicalEventProofId;
 
 	const [cennzBalance] = useCENNZBalances(
 		transferAsset as BridgedEthereumToken
