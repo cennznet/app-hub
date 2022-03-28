@@ -106,7 +106,7 @@ const BridgeTokenDestination: VFC<
 						Balance: <span>{transferBalance?.toBalance() ?? "0.0000"}</span>
 					</div>
 				)}
-				{transferBalance === null && (
+				{transferBalance === null && !!metaMaskAccount && !!cennzAccount && (
 					<div css={styles.tokenBalance}>
 						Balance: <LinearProgress css={[styles.formInfoProgress]} />
 					</div>
