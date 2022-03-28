@@ -57,17 +57,18 @@ const HistoricalWithdrawal: VFC<
 							type="number"
 							css={styles.proofId}
 							required={expanded}
-							value={historicalEventProofId ?? 0}
+							value={historicalEventProofId ?? ""}
 							onChange={(event) =>
 								setHistoricalEventProofId(Number(event.target.value))
 							}
 							InputProps={{
 								endAdornment: <EventProofToolTip field="id" />,
+								inputProps: { min: 1 },
 							}}
 						/>
 						<label htmlFor="historicalBlockHash">Block Hash</label>
 						<TextField
-							type="string"
+							type="text"
 							css={styles.blockHash}
 							required={expanded}
 							value={historicalBlockHash ?? ""}
