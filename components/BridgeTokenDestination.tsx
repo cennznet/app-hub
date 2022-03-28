@@ -101,7 +101,6 @@ const BridgeTokenDestination: VFC<
 					tokens={ethereumTokens}
 					id="transferInput"
 					ref={!historicalWithdrawal ? transferInputRef : null}
-					padFractionalZeros={false}
 					required
 					scale={4}
 					min={0.0001}
