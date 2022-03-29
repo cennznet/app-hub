@@ -1,5 +1,4 @@
 import type { AppProps } from "next/app";
-import Head from "next/head";
 import ThemeProvider from "@/providers/ThemeProvider";
 import CssBaseline from "@mui/material/CssBaseline";
 import CENNZApiProvider from "@/providers/CENNZApiProvider";
@@ -14,7 +13,7 @@ import PageFrame from "@/components/shared/PageFrame";
 import GlobalModalProvider from "@/providers/GlobalModalProvider";
 import CssGlobal from "@/components/CssGlobal";
 import MetaMaskExtensionProvider from "@/providers/MetaMaskExtensionProvider";
-import { API_URL } from "@/constants";
+import { API_URL, VERCEL_URL } from "@/constants";
 import MetaMaskWalletProvider from "@/providers/MetaMaskWalletProvider";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
@@ -43,6 +42,15 @@ function MyApp({ Component, pageProps }: MyAppProps) {
 				titleTemplate="CENNZnet App Hub | %s"
 				title="CENNZnet App Hub"
 				description="App Hub powered by CENNZnet."
+				openGraph={{
+					images: [
+						{
+							url: `https://${VERCEL_URL || "app.cennz.net"}/images/share.png`,
+							width: 800,
+							height: 500,
+						},
+					],
+				}}
 			/>
 			<CssBaseline />
 			<ThemeProvider>

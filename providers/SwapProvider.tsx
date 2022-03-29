@@ -77,8 +77,8 @@ const SwapProvider: FC<SwapProviderProps> = ({ supportedAssets, children }) => {
 			title: "Transaction In Progress",
 			message: (
 				<div>
-					Please sign the transaction when prompted and wait until it is
-					completed.
+					Please sign the transaction when prompted and wait until it&apos;s
+					completed
 				</div>
 			),
 		});
@@ -90,7 +90,7 @@ const SwapProvider: FC<SwapProviderProps> = ({ supportedAssets, children }) => {
 			title: "Transaction Failed",
 			message: (
 				<div>
-					An error has occurred while processing your transaction.
+					An error occurred while processing your transaction
 					{!!errorCode && (
 						<>
 							<br />
