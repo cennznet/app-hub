@@ -505,11 +505,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cennznet/api@npm:^2.1.0-rc.1":
-  version: 2.1.0-rc.1
-  resolution: "@cennznet/api@npm:2.1.0-rc.1"
+"@cennznet/api@npm:^2.1.0-rc.2":
+  version: 2.1.0-rc.2
+  resolution: "@cennznet/api@npm:2.1.0-rc.2"
   dependencies:
-    "@cennznet/types": ^2.1.0-rc.1
+    "@cennznet/types": ^2.1.0-rc.2
     "@ethersproject/keccak256": ^5.5.0
     "@ethersproject/signing-key": ^5.5.0
     "@polkadot/api": ^7.7.1
@@ -519,7 +519,7 @@ __metadata:
     "@polkadot/types": ^7.7.1
     "@polkadot/x-rxjs": ^6.11.2-6
     eventemitter3: ^4.0.0
-  checksum: 2c4a46399cf8d4a8bc3b6ccf9ff0e4eb681d7dfe68ff9048c0d7be439d1de71e330818034ca52348e95855e507e2c4890a4952910513712c840b0202e3599c89
+  checksum: c57f13b0c67552b1e8b0e37dbbd96b127d84eb6f07a9d09d36fafe83b835f0e4cdc489b372b9c80ff43389f80d025b55204a9598a7872219567a4b7dce4bcb76
   languageName: node
   linkType: hard
 
@@ -527,8 +527,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@cennznet/app-hub@workspace:."
   dependencies:
-    "@cennznet/api": ^2.1.0-rc.1
-    "@cennznet/types": ^2.1.0-alpha.1
+    "@cennznet/api": ^2.1.0-rc.2
+    "@cennznet/types": ^2.1.0-rc.2
     "@depay/web3-blockchains": ^4.2.0
     "@depay/web3-mock": ^11.6.2
     "@emotion/react": ^11.8.2
@@ -573,27 +573,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@cennznet/types@npm:^2.1.0-alpha.1":
-  version: 2.1.0-alpha.1
-  resolution: "@cennznet/types@npm:2.1.0-alpha.1"
-  dependencies:
-    "@polkadot/keyring": ^8.2.2
-    "@polkadot/types": ^7.7.1
-    "@polkadot/util": ^8.2.2
-    "@polkadot/util-crypto": ^8.2.2
-  checksum: 29105a6e5ad5fa8367a5f0ffa7c1f27acabc568f29000329394a563c95c4851f3c461196bd1ebae637f52daebf9a240c6140c70ee4283f469bc4e75c4e55a10a
-  languageName: node
-  linkType: hard
-
-"@cennznet/types@npm:^2.1.0-rc.1":
-  version: 2.1.0-rc.1
-  resolution: "@cennznet/types@npm:2.1.0-rc.1"
+"@cennznet/types@npm:^2.1.0-rc.2":
+  version: 2.1.0-rc.2
+  resolution: "@cennznet/types@npm:2.1.0-rc.2"
   dependencies:
     "@polkadot/keyring": ^8.3.3
     "@polkadot/types": ^7.7.1
     "@polkadot/util": ^8.3.3
     "@polkadot/util-crypto": ^8.3.3
-  checksum: 35fd93e1a9e625f3dea3962b244de32845186e597b189919e015374cc62de116fa79e02715defaef9f8ef4cd0d6b165e657484f1eaaa685867dee73b0699b509
+  checksum: 64765d0ede28a723cf1f7c983a526da7ac9efe5f1fc20cae0c105ec39b517d82ddff1b6139fa92012c3f39c5041f04c51a79b13b35727e7b5b491258aece28c5
   languageName: node
   linkType: hard
 
@@ -1933,20 +1921,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@polkadot/keyring@npm:^8.2.2, @polkadot/keyring@npm:^8.4.1":
-  version: 8.4.1
-  resolution: "@polkadot/keyring@npm:8.4.1"
-  dependencies:
-    "@babel/runtime": ^7.17.2
-    "@polkadot/util": 8.4.1
-    "@polkadot/util-crypto": 8.4.1
-  peerDependencies:
-    "@polkadot/util": 8.4.1
-    "@polkadot/util-crypto": 8.4.1
-  checksum: 0608648e0fcc5a3c8994b12384dc2426b9b4e8ba3097e01a61cbd2226169d4526c68e201229b05b275f243de610c8f57079a2911b60dfdd3737a1617bc2b4dc0
-  languageName: node
-  linkType: hard
-
 "@polkadot/keyring@npm:^8.3.3":
   version: 8.6.1
   resolution: "@polkadot/keyring@npm:8.6.1"
@@ -1958,6 +1932,20 @@ __metadata:
     "@polkadot/util": 8.6.1
     "@polkadot/util-crypto": 8.6.1
   checksum: 12307cea2aaef2d153605a7653a21a6dab0f506f0e5f57f2a45def30d15ff3ebefeb591ae10002397ab3dd1ff13f9c17afa8fc93b074d0b91327dc068ac60cfc
+  languageName: node
+  linkType: hard
+
+"@polkadot/keyring@npm:^8.4.1":
+  version: 8.4.1
+  resolution: "@polkadot/keyring@npm:8.4.1"
+  dependencies:
+    "@babel/runtime": ^7.17.2
+    "@polkadot/util": 8.4.1
+    "@polkadot/util-crypto": 8.4.1
+  peerDependencies:
+    "@polkadot/util": 8.4.1
+    "@polkadot/util-crypto": 8.4.1
+  checksum: 0608648e0fcc5a3c8994b12384dc2426b9b4e8ba3097e01a61cbd2226169d4526c68e201229b05b275f243de610c8f57079a2911b60dfdd3737a1617bc2b4dc0
   languageName: node
   linkType: hard
 

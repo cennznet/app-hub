@@ -7,140 +7,105 @@
   "tokens": [
     {
       "symbol": "ETH",
+      "address": "0x0000000000000000000000000000000000000000",
       "decimals": 18,
-      "chainId": 1,
-      "address": "0x0000000000000000000000000000000000000000"
+      "chainId": 1
     },
 
     {
       "symbol": "ETH",
+      "address": "0x0000000000000000000000000000000000000000",
       "decimals": 18,
-      "chainId": 42,
-      "address": "0x0000000000000000000000000000000000000000"
+      "chainId": 42
+    },
+
+    {
+      "symbol": "CERTI",
+      "address": "0x64d36862A2144599606670c682Ebc64170be1A82",
+      "decimals": 18,
+      "chainId": 1
+    },
+
+    {
+      "symbol": "DAI",
+      "address": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
+      "decimals": 18,
+      "chainId": 1
+    },
+
+    {
+      "symbol": "DAI",
+      "address": "0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa",
+      "decimals": 18,
+      "chainId": 42
     },
 
     {
       "symbol": "USDT",
+      "address": "0xdac17f958d2ee523a2206206994597c13d831ec7",
       "decimals": 6,
-      "chainId": 1,
-      "address": "0xdac17f958d2ee523a2206206994597c13d831ec7"
-    },
-
-    {
-      "symbol": "BNB",
-      "decimals": 18,
-      "chainId": 1,
-      "address": "0xb8c77482e45f1f44de1745f52c74426c631bdd52"
-    },
-
-    {
-      "symbol": "USDC",
-      "decimals": 6,
-      "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
-      "chainId": 1
-    },
-
-    {
-      "symbol": "HEX",
-      "decimals": 8,
-      "address": "0x2b591e99afe9f32eaa6214f7b7629768c40eeb39",
-      "chainId": 1
-    },
-
-    {
-      "symbol": "BUSD",
-      "decimals": 18,
-      "address": "0x4fabb145d64652a948d72533023f6e7a623c7c53",
       "chainId": 1
     },
 
     {
       "symbol": "SHIB",
-      "decimals": 18,
       "address": "0x95aD61b0a150d79219dCF64E1E6Cc01f0B64C4cE",
-      "chainId": 1
-    },
-
-    {
-      "symbol": "UST",
       "decimals": 18,
-      "address": "0xa47c8bf37f92abed4a126bda807a7b7498661acd",
       "chainId": 1
-    },
-
-    {
-      "symbol": "MATIC",
-      "decimals": 18,
-      "address": "0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0",
-      "chainId": 1
-    },
-
-    {
-      "symbol": "CRO",
-      "decimals": 8,
-      "address": "0xa0b73e1ff0b80914ab6fe0444e65848c4c34450b",
-      "chainId": 1
-    },
-
-    {
-      "symbol": "WBTC",
-      "decimals": 8,
-      "address": "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599",
-      "chainId": 1
-    },
-
-    {
-      "symbol": "DAI",
-      "decimals": 18,
-      "address": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
-      "chainId": 1
-    },
-
-    {
-      "symbol": "DAI",
-      "decimals": 18,
-      "address": "0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa",
-      "chainId": 42
     },
 
     {
       "symbol": "LINK",
-      "decimals": 18,
-      "address": "0xa36085F69e2889c224210F603D836748e7dC0088",
-      "chainId": 42
-    },
-
-    {
-      "address": "0xAaF64BFCC32d0F15873a02163e7E500671a4ffcD",
-      "symbol": "MKR",
-      "decimals": 18,
-      "chainId": 42
-    },
-
-    {
-      "address": "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
-      "symbol": "UNI",
-      "decimals": 18,
-      "chainId": 42
-    },
-
-    {
-      "address": "0x64d36862A2144599606670c682Ebc64170be1A82",
-      "symbol": "CERTI",
+      "address": "0x514910771AF9Ca656af840dff83E8264EcF986CA",
       "decimals": 18,
       "chainId": 1
     },
 
     {
-      "address": "0xd0a1e359811322d97991e03f863a0c30c2cf029c",
-      "symbol": "wETH",
+      "symbol": "LINK",
+      "address": "0xa36085F69e2889c224210F603D836748e7dC0088",
       "decimals": 18,
       "chainId": 42
     },
 
     {
-      "address": "0xb7e26f93211932865430a03236dd043f7248993b",
+      "symbol": "MKR",
+      "address": "0xAaF64BFCC32d0F15873a02163e7E500671a4ffcD",
+      "decimals": 18,
+      "chainId": 42
+    },
+
+    {
+      "symbol": "UNI",
+      "address": "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
+      "decimals": 18,
+      "chainId": 1
+    },
+
+    {
+      "symbol": "UNI",
+      "address": "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
+      "decimals": 18,
+      "chainId": 42
+    },
+
+    {
+      "symbol": "wETH",
+      "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+      "decimals": 18,
+      "chainId": 1
+    },
+
+    {
+      "symbol": "wETH",
+      "address": "0xd0a1e359811322d97991e03f863a0c30c2cf029c",
+      "decimals": 18,
+      "chainId": 42
+    },
+
+    {
       "symbol": "wCENNZ",
+      "address": "0xb7e26f93211932865430a03236dd043f7248993b",
       "decimals": 4,
       "chainId": 42
     }
