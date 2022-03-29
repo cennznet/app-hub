@@ -122,7 +122,7 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 							<>
 								{poolAction === "Add" && (
 									<div>
-										To keep the liquidity pool functional, deposits require an
+										To keep the liquidity pool balanced, deposits require an
 										equal value of <strong>{tradeAsset.symbol}</strong> and{" "}
 										<strong>{coreAsset.symbol}</strong> at the current exchange
 										rate.
@@ -131,9 +131,8 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 
 								{poolAction === "Remove" && (
 									<div>
-										To keep the liquidity pool functional, withdrawals will
-										return an equal value of{" "}
-										<strong>{tradeAsset.symbol}</strong> and{" "}
+										To keep the liquidity pool balanced, withdrawals will return
+										an equal value of <strong>{tradeAsset.symbol}</strong> and{" "}
 										<strong>{coreAsset.symbol}</strong> at the current exchange
 										rate.
 									</div>
