@@ -8,21 +8,21 @@ interface BalanceValidationHook {
 export default function useBalanceValidation(
 	currentValue: Balance,
 	maxValue: Balance,
-	historical?: boolean
+	disabled?: boolean
 ): BalanceValidationHook {
 	const inputRef = useRef<HTMLInputElement>();
 
 	useEffect(() => {
 		const input = inputRef.current;
 		if (!input) return;
-		if (!maxValue || historical) return input.setCustomValidity("");
+		if (!maxValue || disabled) return input.setCustomValidity("");
 
 		input.setCustomValidity(
 			currentValue.round(0, Balance.roundDown).gt(maxValue)
 				? "Insufficient funds"
 				: ""
 		);
-	}, [currentValue, maxValue, historical]);
+	}, [currentValue, maxValue, disabled]);
 
 	return { inputRef };
 }

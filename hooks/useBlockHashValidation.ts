@@ -7,18 +7,18 @@ interface BlockHashValidationHook {
 
 export default function useBlockHashValidation(
 	hash: string,
-	expanded: boolean
+	disabled?: boolean
 ): BlockHashValidationHook {
 	const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement>();
 
 	useEffect(() => {
 		const input = inputRef.current;
 		if (!input) return;
-		if (!expanded) return input.setCustomValidity("");
+		if (disabled) return input.setCustomValidity("");
 		const isValid = isCENNZAddress(hash);
 
 		input.setCustomValidity(!isValid ? `Invalid block hash` : "");
-	}, [hash, expanded]);
+	}, [hash, disabled]);
 
 	return { inputRef };
 }

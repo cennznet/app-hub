@@ -31,7 +31,7 @@ const HistoricalWithdrawal: VFC<
 	} = useBridge();
 	const { inputRef: blockHashRef } = useBlockHashValidation(
 		historicalBlockHash,
-		expanded
+		!expanded
 	);
 
 	useEffect(() => {
