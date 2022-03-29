@@ -17,11 +17,7 @@ export default async function fetchBridgeTokens<T extends BridgeAction>(
 ): Promise<BridgeTokens<T>[]> {
 	if (action === "Deposit")
 		return (await Promise.resolve(fetchEthereumTokens(ETH_CHAIN_ID))).sort(
-			(a, b) => {
-				if (a.address > b.address) return 1;
-				if (a.address < b.address) return -1;
-				return 0;
-			}
+			(a, b) => (a.symbol > b.symbol ? 1 : -1)
 		) as BridgeTokens<T>[];
 
 	const registeredAssets: [AssetId, AssetInfo][] = await (
