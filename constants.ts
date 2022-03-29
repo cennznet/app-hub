@@ -19,3 +19,5 @@ export const BRIDGE_RELAYER_URL: string =
 	process.env.NEXT_PUBLIC_BRIDGE_RELAYER_URL;
 
 export const GA_ID: string = process.env.NEXT_PUBLIC_GA_ID;
+
+export const VERCEL_URL: string = process.env.NEXT_PUBLIC_VERCEL_URL;
