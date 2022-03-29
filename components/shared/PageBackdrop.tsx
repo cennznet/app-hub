@@ -1,6 +1,6 @@
 import { FC, useEffect, useRef } from "react";
 import { css } from "@emotion/react";
-import Link from "next/link";
+
 import useSectionUri from "@/hooks/useSectionUri";
 import { Theme } from "@mui/material";
 
@@ -23,16 +23,16 @@ const PageBackdrop: FC<{}> = () => {
 			const deltaX = (mouseX / window.innerWidth - 0.5) * 2,
 				deltaY = (mouseY / window.innerHeight - 0.5) * 2;
 
-			layer0.style.transform = `translate3d(${deltaX * -3}px, ${
-				deltaY * -3
-			}px, 0px)`;
-
-			layer1.style.transform = `translate3d(${deltaX * 2}px, ${
-				deltaY * 2
-			}px, 0px)`;
-
-			layer2.style.transform = `translate3d(${deltaX * -2}px, ${
+			layer0.style.transform = `translate3d(${deltaX * -2}px, ${
 				deltaY * -2
+			}px, 0px)`;
+
+			layer1.style.transform = `translate3d(${deltaX * 1}px, ${
+				deltaY * 1
+			}px, 0px)`;
+
+			layer2.style.transform = `translate3d(${deltaX * -1}px, ${
+				deltaY * -1
 			}px, 0px)`;
 		};
 
@@ -43,12 +43,6 @@ const PageBackdrop: FC<{}> = () => {
 
 	return (
 		<div css={styles.container}>
-			<Link href="/">
-				<a css={styles.logo}>
-					<img src="/images/cennz-white.svg" alt="CENNZnet" />
-				</a>
-			</Link>
-
 			<div css={styles.layer0} ref={ref0}></div>
 
 			<div css={styles.layer1} ref={ref1}>
@@ -142,24 +136,6 @@ export const styles = {
 
 			background-color: ${palette.secondary.main};
 			transition: background-color ${transitions.duration.standard}ms;
-		`,
-
-	logo: ({ palette, transitions }: Theme) =>
-		css`
-			width: 140px;
-			height: 140px;
-			display: flex;
-			background-color: ${palette.primary.main};
-			transition: background-color ${transitions.duration.standard}ms;
-			position: absolute;
-			left: 0;
-			top: 0;
-			z-index: 10;
-
-			> img {
-				display: block;
-				margin: auto;
-			}
 		`,
 
 	layer0: css`

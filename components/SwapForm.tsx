@@ -19,8 +19,8 @@ const SwapForm: FC<IntrinsicElements["form"] & SwapFormProps> = ({
 	const {
 		exchangeAsset,
 		receiveAsset,
-		exchangeValue: { value: exValue, setValue: setExValue },
-		receiveValue: { value: reValue },
+		exchangeInput: { value: exValue, setValue: setExValue },
+		receiveInput: { value: reValue },
 		slippage,
 		setTxStatus,
 		setSuccessStatus,

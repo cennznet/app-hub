@@ -42,6 +42,8 @@ const globalStyles = (
 			}
 
 			#__next {
+				position: relative;
+				min-width: 960px;
 				.MuiCircularProgress-root {
 					animation-duration: 0.7s;
 				}
@@ -85,6 +87,7 @@ const globalStyles = (
 
 					.MuiOutlinedInput-input:not(.MuiSelect-select) {
 						font-family: "Roboto Mono", monospace;
+						letter-spacing: -0.025em;
 					}
 
 					.MuiOutlinedInput-notchedOutline {

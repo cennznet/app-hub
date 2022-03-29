@@ -16,11 +16,13 @@ const BridgeStats: VFC<IntrinsicElements["div"] & BridgeStatsProps> = (
 
 	return (
 		<div {...props} css={styles.root}>
-			<LinearProgress
-				css={[
-					styles.formInfoProgress(updatingGasFee || updatingVerificationFee),
-				]}
-			/>
+			{bridgeAction === "Withdraw" && (
+				<LinearProgress
+					css={[
+						styles.formInfoProgress(updatingGasFee || updatingVerificationFee),
+					]}
+				/>
+			)}
 
 			<ul>
 				{bridgeAction === "Deposit" && (
@@ -97,6 +99,7 @@ const styles = {
 
 			span {
 				font-family: "Roboto Mono", monospace;
+				letter-spacing: -0.025em;
 			}
 
 			svg {

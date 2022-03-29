@@ -35,3 +35,4 @@ export { default as waitUntil } from "@/utils/waitUntil";
 export { default as fetchDepositRelayerStatus } from "@/utils/fetchDepositRelayerStatus";
 export { default as ensureRelayerDepositDone } from "@/utils/ensureRelayerDepositDone";
 export { default as sendWithdrawEthereumRequest } from "@/utils/sendWithdrawEthereumRequest";
+export { default as trackPageView } from "@/utils/trackPageView";

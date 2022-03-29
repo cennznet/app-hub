@@ -16,19 +16,34 @@ import CssGlobal from "@/components/CssGlobal";
 import MetaMaskExtensionProvider from "@/providers/MetaMaskExtensionProvider";
 import { API_URL } from "@/constants";
 import MetaMaskWalletProvider from "@/providers/MetaMaskWalletProvider";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
+import { trackPageView } from "@/utils";
+import { DefaultSeo } from "next-seo";
 
 type MyAppProps = Omit<AppProps, "pageProps"> & {
 	pageProps: {} & GlobalProps;
 };
 
 function MyApp({ Component, pageProps }: MyAppProps) {
+	const { events } = useRouter();
+
+	useEffect(() => {
+		if (!events) return;
+
+		events.on("routeChangeComplete", trackPageView);
+		return () => {
+			events.off("routeChangeComplete", trackPageView);
+		};
+	}, [events]);
+
 	return (
 		<>
-			<Head>
-				<title>CENNZnet App Hub</title>
-				<meta name="description" content="App Hub powered by CENNZnet" />
-				<link rel="icon" href="/favicon.svg" />
-			</Head>
+			<DefaultSeo
+				titleTemplate="CENNZnet App Hub | %s"
+				title="CENNZnet App Hub"
+				description="App Hub powered by CENNZnet."
+			/>
 			<CssBaseline />
 			<ThemeProvider>
 				<CssGlobal />

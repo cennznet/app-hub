@@ -21,11 +21,11 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 		poolAction,
 		tradeAssets,
 		tradeAsset,
-		tradeToken,
-		tradeValue,
+		tradeSelect,
+		tradeInput,
 		coreAsset,
-		coreToken,
-		coreValue,
+		coreSelect,
+		coreInput,
 		userInfo,
 	} = usePool();
 
@@ -43,26 +43,26 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 		poolAction === "Remove" ? corePoolBalance : coreWalletBalance;
 
 	const onTradeAssetMaxRequest = useMemo(() => {
-		const setTradeValue = tradeValue.setValue;
+		const setTradeValue = tradeInput.setValue;
 		return () => setTradeValue(tradeBalance.toInput());
-	}, [tradeBalance, tradeValue.setValue]);
+	}, [tradeBalance, tradeInput.setValue]);
 
-	const { coreAssetValue } = usePoolCoreAssetValue(tradeValue.value);
+	const { coreAssetValue } = usePoolCoreAssetValue(tradeInput.value);
 
 	// Update coreAsset value by tradeAsset value
 	useEffect(() => {
-		const setCoreValue = coreValue.setValue;
+		const setCoreValue = coreInput.setValue;
 		if (!coreAssetValue || coreAssetValue.eq(0)) return setCoreValue("");
 		setCoreValue(coreAssetValue.toInput());
-	}, [coreAssetValue, coreValue.setValue]);
+	}, [coreAssetValue, coreInput.setValue]);
 
 	const { inputRef: tradeInputRef } = useBalanceValidation(
-		Balance.fromInput(tradeValue.value, tradeAsset),
+		Balance.fromInput(tradeInput.value, tradeAsset),
 		tradeBalance
 	);
 
 	const { inputRef: coreInputRef } = useBalanceValidation(
-		Balance.fromInput(tradeValue.value, tradeAsset),
+		Balance.fromInput(coreInput.value, coreAsset),
 		coreBalance
 	);
 
@@ -72,10 +72,10 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 				<label htmlFor="tradeInput">Liquidity Asset</label>
 				<TokenInput
 					onMaxValueRequest={onTradeAssetMaxRequest}
-					selectedTokenId={tradeToken.tokenId}
-					onTokenChange={tradeToken.onTokenChange}
-					value={tradeValue.value}
-					onValueChange={tradeValue.onValueChange}
+					selectedTokenId={tradeSelect.tokenId}
+					onTokenChange={tradeSelect.onTokenChange}
+					value={tradeInput.value}
+					onValueChange={tradeInput.onValueChange}
 					tokens={tradeAssets}
 					id="tradeInput"
 					ref={tradeInputRef}
@@ -99,10 +99,10 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 
 			<div css={styles.formField}>
 				<TokenInput
-					selectedTokenId={coreToken.tokenId}
-					onTokenChange={coreToken.onTokenChange}
-					value={coreValue.value}
-					onValueChange={coreValue.onValueChange}
+					selectedTokenId={coreSelect.tokenId}
+					onTokenChange={coreSelect.onTokenChange}
+					value={coreInput.value}
+					onValueChange={coreInput.onValueChange}
 					tokens={[coreAsset]}
 					required
 					scale={4}
@@ -194,6 +194,7 @@ const styles = {
 		span {
 			font-family: "Roboto Mono", monospace;
 			font-weight: bold;
+			letter-spacing: -0.025em;
 		}
 	`,
 

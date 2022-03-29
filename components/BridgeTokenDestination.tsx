@@ -106,7 +106,7 @@ const BridgeTokenDestination: VFC<
 						Balance: <span>{transferBalance?.toBalance() ?? "0.0000"}</span>
 					</div>
 				)}
-				{transferBalance === null && (
+				{transferBalance === null && !!metaMaskAccount && !!cennzAccount && (
 					<div css={styles.tokenBalance}>
 						Balance: <LinearProgress css={[styles.formInfoProgress]} />
 					</div>
@@ -174,6 +174,7 @@ const styles = {
 			font-family: "Roboto Mono", monospace;
 			font-weight: bold;
 			margin-left: 0.25em;
+			letter-spacing: -0.025em;
 		}
 	`,
 	formInfoProgress: css`
