@@ -93,7 +93,7 @@ const PoolProvider: FC<PoolProviderProps> = ({ supportedAssets, children }) => {
 			title: "Transaction In Progress",
 			message: (
 				<div>
-					Please sign the transaction when prompted and wait until it's
+					Please sign the transaction when prompted and wait until it&apos;s
 					completed
 				</div>
 			),
