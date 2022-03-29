@@ -11,6 +11,7 @@ export { default as usePoolCoreAssetValue } from "@/hooks/usePoolCoreAssetValue"
 export { default as useBalanceValidation } from "@/hooks/useBalanceValidation";
 export { default as useBridgeGasFee } from "@/hooks/useBridgeGasFee";
 export { default as useBridgeVerificationFee } from "@/hooks/useBridgeVerificationFee";
+export { default as useBlockHashValidation } from "@/hooks/useBlockHashValidation";
 
 export type { TokenInputHook } from "@/hooks/useTokenInput";
 export type { PoolExchangeInfoHook } from "@/hooks/usePoolExchangeInfo";

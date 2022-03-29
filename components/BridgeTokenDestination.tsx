@@ -27,6 +27,8 @@ const BridgeTokenDestination: VFC<
 		transferMetaMaskAddress,
 		setTransferMetaMaskAddress,
 		metaMaskBalance,
+		historicalBlockHash,
+		historicalEventProofId,
 	} = useBridge();
 
 	const [cennzBalance] = useCENNZBalances(
@@ -57,7 +59,8 @@ const BridgeTokenDestination: VFC<
 
 	const { inputRef: transferInputRef } = useBalanceValidation(
 		Balance.fromInput(transferInput.value, transferAsset),
-		transferBalance
+		transferBalance,
+		!!historicalBlockHash || !!historicalEventProofId
 	);
 
 	const { inputRef: cennzAddressInputRef } = useAddressValidation(
