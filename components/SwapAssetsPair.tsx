@@ -134,7 +134,7 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
 				<label htmlFor="receiveInput">To</label>
 				<TokenInput
 					selectedTokenId={receiveSelect.tokenId}
-					onTokenChange={() => {}}
+					onTokenChange={receiveSelect.onTokenChange}
 					value={receiveInput.value}
 					onValueChange={receiveInput.onValueChange}
 					tokens={receiveAssets}
