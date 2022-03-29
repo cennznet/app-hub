@@ -20,21 +20,21 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
 	const {
 		exchangeAssets,
 		receiveAssets,
-		exchangeToken,
-		receiveToken,
-		exchangeValue,
-		receiveValue,
+		exchangeSelect,
+		receiveSelect,
+		exchangeInput,
+		receiveInput,
 		setReceiveAssets,
 		exchangeAsset,
 		receiveAsset,
 	} = useSwap();
 
-	const { exchangeRate } = useSwapExchangeRate(exchangeValue.value);
+	const { exchangeRate } = useSwapExchangeRate(exchangeInput.value);
 
 	const setTokensPair = useCallback(
 		(exchangeTokenId, receiveTokenId = null) => {
-			const setExchangeTokenId = exchangeToken.setTokenId;
-			const setReceiveTokenId = receiveToken.setTokenId;
+			const setExchangeTokenId = exchangeSelect.setTokenId;
+			const setReceiveTokenId = receiveSelect.setTokenId;
 
 			setExchangeTokenId(exchangeTokenId);
 
@@ -55,28 +55,28 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
 		},
 
 		[
-			exchangeToken.setTokenId,
-			receiveToken.setTokenId,
+			exchangeSelect.setTokenId,
+			receiveSelect.setTokenId,
 			exchangeAssets,
 			setReceiveAssets,
 		]
 	);
 
 	const onSwitchButtonClick = useCallback(() => {
-		setTokensPair(receiveToken.tokenId, exchangeToken.tokenId);
-	}, [setTokensPair, receiveToken.tokenId, exchangeToken.tokenId]);
+		setTokensPair(receiveSelect.tokenId, exchangeSelect.tokenId);
+	}, [setTokensPair, receiveSelect.tokenId, exchangeSelect.tokenId]);
 
 	// Sync up tokens for receive input
 	useEffect(() => {
-		setTokensPair(exchangeToken.tokenId);
-	}, [exchangeToken.tokenId, setTokensPair]);
+		setTokensPair(exchangeSelect.tokenId);
+	}, [exchangeSelect.tokenId, setTokensPair]);
 
 	// Sync up value for receive input
 	useEffect(() => {
-		const setReceiveValue = receiveValue.setValue;
+		const setReceiveValue = receiveInput.setValue;
 		if (!exchangeRate || exchangeRate?.eq(0)) return setReceiveValue("");
 		setReceiveValue(exchangeRate.toInput());
-	}, [exchangeRate, receiveValue.setValue]);
+	}, [exchangeRate, receiveInput.setValue]);
 
 	const [exchangeBalance, receiveBalance] = useCENNZBalances(
 		exchangeAsset,
@@ -85,17 +85,17 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
 
 	const onExchangeMaxRequest = useMemo(() => {
 		if (!exchangeBalance) return;
-		const setExchangeValue = exchangeValue.setValue;
+		const setExchangeValue = exchangeInput.setValue;
 		return () => setExchangeValue(exchangeBalance.toBalance());
-	}, [exchangeBalance, exchangeValue.setValue]);
+	}, [exchangeBalance, exchangeInput.setValue]);
 
 	const { inputRef: exchangeInputRef } = useBalanceValidation(
-		Balance.fromInput(exchangeValue.value, exchangeAsset),
+		Balance.fromInput(exchangeInput.value, exchangeAsset),
 		exchangeBalance
 	);
 
 	const { inputRef: receiveInputRef } = useBalanceValidation(
-		Balance.fromInput(receiveValue.value, receiveAsset),
+		Balance.fromInput(receiveInput.value, receiveAsset),
 		receiveBalance
 	);
 
@@ -105,10 +105,10 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
 				<label htmlFor="exchangeInput">From</label>
 				<TokenInput
 					onMaxValueRequest={onExchangeMaxRequest}
-					selectedTokenId={exchangeToken.tokenId}
-					onTokenChange={exchangeToken.onTokenChange}
-					value={exchangeValue.value}
-					onValueChange={exchangeValue.onValueChange}
+					selectedTokenId={exchangeSelect.tokenId}
+					onTokenChange={exchangeSelect.onTokenChange}
+					value={exchangeInput.value}
+					onValueChange={exchangeInput.onValueChange}
 					tokens={exchangeAssets}
 					id="exchangeInput"
 					ref={exchangeInputRef}
@@ -133,10 +133,10 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
 			<div css={styles.formField}>
 				<label htmlFor="receiveInput">To</label>
 				<TokenInput
-					selectedTokenId={receiveToken.tokenId}
+					selectedTokenId={receiveSelect.tokenId}
 					onTokenChange={() => {}}
-					value={receiveValue.value}
-					onValueChange={receiveValue.onValueChange}
+					value={receiveInput.value}
+					onValueChange={receiveInput.onValueChange}
 					tokens={receiveAssets}
 					id="receiveInput"
 					ref={receiveInputRef}
@@ -188,6 +188,7 @@ const styles = {
 		span {
 			font-family: "Roboto Mono", monospace;
 			font-weight: bold;
+			letter-spacing: -0.025em;
 		}
 	`,
 };

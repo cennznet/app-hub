@@ -12,6 +12,7 @@ import PoolAssetsPair from "@/components/PoolAssetsPair";
 import PoolStats from "@/components/PoolStats";
 import PoolSettings from "@/components/PoolSettings";
 import PoolProgress from "@/components/PoolProgress";
+import { NextSeo } from "next-seo";
 
 export async function getStaticProps() {
 	const api = await Api.create({ provider: API_URL });
@@ -27,6 +28,7 @@ export async function getStaticProps() {
 const Pool: VFC<{ supportedAssets: CENNZAsset[] }> = ({ supportedAssets }) => {
 	return (
 		<PoolProvider supportedAssets={supportedAssets}>
+			<NextSeo title="CENNZX Liquidity" />
 			<MainPanel defaultTitle="CENNZX Liquidity">
 				<PoolForm>
 					<PoolActionsPair />

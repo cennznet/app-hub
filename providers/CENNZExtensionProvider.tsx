@@ -28,12 +28,22 @@ type ProviderProps = {};
 export default function CENNZExtensionProvider({
 	children,
 }: PropsWithChildren<ProviderProps>) {
-	const { browser } = useUserAgent();
+	const { browser, os } = useUserAgent();
 	const [module, setModule] = useState<typeof Extension>();
 	const [extension, setExtension] = useState<InjectedExtension>();
 	const [accounts, setAccounts] = useState<Array<InjectedAccountWithMeta>>();
 
 	const promptInstallExtension = useCallback(() => {
+		if (
+			browser.name === "Safari" ||
+			os.name === "iOS" ||
+			os.name === "Android"
+		) {
+			return alert(
+				"Sorry, this browser is not supported by App Hub. To use App Hub, please switch to Chrome or Firefox browsers on a Mac or PC."
+			);
+		}
+
 		const url =
 			browser?.name === "Firefox"
 				? "https://addons.mozilla.org/en-US/firefox/addon/cennznet-browser-extension/"
@@ -46,7 +56,7 @@ export default function CENNZExtensionProvider({
 		if (!confirmed) return;
 
 		window.open(url, "_blank");
-	}, [browser]);
+	}, [browser, os]);
 
 	useEffect(() => {
 		import("@polkadot/extension-dapp").then(setModule);

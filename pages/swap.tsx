@@ -11,6 +11,7 @@ import SwapSettings from "@/components/SwapSettings";
 import SwapProgress from "@/components/SwapProgress";
 import MainPanel from "@/components/MainPanel";
 import { VFC } from "react";
+import { NextSeo } from "next-seo";
 
 export async function getStaticProps() {
 	const api = await Api.create({ provider: API_URL });
@@ -26,6 +27,7 @@ export async function getStaticProps() {
 const Swap: VFC<{ supportedAssets: CENNZAsset[] }> = ({ supportedAssets }) => {
 	return (
 		<SwapProvider supportedAssets={supportedAssets}>
+			<NextSeo title="CENNZX Exchange" />
 			<MainPanel defaultTitle="CENNZX Exchange">
 				<SwapForm>
 					<SwapAssetsPair />

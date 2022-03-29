@@ -31,9 +31,9 @@ const PoolForm: FC<IntrinsicElements["form"] & PoolFormProps> = ({
 		slippage,
 
 		tradeAsset,
-		tradeValue: { value: trValue, setValue: setTrValue },
+		tradeInput: { value: trValue, setValue: setTrValue },
 		coreAsset,
-		coreValue: { value: crValue },
+		coreInput: { value: crValue },
 
 		exchangeInfo,
 

@@ -27,8 +27,8 @@ export default function usePoolCoreAssetValue(
 		exchangeInfo,
 		userInfo,
 		poolAction,
-		tradeValue,
-		coreValue,
+		tradeInput,
+		coreInput,
 	} = usePool();
 
 	const setCoreAssetValueByTradeAsset = useCallback(() => {
@@ -73,12 +73,12 @@ export default function usePoolCoreAssetValue(
 
 	const setCoreAssetValueByInput = useCallback(() => {
 		const crInputValue = Balance.fromInput(
-			coreValue.value,
+			coreInput.value,
 			coreAsset
 		).withDecimals(0);
 
 		const trInputValue = Balance.fromInput(
-			tradeValue.value,
+			tradeInput.value,
 			tradeAsset
 		).withDecimals(0);
 		const trValue = Balance.fromInput(tradeAssetValue, tradeAsset);
@@ -93,9 +93,9 @@ export default function usePoolCoreAssetValue(
 
 		setCoreAssetValue(crValue.lt(0) ? zeroValue : crValue);
 	}, [
-		coreValue.value,
+		coreInput.value,
 		coreAsset,
-		tradeValue.value,
+		tradeInput.value,
 		tradeAsset,
 		tradeAssetValue,
 	]);

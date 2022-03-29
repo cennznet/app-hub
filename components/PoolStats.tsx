@@ -13,7 +13,7 @@ interface PoolStatsProps {}
 const PoolStats: VFC<IntrinsicElements["div"] & PoolStatsProps> = (props) => {
 	const {
 		tradeAsset,
-		tradeValue,
+		tradeInput,
 		coreAsset,
 		exchangeInfo,
 		updatingExchangeInfo,
@@ -109,7 +109,7 @@ const PoolStats: VFC<IntrinsicElements["div"] & PoolStatsProps> = (props) => {
 					<strong>Slippage:</strong>{" "}
 					{poolAction === "Add" && (
 						<span>
-							{Balance.fromInput(tradeValue?.value, tradeAsset)
+							{Balance.fromInput(tradeInput?.value, tradeAsset)
 								.increase(slippage)
 								.toBalance()}{" "}
 							{tradeAsset.symbol}
@@ -117,7 +117,7 @@ const PoolStats: VFC<IntrinsicElements["div"] & PoolStatsProps> = (props) => {
 					)}
 					{poolAction === "Remove" && (
 						<span>
-							{Balance.fromInput(tradeValue?.value, tradeAsset)
+							{Balance.fromInput(tradeInput?.value, tradeAsset)
 								.decrease(slippage)
 								.toBalance()}{" "}
 							{tradeAsset.symbol}
@@ -190,6 +190,7 @@ const styles = {
 
 			span {
 				font-family: "Roboto Mono", monospace;
+				letter-spacing: -0.025em;
 			}
 
 			svg {

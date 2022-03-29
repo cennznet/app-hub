@@ -17,3 +17,5 @@ export const ETH_CHAIN_ID: number = Number(
 
 export const BRIDGE_RELAYER_URL: string =
 	process.env.NEXT_PUBLIC_BRIDGE_RELAYER_URL;
+
+export const GA_ID: string = process.env.NEXT_PUBLIC_GA_ID;
