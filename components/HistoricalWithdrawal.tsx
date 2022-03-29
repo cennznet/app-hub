@@ -8,6 +8,7 @@ import {
 	TextField,
 	Theme,
 	Tooltip,
+	InputAdornment,
 } from "@mui/material";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
@@ -67,7 +68,11 @@ const HistoricalWithdrawal: VFC<
 								setHistoricalEventProofId(Number(event.target.value))
 							}
 							InputProps={{
-								endAdornment: <EventProofToolTip field="id" />,
+								endAdornment: (
+									<InputAdornment position="end">
+										<EventProofToolTip field="id" />
+									</InputAdornment>
+								),
 								inputProps: { min: 1 },
 							}}
 						/>
@@ -80,7 +85,11 @@ const HistoricalWithdrawal: VFC<
 							value={historicalBlockHash ?? ""}
 							onChange={(event) => setHistoricalBlockHash(event.target.value)}
 							InputProps={{
-								endAdornment: <EventProofToolTip field="hash" />,
+								endAdornment: (
+									<InputAdornment position="end">
+										<EventProofToolTip field="hash" />
+									</InputAdornment>
+								),
 							}}
 							multiline
 							fullWidth
