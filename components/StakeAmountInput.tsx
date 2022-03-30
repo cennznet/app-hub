@@ -4,24 +4,33 @@ import TokenInput from "@/components/shared/TokenInput";
 import { useStake } from "@/providers/StakeProvider";
 import { useBalanceValidation, useCENNZBalances, useTokenInput } from "@/hooks";
 import { Balance } from "@/utils";
-import { CENNZAsset } from "@/types";
+import { CENNZAsset, IntrinsicElements } from "@/types";
 import { LinearProgress, Theme, Tooltip } from "@mui/material";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 
-const StakeAmountInput: VFC = () => {
+interface StakeAmountInputProps {}
+
+const StakeAmountInput: VFC<
+	IntrinsicElements["div"] & StakeAmountInputProps
+> = (props) => {
 	const { stakeAsset, stakeAction } = useStake();
 	const [stakeSelect, stakeInput] = useTokenInput(stakeAsset.assetId);
 	const { selectedAccount } = useCENNZWallet();
 	const [CENNZBalance] = useCENNZBalances(stakeAsset as CENNZAsset);
 
 	// TODO: fetch staked balance
-	const stakedBalance = new Balance(10000 * 10000, stakeAsset);
-
-	const onStakeMaxRequest = useMemo(
-		() => () => stakeInput.setValue(CENNZBalance.toInput()),
-		[CENNZBalance, stakeInput]
+	const stakedBalance = useMemo(
+		() => new Balance(10000 * 10000, stakeAsset),
+		[stakeAsset]
 	);
+
+	const onStakeMaxRequest = useMemo(() => {
+		if (stakeAction === "stake")
+			return () => stakeInput.setValue(CENNZBalance.toInput());
+		if (stakeAction === "unstake")
+			return () => stakeInput.setValue(stakedBalance.toInput());
+	}, [stakeAction, stakeInput, CENNZBalance, stakedBalance]);
 
 	const { inputRef: stakeInputRef } = useBalanceValidation(
 		Balance.fromInput(stakeInput.value, stakeAsset),
@@ -29,7 +38,7 @@ const StakeAmountInput: VFC = () => {
 	);
 
 	return (
-		<div css={styles.root}>
+		<div {...props} css={styles.root}>
 			<label htmlFor="stakeInput">Staking Asset</label>
 			<TokenInput
 				onMaxValueRequest={onStakeMaxRequest}
@@ -64,12 +73,12 @@ const StakeAmountInput: VFC = () => {
 					<HelpOutlineIcon fontSize={"0.5em" as any} />
 				</Tooltip>
 			</TokenInput>
-			{!!CENNZBalance && stakeAction === "Stake" && (
+			{!!CENNZBalance && stakeAction === "stake" && (
 				<div css={styles.CENNZBalance}>
 					Balance: <span>{CENNZBalance?.toBalance() ?? "0.0000"}</span>
 				</div>
 			)}
-			{stakedBalance && stakeAction === "Withdraw" && (
+			{stakedBalance && stakeAction === "unstake" && (
 				<div css={styles.CENNZBalance}>
 					UNStakeable: <span>{stakedBalance?.toBalance() ?? "0.0000"}</span>
 				</div>

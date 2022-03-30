@@ -67,7 +67,7 @@ export interface PoolUserInfo {
 	coreAssetBalance: Balance;
 }
 
-export type StakeAction = "Stake" | "Withdraw";
+export type StakeAction = "stake" | "unstake";
 
 export interface MetaMaskAccount {
 	address: string;
