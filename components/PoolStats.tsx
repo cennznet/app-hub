@@ -109,6 +109,7 @@ const PoolStats: VFC<IntrinsicElements["div"] & PoolStatsProps> = (props) => {
 					<strong>Slippage:</strong>{" "}
 					{poolAction === "Add" && (
 						<span>
+							{"<= "}
 							{Balance.fromInput(tradeInput?.value, tradeAsset)
 								.increase(slippage)
 								.toBalance()}{" "}
@@ -117,6 +118,7 @@ const PoolStats: VFC<IntrinsicElements["div"] & PoolStatsProps> = (props) => {
 					)}
 					{poolAction === "Remove" && (
 						<span>
+							{">= "}
 							{Balance.fromInput(tradeInput?.value, tradeAsset)
 								.decrease(slippage)
 								.toBalance()}{" "}
@@ -133,10 +135,9 @@ const PoolStats: VFC<IntrinsicElements["div"] & PoolStatsProps> = (props) => {
 						title={
 							<div>
 								If the amount of <strong>{tradeAsset.symbol}</strong> used for
-								liquidity pool is{" "}
-								{poolAction === "Remove" ? "lesser" : "greater"} than Slippage
-								value, the transaction will not proceed. You can update your
-								preferred Slippage percentage under Settings.
+								liquidity pool is {poolAction === "Remove" ? "less" : "greater"}{" "}
+								than Slippage value, the transaction will not proceed. You can
+								update your preferred Slippage percentage under Settings.
 							</div>
 						}
 						arrow
