@@ -18,6 +18,7 @@ const StakeElectedInfo: VFC = () => {
 	const [elected, setElected] = useState<StakingElected>();
 	const [electedExpanded, setElectedExpanded] = useState<boolean>(false);
 	const [electedOption, setElectedOption] = useState<ElectedOption>();
+	const [extraDisplayAddress, setExtraDisplayAddress] = useState<string>();
 
 	useEffect(() => {
 		if (!electionInfo) return;
@@ -39,13 +40,34 @@ const StakeElectedInfo: VFC = () => {
 		});
 	}, [electionInfo]);
 
+	useEffect(() => {
+		if (
+			!electedOption ||
+			(electedOption.accountId === electedOption.stashId &&
+				electedOption.accountId === electedOption.controllerId)
+		)
+			return;
+
+		if (electedOption.accountId === electedOption.stashId) {
+			return setExtraDisplayAddress(
+				`Controller: ${electedOption.controllerId}`
+			);
+		}
+
+		setExtraDisplayAddress(
+			`Controller: ${electedOption.controllerId}\nStash: ${electedOption.stashId}`
+		);
+	}, [electedOption]);
+
 	const parseElectionInfo = (info) => {
 		return info.map((info) => {
 			const electedInfo = {};
 			Object.keys(info).forEach((key) => {
 				try {
 					electedInfo[key] = info[key].toHuman();
-				} catch (_) {}
+				} catch (_) {
+					electedInfo[key] = info[key];
+				}
 			});
 			return electedInfo;
 		});
@@ -105,9 +127,7 @@ const StakeElectedInfo: VFC = () => {
 							>
 								{electedOption.accountId}
 							</label>
-							<div css={styles.electedDetail}>
-								Stash: {electedOption.stashId}
-							</div>
+							<div css={styles.electedDetail}>{extraDisplayAddress ?? ""}</div>
 							<div css={styles.electedAmounts}>
 								<div css={styles.electedDetail}>
 									Active:&nbsp;
