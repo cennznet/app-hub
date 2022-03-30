@@ -1,9 +1,10 @@
+import { VFC } from "react";
 import { css } from "@emotion/react";
 import Link from "next/link";
 import { Theme } from "@mui/material";
 import useSectionUri from "@/hooks/useSectionUri";
 
-const Switch: React.FC<{}> = () => {
+const Switch: VFC = () => {
 	const section = useSectionUri();
 	return (
 		<nav css={styles.container}>
@@ -20,6 +21,11 @@ const Switch: React.FC<{}> = () => {
 			<Link href="/bridge" passHref={true}>
 				<a css={styles.navItem(section === "bridge")}>
 					<span>Bridge</span>
+				</a>
+			</Link>
+			<Link href="/stake" passHref={true}>
+				<a css={styles.navItem(section === "stake")}>
+					<span>Stake</span>
 				</a>
 			</Link>
 		</nav>

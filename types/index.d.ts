@@ -1,4 +1,3 @@
-import { ethers } from "ethers";
 import { Balance } from "@/utils";
 import {
 	ButtonHTMLAttributes,
@@ -35,7 +34,7 @@ export interface CENNZAssetBalance extends CENNZAsset {
 	value: Balance;
 }
 
-export type SectionUri = "swap" | "pool" | "bridge";
+export type SectionUri = "swap" | "pool" | "bridge" | "stake";
 
 //TODO: Remove after Bridge work done
 export interface TxModalAttributes {
@@ -67,6 +66,8 @@ export interface PoolUserInfo {
 	tradeAssetBalance: Balance;
 	coreAssetBalance: Balance;
 }
+
+export type StakeAction = "Stake" | "Withdraw";
 
 export interface MetaMaskAccount {
 	address: string;
