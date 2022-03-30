@@ -45,7 +45,7 @@ function MyApp({ Component, pageProps }: MyAppProps) {
 				openGraph={{
 					images: [
 						{
-							url: `https://${VERCEL_URL || "app.cennz.net"}/images/share.png`,
+							url: `https://${VERCEL_URL || "app.cennz.net"}/share.png`,
 							width: 800,
 							height: 500,
 						},
