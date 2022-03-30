@@ -7,9 +7,10 @@ import {
 	InputHTMLAttributes,
 	ReactElement,
 } from "react";
-import {
+export {
 	DeriveStakingElected,
 	DeriveStakingWaiting,
+	DeriveStakingQuery,
 } from "@cennznet/api/derives/staking/types";
 
 export type BridgeChain = "Ethereum" | "CENNZnet";

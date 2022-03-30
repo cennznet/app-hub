@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import { Balance } from "@/utils";
 import ExpandMore from "@mui/icons-material/ExpandMore";
-import { ElectedOption, StakingElected } from "@/types";
+import { DeriveStakingQuery, ElectedOption, StakingElected } from "@/types";
 
 const StakeElectedInfo: VFC = () => {
 	const { electionInfo, stakeAsset } = useStake();
@@ -23,7 +23,9 @@ const StakeElectedInfo: VFC = () => {
 	useEffect(() => {
 		if (!electionInfo) return;
 
-		const electedInfoMap = parseElectionInfo(electionInfo.elected.info);
+		const electedInfoMap = parseElectedInfo(
+			electionInfo.elected.info
+		) as ElectedOption[];
 
 		const nextElected = electionInfo.elected.nextElected.map((el) =>
 			el.toHuman()
@@ -54,8 +56,8 @@ const StakeElectedInfo: VFC = () => {
 		);
 	}, [electedOption]);
 
-	const parseElectionInfo = (info) => {
-		return info.map((info) => {
+	const parseElectedInfo = (electedInfo: DeriveStakingQuery[]) => {
+		return electedInfo.map((info) => {
 			const electedInfo = {};
 			Object.keys(info).forEach((key) => {
 				try {
