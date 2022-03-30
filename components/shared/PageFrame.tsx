@@ -2,13 +2,14 @@ import { FC } from "react";
 import { css } from "@emotion/react";
 import { Theme } from "@mui/material";
 import Link from "next/link";
+import CENNZLogoSVG from "@/assets/vectors/cennznet-logo.svg";
 
 const PageFrame: FC<{}> = () => {
 	return (
 		<div css={styles.container}>
 			<Link href="/">
 				<a css={styles.logo}>
-					<img src="/images/cennz-white.svg" alt="CENNZnet" />
+					<img src={CENNZLogoSVG.src} alt="CENNZnet" />
 				</a>
 			</Link>
 		</div>

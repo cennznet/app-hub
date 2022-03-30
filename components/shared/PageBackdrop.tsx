@@ -1,8 +1,11 @@
 import { FC, useEffect, useRef } from "react";
 import { css } from "@emotion/react";
-
 import useSectionUri from "@/hooks/useSectionUri";
 import { Theme } from "@mui/material";
+import BackdropSwapGraphicsSVG from "@/assets/vectors/backdrop-swap-graphics.svg";
+import BackdropPoolGraphicsSVG from "@/assets/vectors/backdrop-pool-graphics.svg";
+import BackdropBridgeGraphicsSVG from "@/assets/vectors/backdrop-bridge-graphics.svg";
+import BackdropSheerSVG from "@/assets/vectors/backdrop-sheer.svg";
 
 const PageBackdrop: FC<{}> = () => {
 	const section = useSectionUri();
@@ -52,21 +55,21 @@ const PageBackdrop: FC<{}> = () => {
 			<div css={styles.layer2} ref={ref2}>
 				{section === "swap" && (
 					<img
-						src="/images/backdrop-swap-graphics.svg"
+						src={BackdropSwapGraphicsSVG.src}
 						css={styles.layer2Graphics}
 						alt="Graphics"
 					/>
 				)}
 				{section === "pool" && (
 					<img
-						src="/images/backdrop-pool-graphics.svg"
+						src={BackdropPoolGraphicsSVG.src}
 						css={styles.layer2Graphics}
 						alt="Graphics"
 					/>
 				)}
 				{section === "bridge" && (
 					<img
-						src="/images/backdrop-bridge-graphics.svg"
+						src={BackdropBridgeGraphicsSVG.src}
 						css={styles.layer2Graphics}
 						alt="Graphics"
 					/>
@@ -142,7 +145,7 @@ export const styles = {
 		position: absolute;
 		inset: 0;
 		z-index: 1;
-		background: url("/images/backdrop-sheer.svg") no-repeat center top;
+		background: url("${BackdropSheerSVG.src}") no-repeat center top;
 		background-size: cover;
 		z-index: 0;
 	`,
