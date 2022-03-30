@@ -7,6 +7,10 @@ import {
 	InputHTMLAttributes,
 	ReactElement,
 } from "react";
+import {
+	DeriveStakingElected,
+	DeriveStakingWaiting,
+} from "@cennznet/api/derives/staking/types";
 
 export type BridgeChain = "Ethereum" | "CENNZnet";
 export type BridgeAction = "Deposit" | "Withdraw";
@@ -67,8 +71,6 @@ export interface PoolUserInfo {
 	coreAssetBalance: Balance;
 }
 
-export type StakeAction = "stake" | "unstake";
-
 export interface MetaMaskAccount {
 	address: string;
 }
@@ -77,4 +79,36 @@ export interface TxStatus {
 	status: "in-progress" | "success" | "fail";
 	title: string;
 	message: string | ReactElement;
+}
+
+export type StakeAction = "stake" | "unstake";
+
+export interface StakePair {
+	stashAddress: string;
+	controllerAddress: string;
+}
+
+export interface ElectionInfo {
+	elected: DeriveStakingElected;
+	waiting: DeriveStakingWaiting;
+}
+
+export interface ElectedOption {
+	accountId: string;
+	controllerId: string;
+	stashId: string;
+	stakingLedger: {
+		active: string;
+		total: string;
+		stash: string;
+	};
+	validatorPrefs: {
+		commission: string;
+	};
+}
+
+export interface StakingElected {
+	electedInfoMap: ElectedOption[];
+	nextElected: string[];
+	validators: string[];
 }
