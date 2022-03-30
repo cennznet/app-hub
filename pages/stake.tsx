@@ -10,6 +10,7 @@ import { NextSeo } from "next-seo";
 import StakeForm from "@/components/StakeForm";
 import StakeAmountInput from "@/components/StakeAmountInput";
 import StakeActionsPair from "@/components/StakeActionsPair";
+import StakeElectedInfo from "@/components/StakeElectedInfo";
 
 export async function getStaticProps() {
 	const api = await Api.create({ provider: API_URL });
@@ -30,6 +31,7 @@ const Pool: VFC<{ stakeAsset: CENNZAsset }> = ({ stakeAsset }) => {
 				<StakeForm>
 					<StakeActionsPair />
 					<StakeAmountInput />
+					<StakeElectedInfo />
 				</StakeForm>
 			</MainPanel>
 		</StakeProvider>
