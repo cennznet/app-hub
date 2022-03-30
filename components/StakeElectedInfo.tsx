@@ -41,17 +41,12 @@ const StakeElectedInfo: VFC = () => {
 	}, [electionInfo]);
 
 	useEffect(() => {
-		if (
-			!electedOption ||
-			(electedOption.accountId === electedOption.stashId &&
-				electedOption.accountId === electedOption.controllerId)
-		)
-			return;
+		if (!electedOption) return;
+		const { accountId, stashId, controllerId } = electedOption;
+		if (accountId === stashId && accountId === controllerId) return;
 
-		if (electedOption.accountId === electedOption.stashId) {
-			return setExtraDisplayAddress(
-				`Controller: ${electedOption.controllerId}`
-			);
+		if (accountId === stashId) {
+			return setExtraDisplayAddress(`Controller: ${controllerId}`);
 		}
 
 		setExtraDisplayAddress(
@@ -65,9 +60,7 @@ const StakeElectedInfo: VFC = () => {
 			Object.keys(info).forEach((key) => {
 				try {
 					electedInfo[key] = info[key].toHuman();
-				} catch (_) {
-					electedInfo[key] = info[key];
-				}
+				} catch (_) {}
 			});
 			return electedInfo;
 		});
@@ -147,7 +140,7 @@ const StakeElectedInfo: VFC = () => {
 								</div>
 							</div>
 							<div css={styles.electedDetail}>
-								validator prefs:&nbsp;
+								commission:&nbsp;
 								<span>{electedOption.validatorPrefs.commission}</span>
 							</div>
 						</div>
