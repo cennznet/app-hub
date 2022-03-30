@@ -3,7 +3,7 @@ import { css } from "@emotion/react";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import WalletModal from "@/components/WalletModal";
 import AccountIdenticon from "@/components/shared/AccountIdenticon";
-import CENNZBlueSVG from "@/assets/vectors/cennznet-blue.svg";
+import CENNZIconSVG from "@/assets/vectors/cennznet-icon.svg";
 import { Theme } from "@mui/material";
 
 type WalletState = "NotConnected" | "Connecting" | "Connected";
@@ -29,7 +29,7 @@ const WalletButton: React.FC<{}> = () => {
 			<div css={styles.walletButton(modalOpen)} onClick={onWalletClick}>
 				<div css={styles.walletIcon}>
 					<img
-						src={CENNZBlueSVG.src}
+						src={CENNZIconSVG.src}
 						alt="CENNZnet Logo"
 						css={styles.walletIconImg}
 					/>
