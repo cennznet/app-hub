@@ -5,17 +5,18 @@ import { useStake } from "@/providers/StakeProvider";
 import { useBalanceValidation, useCENNZBalances, useTokenInput } from "@/hooks";
 import { Balance } from "@/utils";
 import { CENNZAsset } from "@/types";
-import { LinearProgress, Theme } from "@mui/material";
+import { LinearProgress, Theme, Tooltip } from "@mui/material";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 
 const StakeAmountInput: VFC = () => {
-	const { stakeAsset } = useStake();
+	const { stakeAsset, stakeAction } = useStake();
 	const [stakeSelect, stakeInput] = useTokenInput(stakeAsset.assetId);
 	const { selectedAccount } = useCENNZWallet();
 	const [CENNZBalance] = useCENNZBalances(stakeAsset as CENNZAsset);
 
 	// TODO: fetch staked balance
-	const stakedBalance = 10000;
+	const stakedBalance = new Balance(10000 * 10000, stakeAsset);
 
 	const onStakeMaxRequest = useMemo(
 		() => () => stakeInput.setValue(CENNZBalance.toInput()),
@@ -39,17 +40,41 @@ const StakeAmountInput: VFC = () => {
 				tokens={[stakeAsset]}
 				id="stakeInput"
 				ref={stakeInputRef}
-				padFractionalZeros={false}
 				min={stakedBalance ? 0.0001 : 10000}
 				required
 				scale={4}
-			/>
-			{CENNZBalance !== null && (
+			>
+				<Tooltip
+					css={styles.inputTooltip}
+					disableFocusListener
+					PopperProps={
+						{
+							sx: styles.inputTooltipPopper,
+						} as any
+					}
+					title={
+						<div>
+							The minimum staked amount of {stakeAsset.symbol} is{" "}
+							<strong>10000</strong>
+						</div>
+					}
+					arrow
+					placement="right"
+				>
+					<HelpOutlineIcon fontSize={"0.5em" as any} />
+				</Tooltip>
+			</TokenInput>
+			{!!CENNZBalance && stakeAction === "Stake" && (
 				<div css={styles.CENNZBalance}>
 					Balance: <span>{CENNZBalance?.toBalance() ?? "0.0000"}</span>
 				</div>
 			)}
-			{CENNZBalance === null && !!selectedAccount && (
+			{stakedBalance && stakeAction === "Withdraw" && (
+				<div css={styles.CENNZBalance}>
+					UNStakeable: <span>{stakedBalance?.toBalance() ?? "0.0000"}</span>
+				</div>
+			)}
+			{!CENNZBalance && !stakedBalance && !!selectedAccount && (
 				<div css={styles.CENNZBalance}>
 					Balance: <LinearProgress css={[styles.formInfoProgress]} />
 				</div>
@@ -77,6 +102,7 @@ const styles = {
 			color: ${palette.primary.main};
 		}
 	`,
+
 	CENNZBalance: ({ palette }: Theme) => css`
 		margin-top: 0.25em;
 		font-weight: 500;
@@ -92,10 +118,28 @@ const styles = {
 			letter-spacing: -0.025em;
 		}
 	`,
+
 	formInfoProgress: css`
 		display: inline-block;
 		width: 25px;
 		border-radius: 10px;
 		opacity: 0.5;
+	`,
+
+	inputTooltip: ({ palette }: Theme) => css`
+		position: absolute;
+		left: 108px;
+		cursor: pointer;
+		&:hover {
+			color: ${palette.primary.main};
+		}
+	`,
+
+	inputTooltipPopper: css`
+		max-width: 200px;
+
+		strong {
+			font-family: "Roboto Mono", monospace;
+		}
 	`,
 };
