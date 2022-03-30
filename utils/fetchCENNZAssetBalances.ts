@@ -2,6 +2,7 @@ import { Api } from "@cennznet/api";
 import { CENNZAssetBalance } from "@/types";
 import fetchCENNZAssets from "@/utils/fetchCENNZAssets";
 import { Balance } from "@/utils";
+import { stringToHex, hexToBn } from "@polkadot/util";
 
 /**
  * Fetch balances of all registered CENNZ assets from a wallet address
@@ -15,19 +16,33 @@ export default async function fetchCENNZAssetBalances(
 	address: string
 ): Promise<CENNZAssetBalance[]> {
 	const assets = await fetchCENNZAssets(api);
-
-	return await Promise.all(
+	const [assetLocks, freeBalances] = await Promise.all([
 		(
-			await api.query.genericAsset.freeBalance.multi(
+			await api.query.genericAsset.locks.multi(
 				assets.map(({ assetId }) => [assetId, address])
 			)
-		).map((balance, index) => {
-			const asset = assets[index];
+		).map((lock) => lock.toJSON() as { id: string; amount: string }[]),
 
-			return {
-				...asset,
-				value: Balance.fromCodec(balance, asset),
-			};
-		})
-	);
+		await api.query.genericAsset.freeBalance.multi(
+			assets.map(({ assetId }) => [assetId, address])
+		),
+	]);
+
+	return freeBalances.reduce((balances, balance, index) => {
+		const asset = assets[index];
+		const stakingLock = assetLocks[index]?.find(
+			(lock) => lock.id === stringToHex("staking ")
+		);
+		const stakingAmount = stakingLock
+			? Balance.fromBN(hexToBn(stakingLock.amount), asset)
+			: 0;
+		const value = Balance.fromCodec(balance, asset).sub(stakingAmount);
+
+		balances.push({
+			...asset,
+			value,
+		});
+
+		return balances;
+	}, []);
 }
