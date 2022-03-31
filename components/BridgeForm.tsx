@@ -115,6 +115,7 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 		try {
 			await ensureEthereumChain(extension);
 			await ensureBridgeWithdrawActive(api, metaMaskWallet);
+			setProgressStatus("CennznetConfirming");
 			eventProof = await sendWithdrawCENNZRequest(
 				api,
 				transferAmount,
@@ -132,6 +133,7 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 
 		let tx: Awaited<ReturnType<typeof sendWithdrawEthereumRequest>>;
 		try {
+			setProgressStatus("EthereumConfirming");
 			tx = await sendWithdrawEthereumRequest(
 				api,
 				eventProof,
@@ -183,6 +185,7 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 
 		let tx: Awaited<ReturnType<typeof sendWithdrawEthereumRequest>>;
 		try {
+			setProgressStatus("EthereumConfirming");
 			tx = await sendWithdrawEthereumRequest(
 				api,
 				eventProof,
