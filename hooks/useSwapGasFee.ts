@@ -1,5 +1,5 @@
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
-import { Balance, fetchGasFee, getBuyAssetExtrinsic } from "@/utils";
+import { Balance, fetchGasFee, getSellAssetExtrinsic } from "@/utils";
 import { useEffect, useState, useMemo, useCallback } from "react";
 import { useSwap } from "@/providers/SwapProvider";
 
@@ -16,7 +16,7 @@ export default function useSwapGasFee(): {
 	const extrinsic = useMemo(
 		() =>
 			!!api
-				? getBuyAssetExtrinsic(
+				? getSellAssetExtrinsic(
 						api,
 						exchangeAsset.assetId,
 						Balance.fromInput("1", exchangeAsset),
