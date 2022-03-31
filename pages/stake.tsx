@@ -1,6 +1,6 @@
 import { Api } from "@cennznet/api";
-import { CENNZAsset } from "@/types";
-import fetchStakeAsset from "@/utils/fetchStakeAsset";
+import { StakeAssets } from "@/types";
+import fetchStakeAssets from "@/utils/fetchStakeAssets";
 import { API_URL } from "@/constants";
 import generateGlobalProps from "@/utils/generateGlobalProps";
 import MainPanel from "@/components/MainPanel";
@@ -16,15 +16,15 @@ export async function getStaticProps() {
 
 	return {
 		props: {
-			stakeAsset: await fetchStakeAsset(api),
+			stakeAssets: await fetchStakeAssets(api),
 			...(await generateGlobalProps("stake")),
 		},
 	};
 }
 
-const Pool: VFC<{ stakeAsset: CENNZAsset }> = ({ stakeAsset }) => {
+const Pool: VFC<{ stakeAssets: StakeAssets }> = ({ stakeAssets }) => {
 	return (
-		<StakeProvider stakeAsset={stakeAsset}>
+		<StakeProvider stakeAssets={stakeAssets}>
 			<NextSeo title="CENNZX Staking" />
 			<MainPanel defaultTitle="CENNZX Staking">
 				<StakeForm>

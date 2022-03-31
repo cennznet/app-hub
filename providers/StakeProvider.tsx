@@ -6,10 +6,11 @@ import {
 	useContext,
 	useState,
 } from "react";
-import { CENNZAsset, StakeAction } from "@/types";
+import { CENNZAsset, StakeAction, StakeAssets } from "@/types";
 
 interface StakeContextType {
-	stakeAsset: CENNZAsset;
+	stakingAsset: CENNZAsset;
+	spendingAsset: CENNZAsset;
 
 	stakeAction: StakeAction;
 	setStakeAction: Dispatch<SetStateAction<StakeAction>>;
@@ -18,16 +19,19 @@ interface StakeContextType {
 const StakeContext = createContext<StakeContextType>({} as StakeContextType);
 
 interface StakeProviderProps {
-	stakeAsset: CENNZAsset;
+	stakeAssets: StakeAssets;
 }
 
-const StakeProvider: FC<StakeProviderProps> = ({ children, stakeAsset }) => {
+const StakeProvider: FC<StakeProviderProps> = ({ children, stakeAssets }) => {
+	const { stakingAsset, spendingAsset } = stakeAssets;
 	const [stakeAction, setStakeAction] = useState<StakeAction>();
 
 	return (
 		<StakeContext.Provider
 			value={{
-				stakeAsset,
+				stakingAsset,
+				spendingAsset,
+
 				stakeAction,
 				setStakeAction,
 			}}

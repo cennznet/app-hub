@@ -11,6 +11,8 @@ interface StakeActionsPairProps {}
 const StakeActionsPair: VFC<
 	IntrinsicElements["div"] & StakeActionsPairProps
 > = (props) => {
+	const { stakingAsset, spendingAsset } = useStake();
+
 	const selectOptions = [
 		{
 			value: "account",
@@ -113,7 +115,8 @@ const StakeActionsPair: VFC<
 			</div>
 
 			<div css={styles.formCopy}>
-				<p>TODO: add staking details here</p>
+				Stake <strong>{stakingAsset.symbol}</strong> and nominate the best
+				validators to earn <strong>{spendingAsset.symbol}</strong> rewards
 			</div>
 		</div>
 	);

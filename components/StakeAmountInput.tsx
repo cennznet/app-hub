@@ -4,7 +4,7 @@ import TokenInput from "@/components/shared/TokenInput";
 import { useStake } from "@/providers/StakeProvider";
 import { useBalanceValidation, useCENNZBalances, useTokenInput } from "@/hooks";
 import { Balance } from "@/utils";
-import { CENNZAsset, IntrinsicElements } from "@/types";
+import { IntrinsicElements } from "@/types";
 import { LinearProgress, Theme, Tooltip } from "@mui/material";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
@@ -14,15 +14,15 @@ interface StakeAmountInputProps {}
 const StakeAmountInput: VFC<
 	IntrinsicElements["div"] & StakeAmountInputProps
 > = (props) => {
-	const { stakeAsset, stakeAction } = useStake();
-	const [stakeSelect, stakeInput] = useTokenInput(stakeAsset.assetId);
+	const { stakingAsset, stakeAction } = useStake();
+	const [stakeSelect, stakeInput] = useTokenInput(stakingAsset.assetId);
 	const { selectedAccount } = useCENNZWallet();
-	const [CENNZBalance] = useCENNZBalances(stakeAsset as CENNZAsset);
+	const [CENNZBalance] = useCENNZBalances(stakingAsset);
 
 	// TODO: fetch staked balance
 	const stakedBalance = useMemo(
-		() => new Balance(10000 * 10000, stakeAsset),
-		[stakeAsset]
+		() => new Balance(10000 * 10000, stakingAsset),
+		[stakingAsset]
 	);
 
 	const onStakeMaxRequest = useMemo(() => {
@@ -33,7 +33,7 @@ const StakeAmountInput: VFC<
 	}, [stakeAction, stakeInput, CENNZBalance, stakedBalance]);
 
 	const { inputRef: stakeInputRef } = useBalanceValidation(
-		Balance.fromInput(stakeInput.value, stakeAsset),
+		Balance.fromInput(stakeInput.value, stakingAsset),
 		CENNZBalance
 	);
 
@@ -42,11 +42,11 @@ const StakeAmountInput: VFC<
 			<label htmlFor="stakeInput">Staking Asset</label>
 			<TokenInput
 				onMaxValueRequest={onStakeMaxRequest}
-				selectedTokenId={stakeAsset.assetId}
+				selectedTokenId={stakingAsset.assetId}
 				onTokenChange={stakeSelect.onTokenChange}
 				value={stakeInput.value}
 				onValueChange={stakeInput.onValueChange}
-				tokens={[stakeAsset]}
+				tokens={[stakingAsset]}
 				id="stakeInput"
 				ref={stakeInputRef}
 				min={stakedBalance ? 0.0001 : 10000}
@@ -63,7 +63,7 @@ const StakeAmountInput: VFC<
 					}
 					title={
 						<div>
-							The minimum staked amount of {stakeAsset.symbol} is{" "}
+							The minimum staked amount of {stakingAsset.symbol} is{" "}
 							<strong>10000</strong>
 						</div>
 					}

@@ -67,8 +67,6 @@ export interface PoolUserInfo {
 	coreAssetBalance: Balance;
 }
 
-export type StakeAction = "stake" | "unstake";
-
 export interface MetaMaskAccount {
 	address: string;
 }
@@ -77,4 +75,11 @@ export interface TxStatus {
 	status: "in-progress" | "success" | "fail";
 	title: string;
 	message: string | ReactElement;
+}
+
+export type StakeAction = "stake" | "unstake";
+
+export interface StakeAssets {
+	stakingAsset: CENNZAsset;
+	spendingAsset: CENNZAsset;
 }
