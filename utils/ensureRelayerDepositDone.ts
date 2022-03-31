@@ -8,7 +8,7 @@ type TimoutReturn = Awaited<ReturnType<typeof waitUntil>>;
 // TODO: Needs test
 export default async function ensureRelayerDepositDone(
 	txHash: string,
-	timeout: number = 60000
+	timeout: number = 600000
 ): Promise<RelayerStatusReturn> {
 	const status = await waitUntilDepositDone(txHash, timeout);
 
@@ -20,7 +20,7 @@ export default async function ensureRelayerDepositDone(
 
 export async function waitUntilDepositDone(
 	txHash: string,
-	timeout: number = 60000
+	timeout: number = 600000
 ): Promise<RelayerStatusReturn | TimoutReturn> {
 	let timedOut = false;
 
