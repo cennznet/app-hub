@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [1.0.2] - 2022-04-01
+
+- Add confirming state to the Bridge [#151](https://github.com/cennznet/app-hub/pull/151)
+- Add a generic missing token [#149](https://github.com/cennznet/app-hub/pull/149)
+
 ## [1.0.1] - 2022-03-31
 
 - Update correct icons for CENNZnet
