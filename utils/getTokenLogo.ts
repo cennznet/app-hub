@@ -11,5 +11,5 @@ export default function getTokenLogos(symbol: string): {
 	width: number;
 	height: number;
 } {
-	return tokenLogos[symbol?.toLowerCase()] || null;
+	return tokenLogos[symbol?.toLowerCase()] || tokenLogos["missing"];
 }
