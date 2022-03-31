@@ -57,6 +57,7 @@ const StakeElectedInfo: VFC = () => {
 	}, [electedOption]);
 
 	const parseElectedInfo = (electedInfo: DeriveStakingQuery[]) => {
+		console.log("electedInfo", electedInfo);
 		return electedInfo.map((info) => {
 			const electedInfo = {};
 			Object.keys(info).forEach((key) => {
