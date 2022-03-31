@@ -1,223 +1,200 @@
-import { Amount, AmountUnit } from "@/utils/Amount";
-import { AssetInfo } from "@/types";
-import {
-	AmountParams,
-	Asset,
-	IExchangePool,
-	IFee,
-	IOption,
-	IUserShareInPool,
-	LiquidityFormData,
-} from "@/types";
+import { CENNZAsset, PoolAction, TxStatus } from "@/types";
 import {
 	createContext,
-	PropsWithChildren,
-	useCallback,
+	Dispatch,
+	FC,
+	SetStateAction,
 	useContext,
-	useEffect,
 	useState,
+	useCallback,
+	useEffect,
 } from "react";
-import { useCENNZApi } from "@/providers/CENNZApiProvider";
-import { useWallet } from "@/providers/SupportedWalletProvider";
 import {
-	fetchAddLiquidityValues,
-	fetchExchangePool,
-	fetchFeeEstimate,
-	fetchUserPoolShare,
-	fetchWithdrawLiquidityValues,
-} from "@/utils/pool";
+	useTokenInput,
+	TokenInputHook,
+	usePoolExchangeInfo,
+	PoolExchangeInfoHook,
+	usePoolUserInfo,
+	PoolUserInfoHook,
+} from "@/hooks";
+import { Balance } from "@/utils";
+import { CENNZ_ASSET_ID, CPAY_ASSET_ID } from "@/constants";
 
-export enum PoolAction {
-	ADD = "Add",
-	REMOVE = "Withdraw",
+type CENNZAssetId = CENNZAsset["assetId"];
+
+interface PoolContextType extends PoolExchangeInfoHook, PoolUserInfoHook {
+	poolAction: PoolAction;
+	setPoolAction: Dispatch<SetStateAction<PoolAction>>;
+	tradeAssets: CENNZAsset[];
+	tradeAsset: CENNZAsset;
+
+	tradeSelect: TokenInputHook<CENNZAssetId>[0];
+	tradeInput: TokenInputHook<CENNZAssetId>[1];
+
+	coreAsset: CENNZAsset;
+
+	coreSelect: TokenInputHook<CENNZAssetId>[0];
+	coreInput: TokenInputHook<CENNZAssetId>[1];
+
+	slippage: string;
+	setSlippage: Dispatch<SetStateAction<string>>;
+
+	txStatus: TxStatus;
+	setTxStatus: Dispatch<SetStateAction<TxStatus>>;
+
+	setProgressStatus: () => void;
+	setSuccessStatus: () => void;
+	setFailStatus: (errorCode?: string) => void;
 }
 
-type PoolContextType = {
-	coreAsset: AssetInfo;
-	estimatedFee: Amount;
-	userPoolShare: IUserShareInPool;
-	getUserPoolShare: Function;
-	exchangePool: IExchangePool;
-	updateExchangePool: Function;
-	currentExtrinsic: any;
-	defineExtrinsic: Function;
-	sendExtrinsic: Function;
-};
+const PoolContext = createContext<PoolContextType>({} as PoolContextType);
 
-const poolContextDefaultValues = {
-	coreAsset: null,
-	estimatedFee: null,
-	userPoolShare: null,
-	getUserPoolShare: null,
-	exchangePool: null,
-	updateExchangePool: null,
-	currentExtrinsic: null,
-	defineExtrinsic: null,
-	sendExtrinsic: null,
-};
+interface PoolProviderProps {
+	supportedAssets: CENNZAsset[];
+}
 
-const PoolContext = createContext<PoolContextType>(poolContextDefaultValues);
+const PoolProvider: FC<PoolProviderProps> = ({ supportedAssets, children }) => {
+	const [tradeAssets] = useState<CENNZAsset[]>(
+		supportedAssets.filter((asset) => asset.assetId !== CPAY_ASSET_ID)
+	);
+	const [poolAction, setPoolAction] = useState<PoolAction>("Add");
 
-type ProviderProps = {};
+	const cennzAsset = supportedAssets?.find(
+		(asset) => asset.assetId === CENNZ_ASSET_ID
+	);
+	const coreAsset = supportedAssets?.find(
+		(asset) => asset.assetId === CPAY_ASSET_ID
+	);
 
-export default function PoolProvider({
-	children,
-}: PropsWithChildren<ProviderProps>) {
-	const [value, setValue] = useState<PoolContextType>(poolContextDefaultValues);
-	const { api } = useCENNZApi();
-	const { wallet, selectedAccount, fetchAssetBalances } = useWallet();
-	const signer = wallet?.signer;
+	const [tradeSelect, tradeInput] = useTokenInput(cennzAsset.assetId);
+	const [coreSelect, coreInput] = useTokenInput(coreAsset.assetId);
 
-	//set core asset
+	const tradeAsset = tradeAssets?.find(
+		(asset) => asset.assetId === tradeSelect.tokenId
+	);
+
+	const { exchangeInfo, updatingExchangeInfo, updateExchangeRate } =
+		usePoolExchangeInfo(tradeAsset, coreAsset);
+
+	const { userInfo, updatingPoolUserInfo, updatePoolUserInfo } =
+		usePoolUserInfo(tradeAsset, coreAsset);
+
 	useEffect(() => {
-		(async () => {
-			if (!api) return;
-			const coreAssetId = await api.query.cennzx.coreAssetId();
-			let coreAsset: any = await api.query.genericAsset.assetMeta(
-				Number(coreAssetId)
-			);
+		if (poolAction !== "Remove") return;
+		updatePoolUserInfo();
+	}, [poolAction, updatePoolUserInfo]);
 
-			setValue((value) => ({
-				...value,
-				coreAsset: { ...coreAsset.toHuman(), id: Number(coreAssetId) },
-			}));
-		})();
-	}, [api]);
+	const [slippage, setSlippage] = useState<string>("5");
+	const [txStatus, setTxStatus] = useState<TxStatus>(null);
 
-	const updateExchangePool = useCallback(
-		async (asset) => {
-			if (!api) return;
+	const setProgressStatus = useCallback(() => {
+		setTxStatus({
+			status: "in-progress",
+			title: "Transaction In Progress",
+			message: (
+				<div>
+					Please sign the transaction when prompted and wait until it&apos;s
+					completed
+				</div>
+			),
+		});
+	}, []);
 
-			const exchangePool: IExchangePool = await fetchExchangePool(
-				api,
-				asset.id
-			);
+	const setFailStatus = useCallback((errorCode?: string) => {
+		setTxStatus({
+			status: "fail",
+			title: "Transaction Failed",
+			message: (
+				<div>
+					An error occurred while processing your transaction
+					{!!errorCode && (
+						<>
+							<br />
+							<pre>
+								<small>#{errorCode}</small>
+							</pre>
+						</>
+					)}
+				</div>
+			),
+		});
+	}, []);
 
-			setValue((value) => ({
-				...value,
-				exchangePool,
-			}));
-		},
-		[api]
-	);
+	const setSuccessStatus = useCallback(() => {
+		const trValue = Balance.format(tradeInput.value);
+		const trSymbol = tradeAsset.symbol;
 
-	const getUserPoolShare = useCallback(
-		async (asset) => {
-			if (!api || !selectedAccount || !value.coreAsset) return;
+		const crValue = Balance.format(coreInput.value);
+		const crSymbol = coreAsset.symbol;
 
-			const userPoolShare: IUserShareInPool = await fetchUserPoolShare(
-				api,
-				selectedAccount.address,
-				asset.id
-			);
-
-			setValue({ ...value, userPoolShare });
-		},
-		[api, selectedAccount, value]
-	);
-
-	const defineExtrinsic = useCallback(
-		async (
-			asset: AssetInfo,
-			assetAmount: Amount,
-			coreAmount: Amount,
-			poolAction: string,
-			withdrawMax: boolean,
-			buffer
-		) => {
-			if (!api || !signer || !selectedAccount || !value.exchangePool) return;
-
-			let extrinsic;
-			if (poolAction === PoolAction.ADD) {
-				const { minLiquidity, maxAssetAmount, maxCoreAmount } =
-					await fetchAddLiquidityValues(
-						api,
-						asset,
-						assetAmount,
-						value.coreAsset,
-						coreAmount,
-						value.exchangePool,
-						buffer
-					);
-
-				extrinsic = api.tx.cennzx.addLiquidity(
-					asset.id,
-					minLiquidity,
-					maxAssetAmount,
-					maxCoreAmount
-				);
-			} else {
-				const { liquidityAmount, minAssetWithdraw, minCoreWithdraw } =
-					await fetchWithdrawLiquidityValues(
-						api,
-						asset,
-						selectedAccount.address,
-						assetAmount,
-						value.coreAsset,
-						coreAmount,
-						value.exchangePool,
-						withdrawMax,
-						buffer
-					);
-
-				extrinsic = api.tx.cennzx.removeLiquidity(
-					asset.id,
-					liquidityAmount,
-					minAssetWithdraw,
-					minCoreWithdraw
-				);
-			}
-
-			const estimatedFee = await fetchFeeEstimate(
-				api,
-				extrinsic,
-				value.coreAsset.id,
-				"50000000000000000"
-			);
-
-			setValue({
-				...value,
-				estimatedFee,
-				currentExtrinsic: extrinsic,
-			});
-		},
-		[api, selectedAccount, value, signer]
-	);
-
-	const sendExtrinsic = useCallback(async () => {
-		if (!api || !value.currentExtrinsic || !selectedAccount || !signer) return;
-		value.currentExtrinsic.signAndSend(
-			selectedAccount.address,
-			{ signer },
-			async ({ status, events }: any) => {
-				if (status.isInBlock) {
-					for (const {
-						event: { method, section, data },
-					} of events) {
-						//TODO - format response for user
-						console.log({ method, section, data: data.toHuman() });
-						if (method === "ExtrinsicSuccess") fetchAssetBalances();
-					}
-				}
-			}
-		);
-	}, [api, value, selectedAccount, signer, fetchAssetBalances]);
+		setTxStatus({
+			status: "success",
+			title: "Transaction Completed",
+			message: (
+				<div>
+					You successfully {poolAction === "Remove" ? "withdrew" : "added"}{" "}
+					<pre>
+						<em>
+							{trValue} {trSymbol}
+						</em>
+					</pre>{" "}
+					and{" "}
+					<pre>
+						<em>
+							{crValue} {crSymbol}
+						</em>
+					</pre>{" "}
+					to the Liquidity Pool.
+				</div>
+			),
+		});
+	}, [
+		tradeInput.value,
+		tradeAsset.symbol,
+		coreInput.value,
+		coreAsset.symbol,
+		poolAction,
+	]);
 
 	return (
 		<PoolContext.Provider
 			value={{
-				...value,
-				updateExchangePool,
-				defineExtrinsic,
-				getUserPoolShare,
-				sendExtrinsic,
+				poolAction,
+				setPoolAction,
+				tradeAssets,
+				coreAsset,
+				tradeAsset,
+				tradeSelect,
+				tradeInput,
+				coreSelect,
+				coreInput,
+
+				exchangeInfo,
+				updateExchangeRate,
+				updatingExchangeInfo,
+
+				userInfo,
+				updatingPoolUserInfo,
+				updatePoolUserInfo,
+
+				slippage,
+				setSlippage,
+
+				txStatus,
+				setTxStatus,
+
+				setProgressStatus,
+				setSuccessStatus,
+				setFailStatus,
 			}}
 		>
 			{children}
 		</PoolContext.Provider>
 	);
-}
+};
 
-export function usePool(): PoolContextType {
+export default PoolProvider;
+
+export const usePool = (): PoolContextType => {
 	return useContext(PoolContext);
-}
+};

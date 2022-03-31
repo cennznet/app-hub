@@ -1,50 +1,38 @@
-import {
-	createContext,
-	useState,
-	PropsWithChildren,
-	useContext,
-	useCallback,
-} from "react";
-import { Api, ApiRx } from "@cennznet/api";
-
-const endpoint = process.env.NEXT_PUBLIC_API_URL;
+import { FC, createContext, useState, useEffect, useContext } from "react";
+import { Api } from "@cennznet/api";
 
 type CENNZApiContextType = {
 	api: Api;
-	initApi: Function;
-	apiRx: Promise<ApiRx>;
-	initApiRx: Function;
 };
 
 const CENNZApiContext = createContext<CENNZApiContextType>(null);
 
-export default function CENNZApiProvider({ children }: PropsWithChildren<{}>) {
+const CENNZApiProvider: FC<{ endpoint: string }> = ({ children, endpoint }) => {
 	const [api, setApi] = useState<Api>(null);
-	const [apiRx, setApiRx] = useState<Promise<ApiRx>>(null);
 
-	const initApi = useCallback(() => {
+	useEffect(() => {
 		const instance = new Api({
 			provider: endpoint,
 		});
+
 		instance.isReady.then(() => {
 			setApi(instance);
 			window.onunload = async () => await instance.disconnect();
 		});
-	}, []);
 
-	const initApiRx = useCallback(() => {
-		const instance = ApiRx.create({
-			provider: endpoint,
-		}).toPromise();
-		setApiRx(instance);
-	}, []);
+		return () => {
+			instance.disconnect();
+		};
+	}, [endpoint]);
 
 	return (
-		<CENNZApiContext.Provider value={{ api, initApi, apiRx, initApiRx }}>
+		<CENNZApiContext.Provider value={{ api }}>
 			{children}
 		</CENNZApiContext.Provider>
 	);
-}
+};
+
+export default CENNZApiProvider;
 
 export function useCENNZApi(): CENNZApiContextType {
 	return useContext(CENNZApiContext);

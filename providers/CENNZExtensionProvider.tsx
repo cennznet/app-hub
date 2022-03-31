@@ -13,11 +13,11 @@ import {
 import type * as Extension from "@polkadot/extension-dapp";
 import { useUserAgent } from "@/providers/UserAgentProvider";
 
-type ExtensionContext = typeof Extension & {
-	accounts: Array<InjectedAccountWithMeta>;
+interface ExtensionContext {
+	accounts: InjectedAccountWithMeta[];
 	extension: InjectedExtension;
 	promptInstallExtension: () => void;
-};
+}
 
 const CENNZExtensionContext = createContext<ExtensionContext>(
 	{} as ExtensionContext
@@ -28,14 +28,24 @@ type ProviderProps = {};
 export default function CENNZExtensionProvider({
 	children,
 }: PropsWithChildren<ProviderProps>) {
-	const { browser } = useUserAgent();
+	const { browser, os } = useUserAgent();
 	const [module, setModule] = useState<typeof Extension>();
 	const [extension, setExtension] = useState<InjectedExtension>();
 	const [accounts, setAccounts] = useState<Array<InjectedAccountWithMeta>>();
 
-	const promptInstallExtension = useCallback(async () => {
+	const promptInstallExtension = useCallback(() => {
+		if (
+			browser.name === "Safari" ||
+			os.name === "iOS" ||
+			os.name === "Android"
+		) {
+			return alert(
+				"Sorry, this browser is not supported by App Hub. To use App Hub, please switch to Chrome or Firefox browsers on a Mac or PC."
+			);
+		}
+
 		const url =
-			browser.name === "Firefox"
+			browser?.name === "Firefox"
 				? "https://addons.mozilla.org/en-US/firefox/addon/cennznet-browser-extension/"
 				: "https://chrome.google.com/webstore/detail/cennznet-extension/feckpephlmdcjnpoclagmaogngeffafk";
 
@@ -46,7 +56,7 @@ export default function CENNZExtensionProvider({
 		if (!confirmed) return;
 
 		window.open(url, "_blank");
-	}, [browser]);
+	}, [browser, os]);
 
 	useEffect(() => {
 		import("@polkadot/extension-dapp").then(setModule);
@@ -57,7 +67,7 @@ export default function CENNZExtensionProvider({
 
 		const getExtension = async () => {
 			const { web3Enable, web3FromSource } = module;
-			await web3Enable("CENNZnet Hub");
+			await web3Enable("CENNZnet App Hub");
 			const extension = await web3FromSource("cennznet-extension").catch(
 				() => null
 			);
@@ -75,7 +85,7 @@ export default function CENNZExtensionProvider({
 		const fetchAccounts = async () => {
 			const { web3Enable, web3Accounts, web3AccountsSubscribe } = module;
 
-			await web3Enable("CENNZnet Hub");
+			await web3Enable("CENNZnet App Hub");
 			const accounts = (await web3Accounts()) || [];
 			if (!accounts.length)
 				return alert(

@@ -36,7 +36,11 @@ afterAll(async () => {
 describe("getDepositValues", () => {
 	it("returns correct values", async () => {
 		const amount = "500";
-		const { amountInWei, address } = getDepositValues(amount, CENNZnetAccount);
+		const { amountInWei, address } = getDepositValues(
+			amount,
+			CENNZnetAccount,
+			18
+		);
 
 		const expectedAmountInWei = ethers.utils.parseUnits(amount);
 		const expectedAddress = decodeAddress(CENNZnetAccount);
@@ -94,7 +98,11 @@ describe("checkDepositStatus", () => {
 describe("deposit", () => {
 	it("deposit ETH works with values from getDepositValues", async () => {
 		const amount = "5";
-		const { amountInWei, address } = getDepositValues(amount, CENNZnetAccount);
+		const { amountInWei, address } = getDepositValues(
+			amount,
+			CENNZnetAccount,
+			18
+		);
 		const peg: ethers.Contract = new ethers.Contract(
 			ERC20PegAddress,
 			ERC20Peg,
@@ -124,7 +132,11 @@ describe("deposit", () => {
 			(token) => token.chainId === 1 && token.symbol === "DAI"
 		);
 		const amount = "5";
-		const { amountInWei, address } = getDepositValues(amount, CENNZnetAccount);
+		const { amountInWei, address } = getDepositValues(
+			amount,
+			CENNZnetAccount,
+			18
+		);
 		const tokenContract = new ethers.Contract(
 			DAI.address,
 			GenericERC20TokenAbi,

@@ -1,76 +1,77 @@
-import React, { useEffect, useState } from "react";
 import type { AppProps } from "next/app";
-import Head from "next/head";
-import { useRouter } from "next/router";
-import { isBrowser, isTablet } from "react-device-detect";
-import { ThemeProvider } from "@mui/material/styles";
-import theme from "@/styles/theme";
+import ThemeProvider from "@/providers/ThemeProvider";
 import CssBaseline from "@mui/material/CssBaseline";
-import "@/styles/global.css";
-import { Box } from "@mui/material";
 import CENNZApiProvider from "@/providers/CENNZApiProvider";
-import SupportedWalletProvider from "@/providers/SupportedWalletProvider";
-import Switch from "@/components/AppSwitch";
-import Wallet from "@/components/Wallet";
-import SupportedAssetsProvider from "@/providers/SupportedAssetsProvider";
-import BlockchainProvider from "@/providers/BlockchainProvider";
+import CENNZWalletProvider from "@/providers/CENNZWalletProvider";
+import AppSwitch from "@/components/AppSwitch";
+import WalletButton from "@/components/WalletButton";
 import { GlobalProps } from "@/utils/generateGlobalProps";
 import UserAgentProvider from "@/providers/UserAgentProvider";
 import CENNZExtensionProvider from "@/providers/CENNZExtensionProvider";
+import PageBackdrop from "@/components/shared/PageBackdrop";
+import PageFrame from "@/components/shared/PageFrame";
+import GlobalModalProvider from "@/providers/GlobalModalProvider";
+import CssGlobal from "@/components/CssGlobal";
+import MetaMaskExtensionProvider from "@/providers/MetaMaskExtensionProvider";
+import { API_URL, VERCEL_URL } from "@/constants";
+import MetaMaskWalletProvider from "@/providers/MetaMaskWalletProvider";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
+import { trackPageView } from "@/utils";
+import { DefaultSeo } from "next-seo";
 
 type MyAppProps = Omit<AppProps, "pageProps"> & {
 	pageProps: {} & GlobalProps;
 };
 
-function MyApp({
-	Component,
-	pageProps: { supportedAssets, ...pageProps },
-}: MyAppProps) {
-	const router = useRouter();
-	const [location, setLocation] = useState<string>();
+function MyApp({ Component, pageProps }: MyAppProps) {
+	const { events } = useRouter();
 
 	useEffect(() => {
-		if (location !== undefined) router.push(`/${location}`);
-		//eslint-disable-next-line
-	}, [location]);
+		if (!events) return;
+
+		events.on("routeChangeComplete", trackPageView);
+		return () => {
+			events.off("routeChangeComplete", trackPageView);
+		};
+	}, [events]);
 
 	return (
 		<>
-			<Head>
-				<title>CENNZnet App Hub</title>
-				<meta name="description" content="App Hub powered by CENNZnet" />
-				<link rel="icon" href="/favicon.svg" />
-			</Head>
-			<ThemeProvider theme={theme}>
-				<CssBaseline />
+			<DefaultSeo
+				titleTemplate="CENNZnet App Hub | %s"
+				title="CENNZnet App Hub"
+				description="App Hub powered by CENNZnet."
+				openGraph={{
+					images: [
+						{
+							url: `https://${VERCEL_URL || "app.cennz.net"}/images/share.png`,
+							width: 800,
+							height: 500,
+						},
+					],
+				}}
+			/>
+			<CssBaseline />
+			<ThemeProvider>
+				<CssGlobal />
 				<UserAgentProvider>
 					<CENNZExtensionProvider>
-						<CENNZApiProvider>
-							<SupportedAssetsProvider supportedAssets={supportedAssets}>
-								<SupportedWalletProvider>
-									<BlockchainProvider>
-										<Wallet />
-										<Box
-											onClick={() => router.push("/")}
-											sx={{ cursor: "pointer" }}
-										>
-											<img
-												src="/cennznet-header.png"
-												alt="CENNZnet header"
-												style={{
-													width: isBrowser || isTablet ? "90px" : "45px",
-													position: "absolute",
-													top: "5%",
-													left: "6%",
-												}}
-											/>
-										</Box>
-										<Switch setLocation={setLocation} />
-										<Component {...pageProps} />
-									</BlockchainProvider>
-								</SupportedWalletProvider>
-							</SupportedAssetsProvider>
-						</CENNZApiProvider>
+						<MetaMaskExtensionProvider>
+							<CENNZApiProvider endpoint={API_URL}>
+								<CENNZWalletProvider>
+									<MetaMaskWalletProvider>
+										<GlobalModalProvider>
+											<PageBackdrop />
+											<WalletButton />
+											<AppSwitch />
+											<Component {...pageProps} />
+											<PageFrame />
+										</GlobalModalProvider>
+									</MetaMaskWalletProvider>
+								</CENNZWalletProvider>
+							</CENNZApiProvider>
+						</MetaMaskExtensionProvider>
 					</CENNZExtensionProvider>
 				</UserAgentProvider>
 			</ThemeProvider>

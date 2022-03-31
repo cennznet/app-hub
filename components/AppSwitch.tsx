@@ -1,83 +1,77 @@
-import React from "react";
-import { useRouter } from "next/router";
-import { Box } from "@mui/material";
-import { SwitchButton } from "@/components/StyledComponents";
+import { css } from "@emotion/react";
+import Link from "next/link";
+import { Theme } from "@mui/material";
+import useSectionUri from "@/hooks/useSectionUri";
 
-const Switch: React.FC<{ setLocation: Function }> = ({ setLocation }) => {
-	const router = useRouter();
-	const location = router.asPath;
-
+const Switch: React.FC<{}> = () => {
+	const section = useSectionUri();
 	return (
-		<Box
-			sx={{
-				width: "360px",
-				left: "calc(50% - 360px/2)",
-				display: "flex",
-				flexDirection: "row",
-				justifyContent: "center",
-				alignItems: "flex-start",
-				padding: 0,
-				position: "absolute",
-				top: "4%",
-				filter: "drop-shadow(0px 3px 3px rgba(0, 0, 0, 0.12))",
-			}}
-		>
-			{location === "/" && (
-				<>
-					<SwitchButton
-						sx={{
-							color: "primary.swap",
-							borderBottom: "2px solid #1130FF",
-						}}
-					>
-						swap
-					</SwitchButton>
-					<SwitchButton onClick={() => setLocation("pool")}>
-						<span>pool</span>
-					</SwitchButton>
-					<SwitchButton onClick={() => setLocation("bridge")}>
-						<span>bridge</span>
-					</SwitchButton>
-				</>
-			)}
-			{location === "/pool" && (
-				<>
-					<SwitchButton onClick={() => setLocation("")}>
-						<span>swap</span>
-					</SwitchButton>
-					<SwitchButton
-						sx={{
-							color: "primary.pool",
-							borderBottom: "2px solid #9847FF",
-						}}
-					>
-						pool
-					</SwitchButton>
-					<SwitchButton onClick={() => setLocation("bridge")}>
-						<span>bridge</span>
-					</SwitchButton>
-				</>
-			)}
-			{location === "/bridge" && (
-				<>
-					<SwitchButton onClick={() => setLocation("")}>
-						<span>swap</span>
-					</SwitchButton>
-					<SwitchButton onClick={() => setLocation("pool")}>
-						<span>pool</span>
-					</SwitchButton>
-					<SwitchButton
-						sx={{
-							color: "primary.bridge",
-							borderBottom: "2px solid #2DC8CB",
-						}}
-					>
-						bridge
-					</SwitchButton>
-				</>
-			)}
-		</Box>
+		<nav css={styles.container}>
+			<Link href="/swap" passHref={true}>
+				<a css={styles.navItem(section === "swap")}>
+					<span>Swap</span>
+				</a>
+			</Link>
+			<Link href="/pool" passHref={true}>
+				<a css={styles.navItem(section === "pool")}>
+					<span>Pool</span>
+				</a>
+			</Link>
+			<Link href="/bridge" passHref={true}>
+				<a css={styles.navItem(section === "bridge")}>
+					<span>Bridge</span>
+				</a>
+			</Link>
+		</nav>
 	);
 };
 
 export default Switch;
+
+export const styles = {
+	container: ({ shadows }: Theme) => css`
+		width: 360px;
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		align-items: flex-start;
+		margin: 3em auto;
+		box-shadow: ${shadows[1]};
+		border-radius: 4px;
+		overflow: hidden;
+		position: relative;
+	`,
+
+	navItem:
+		(active: boolean) =>
+		({ palette, transitions }: Theme) =>
+			css`
+				text-decoration: none;
+				background-color: white;
+				height: 48px;
+				max-width: 120px;
+				flex: 1;
+				font-weight: 500;
+				font-size: 14px;
+				text-align: center;
+				line-height: 48px;
+				text-transform: uppercase;
+				color: ${palette.primary.main};
+				border-bottom: ${active
+					? `2px solid ${palette.primary.main}`
+					: `2px solid white`};
+
+				&:hover {
+					background-color: white;
+
+					> span {
+						opacity: 1;
+					}
+				}
+
+				> span {
+					opacity: ${active ? 1 : 0.5};
+					transition: opacity ${transitions.duration.short}ms;
+				}
+			`,
+};
