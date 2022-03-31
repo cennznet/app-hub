@@ -14,7 +14,7 @@ import ExpandMore from "@mui/icons-material/ExpandMore";
 import { DeriveStakingQuery, ElectedOption, StakingElected } from "@/types";
 
 const StakeElectedInfo: VFC = () => {
-	const { electionInfo, stakeAsset } = useStake();
+	const { electionInfo, stakingAsset } = useStake();
 	const [elected, setElected] = useState<StakingElected>();
 	const [electedExpanded, setElectedExpanded] = useState<boolean>(false);
 	const [electedOption, setElectedOption] = useState<ElectedOption>();
@@ -70,14 +70,14 @@ const StakeElectedInfo: VFC = () => {
 
 	const parseElectionBalance = useCallback(
 		(amount) => {
-			if (!stakeAsset) return;
+			if (!stakingAsset) return;
 
 			return new Balance(
 				parseFloat(amount.replace(/,/g, "")),
-				stakeAsset
+				stakingAsset
 			).toInput();
 		},
-		[stakeAsset]
+		[stakingAsset]
 	);
 
 	return (
@@ -130,7 +130,7 @@ const StakeElectedInfo: VFC = () => {
 										{parseElectionBalance(electedOption.stakingLedger.active)}
 									</span>
 									&nbsp;
-									{stakeAsset.symbol}
+									{stakingAsset.symbol}
 								</div>
 								<div css={styles.electedDetail}>
 									Total:&nbsp;
@@ -138,7 +138,7 @@ const StakeElectedInfo: VFC = () => {
 										{parseElectionBalance(electedOption.stakingLedger.total)}
 									</span>
 									&nbsp;
-									{stakeAsset.symbol}
+									{stakingAsset.symbol}
 								</div>
 							</div>
 							<div css={styles.electedDetail}>

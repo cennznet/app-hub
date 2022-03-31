@@ -82,6 +82,11 @@ export interface TxStatus {
 	message: string | ReactElement;
 }
 
+export interface StakeAssets {
+	stakingAsset: CENNZAsset;
+	spendingAsset: CENNZAsset;
+}
+
 export type StakeAction = "stake" | "unstake";
 
 export interface StakePair {

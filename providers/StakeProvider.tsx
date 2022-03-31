@@ -7,11 +7,12 @@ import {
 	useEffect,
 	useState,
 } from "react";
-import { CENNZAsset, StakeAction, ElectionInfo } from "@/types";
+import { CENNZAsset, StakeAction, StakeAssets, ElectionInfo } from "@/types";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
 
 interface StakeContextType {
-	stakeAsset: CENNZAsset;
+	stakingAsset: CENNZAsset;
+	spendingAsset: CENNZAsset;
 
 	stakeAction: StakeAction;
 	setStakeAction: Dispatch<SetStateAction<StakeAction>>;
@@ -22,11 +23,12 @@ interface StakeContextType {
 const StakeContext = createContext<StakeContextType>({} as StakeContextType);
 
 interface StakeProviderProps {
-	stakeAsset: CENNZAsset;
+	stakeAssets: StakeAssets;
 }
 
-const StakeProvider: FC<StakeProviderProps> = ({ children, stakeAsset }) => {
+const StakeProvider: FC<StakeProviderProps> = ({ children, stakeAssets }) => {
 	const { api } = useCENNZApi();
+	const { stakingAsset, spendingAsset } = stakeAssets;
 	const [stakeAction, setStakeAction] = useState<StakeAction>();
 	const [electionInfo, setElectionInfo] = useState<ElectionInfo>();
 
@@ -48,7 +50,8 @@ const StakeProvider: FC<StakeProviderProps> = ({ children, stakeAsset }) => {
 	return (
 		<StakeContext.Provider
 			value={{
-				stakeAsset,
+				stakingAsset,
+				spendingAsset,
 
 				stakeAction,
 				setStakeAction,

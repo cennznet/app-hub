@@ -11,7 +11,7 @@ const StakeForm: FC<IntrinsicElements["form"] & StakeFormProps> = ({
 	children,
 	...props
 }) => {
-	const { stakeAsset, stakeAction } = useStake();
+	const { stakingAsset, stakeAction } = useStake();
 
 	const onFormSubmit = useCallback(async (event) => {
 		event.preventDefault();
@@ -23,7 +23,7 @@ const StakeForm: FC<IntrinsicElements["form"] & StakeFormProps> = ({
 
 			<div css={styles.formSubmit}>
 				<SubmitButton requireCENNZnet requireMetaMask={false}>
-					{stakeAction} {stakeAsset.symbol}
+					{stakeAction} {stakingAsset.symbol}
 				</SubmitButton>
 			</div>
 		</form>
