@@ -1,5 +1,5 @@
 import fetchGasFee from "@/utils/fetchGasFee";
-import getBuyAssetExtrinsic from "@/utils/getBuyAssetExtrinsic";
+import getSellAssetExtrinsic from "@/utils/getSellAssetExtrinsic";
 import { Balance } from "@/utils";
 
 const api = global.getCENNZApiForTest();
@@ -10,7 +10,7 @@ describe("fetchGasFee", () => {
 	it("returns expected result", async () => {
 		const gasFee = await fetchGasFee(
 			api,
-			getBuyAssetExtrinsic(
+			getSellAssetExtrinsic(
 				api,
 				cennzAsset.assetId,
 				Balance.fromInput("1", cennzAsset),

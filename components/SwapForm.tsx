@@ -6,7 +6,7 @@ import SubmitButton from "@/components/shared/SubmitButton";
 import { useSwap } from "@/providers/SwapProvider";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
-import { Balance, getBuyAssetExtrinsic, signAndSendTx } from "@/utils";
+import { Balance, getSellAssetExtrinsic, signAndSendTx } from "@/utils";
 
 interface SwapFormProps {}
 
@@ -36,7 +36,7 @@ const SwapForm: FC<IntrinsicElements["form"] & SwapFormProps> = ({
 			if (!api) return;
 			setProgressStatus();
 
-			const extrinsic = getBuyAssetExtrinsic(
+			const extrinsic = getSellAssetExtrinsic(
 				api,
 				exchangeAsset.assetId,
 				Balance.fromInput(exValue, exchangeAsset),
