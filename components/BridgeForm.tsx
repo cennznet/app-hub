@@ -75,7 +75,8 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 				metaMaskWallet.getSigner()
 			);
 
-			if (tx !== "cancelled") await ensureRelayerDepositDone(tx.hash);
+			if (tx !== "cancelled")
+				await ensureRelayerDepositDone(tx.hash, 600000, setProgressStatus);
 		} catch (error) {
 			console.info(error);
 			return setFailStatus(error?.code);

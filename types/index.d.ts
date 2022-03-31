@@ -77,3 +77,15 @@ export interface TxStatus {
 	title: string;
 	message: string | ReactElement;
 }
+
+export type RelayerStatus =
+	| "Successful"
+	| "Failed"
+	| "Confirming"
+	| "EthereumConfirming"
+	| "CennznetConfirming";
+
+export type RelayerConfirmingStatus = Extract<
+	RelayerStatus,
+	"EthereumConfirming" | "CennznetConfirming"
+>;

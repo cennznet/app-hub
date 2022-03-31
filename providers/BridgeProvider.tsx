@@ -5,9 +5,10 @@ import {
 	BridgeAction,
 	BridgedEthereumToken,
 	EthereumToken,
+	RelayerConfirmingStatus,
 	TxStatus,
 } from "@/types";
-import { Balance } from "@/utils";
+import { Balance, selectMap } from "@/utils";
 import {
 	createContext,
 	Dispatch,
@@ -42,7 +43,7 @@ interface BridgeContextType {
 	txStatus: TxStatus;
 	setTxStatus: Dispatch<SetStateAction<TxStatus>>;
 
-	setProgressStatus: () => void;
+	setProgressStatus: (status?: RelayerConfirmingStatus) => void;
 	setSuccessStatus: () => void;
 	setFailStatus: (errorCode?: string) => void;
 
@@ -91,10 +92,21 @@ const BridgeProvider: FC<BridgeProviderProps> = ({
 
 	const [txStatus, setTxStatus] = useState<TxStatus>(null);
 
-	const setProgressStatus = useCallback(() => {
+	const setProgressStatus = useCallback((status?: RelayerConfirmingStatus) => {
+		const title = selectMap<RelayerConfirmingStatus, string>(
+			status,
+			new Map([
+				["EthereumConfirming", "Confirming on Ethereum"],
+				["CennznetConfirming", "Confirming on CENNZnet"],
+			]),
+			"Transaction In Progress"
+		);
+
+		console.log(title);
+
 		setTxStatus({
 			status: "in-progress",
-			title: "Transaction In Progress",
+			title,
 			message: (
 				<div>
 					Please sign the transaction when prompted and wait until it&apos;s
