@@ -81,7 +81,6 @@ export interface TxStatus {
 export type RelayerStatus =
 	| "Successful"
 	| "Failed"
-	| "Confirming"
 	| "EthereumConfirming"
 	| "CennznetConfirming";
 
