@@ -74,9 +74,8 @@ const SwapStats: VFC<IntrinsicElements["div"] & SwapStatsProps> = (props) => {
 						title={
 							<div>
 								If the amount of <strong>{receiveAsset.symbol}</strong> received
-								is less than Slippage value, the transaction will not proceed.
-								You can update your preferred Slippage percentage under
-								Settings.
+								is less than Slippage value, the transaction will fail. You can
+								update your preferred Slippage percentage under Settings.
 							</div>
 						}
 						arrow

@@ -136,8 +136,8 @@ const PoolStats: VFC<IntrinsicElements["div"] & PoolStatsProps> = (props) => {
 							<div>
 								If the amount of <strong>{tradeAsset.symbol}</strong> used for
 								liquidity pool is {poolAction === "Remove" ? "less" : "greater"}{" "}
-								than Slippage value, the transaction will not proceed. You can
-								update your preferred Slippage percentage under Settings.
+								than Slippage value, the transaction will fail. You can update
+								your preferred Slippage percentage under Settings.
 							</div>
 						}
 						arrow
