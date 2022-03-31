@@ -1,6 +1,7 @@
 import { Api } from "@cennznet/api";
 import { CENNZAsset } from "@/types";
 import fetchCENNZAssets from "@/utils/fetchCENNZAssets";
+import { CPAY_ASSET_ID } from "@/constants";
 
 /**
  * Fetch and retuns array of CENNZnetAsset that are swapable
@@ -12,8 +13,8 @@ import fetchCENNZAssets from "@/utils/fetchCENNZAssets";
 export default async function fetchSwapAssets(api: Api): Promise<CENNZAsset[]> {
 	const assets = await fetchCENNZAssets(api);
 	const liquidityPredicates = await Promise.all(
-		assets.map(async ({ assetId, symbol }) => {
-			if (symbol === "CPAY") return true;
+		assets.map(async ({ assetId }) => {
+			if (assetId === CPAY_ASSET_ID) return true;
 			const totalLiquidity = await api.derive.cennzx.totalLiquidity(assetId);
 			return totalLiquidity?.toNumber() > 0;
 		})

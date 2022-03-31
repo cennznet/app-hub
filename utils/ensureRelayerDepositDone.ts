@@ -33,7 +33,10 @@ export async function waitUntilDepositDone(
 						clearInterval(intervalId);
 						resolve(status);
 					})
-					.catch(reject);
+					.catch((error) => {
+						clearInterval(intervalId);
+						reject(error);
+					});
 			}, 1000);
 		});
 	};

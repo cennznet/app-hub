@@ -10,8 +10,14 @@ import { useSwapExchangeRate, useSwapGasFee } from "@/hooks";
 interface SwapStatsProps {}
 
 const SwapStats: VFC<IntrinsicElements["div"] & SwapStatsProps> = (props) => {
-	const { exchangeInput, exchangeAsset, receiveAsset, slippage, txStatus } =
-		useSwap();
+	const {
+		exchangeInput,
+		exchangeAsset,
+		receiveAsset,
+		slippage,
+		txStatus,
+		receiveInput,
+	} = useSwap();
 
 	const { exchangeRate, updatingExchangeRate, updateExchangeRate } =
 		useSwapExchangeRate("1");
@@ -52,10 +58,11 @@ const SwapStats: VFC<IntrinsicElements["div"] & SwapStatsProps> = (props) => {
 				<li>
 					<strong>Slippage:</strong>{" "}
 					<span>
-						{Balance.fromInput(exchangeInput?.value, exchangeAsset)
-							.increase(slippage)
+						{">= "}
+						{Balance.fromInput(receiveInput?.value, exchangeAsset)
+							.decrease(slippage)
 							.toBalance()}{" "}
-						{exchangeAsset.symbol}
+						{receiveAsset.symbol}
 					</span>
 					<Tooltip
 						disableFocusListener
@@ -66,10 +73,9 @@ const SwapStats: VFC<IntrinsicElements["div"] & SwapStatsProps> = (props) => {
 						}
 						title={
 							<div>
-								If the amount of <strong>{exchangeAsset.symbol}</strong> used
-								for swapping is greater than Slippage value, the transaction
-								will not proceed. You can update your preferred Slippage
-								percentage under Settings.
+								If the amount of <strong>{receiveAsset.symbol}</strong> received
+								is less than Slippage value, the transaction will fail. You can
+								update your preferred Slippage percentage under Settings.
 							</div>
 						}
 						arrow
