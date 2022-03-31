@@ -137,7 +137,7 @@ const BridgeProvider: FC<BridgeProviderProps> = ({
 						You successfully withdrew{" "}
 						<pre>
 							<em>
-								{trValue} {trSymbol}
+								<span>{trValue}</span> <span>{trSymbol}</span>
 							</em>
 						</pre>{" "}
 						from CENNZnet.
@@ -151,7 +151,7 @@ const BridgeProvider: FC<BridgeProviderProps> = ({
 						You successfully deposited{" "}
 						<pre>
 							<em>
-								{trValue} {trSymbol}
+								<span>{trValue}</span> <span>{trSymbol}</span>
 							</em>
 						</pre>{" "}
 						to CENNZnet.

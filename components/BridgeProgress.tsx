@@ -114,6 +114,11 @@ const styles = {
 			font-weight: bold;
 			font-style: normal;
 			color: ${palette.primary.main};
+			font-size: 0.5em;
+			span {
+				font-size: 2em;
+				letter-spacing: -0.025em;
+			}
 		}
 	`,
 
