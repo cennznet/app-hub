@@ -74,7 +74,7 @@ export interface MetaMaskAccount {
 
 export interface TxStatus {
 	status: "in-progress" | "success" | "fail";
-	title: string;
+	title: string | ReactElement;
 	message: string | ReactElement;
 }
 

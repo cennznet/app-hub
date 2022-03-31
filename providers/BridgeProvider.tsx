@@ -93,16 +93,19 @@ const BridgeProvider: FC<BridgeProviderProps> = ({
 	const [txStatus, setTxStatus] = useState<TxStatus>(null);
 
 	const setProgressStatus = useCallback((status?: RelayerConfirmingStatus) => {
-		const title = selectMap<RelayerConfirmingStatus, string>(
+		const title = selectMap<RelayerConfirmingStatus, TxStatus["title"]>(
 			status,
 			new Map([
-				["EthereumConfirming", "Confirming on Ethereum"],
-				["CennznetConfirming", "Confirming on CENNZnet"],
+				["EthereumConfirming", <>Confirming on Ethereum</>],
+				[
+					"CennznetConfirming",
+					<>
+						Confirming on CENNZ<span>net</span>
+					</>,
+				],
 			]),
 			"Transaction In Progress"
 		);
-
-		console.log(title);
 
 		setTxStatus({
 			status: "in-progress",
