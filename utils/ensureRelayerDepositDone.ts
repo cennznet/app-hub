@@ -1,16 +1,19 @@
 import { fetchDepositRelayerStatus, waitUntil } from "@/utils";
+import { RelayerStatus, RelayerConfirmingStatus } from "@/types";
 
-type RelayerStatusReturn = Awaited<
-	ReturnType<typeof fetchDepositRelayerStatus>
->;
 type TimoutReturn = Awaited<ReturnType<typeof waitUntil>>;
 
 // TODO: Needs test
 export default async function ensureRelayerDepositDone(
 	txHash: string,
-	timeout: number = 60000
-): Promise<RelayerStatusReturn> {
-	const status = await waitUntilDepositDone(txHash, timeout);
+	timeout: number = 60000,
+	confirmingCallback?: (status: RelayerConfirmingStatus) => void
+): Promise<RelayerStatus> {
+	const status = await waitUntilDepositDone(
+		txHash,
+		timeout,
+		confirmingCallback
+	);
 
 	if (status === "timeout") throw { code: "RELAYER_TIMEOUT" };
 	if (status === "Failed") throw { code: "RELAYER_STATUS_FAILED" };
@@ -20,16 +23,22 @@ export default async function ensureRelayerDepositDone(
 
 export async function waitUntilDepositDone(
 	txHash: string,
-	timeout: number = 60000
-): Promise<RelayerStatusReturn | TimoutReturn> {
+	timeout: number = 60000,
+	confirmingCallback?: (status: RelayerConfirmingStatus) => void
+): Promise<RelayerStatus | TimoutReturn> {
 	let timedOut = false;
 
 	const pollDepositRelayerStatus = () => {
-		return new Promise<RelayerStatusReturn>((resolve, reject) => {
+		return new Promise<RelayerStatus>((resolve, reject) => {
 			const intervalId = setInterval(() => {
 				fetchDepositRelayerStatus(txHash)
 					.then((status) => {
-						if (!timedOut && status === "Confirming") return;
+						if (
+							!timedOut &&
+							(status === "EthereumConfirming" ||
+								status === "CennznetConfirming")
+						)
+							return confirmingCallback?.(status);
 						clearInterval(intervalId);
 						resolve(status);
 					})

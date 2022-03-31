@@ -74,6 +74,18 @@ export interface MetaMaskAccount {
 
 export interface TxStatus {
 	status: "in-progress" | "success" | "fail";
-	title: string;
+	title: string | ReactElement;
 	message: string | ReactElement;
 }
+
+export type RelayerStatus =
+	| "Successful"
+	| "Failed"
+	| "Confirming"
+	| "EthereumConfirming"
+	| "CennznetConfirming";
+
+export type RelayerConfirmingStatus = Extract<
+	RelayerStatus,
+	"EthereumConfirming" | "CennznetConfirming"
+>;
