@@ -1,138 +1,134 @@
 import { useCallback, useEffect, useState, VFC } from "react";
 import { css } from "@emotion/react";
-import { useCENNZApi } from "@/providers/CENNZApiProvider";
-import { Theme } from "@mui/system";
-import { LinearProgress } from "@mui/material";
-import { DeriveStakingOverview } from "@cennznet/api/derives/staking/types";
-import { DeriveSessionProgress } from "@polkadot/api-derive/types";
 import { useStake } from "@/providers/StakeProvider";
-
-interface StakingOverview {
-	activeEra: number;
-	activeEraStart: number;
-	currentEra: number;
-	currentIndex: number;
-	nextElected: any[];
-	validatorCount: number;
-	validators: string[];
-}
-
-interface StakingSessionProgress {
-	activeEra: number;
-	activeEraStart: number;
-	currentEra: number;
-	currentIndex: number;
-	eraLength: number;
-	eraProgress: number;
-	isEpoch: boolean;
-	sessionLength: number;
-	sessionProgress: number;
-	sessionsPerEra: number;
-	validatorCount: number;
-}
+import {
+	LinearProgress,
+	Table,
+	TableBody,
+	TableCell,
+	TableContainer,
+	TableHead,
+	TableRow,
+	Theme,
+} from "@mui/material";
+import { Balance, getTokenLogo } from "@/utils";
+import { DeriveStakingQuery, ElectedCandidate, StakingElected } from "@/types";
+import { ETH_CHAIN_ID } from "@/constants";
+import AccountIdenticon from "@/components/shared/AccountIdenticon";
+import { poolRegistry } from "@/utils/poolRegistry";
 
 const StakeElected: VFC = () => {
-	const { api } = useCENNZApi();
-	const { spendingAsset } = useStake();
+	const { electionInfo, stakingAsset } = useStake();
 	const [mounted, setMounted] = useState<boolean>(false);
-	const [validatorCount, setValidatorCount] = useState<string>();
-	const [nextElectionIn, setNextElectionIn] = useState<number>();
-	const [nextReward, setNextReward] = useState<number>();
+	const [elected, setElected] = useState<StakingElected>();
 
-	function parseStakingInfo<T, U>(rawInfo: T): U {
-		const info = {} as U;
-		Object.keys(rawInfo).forEach((key) => {
-			try {
-				info[key] = rawInfo[key].toJSON();
-			} catch (err) {
-				info[key] = rawInfo[key];
-			}
+	const chain = ETH_CHAIN_ID === 1 ? "CENNZnet Azalea" : "CENNZnet Nikau";
+
+	const parseElectedInfo = (electedInfo: DeriveStakingQuery[]) => {
+		return electedInfo.map((info) => {
+			const electedInfo = {};
+			Object.keys(info).forEach((key) => {
+				try {
+					electedInfo[key] = info[key].toHuman();
+				} catch (_) {
+					electedInfo[key] = info[key];
+				}
+			});
+			return electedInfo;
 		});
-		return info;
-	}
-
-	const fetchNextElectionIn = useCallback(async () => {
-		if (!api) return;
-
-		const progress = parseStakingInfo<
-			DeriveSessionProgress,
-			StakingSessionProgress
-		>(await api.derive.session.progress());
-
-		setNextElectionIn(progress.eraLength - progress.eraProgress);
-	}, [api]);
-
-	const fetchOverviewInfo = useCallback(async () => {
-		if (!api) return;
-
-		const fetchValidatorCount = async () => {
-			const minimumValidatorCount =
-				await api.query.staking.minimumValidatorCount();
-
-			const overview = parseStakingInfo<DeriveStakingOverview, StakingOverview>(
-				await api.derive.stakingCennznet.overview()
-			);
-
-			setValidatorCount(
-				`${overview.validatorCount} / ${minimumValidatorCount}`
-			);
-		};
-
-		const fetchNextReward = async () => {
-			const transactionFeePot = (
-				await api.query.rewards.transactionFeePot()
-			).toJSON();
-			const baseInflation = (
-				await api.query.rewards.targetInflationPerStakingEra()
-			).toJSON();
-
-			setNextReward(Number(transactionFeePot) + Number(baseInflation));
-		};
-
-		await fetchValidatorCount();
-		await fetchNextElectionIn();
-		await fetchNextReward();
-	}, [api, fetchNextElectionIn]);
+	};
 
 	useEffect(() => {
-		if (!validatorCount || !nextElectionIn) setMounted(false);
+		if (!electionInfo) return setMounted(false);
 
-		fetchOverviewInfo().then(() => setMounted(true));
+		const electedInfoMap = parseElectedInfo(
+			electionInfo.elected.info
+		) as ElectedCandidate[];
 
-		const interval = setInterval(async () => await fetchNextElectionIn(), 5000);
+		const nextElected = electionInfo.elected.nextElected.map((el) =>
+			el.toHuman()
+		);
 
-		window.onunload = () => clearInterval(interval);
-	}, [
-		api,
-		fetchOverviewInfo,
-		fetchNextElectionIn,
-		setMounted,
-		validatorCount,
-		nextElectionIn,
-		nextReward,
-	]);
+		const validators = electionInfo.elected.validators.map((el) =>
+			el.toHuman()
+		);
+
+		console.log("electedInfoMap", electedInfoMap);
+
+		setElected({
+			electedInfoMap,
+			nextElected,
+			validators,
+		});
+
+		setMounted(true);
+	}, [electionInfo]);
+
+	const parseElectionBalance = useCallback(
+		(amount) => {
+			if (!stakingAsset) return;
+
+			return new Balance(
+				parseFloat(amount.replace(/,/g, "")),
+				stakingAsset
+			).toInput();
+		},
+		[stakingAsset]
+	);
 
 	return (
 		<div css={styles.root}>
-			<div css={styles.overview}>
+			<label htmlFor="elected candidates">elected</label>
+			<TableContainer css={[styles.container]}>
 				{!mounted && <LinearProgress css={[styles.infoProgress]} />}
-				<label htmlFor="validators">validators</label>
-				<div css={styles.info}>
-					{!!validatorCount && <span>{validatorCount}</span>}
-				</div>
-				<label htmlFor="validators">next election in</label>
-				<div css={styles.info}>
-					{!!nextElectionIn && <span>{nextElectionIn} blocks</span>}
-				</div>
-				<label htmlFor="rewards">next reward</label>
-				<div css={styles.info}>
-					{mounted && (
-						<span>
-							{nextReward} {spendingAsset.symbol}
-						</span>
-					)}
-				</div>
-			</div>
+				<Table>
+					<TableHead>
+						<TableRow>
+							<TableCell css={styles.tableHead}>Account</TableCell>
+							<TableCell css={styles.tableHead}>Pool</TableCell>
+							<TableCell css={styles.tableHead}>
+								<div css={styles.stakingAssetHead}>
+									Total Staked
+									<img
+										src={getTokenLogo(stakingAsset.symbol).src}
+										alt={stakingAsset.symbol}
+									/>
+								</div>
+							</TableCell>
+						</TableRow>
+					</TableHead>
+					<TableBody>
+						{!!elected &&
+							elected.electedInfoMap.map((candidate) => {
+								const pool =
+									chain &&
+									poolRegistry[chain] &&
+									poolRegistry[chain][candidate.accountId]
+										? poolRegistry[chain][candidate.accountId]
+										: "Unknown";
+
+								return (
+									<TableRow key={candidate.accountId} css={styles.candidate}>
+										<TableCell>
+											<AccountIdenticon
+												value={candidate.accountId}
+												theme="beachball"
+												size={40}
+												css={styles.identicon}
+											/>
+										</TableCell>
+										<TableCell>{pool}</TableCell>
+										<TableCell>
+											<p css={styles.number}>
+												{parseElectionBalance(candidate.stakingLedger.total)}
+											</p>
+										</TableCell>
+									</TableRow>
+								);
+							})}
+					</TableBody>
+				</Table>
+			</TableContainer>
 		</div>
 	);
 };
@@ -141,11 +137,6 @@ export default StakeElected;
 
 const styles = {
 	root: ({ palette }: Theme) => css`
-		overflow-x: auto;
-		overflow-y: hidden;
-		white-space: nowrap;
-		height: 30em;
-
 		label {
 			font-weight: bold;
 			font-size: 14px;
@@ -156,22 +147,48 @@ const styles = {
 		}
 	`,
 
-	overview: css`
-		display: -ms-inline-flexbox;
-		width: 100%;
-	`,
-
 	infoProgress: css`
+		position: absolute;
+		top: 6.5em;
+		left: 26.5em;
 		width: 25px;
-		float: right;
-		margin: 0.5em 0.5em;
 		border-radius: 10px;
 		opacity: 0.5;
-		display: block;
 		transition: opacity 0.2s;
 	`,
 
-	info: css`
-		margin-bottom: 1em;
+	container: css`
+		border: 1px solid rgba(0, 0, 0, 0.1);
+		border-radius: 4px;
+		overflow-y: auto;
+		white-space: nowrap;
+		max-height: 20em;
+		min-width: 100%;
+	`,
+
+	tableHead: css`
+		max-height: 2em;
+		padding-bottom: -2em;
+	`,
+
+	stakingAssetHead: css`
+		display: inline-flex;
+		img {
+			margin-left: 0.5em;
+			height: 1.6em;
+		}
+	`,
+
+	candidate: css`
+		text-align: center;
+	`,
+
+	number: css`
+		font-family: "Roboto Mono", monospace;
+	`,
+
+	identicon: css`
+		margin-top: 0.5em;
+		margin-right: 1em;
 	`,
 };
