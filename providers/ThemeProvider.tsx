@@ -57,7 +57,7 @@ const config = {
 			swap: "#E4E7FF",
 			pool: "#F5ECFF",
 			bridge: "#E8F8F9",
-			stake: "#E3D1FF",
+			stake: "#F3D1FF",
 		},
 		background: {
 			default: "rgba(228, 231, 255, 0.4)",
