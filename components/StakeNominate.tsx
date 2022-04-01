@@ -23,6 +23,8 @@ const StakeNominate: VFC = () => {
 			<div css={[styles.select, styles.selectHover]}>
 				<SelectInput
 					css={styles.select}
+					multiple
+					inputProps={{ sx: styles.selectItem as any }}
 					value={selected ?? []}
 					onChange={(e) => setSelected(e.target.value as string[])}
 				>
@@ -52,7 +54,7 @@ const styles = {
 		}
 	`,
 
-	select: ({ palette }: Theme) => css`
+	select: css`
 		margin-bottom: 1.5em;
 		width: 100%;
 		border-radius: 4px;
@@ -61,11 +63,7 @@ const styles = {
 		align-items: center;
 		transition: border-color 0.2s;
 		position: relative;
-		border: 1px solid ${palette.text.secondary};
-
-		.MuiOutlinedInput-notchedOutline {
-			border: none;
-		}
+		height: 3.5em;
 
 		&:last-child {
 			margin-bottom: 0;
