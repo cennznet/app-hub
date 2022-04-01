@@ -67,16 +67,13 @@ const StakeSummary: VFC = () => {
 		if (!api) return;
 
 		const fetchValidatorCount = async () => {
-			const minimumValidatorCount =
-				await api.query.staking.minimumValidatorCount();
+			const validatorCount = await api.query.staking.validatorCount();
 
 			const overview = parseStakingInfo<DeriveStakingOverview, StakingOverview>(
 				await api.derive.stakingCennznet.overview()
 			);
 
-			setValidatorCount(
-				`${overview.validatorCount} / ${minimumValidatorCount}`
-			);
+			setValidatorCount(`${overview.validators.length} / ${validatorCount}`);
 		};
 
 		const fetchNextReward = async () => {
