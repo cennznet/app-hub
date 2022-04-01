@@ -99,7 +99,7 @@ export interface ElectionInfo {
 	waiting: DeriveStakingWaiting;
 }
 
-export interface ElectedOption {
+export interface ElectedCandidate {
 	accountId: string;
 	controllerId: string;
 	stashId: string;
@@ -114,7 +114,7 @@ export interface ElectedOption {
 }
 
 export interface StakingElected {
-	electedInfoMap: ElectedOption[];
+	electedInfoMap: ElectedCandidate[];
 	nextElected: string[];
 	validators: string[];
 }
