@@ -44,8 +44,11 @@ const StakeSummary: VFC = () => {
 		const info = {} as U;
 		Object.keys(rawInfo).forEach((key) => {
 			try {
+				if (rawInfo[key].isArray()) {
+					return (info[key] = rawInfo[key].map((item) => item.toJSON()));
+				}
 				info[key] = rawInfo[key].toJSON();
-			} catch (err) {
+			} catch (_) {
 				info[key] = rawInfo[key];
 			}
 		});
@@ -96,7 +99,7 @@ const StakeSummary: VFC = () => {
 		let interval: NodeJS.Timer;
 
 		fetchOverviewInfo().then(() => {
-			interval = setInterval(async () => await fetchNextElectionIn(), 5000);
+			// interval = setInterval(async () => await fetchNextElectionIn(), 5000);
 		});
 
 		window.onunload = () => clearInterval(interval);
