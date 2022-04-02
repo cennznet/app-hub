@@ -16,6 +16,8 @@ import { DeriveStakingQuery, ElectedCandidate, StakingElected } from "@/types";
 import { ETH_CHAIN_ID } from "@/constants";
 import AccountIdenticon from "@/components/shared/AccountIdenticon";
 import { poolRegistry } from "@/utils/poolRegistry";
+import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
+import PendingOutlinedIcon from "@mui/icons-material/PendingOutlined";
 
 const StakeElected: VFC = () => {
 	const { electionInfo, stakingAsset } = useStake();
@@ -23,20 +25,6 @@ const StakeElected: VFC = () => {
 	const [elected, setElected] = useState<StakingElected>();
 
 	const chain = ETH_CHAIN_ID === 1 ? "CENNZnet Azalea" : "CENNZnet Nikau";
-
-	const parseElectedInfo = (electedInfo: DeriveStakingQuery[]) => {
-		return electedInfo.map((info) => {
-			const electedInfo = {};
-			Object.keys(info).forEach((key) => {
-				try {
-					electedInfo[key] = info[key].toHuman();
-				} catch (_) {
-					electedInfo[key] = info[key];
-				}
-			});
-			return electedInfo;
-		});
-	};
 
 	useEffect(() => {
 		if (!electionInfo) return setMounted(false);
@@ -53,8 +41,6 @@ const StakeElected: VFC = () => {
 			el.toHuman()
 		);
 
-		console.log("electedInfoMap", electedInfoMap);
-
 		setElected({
 			electedInfoMap,
 			nextElected,
@@ -64,17 +50,33 @@ const StakeElected: VFC = () => {
 		setMounted(true);
 	}, [electionInfo]);
 
+	const parseElectedInfo = (electedInfo: DeriveStakingQuery[]) => {
+		return electedInfo.map((info) => {
+			const electedInfo = {};
+			Object.keys(info).forEach((key) => {
+				try {
+					electedInfo[key] = info[key].toHuman();
+				} catch (_) {
+					electedInfo[key] = info[key];
+				}
+			});
+			return electedInfo;
+		});
+	};
+
 	const parseElectionBalance = useCallback(
 		(amount) => {
 			if (!stakingAsset) return;
 
-			return new Balance(
-				parseFloat(amount.replace(/,/g, "")),
-				stakingAsset
-			).toInput();
+			return new Balance(parseFloat(amount.replace(/,/g, "")), stakingAsset)
+				.toInput()
+				.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 		},
 		[stakingAsset]
 	);
+
+	const isElected = (accountId: string): boolean =>
+		elected.nextElected.some((electedId) => electedId === accountId);
 
 	return (
 		<div css={styles.root}>
@@ -86,7 +88,8 @@ const StakeElected: VFC = () => {
 						<TableRow>
 							<TableCell css={styles.tableHead}>Account</TableCell>
 							<TableCell css={styles.tableHead}>Pool</TableCell>
-							<TableCell css={styles.tableHead}>
+							<TableCell css={styles.tableHead}>Status</TableCell>
+							<TableCell css={styles.tableHead} sx={{ textAlign: "center" }}>
 								<div css={styles.stakingAssetHead}>
 									Total Staked
 									<img
@@ -99,33 +102,33 @@ const StakeElected: VFC = () => {
 					</TableHead>
 					<TableBody>
 						{!!elected &&
-							elected.electedInfoMap.map((candidate) => {
-								const pool =
-									chain &&
-									poolRegistry[chain] &&
-									poolRegistry[chain][candidate.accountId]
-										? poolRegistry[chain][candidate.accountId]
-										: "Unknown";
-
-								return (
-									<TableRow key={candidate.accountId} css={styles.candidate}>
-										<TableCell>
-											<AccountIdenticon
-												value={candidate.accountId}
-												theme="beachball"
-												size={40}
-												css={styles.identicon}
-											/>
-										</TableCell>
-										<TableCell>{pool}</TableCell>
-										<TableCell>
-											<p css={styles.number}>
-												{parseElectionBalance(candidate.stakingLedger.total)}
-											</p>
-										</TableCell>
-									</TableRow>
-								);
-							})}
+							elected.electedInfoMap.map((candidate) => (
+								<TableRow key={candidate.accountId} css={styles.candidate}>
+									<TableCell>
+										<AccountIdenticon
+											value={candidate.accountId}
+											theme="beachball"
+											size={40}
+											css={styles.identicon}
+										/>
+									</TableCell>
+									<TableCell>
+										{poolRegistry[chain][candidate.accountId] ?? "Unknown"}
+									</TableCell>
+									<TableCell>
+										{isElected(candidate.accountId) ? (
+											<CheckCircleOutlinedIcon css={styles.status(true)} />
+										) : (
+											<PendingOutlinedIcon css={styles.status(false)} />
+										)}
+									</TableCell>
+									<TableCell>
+										<p css={styles.number}>
+											{parseElectionBalance(candidate.stakingLedger.total)}
+										</p>
+									</TableCell>
+								</TableRow>
+							))}
 					</TableBody>
 				</Table>
 			</TableContainer>
@@ -149,8 +152,8 @@ const styles = {
 
 	infoProgress: css`
 		position: absolute;
-		top: 6.5em;
-		left: 26.5em;
+		top: 7.5em;
+		left: 27em;
 		width: 25px;
 		border-radius: 10px;
 		opacity: 0.5;
@@ -173,6 +176,7 @@ const styles = {
 
 	stakingAssetHead: css`
 		display: inline-flex;
+
 		img {
 			margin-left: 0.5em;
 			height: 1.6em;
@@ -191,4 +195,13 @@ const styles = {
 		margin-top: 0.5em;
 		margin-right: 1em;
 	`,
+
+	status:
+		(isElected: boolean) =>
+		({ palette }: Theme) =>
+			css`
+				margin-top: 0.2em;
+				margin-left: 0.3em;
+				color: ${isElected ? palette.success.main : "#2DC8CB"};
+			`,
 };
