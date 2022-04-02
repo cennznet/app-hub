@@ -10,6 +10,7 @@ import {
 	TableHead,
 	TableRow,
 	Theme,
+	Tooltip,
 } from "@mui/material";
 import { Balance, getTokenLogo } from "@/utils";
 import { DeriveStakingQuery, ElectedCandidate, StakingElected } from "@/types";
@@ -21,6 +22,7 @@ import PendingOutlinedIcon from "@mui/icons-material/PendingOutlined";
 
 const StakeElected: VFC = () => {
 	const { electionInfo, stakingAsset } = useStake();
+	const [openAccount, setOpenAccount] = useState<string>();
 	const [mounted, setMounted] = useState<boolean>(false);
 	const [elected, setElected] = useState<StakingElected>();
 
@@ -105,12 +107,25 @@ const StakeElected: VFC = () => {
 							elected.electedInfoMap.map((candidate) => (
 								<TableRow key={candidate.accountId} css={styles.candidate}>
 									<TableCell>
-										<AccountIdenticon
-											value={candidate.accountId}
-											theme="beachball"
-											size={40}
-											css={styles.identicon}
-										/>
+										<Tooltip
+											css={styles.accountTooltip}
+											open={openAccount === candidate.accountId}
+											title={candidate.accountId}
+											placement="left"
+											arrow
+										>
+											<div
+												onMouseEnter={() => setOpenAccount(candidate.accountId)}
+												onMouseLeave={() => setOpenAccount(null)}
+											>
+												<AccountIdenticon
+													value={candidate.accountId}
+													theme="beachball"
+													size={40}
+													css={styles.identicon}
+												/>
+											</div>
+										</Tooltip>
 									</TableCell>
 									<TableCell>
 										{poolRegistry[chain][candidate.accountId] ?? "Unknown"}
@@ -189,6 +204,10 @@ const styles = {
 
 	number: css`
 		font-family: "Roboto Mono", monospace;
+	`,
+
+	accountTooltip: ({ palette }: Theme) => css`
+		color: ${palette.primary.main};
 	`,
 
 	identicon: css`
