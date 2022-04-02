@@ -99,7 +99,7 @@ const StakeSummary: VFC = () => {
 		let interval: NodeJS.Timer;
 
 		fetchOverviewInfo().then(() => {
-			// interval = setInterval(async () => await fetchNextElectionIn(), 5000);
+			interval = setInterval(async () => await fetchNextElectionIn(), 5000);
 		});
 
 		window.onunload = () => clearInterval(interval);
