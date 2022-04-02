@@ -9,7 +9,10 @@ export { default as getTokenLogo } from "@/utils/getTokenLogo";
 export { default as fetchSellPrice } from "@/utils/fetchSellPrice";
 export { default as fetchGasFee } from "@/utils/fetchGasFee";
 export { default as getBuyAssetExtrinsic } from "@/utils/getBuyAssetExtrinsic";
-export { default as signAndSendTx } from "@/utils/signAndSendTx";
+export {
+	default as signAndSendTx,
+	signAndSendTx2,
+} from "@/utils/signAndSendTx";
 export { default as fetchPoolExchangeInfo } from "@/utils/fetchPoolExchangeInfo";
 export { default as fetchPoolUserInfo } from "@/utils/fetchPoolUserInfo";
 export { default as getAddLiquidityExtrinsic } from "@/utils/getAddLiquidityExtrinsic";
@@ -38,3 +41,4 @@ export { default as sendWithdrawEthereumRequest } from "@/utils/sendWithdrawEthe
 export { default as trackPageView } from "@/utils/trackPageView";
 export { default as getSellAssetExtrinsic } from "@/utils/getSellAssetExtrinsic";
 export { default as selectMap } from "@/utils/selectMap";
+export { default as CENNZTransaction } from "@/utils/CENNZTransaction";

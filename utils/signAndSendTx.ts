@@ -1,4 +1,5 @@
-import { Api } from "@cennznet/api";
+import { CENNZTransaction } from "@/utils";
+import { Api, SubmittableResult } from "@cennznet/api";
 import { Signer, SubmittableExtrinsic } from "@cennznet/api/types";
 
 interface TxReceipt {
@@ -56,4 +57,26 @@ export default async function signAndSendTx(
 		console.info(`Transaction Failed: ${infoPair?.[1]}`);
 		throw err;
 	}
+}
+
+export async function signAndSendTx2(
+	extrinsic: SubmittableExtrinsic<"promise", any>,
+	address: string,
+	signer: Signer
+): Promise<CENNZTransaction> {
+	const tx = new CENNZTransaction();
+
+	extrinsic
+		.signAndSend(address, { signer }, (result: SubmittableResult) => {
+			const { txHash } = result;
+			console.info("Transaction", txHash.toString());
+			tx.setHash(txHash.toString());
+			tx.setResult(result);
+		})
+		.catch((error) => {
+			if (error?.message !== "Cancelled") throw error;
+			tx.setCancel();
+		});
+
+	return tx;
 }
