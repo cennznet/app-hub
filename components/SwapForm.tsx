@@ -1,12 +1,12 @@
 import { IntrinsicElements } from "@/types";
-import { FC, useCallback } from "react";
+import { FC, useCallback, useEffect } from "react";
 import { css } from "@emotion/react";
 import { Theme } from "@mui/material";
 import SubmitButton from "@/components/shared/SubmitButton";
 import { useSwap } from "@/providers/SwapProvider";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
-import { Balance, getSellAssetExtrinsic, signAndSendTx } from "@/utils";
+import { Balance, getSellAssetExtrinsic, signAndSendTx2 } from "@/utils";
 
 interface SwapFormProps {}
 
@@ -22,10 +22,10 @@ const SwapForm: FC<IntrinsicElements["form"] & SwapFormProps> = ({
 		exchangeInput: { value: exValue, setValue: setExValue },
 		receiveInput: { value: reValue },
 		slippage,
-		setTxStatus,
-		setSuccessStatus,
-		setProgressStatus,
-		setFailStatus,
+		setTxIdle,
+		setTxPending,
+		setTxSuccess,
+		setTxFailure,
 	} = useSwap();
 	const { selectedAccount, wallet, updateBalances } = useCENNZWallet();
 
@@ -34,35 +34,56 @@ const SwapForm: FC<IntrinsicElements["form"] & SwapFormProps> = ({
 			event.preventDefault();
 
 			if (!api) return;
-			setProgressStatus();
 
-			const extrinsic = getSellAssetExtrinsic(
-				api,
-				exchangeAsset.assetId,
-				Balance.fromInput(exValue, exchangeAsset),
-				receiveAsset.assetId,
-				Balance.fromInput(reValue, receiveAsset),
-				Number(slippage)
-			);
-
-			let status: Awaited<ReturnType<typeof signAndSendTx>>;
 			try {
-				status = await signAndSendTx(
+				setTxPending();
+				const extrinsic = getSellAssetExtrinsic(
 					api,
+					exchangeAsset.assetId,
+					Balance.fromInput(exValue, exchangeAsset),
+					receiveAsset.assetId,
+					Balance.fromInput(reValue, receiveAsset),
+					Number(slippage)
+				);
+
+				const tx = await signAndSendTx2(
 					extrinsic,
 					selectedAccount.address,
 					wallet.signer
 				);
+
+				tx.on("txCancelled", () => setTxIdle());
+
+				tx.on("txHashed", () => {
+					setTxPending({
+						txHashLink: tx.getHashLink(),
+					});
+				});
+
+				tx.on("txFailed", (result) =>
+					setTxFailure({
+						errorCode: tx.decodeError(result),
+						txHashLink: tx.getHashLink(),
+					})
+				);
+
+				tx.on("txSucceeded", (result) => {
+					const event = tx.findEvent(result, "cennzx", "AssetSold");
+					const exchangeValue = Balance.fromCodec(event.data[3], exchangeAsset);
+					const receiveValue = Balance.fromCodec(event.data[4], receiveAsset);
+
+					updateBalances();
+					setExValue("");
+					setTxSuccess({
+						exchangeValue,
+						receiveValue,
+						txHashLink: tx.getHashLink(),
+					});
+				});
 			} catch (error) {
 				console.info(error);
-				return setFailStatus(error?.code);
+				return setTxFailure({ errorCode: error?.code as string });
 			}
-
-			if (status === "cancelled") return setTxStatus(null);
-
-			setSuccessStatus();
-			setExValue("");
-			updateBalances();
 		},
 		[
 			api,
@@ -73,12 +94,12 @@ const SwapForm: FC<IntrinsicElements["form"] & SwapFormProps> = ({
 			slippage,
 			selectedAccount?.address,
 			wallet?.signer,
-			setTxStatus,
 			updateBalances,
 			setExValue,
-			setSuccessStatus,
-			setFailStatus,
-			setProgressStatus,
+			setTxFailure,
+			setTxPending,
+			setTxSuccess,
+			setTxIdle,
 		]
 	);
 

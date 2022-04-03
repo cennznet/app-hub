@@ -5,17 +5,21 @@ import {
 	SetStateAction,
 	Dispatch,
 	FC,
-	useCallback,
 } from "react";
-import { CENNZAsset, TxStatus } from "@/types";
-import { Balance, fetchSwapAssets } from "@/utils";
-import { useTokensFetcher } from "@/hooks";
+import { CENNZAsset } from "@/types";
+import { fetchSwapAssets } from "@/utils";
 import { CENNZ_ASSET_ID, CPAY_ASSET_ID } from "@/constants";
-import { useTokenInput, TokenInputHook } from "@/hooks";
+import {
+	useTokenInput,
+	TokenInputHook,
+	TxStatusHook,
+	useTokensFetcher,
+	useTxStatus,
+} from "@/hooks";
 
 type CENNZAssetId = CENNZAsset["assetId"];
 
-interface SwapContextType {
+interface SwapContextType extends TxStatusHook {
 	exchangeAssets: CENNZAsset[];
 	receiveAssets: CENNZAsset[];
 	cpayAsset: CENNZAsset;
@@ -28,13 +32,6 @@ interface SwapContextType {
 	receiveAsset: CENNZAsset;
 	slippage: string;
 	setSlippage: Dispatch<SetStateAction<string>>;
-
-	txStatus: TxStatus;
-	setTxStatus: Dispatch<SetStateAction<TxStatus>>;
-
-	setProgressStatus: () => void;
-	setSuccessStatus: () => void;
-	setFailStatus: (errorCode?: string) => void;
 }
 
 const SwapContext = createContext<SwapContextType>({} as SwapContextType);
@@ -69,75 +66,6 @@ const SwapProvider: FC<SwapProviderProps> = ({ supportedAssets, children }) => {
 	);
 
 	const [slippage, setSlippage] = useState<string>("5");
-	const [txStatus, setTxStatus] = useState<TxStatus>(null);
-
-	const setProgressStatus = useCallback(() => {
-		setTxStatus({
-			status: "in-progress",
-			title: "Transaction In Progress",
-			message: (
-				<div>
-					Please sign the transaction when prompted and wait until it&apos;s
-					completed
-				</div>
-			),
-		});
-	}, []);
-
-	const setFailStatus = useCallback((errorCode?: string) => {
-		setTxStatus({
-			status: "fail",
-			title: "Transaction Failed",
-			message: (
-				<div>
-					An error occurred while processing your transaction
-					{!!errorCode && (
-						<>
-							<br />
-							<pre>
-								<small>#{errorCode}</small>
-							</pre>
-						</>
-					)}
-				</div>
-			),
-		});
-	}, []);
-
-	const setSuccessStatus = useCallback(() => {
-		const exValue = Balance.format(exchangeInput.value);
-		const exSymbol = exchangeAsset.symbol;
-
-		const reValue = Balance.format(receiveInput.value);
-		const reSymbol = receiveAsset.symbol;
-
-		setTxStatus({
-			status: "success",
-			title: "Transaction Completed",
-			message: (
-				<div>
-					You successfully swapped{" "}
-					<pre>
-						<em>
-							{exValue} {exSymbol}
-						</em>
-					</pre>{" "}
-					for{" "}
-					<pre>
-						<em>
-							{reValue} {reSymbol}
-						</em>
-					</pre>
-					.
-				</div>
-			),
-		});
-	}, [
-		exchangeInput.value,
-		exchangeAsset.symbol,
-		receiveInput.value,
-		receiveAsset.symbol,
-	]);
 
 	return (
 		<SwapContext.Provider
@@ -154,11 +82,8 @@ const SwapProvider: FC<SwapProviderProps> = ({ supportedAssets, children }) => {
 				cpayAsset,
 				slippage,
 				setSlippage,
-				txStatus,
-				setTxStatus,
-				setProgressStatus,
-				setSuccessStatus,
-				setFailStatus,
+
+				...useTxStatus(),
 			}}
 		>
 			{children}

@@ -4,7 +4,6 @@ import { FC } from "react";
 
 /* eslint-disable react/jsx-no-target-blank */
 const Link: FC<IntrinsicElements["a"] & NextLinkProps> = ({
-	className,
 	href,
 	children,
 	...props
@@ -13,14 +12,14 @@ const Link: FC<IntrinsicElements["a"] & NextLinkProps> = ({
 	const internal = /^\/(?!\/)/.test(href) || (href && href.indexOf("#") === 0);
 
 	if (!internal) {
-		const nofollow = /lithoverse\.xyz/.test(href)
+		const nofollow = /app\.cennz\.net/.test(href)
 			? null
 			: { rel: "nofollow noreferrer" };
 		return (
 			<a
 				{...props}
-				href={href}
 				{...nofollow}
+				href={href}
 				target={href.indexOf("mailto:") === 0 ? "_self" : "_blank"}
 			>
 				{children}
