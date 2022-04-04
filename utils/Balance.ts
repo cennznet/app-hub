@@ -81,6 +81,14 @@ export default class Balance extends Big {
 		return this.div(Math.pow(10, decimals)).toFixed(undefined, Big.roundDown);
 	}
 
+	toPretty(): string {
+		const split = this.toInput().split(".");
+		const pretty = split[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+		if (split[1]) return pretty.concat(".").concat(split[1]);
+		return pretty;
+	}
+
 	toBalance(options = {} as AsBalanceOptions): string {
 		const { withSymbol } = options || {};
 		const { decimals, symbol } = this.coin;
