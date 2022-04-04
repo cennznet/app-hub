@@ -9,7 +9,7 @@ import {
 	Balance,
 	getAddLiquidityExtrinsic,
 	getRemoveLiquidityExtrinsic,
-	signAndSendTx,
+	signAndSendTx2,
 } from "@/utils";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 
@@ -23,10 +23,10 @@ const PoolForm: FC<IntrinsicElements["form"] & PoolFormProps> = ({
 	const [buttonLabel, setButtonLabel] = useState<string>("Add to Pool");
 	const {
 		poolAction,
-		setTxStatus,
-		setSuccessStatus,
-		setProgressStatus,
-		setFailStatus,
+		setTxIdle,
+		setTxPending,
+		setTxSuccess,
+		setTxFailure,
 
 		slippage,
 
@@ -86,34 +86,61 @@ const PoolForm: FC<IntrinsicElements["form"] & PoolFormProps> = ({
 			event.preventDefault();
 
 			if (!extrinsic || !api) return;
-			setProgressStatus();
 
-			let status: Awaited<ReturnType<typeof signAndSendTx>>;
 			try {
-				status = await signAndSendTx(
-					api,
+				setTxPending();
+				const tx = await signAndSendTx2(
 					extrinsic,
 					selectedAccount.address,
 					wallet.signer
 				);
+
+				tx.on("txCancelled", () => setTxIdle());
+
+				tx.on("txHashed", () => {
+					setTxPending({
+						txHashLink: tx.getHashLink(),
+					});
+				});
+
+				tx.on("txFailed", (result) =>
+					setTxFailure({
+						errorCode: tx.decodeError(result),
+						txHashLink: tx.getHashLink(),
+					})
+				);
+
+				tx.on("txSucceeded", (result) => {
+					const event = tx.findEvent(
+						result,
+						"cennzx",
+						poolAction === "Remove" ? "RemoveLiquidity" : "AddLiquidity"
+					);
+
+					const coreValue = Balance.fromCodec(event.data[1], coreAsset);
+					const tradeValue = Balance.fromCodec(event.data[3], tradeAsset);
+
+					setTrValue("");
+					updateBalances();
+					updatePoolUserInfo();
+					updateExchangeRate();
+					setTxSuccess({
+						coreValue,
+						tradeValue,
+						txHashLink: tx.getHashLink(),
+					});
+				});
 			} catch (error) {
 				console.info(error);
-				return setFailStatus(error?.code);
+				return setTxFailure({ errorCode: error?.code as string });
 			}
-
-			if (status === "cancelled") return setTxStatus(null);
-
-			setSuccessStatus();
-			setTrValue("");
-			updateBalances();
-			updatePoolUserInfo();
-			updateExchangeRate();
 		},
 		[
 			extrinsic,
-			setProgressStatus,
-			setTxStatus,
-			setSuccessStatus,
+			setTxIdle,
+			setTxPending,
+			setTxSuccess,
+			setTxFailure,
 			setTrValue,
 			updateBalances,
 			updatePoolUserInfo,
@@ -121,7 +148,9 @@ const PoolForm: FC<IntrinsicElements["form"] & PoolFormProps> = ({
 			api,
 			selectedAccount?.address,
 			wallet?.signer,
-			setFailStatus,
+			coreAsset,
+			tradeAsset,
+			poolAction,
 		]
 	);
 
