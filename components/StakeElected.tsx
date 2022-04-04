@@ -82,7 +82,7 @@ const StakeElected: VFC = () => {
 
 	return (
 		<div css={styles.root}>
-			<label htmlFor="elected candidates">elected</label>
+			{/*<label htmlFor="elected candidates">elected</label>*/}
 			<TableContainer css={[styles.container]}>
 				{!mounted && <LinearProgress css={[styles.infoProgress]} />}
 				<Table>

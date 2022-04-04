@@ -118,3 +118,5 @@ export interface StakingElected {
 	nextElected: string[];
 	validators: string[];
 }
+
+export type OverviewTable = "elected" | "nominate";
