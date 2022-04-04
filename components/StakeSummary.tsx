@@ -6,7 +6,7 @@ import { LinearProgress } from "@mui/material";
 import { DeriveStakingOverview } from "@cennznet/api/derives/staking/types";
 import { DeriveSessionProgress } from "@polkadot/api-derive/types";
 import { useStake } from "@/providers/StakeProvider";
-import { getTokenLogo } from "@/utils";
+import { Balance, getTokenLogo, numToPretty } from "@/utils";
 import CUBE from "@/assets/vectors/cube.svg";
 
 interface StakingOverview {
@@ -35,10 +35,11 @@ interface StakingSessionProgress {
 
 const StakeSummary: VFC = () => {
 	const { api } = useCENNZApi();
-	const { spendingAsset } = useStake();
+	const { spendingAsset, electionInfo } = useStake();
 	const [validatorCount, setValidatorCount] = useState<string>();
-	const [nextElectionIn, setNextElectionIn] = useState<number>();
-	const [nextReward, setNextReward] = useState<number>();
+	const [nextElectionIn, setNextElectionIn] = useState<string>();
+	const [nextReward, setNextReward] = useState<string>();
+	const [nominators, setNominators] = useState<string>();
 
 	function parseStakingInfo<T, U>(rawInfo: T): U {
 		const info = {} as U;
@@ -63,8 +64,26 @@ const StakeSummary: VFC = () => {
 			StakingSessionProgress
 		>(await api.derive.session.progress());
 
-		setNextElectionIn(progress.eraLength - progress.eraProgress);
+		setNextElectionIn(numToPretty(progress.eraLength - progress.eraProgress));
 	}, [api]);
+
+	const fetchNextReward = useCallback(async () => {
+		if (!api || !spendingAsset) return;
+
+		const transactionFeePot = (
+			await api.query.rewards.transactionFeePot()
+		).toJSON();
+		const baseInflation = (
+			await api.query.rewards.targetInflationPerStakingEra()
+		).toJSON();
+
+		const reward = new Balance(
+			Number(transactionFeePot) + Number(baseInflation),
+			spendingAsset
+		);
+
+		setNextReward(reward.toPretty());
+	}, [api, spendingAsset]);
 
 	const fetchOverviewInfo = useCallback(async () => {
 		if (!api) return;
@@ -79,21 +98,17 @@ const StakeSummary: VFC = () => {
 			setValidatorCount(`${overview.validators.length} / ${validatorCount}`);
 		};
 
-		const fetchNextReward = async () => {
-			const transactionFeePot = (
-				await api.query.rewards.transactionFeePot()
-			).toJSON();
-			const baseInflation = (
-				await api.query.rewards.targetInflationPerStakingEra()
-			).toJSON();
+		const fetchNominators = async () => {
+			const nominatorEntries = await api.query.staking.nominators.entries();
 
-			setNextReward(Number(transactionFeePot) + Number(baseInflation));
+			setNominators(numToPretty(nominatorEntries.length));
 		};
 
 		await fetchValidatorCount();
 		await fetchNextElectionIn();
 		await fetchNextReward();
-	}, [api, fetchNextElectionIn]);
+		await fetchNominators();
+	}, [api, fetchNextElectionIn, fetchNextReward]);
 
 	useEffect(() => {
 		let interval: NodeJS.Timer;
@@ -138,9 +153,29 @@ const StakeSummary: VFC = () => {
 					</div>
 				</div>
 				<div css={styles.infoBlock}>
+					<label htmlFor="waiting">waiting</label>
+					<div css={styles.infoText}>
+						{!!electionInfo ? (
+							<span>{electionInfo.waiting.waiting.length}</span>
+						) : (
+							<LinearProgress css={[styles.infoProgress]} />
+						)}
+					</div>
+				</div>
+				<div css={styles.infoBlock}>
+					<label htmlFor="nominators">nominators</label>
+					<div css={styles.infoText}>
+						{!!nominators ? (
+							<span css={styles.number}>{nominators}</span>
+						) : (
+							<LinearProgress css={[styles.infoProgress]} />
+						)}
+					</div>
+				</div>
+				<div css={styles.infoBlock}>
 					<label htmlFor="rewards">next reward</label>
 					<div css={styles.infoText}>
-						{nextReward >= 0 ? (
+						{!!nextReward ? (
 							<span css={styles.number}>
 								{nextReward}{" "}
 								<img
@@ -162,9 +197,13 @@ export default StakeSummary;
 
 const styles = {
 	root: ({ palette }: Theme) => css`
+		overflow-y: auto;
+		white-space: nowrap;
+
 		label {
 			font-weight: bold;
 			font-size: 14px;
+			text-align: center;
 			text-transform: uppercase;
 			margin-bottom: 0.5em;
 			display: block;
@@ -174,8 +213,6 @@ const styles = {
 
 	overview: css`
 		display: inline-flex;
-		width: 100%;
-		justify-content: space-between;
 	`,
 
 	infoProgress: css`
@@ -191,6 +228,7 @@ const styles = {
 	infoBlock: css`
 		margin-bottom: 1em;
 		display: block;
+		margin-right: 3em;
 	`,
 
 	infoText: css`
