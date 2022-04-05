@@ -21,7 +21,7 @@ import { poolRegistry } from "@/utils/poolRegistry";
 import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
 import PendingOutlinedIcon from "@mui/icons-material/PendingOutlined";
 
-const StakeElected: VFC = () => {
+const StakeValidatorTable: VFC = () => {
 	const { electionInfo, stakingAsset } = useStake();
 	const [openAccount, setOpenAccount] = useState<string>();
 
@@ -136,7 +136,7 @@ const StakeElected: VFC = () => {
 	return (
 		<div css={styles.root}>
 			<div css={styles.labelContainer}>
-				<label htmlFor="elected">elected</label>
+				<label htmlFor="validators">validators</label>
 				{!electionInfo && <LinearProgress css={[styles.infoProgress]} />}
 			</div>
 			<TableContainer css={[styles.container]}>
@@ -183,7 +183,7 @@ const StakeElected: VFC = () => {
 	);
 };
 
-export default StakeElected;
+export default StakeValidatorTable;
 
 const styles = {
 	root: ({ palette }: Theme) => css`

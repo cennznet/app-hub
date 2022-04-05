@@ -13,7 +13,7 @@ import StakeAmountInput from "@/components/StakeAmountInput";
 import StakeActionsPair from "@/components/StakeActionsPair";
 import StakeOverview from "@/components/StakeOverview";
 import StakeSummary from "@/components/StakeSummary";
-import StakeElected from "@/components/StakeElected";
+import StakeValidatorTable from "@/components/StakeValidatorTable";
 
 export async function getStaticProps() {
 	const api = await Api.create({ provider: API_URL });
@@ -40,7 +40,7 @@ const Pool: VFC<{ stakeAssets: StakeAssets }> = ({ stakeAssets }) => {
 				<MainPanel defaultTitle="Overview" css={styles.overview}>
 					<StakeOverview>
 						<StakeSummary />
-						<StakeElected />
+						<StakeValidatorTable />
 					</StakeOverview>
 				</MainPanel>
 			</div>
