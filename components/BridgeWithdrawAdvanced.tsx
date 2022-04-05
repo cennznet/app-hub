@@ -1,9 +1,4 @@
-import {
-	useCallback,
-	useEffect,
-	useState,
-	VFC,
-} from "react";
+import { useCallback, useEffect, useState, VFC } from "react";
 import { IntrinsicElements, WithdrawClaim } from "@/types";
 import { css } from "@emotion/react";
 import {
@@ -28,7 +23,9 @@ import { EthEventProof } from "@cennznet/api/derives/ethBridge/types";
 
 interface BridgeAdvancedProps {}
 
-const BridgeWithdrawAdvanced: VFC<IntrinsicElements["div"] & BridgeAdvancedProps> = ({...props}) => {
+const BridgeWithdrawAdvanced: VFC<
+	IntrinsicElements["div"] & BridgeAdvancedProps
+> = ({ ...props }) => {
 	const { api } = useCENNZApi();
 	const { selectedAccount: CENNZAccount, updateBalances: updateCENNZBalances } =
 		useCENNZWallet();
@@ -43,7 +40,7 @@ const BridgeWithdrawAdvanced: VFC<IntrinsicElements["div"] & BridgeAdvancedProps
 		transferInput,
 		transferSelect,
 		advancedExpanded: expanded,
-		setAdvancedExpanded: setExpanded
+		setAdvancedExpanded: setExpanded,
 	}: any = useBridge();
 	const [mounted, setMounted] = useState<boolean>(false);
 	const [unclaimedWithdrawals, setUnclaimedWithdrawals] =

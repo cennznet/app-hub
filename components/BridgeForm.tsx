@@ -185,9 +185,7 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 		<form {...props} css={styles.root} onSubmit={onFormSubmit}>
 			{children}
 
-			{bridgeAction === "Withdraw" && (
-				<BridgeWithdrawAdvanced />
-			)}
+			{bridgeAction === "Withdraw" && <BridgeWithdrawAdvanced />}
 
 			<div css={styles.formSubmit}>
 				<SubmitButton

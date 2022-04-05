@@ -226,7 +226,7 @@ const BridgeProvider: FC<BridgeProviderProps> = ({
 				updateMetaMaskBalances,
 
 				advancedExpanded,
-				setAdvancedExpanded
+				setAdvancedExpanded,
 			}}
 		>
 			{children}

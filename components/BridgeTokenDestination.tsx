@@ -27,7 +27,7 @@ const BridgeTokenDestination: VFC<
 		transferMetaMaskAddress,
 		setTransferMetaMaskAddress,
 		metaMaskBalance,
-		advancedExpanded
+		advancedExpanded,
 	} = useBridge();
 
 	const [cennzBalance] = useCENNZBalances(
