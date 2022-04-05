@@ -39,7 +39,7 @@ const StakeAmountInput: VFC<
 
 	return (
 		<div {...props} css={styles.root}>
-			<label htmlFor="stakeInput">Staking Asset</label>
+			<label htmlFor="stakeInput">stake amount</label>
 			<TokenInput
 				onMaxValueRequest={onStakeMaxRequest}
 				selectedTokenId={stakingAsset.assetId}

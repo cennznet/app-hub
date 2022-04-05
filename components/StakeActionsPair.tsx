@@ -116,7 +116,7 @@ const StakeActionsPair: VFC<
 
 			<div css={styles.formCopy}>
 				Stake <strong>{stakingAsset.symbol}</strong> and nominate the best
-				validators to earn <strong>{spendingAsset.symbol}</strong> rewards
+				validators to earn <strong>{spendingAsset.symbol}</strong> rewards.
 			</div>
 		</div>
 	);
