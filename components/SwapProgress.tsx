@@ -17,14 +17,14 @@ const SwapProgress: VFC<IntrinsicElements["div"] & SwapProgressProps> = (
 ) => {
 	const { txStatus, setTxIdle } = useSwap();
 	const { txHashLink, ...txProps } = txStatus?.props ?? {};
+	const dismissible =
+		txStatus?.status === "Success" || txStatus?.status === "Failure";
 
 	return (
 		<ProgressOverlay
 			onRequestClose={setTxIdle}
 			show={!!txStatus}
-			dismissible={
-				txStatus?.status === "Success" || txStatus?.status === "Failure"
-			}
+			dismissible={dismissible}
 		>
 			{selectMap<typeof txStatus["status"], ReactNode>(
 				txStatus?.status,
@@ -37,9 +37,19 @@ const SwapProgress: VFC<IntrinsicElements["div"] & SwapProgressProps> = (
 			)}
 
 			{!!txHashLink && (
-				<Link href={txHashLink} css={styles.button}>
+				<Link href={txHashLink} css={styles.viewButton}>
 					<StandardButton>View Transaction</StandardButton>
 				</Link>
+			)}
+
+			{dismissible && (
+				<StandardButton
+					variant="secondary"
+					css={styles.dismissButton}
+					onClick={setTxIdle}
+				>
+					Dismiss
+				</StandardButton>
 			)}
 		</ProgressOverlay>
 	);
@@ -136,8 +146,12 @@ const styles = {
 		color: ${palette.warning.main};
 	`,
 
-	button: css`
+	viewButton: css`
 		margin-top: 1em;
+	`,
+
+	dismissButton: css`
+		margin-top: 0.5em;
 	`,
 
 	errorCode: css`
