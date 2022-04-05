@@ -2,7 +2,7 @@ import { VFC } from "react";
 import { css } from "@emotion/react";
 import Link from "next/link";
 import { Theme } from "@mui/material";
-import useSectionUri from "@/hooks/useSectionUri";
+import { useSectionUri } from "@/hooks";
 
 const Switch: VFC = () => {
 	const section = useSectionUri();

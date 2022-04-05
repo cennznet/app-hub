@@ -1,7 +1,7 @@
 import { FC, useEffect, useRef } from "react";
 import { css } from "@emotion/react";
 
-import useSectionUri from "@/hooks/useSectionUri";
+import { useSectionUri } from "@/hooks";
 import { Theme } from "@mui/material";
 
 const PageBackdrop: FC<{}> = () => {

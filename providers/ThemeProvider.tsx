@@ -4,7 +4,7 @@ import {
 	createTheme,
 	Theme,
 } from "@mui/material/styles";
-import useSectionUri from "@/hooks/useSectionUri";
+import { useSectionUri } from "@/hooks";
 
 declare module "@mui/material/styles/createPalette" {
 	export interface TypeText {
