@@ -156,7 +156,7 @@ const StakeSummary: VFC = () => {
 					<label htmlFor="waiting">waiting</label>
 					<div css={styles.infoText}>
 						{!!electionInfo ? (
-							<span>{electionInfo.waiting.waiting.length}</span>
+							<span>{electionInfo.waiting.length}</span>
 						) : (
 							<LinearProgress css={[styles.infoProgress]} />
 						)}
@@ -197,9 +197,6 @@ export default StakeSummary;
 
 const styles = {
 	root: ({ palette }: Theme) => css`
-		overflow-y: auto;
-		white-space: nowrap;
-
 		label {
 			font-weight: bold;
 			font-size: 14px;
@@ -212,7 +209,9 @@ const styles = {
 	`,
 
 	overview: css`
+		width: 100%;
 		display: inline-flex;
+		justify-content: space-between;
 	`,
 
 	infoProgress: css`
@@ -228,7 +227,6 @@ const styles = {
 	infoBlock: css`
 		margin-bottom: 1em;
 		display: block;
-		margin-right: 3em;
 	`,
 
 	infoText: css`
