@@ -17,6 +17,7 @@ import {
 	ElectedCandidate,
 } from "@/types";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
+import { SubmittableExtrinsic } from "@cennznet/api/types";
 
 interface StakeContextType {
 	stakingAsset: CENNZAsset;
@@ -32,6 +33,12 @@ interface StakeContextType {
 
 	tableView: OverviewTable;
 	setTableView: Dispatch<SetStateAction<OverviewTable>>;
+
+	extrinsic: SubmittableExtrinsic<"promise", any>;
+	setExtrinsic: Dispatch<SetStateAction<SubmittableExtrinsic<"promise", any>>>;
+
+	stashAddress: string;
+	setStashAddress: Dispatch<SetStateAction<string>>;
 }
 
 const StakeContext = createContext<StakeContextType>({} as StakeContextType);
@@ -46,6 +53,9 @@ const StakeProvider: FC<StakeProviderProps> = ({ children, stakeAssets }) => {
 	const [stakeAction, setStakeAction] = useState<StakeAction>();
 	const [electionInfo, setElectionInfo] = useState<ElectionInfo>();
 	const [tableView, setTableView] = useState<OverviewTable>("elected");
+	const [extrinsic, setExtrinsic] =
+		useState<SubmittableExtrinsic<"promise", any>>();
+	const [stashAddress, setStashAddress] = useState<string>();
 
 	const parseElectedInfo = (electedInfo: DeriveStakingQuery[]) => {
 		return electedInfo.map((info) => {
@@ -94,6 +104,12 @@ const StakeProvider: FC<StakeProviderProps> = ({ children, stakeAssets }) => {
 
 				tableView,
 				setTableView,
+
+				extrinsic,
+				setExtrinsic,
+
+				stashAddress,
+				setStashAddress,
 			}}
 		>
 			{children}
