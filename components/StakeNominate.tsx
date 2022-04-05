@@ -19,7 +19,6 @@ const StakeNominate: VFC = () => {
 
 	return (
 		<div css={styles.root}>
-			<label htmlFor="nominateOptions">nominate validators</label>
 			<div css={[styles.select, styles.selectHover]}>
 				<SelectInput
 					css={styles.select}
