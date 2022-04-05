@@ -102,6 +102,9 @@ export interface ElectionInfo {
 export interface ElectedCandidate {
 	accountId: string;
 	controllerId: string;
+	exposure: {
+		total: string;
+	};
 	stashId: string;
 	stakingLedger: {
 		active: string;
