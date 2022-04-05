@@ -36,6 +36,10 @@ export default class Balance extends Big {
 		return new Balance(super.minus(n), this.coin);
 	}
 
+	override sub(n: BalanceSource): Balance {
+		return new Balance(super.sub(n), this.coin);
+	}
+
 	override mod(n: BalanceSource): Balance {
 		return new Balance(super.mod(n), this.coin);
 	}

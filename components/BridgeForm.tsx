@@ -75,7 +75,8 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 				metaMaskWallet.getSigner()
 			);
 
-			if (tx !== "cancelled") await ensureRelayerDepositDone(tx.hash);
+			if (tx !== "cancelled")
+				await ensureRelayerDepositDone(tx.hash, 600000, setProgressStatus);
 		} catch (error) {
 			console.info(error);
 			return setFailStatus(error?.code);
@@ -114,6 +115,7 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 		try {
 			await ensureEthereumChain(extension);
 			await ensureBridgeWithdrawActive(api, metaMaskWallet);
+			setProgressStatus("CennznetConfirming");
 			eventProof = await sendWithdrawCENNZRequest(
 				api,
 				transferAmount,
@@ -131,6 +133,7 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 
 		let tx: Awaited<ReturnType<typeof sendWithdrawEthereumRequest>>;
 		try {
+			setProgressStatus("EthereumConfirming");
 			tx = await sendWithdrawEthereumRequest(
 				api,
 				eventProof,
@@ -182,6 +185,7 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 
 		let tx: Awaited<ReturnType<typeof sendWithdrawEthereumRequest>>;
 		try {
+			setProgressStatus("EthereumConfirming");
 			tx = await sendWithdrawEthereumRequest(
 				api,
 				eventProof,

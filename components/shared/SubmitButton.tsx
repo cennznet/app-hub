@@ -2,7 +2,7 @@ import { ButtonHTMLAttributes, FC, useMemo } from "react";
 import { css } from "@emotion/react";
 import { Theme } from "@mui/material";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
-import CENNZBlueSVG from "@/assets/vectors/cennznet-blue.svg";
+import CENNZIconSVG from "@/assets/vectors/cennznet-icon.svg";
 import MetaMaskSVG from "@/assets/vectors/metamask.svg";
 import { useMetaMaskWallet } from "@/providers/MetaMaskWalletProvider";
 
@@ -38,7 +38,7 @@ const SubmitButton: FC<
 					onClick={() => connectCENNZWallet()}
 				>
 					<img
-						src={CENNZBlueSVG.src}
+						src={CENNZIconSVG.src}
 						alt="CENNZnet Logo"
 						css={styles.brandLogo}
 					/>

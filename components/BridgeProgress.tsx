@@ -97,6 +97,10 @@ const styles = {
 		text-align: center;
 		text-transform: uppercase;
 		color: ${palette.primary.main};
+
+		span {
+			text-transform: none !important;
+		}
 	`,
 
 	message: ({ palette }: Theme) => css`
@@ -114,6 +118,11 @@ const styles = {
 			font-weight: bold;
 			font-style: normal;
 			color: ${palette.primary.main};
+			font-size: 0.5em;
+			span {
+				font-size: 2em;
+				letter-spacing: -0.025em;
+			}
 		}
 	`,
 

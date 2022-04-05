@@ -36,4 +36,6 @@ export { default as fetchDepositRelayerStatus } from "@/utils/fetchDepositRelaye
 export { default as ensureRelayerDepositDone } from "@/utils/ensureRelayerDepositDone";
 export { default as sendWithdrawEthereumRequest } from "@/utils/sendWithdrawEthereumRequest";
 export { default as trackPageView } from "@/utils/trackPageView";
+export { default as getSellAssetExtrinsic } from "@/utils/getSellAssetExtrinsic";
+export { default as selectMap } from "@/utils/selectMap";
 export { default as numToPretty } from "@/utils/numToPretty";
