@@ -26,7 +26,7 @@ import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import { useBridge } from "@/providers/BridgeProvider";
 import { useMetaMaskWallet } from "@/providers/MetaMaskWalletProvider";
-import {EthEventProof} from "@cennznet/api/derives/ethBridge/types";
+import { EthEventProof } from "@cennznet/api/derives/ethBridge/types";
 
 interface BridgeAdvancedProps {
 	expanded: boolean;
