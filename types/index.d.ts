@@ -1,4 +1,3 @@
-import { ethers } from "ethers";
 import { Balance } from "@/utils";
 import {
 	ButtonHTMLAttributes,
@@ -36,14 +35,6 @@ export interface CENNZAssetBalance extends CENNZAsset {
 }
 
 export type SectionUri = "swap" | "pool" | "bridge";
-
-//TODO: Remove after Bridge work done
-export interface TxModalAttributes {
-	state: string;
-	title: string;
-	text: string;
-	hash: string;
-}
 
 export interface IntrinsicElements {
 	div: HTMLAttributes<HTMLDivElement>;
@@ -88,3 +79,11 @@ export type RelayerConfirmingStatus = Extract<
 	RelayerStatus,
 	"EthereumConfirming" | "CennznetConfirming"
 >;
+
+export interface WithdrawClaim {
+	assetId: number;
+	expiry: string;
+	eventProofId: number;
+	transferAsset: BridgedEthereumToken;
+	transferAmount: Balance;
+}
