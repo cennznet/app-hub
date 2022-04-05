@@ -151,13 +151,15 @@ const BridgeWithdrawAdvanced: VFC<
 												<p>{unclaimed.expiry}</p>
 											</span>
 
-											<button
-												css={styles.claimButton}
-												onClick={() => processHistoricalRequest(unclaimed)}
-												type="button"
-											>
-												claim
-											</button>
+											{unclaimed.expiry !== "Expired" && (
+												<button
+													css={styles.claimButton}
+													onClick={() => processHistoricalRequest(unclaimed)}
+													type="button"
+												>
+													claim
+												</button>
+											)}
 										</div>
 
 										<Divider css={styles.unclaimedDivider} />
