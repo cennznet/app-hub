@@ -1,6 +1,4 @@
 import {
-	Dispatch,
-	SetStateAction,
 	useCallback,
 	useEffect,
 	useState,
@@ -28,16 +26,9 @@ import { useBridge } from "@/providers/BridgeProvider";
 import { useMetaMaskWallet } from "@/providers/MetaMaskWalletProvider";
 import { EthEventProof } from "@cennznet/api/derives/ethBridge/types";
 
-interface BridgeAdvancedProps {
-	expanded: boolean;
-	setExpanded: Dispatch<SetStateAction<boolean>>;
-}
+interface BridgeAdvancedProps {}
 
-const BridgeWithdrawAdvanced: VFC<IntrinsicElements["div"] & BridgeAdvancedProps> = ({
-	expanded,
-	setExpanded,
-	...props
-}) => {
+const BridgeWithdrawAdvanced: VFC<IntrinsicElements["div"] & BridgeAdvancedProps> = ({...props}) => {
 	const { api } = useCENNZApi();
 	const { selectedAccount: CENNZAccount, updateBalances: updateCENNZBalances } =
 		useCENNZWallet();
@@ -51,6 +42,8 @@ const BridgeWithdrawAdvanced: VFC<IntrinsicElements["div"] & BridgeAdvancedProps
 		updateMetaMaskBalances,
 		transferInput,
 		transferSelect,
+		advancedExpanded: expanded,
+		setAdvancedExpanded: setExpanded
 	}: any = useBridge();
 	const [mounted, setMounted] = useState<boolean>(false);
 	const [unclaimedWithdrawals, setUnclaimedWithdrawals] =

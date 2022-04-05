@@ -49,6 +49,9 @@ interface BridgeContextType {
 
 	metaMaskBalance: Balance;
 	updateMetaMaskBalances: () => void;
+
+	advancedExpanded: boolean;
+	setAdvancedExpanded: Dispatch<SetStateAction<boolean>>;
 }
 
 const BridgeContext = createContext<BridgeContextType>({} as BridgeContextType);
@@ -70,6 +73,7 @@ const BridgeProvider: FC<BridgeProviderProps> = ({
 		useState<BridgeContextType["transferCENNZAddress"]>("");
 	const [transferMetaMaskAddress, setTransferMetaMaskAddress] =
 		useState<BridgeContextType["transferMetaMaskAddress"]>("");
+	const [advancedExpanded, setAdvancedExpanded] = useState<boolean>(false);
 
 	const ethAsset = (ethereumTokens as EthereumToken[])?.find(
 		(token) => token.address === ETH_TOKEN_ADDRESS
@@ -220,6 +224,9 @@ const BridgeProvider: FC<BridgeProviderProps> = ({
 
 				metaMaskBalance,
 				updateMetaMaskBalances,
+
+				advancedExpanded,
+				setAdvancedExpanded
 			}}
 		>
 			{children}

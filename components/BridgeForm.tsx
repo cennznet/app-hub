@@ -42,7 +42,6 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 		transferMetaMaskAddress,
 	} = useBridge();
 	const [buttonLabel, setButtonLabel] = useState<string>("Deposit");
-	const [advancedExpanded, setAdvancedExpanded] = useState<boolean>(false);
 
 	const {
 		updateBalances: updateCENNZBalances,
@@ -187,10 +186,7 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 			{children}
 
 			{bridgeAction === "Withdraw" && (
-				<BridgeWithdrawAdvanced
-					expanded={advancedExpanded}
-					setExpanded={setAdvancedExpanded}
-				/>
+				<BridgeWithdrawAdvanced />
 			)}
 
 			<div css={styles.formSubmit}>
