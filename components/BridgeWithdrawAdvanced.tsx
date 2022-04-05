@@ -54,7 +54,7 @@ const BridgeWithdrawAdvanced: VFC<
 		const unclaimed: Awaited<ReturnType<typeof fetchUnclaimedWithdrawals>> =
 			await fetchUnclaimedWithdrawals(CENNZAccount.address, api);
 
-		setUnclaimedWithdrawals(unclaimed.filter(Boolean));
+		setUnclaimedWithdrawals(unclaimed?.filter(Boolean));
 
 		setMounted(true);
 	}, [api, CENNZAccount]);
