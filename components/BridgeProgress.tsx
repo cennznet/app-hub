@@ -17,6 +17,8 @@ const BridgeProgress: VFC<IntrinsicElements["div"] & BridgeProgressProps> = (
 ) => {
 	const { txStatus, setTxIdle } = useBridge();
 	const { txHashLink, ...txProps } = txStatus?.props ?? {};
+	const dismissible =
+		txStatus?.status === "Success" || txStatus?.status === "Failure";
 
 	return (
 		<ProgressOverlay
@@ -40,6 +42,16 @@ const BridgeProgress: VFC<IntrinsicElements["div"] & BridgeProgressProps> = (
 				<Link href={txHashLink} css={styles.button}>
 					<StandardButton>View Transaction</StandardButton>
 				</Link>
+			)}
+
+			{dismissible && (
+				<StandardButton
+					variant="secondary"
+					css={styles.dismissButton}
+					onClick={setTxIdle}
+				>
+					Dismiss
+				</StandardButton>
 			)}
 		</ProgressOverlay>
 	);
@@ -151,6 +163,10 @@ const styles = {
 
 	button: css`
 		margin-top: 1em;
+	`,
+
+	dismissButton: css`
+		margin-top: 0.5em;
 	`,
 
 	errorCode: css`
