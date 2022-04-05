@@ -57,7 +57,7 @@ const StakeElected: VFC = () => {
 			const electedInfo = {};
 			Object.keys(info).forEach((key) => {
 				try {
-					electedInfo[key] = info[key].toHuman();
+					electedInfo[key] = info[key].toJSON();
 				} catch (_) {
 					electedInfo[key] = info[key];
 				}
@@ -70,9 +70,7 @@ const StakeElected: VFC = () => {
 		(amount) => {
 			if (!stakingAsset) return;
 
-			return new Balance(parseFloat(amount.replace(/,/g, "")), stakingAsset)
-				.toInput()
-				.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+			return new Balance(String(amount), stakingAsset).toPretty();
 		},
 		[stakingAsset]
 	);
@@ -82,7 +80,6 @@ const StakeElected: VFC = () => {
 
 	return (
 		<div css={styles.root}>
-			{/*<label htmlFor="elected candidates">elected</label>*/}
 			<TableContainer css={[styles.container]}>
 				{!mounted && <LinearProgress css={[styles.infoProgress]} />}
 				<Table>
