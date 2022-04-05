@@ -4,6 +4,9 @@ import { IntrinsicElements } from "@/types";
 import SubmitButton from "@/components/shared/SubmitButton";
 import { Theme } from "@mui/material";
 import { useStake } from "@/providers/StakeProvider";
+import { useCENNZApi } from "@/providers/CENNZApiProvider";
+import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
+import { signAndSendTx } from "@/utils";
 
 interface StakeFormProps {}
 
@@ -11,11 +14,20 @@ const StakeForm: FC<IntrinsicElements["form"] & StakeFormProps> = ({
 	children,
 	...props
 }) => {
-	const { stakingAsset, stakeAction } = useStake();
+	const { api } = useCENNZApi();
+	const { wallet, selectedAccount } = useCENNZWallet();
+	const { stakingAsset, stakeAction, extrinsic } = useStake();
+	const signer = wallet?.signer;
 
-	const onFormSubmit = useCallback(async (event) => {
-		event.preventDefault();
-	}, []);
+	const onFormSubmit = useCallback(
+		async (event) => {
+			event.preventDefault();
+			if (!api || !extrinsic || !selectedAccount || !signer) return;
+
+			await signAndSendTx(api, extrinsic, selectedAccount.address, signer);
+		},
+		[api, extrinsic, selectedAccount, signer]
+	);
 
 	return (
 		<form {...props} css={styles.root} onSubmit={onFormSubmit}>
