@@ -68,6 +68,10 @@ const styles = {
 					text-align: center;
 					text-transform: uppercase;
 					color: ${palette.primary.main};
+
+					span {
+						text-transform: none;
+					}
 				}
 
 				p {

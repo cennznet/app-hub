@@ -36,3 +36,6 @@ export const KOVAN_PEG_CONTRACT: string =
 
 export const CENNZ_EXPLORER_URL: string =
 	process.env.NEXT_PUBLIC_CENNZ_EXPLORER_URL;
+
+export const ETH_EXPLORER_URL: string =
+	process.env.NEXT_PUBLIC_ETH_EXPLORER_URL;

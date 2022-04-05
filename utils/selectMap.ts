@@ -8,14 +8,10 @@
  */
 export default function selectMap<K extends string | number | symbol, V>(
 	key: K,
-	object: Map<K, V> | Partial<Record<K, V>>,
+	object: Partial<Record<K, V>>,
 	defaultValue?: V
 ): V {
-	const map: Map<K, V> =
-		object instanceof Map
-			? object
-			: new Map(Object.entries(object) as [K, V][]);
-
+	const map: Map<K, V> = new Map(Object.entries(object) as [K, V][]);
 	if (!map.has(key)) return defaultValue;
 	return map.get(key);
 }

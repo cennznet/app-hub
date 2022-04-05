@@ -13,6 +13,9 @@ export { default as useBridgeGasFee } from "@/hooks/useBridgeGasFee";
 export { default as useBridgeVerificationFee } from "@/hooks/useBridgeVerificationFee";
 export { default as useBlockHashValidation } from "@/hooks/useBlockHashValidation";
 export { default as useTxStatus } from "@/hooks/useTxStatus";
+export { default as useDepositRequest } from "@/hooks/useDepositRequest";
+export { default as useWithdrawRequest } from "@/hooks/useWithdrawRequest";
+export { default as useHistoricalWithdrawRequest } from "@/hooks/useHistoricalWithdrawRequest";
 
 export type { TokenInputHook } from "@/hooks/useTokenInput";
 export type { PoolExchangeInfoHook } from "@/hooks/usePoolExchangeInfo";

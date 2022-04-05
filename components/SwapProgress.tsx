@@ -69,7 +69,6 @@ interface TxSuccessProps {
 }
 
 const TxSuccess: VFC<IntrinsicElements["div"] & TxSuccessProps> = ({
-	txHash,
 	exchangeValue,
 	receiveValue,
 	...props

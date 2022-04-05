@@ -63,13 +63,11 @@ const TxPending: VFC<IntrinsicElements["div"] & TxPendingProps> = (props) => {
 };
 
 interface TxSuccessProps {
-	txHash: string;
 	tradeValue: Balance;
 	coreValue: Balance;
 }
 
 const TxSuccess: VFC<IntrinsicElements["div"] & TxSuccessProps> = ({
-	txHash,
 	tradeValue,
 	coreValue,
 	...props

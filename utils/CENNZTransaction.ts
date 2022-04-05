@@ -6,7 +6,6 @@ import { Event } from "@polkadot/types/interfaces";
 interface EmitEvents {
 	txCreated: undefined;
 	txHashed: string;
-	txPending: SubmittableResult;
 	txSucceeded: SubmittableResult;
 	txFailed: SubmittableResult;
 	txCancelled: undefined;
@@ -28,8 +27,6 @@ export default class CENNZTransaction extends Emittery<EmitEvents> {
 
 	setResult(result: SubmittableResult) {
 		const { status, dispatchError } = result;
-
-		if (status.isInBlock) return this.emit("txPending", result);
 
 		if (status.isFinalized && !dispatchError)
 			return this.emit("txSucceeded", result);
