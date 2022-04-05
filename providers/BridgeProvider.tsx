@@ -136,8 +136,8 @@ const BridgeProvider: FC<BridgeProviderProps> = ({
 	}, []);
 
 	const setSuccessStatus = useCallback(
-		(historicalAmount?: string) => {
-			const trValue = historicalAmount ?? Balance.format(transferInput.value);
+		(value?: string) => {
+			const trValue = value ?? Balance.format(transferInput.value);
 			const trSymbol = transferAsset.symbol;
 
 			setTxStatus({
