@@ -24,7 +24,7 @@ const SwapStats: VFC<IntrinsicElements["div"] & SwapStatsProps> = (props) => {
 	const { gasFee, updatingGasFee, updateGasFee } = useSwapGasFee();
 
 	useEffect(() => {
-		if (txStatus?.status !== "success") return;
+		if (txStatus?.status !== "Success") return;
 		updateExchangeRate();
 		updateGasFee();
 	}, [txStatus?.status, updateExchangeRate, updateGasFee]);

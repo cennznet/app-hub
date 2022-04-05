@@ -1,4 +1,4 @@
-import { VFC } from "react";
+import { VFC, ReactNode } from "react";
 import { IntrinsicElements } from "@/types";
 import { css } from "@emotion/react";
 import { useSwap } from "@/providers/SwapProvider";
@@ -6,76 +6,132 @@ import { Theme, CircularProgress } from "@mui/material";
 import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
 import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
 import StandardButton from "@/components/shared/StandardButton";
+import { Balance, selectMap } from "@/utils";
+import Link from "@/components/Link";
+import ProgressOverlay from "@/components/shared/ProgressOverlay";
 
 interface SwapProgressProps {}
 
 const SwapProgress: VFC<IntrinsicElements["div"] & SwapProgressProps> = (
 	props
 ) => {
-	const { txStatus, setTxStatus } = useSwap();
+	const { txStatus, setTxIdle } = useSwap();
+	const { txHashLink, ...txProps } = txStatus?.props ?? {};
+	const dismissible =
+		txStatus?.status === "Success" || txStatus?.status === "Failure";
 
 	return (
-		<div {...props} css={styles.root(!!txStatus)}>
-			{!!txStatus && (
-				<div>
-					{txStatus.status === "in-progress" && (
-						<CircularProgress css={styles.status} size="3em" />
-					)}
-					{txStatus.status === "success" && (
-						<CheckCircleOutlinedIcon
-							css={[styles.status, styles.statusSuccess]}
-						/>
-					)}
-					{txStatus.status === "fail" && (
-						<ErrorOutlineOutlinedIcon
-							css={[styles.status, styles.statusFail]}
-						/>
-					)}
+		<ProgressOverlay
+			onRequestClose={setTxIdle}
+			show={!!txStatus}
+			dismissible={dismissible}
+		>
+			{selectMap<typeof txStatus["status"], ReactNode>(
+				txStatus?.status,
+				{
+					Pending: <TxPending {...txProps} />,
+					Success: <TxSuccess {...txProps} />,
+					Failure: <TxFailure {...txProps} />,
+				},
+				null
+			)}
 
-					<div css={styles.title}>{txStatus.title}</div>
-					<div css={styles.message}>{txStatus.message}</div>
+			{!!txHashLink && (
+				<Link href={txHashLink} css={styles.viewButton}>
+					<StandardButton>View Transaction</StandardButton>
+				</Link>
+			)}
 
-					{txStatus.status !== "in-progress" && (
-						<StandardButton
-							css={styles.button}
-							onClick={() => setTxStatus(null)}
-						>
-							Dismiss
-						</StandardButton>
-					)}
+			{dismissible && (
+				<StandardButton
+					variant="secondary"
+					css={styles.dismissButton}
+					onClick={setTxIdle}
+				>
+					Dismiss
+				</StandardButton>
+			)}
+		</ProgressOverlay>
+	);
+};
+
+export default SwapProgress;
+
+interface TxPendingProps {}
+
+const TxPending: VFC<IntrinsicElements["div"] & TxPendingProps> = (props) => {
+	return (
+		<div {...props}>
+			<CircularProgress size="3em" />
+			<h1>Transaction In Progress</h1>
+			<p>
+				Please sign the transaction when prompted and wait until it&apos;s
+				completed
+			</p>
+		</div>
+	);
+};
+
+interface TxSuccessProps {
+	txHash: string;
+	exchangeValue: Balance;
+	receiveValue: Balance;
+}
+
+const TxSuccess: VFC<IntrinsicElements["div"] & TxSuccessProps> = ({
+	exchangeValue,
+	receiveValue,
+	...props
+}) => {
+	return (
+		<div>
+			<CheckCircleOutlinedIcon css={styles.statusSuccess} />
+			<h1>Transaction Completed</h1>
+			<p>
+				You successfully swapped{" "}
+				<em>
+					<span>{exchangeValue.toBalance()}</span>{" "}
+					<span>{exchangeValue.getSymbol()}</span>
+				</em>{" "}
+				for{" "}
+				<em>
+					<span>{receiveValue.toBalance()}</span>{" "}
+					<span>{receiveValue.getSymbol()}</span>
+				</em>
+				.
+			</p>
+		</div>
+	);
+};
+
+interface TxFailureProps {
+	errorCode?: string;
+}
+
+const TxFailure: VFC<IntrinsicElements["div"] & TxFailureProps> = ({
+	errorCode,
+	...props
+}) => {
+	return (
+		<div {...props}>
+			<ErrorOutlineOutlinedIcon css={styles.statusFailure} />
+			<h1>Transaction Failed</h1>
+			<p>
+				An error occurred while processing your transaction. It might have gone
+				through, check your balances before trying again.
+			</p>
+			{!!errorCode && (
+				<div css={styles.errorCode}>
+					<pre>
+						<small>#{errorCode}</small>
+					</pre>
 				</div>
 			)}
 		</div>
 	);
 };
 
-export default SwapProgress;
-
 const styles = {
-	root:
-		(show: boolean) =>
-		({ transitions }: Theme) =>
-			css`
-				position: absolute;
-				inset: 0;
-				background-color: rgba(255, 255, 255, 0.9);
-				z-index: 100;
-				opacity: ${show ? 1 : 0};
-				pointer-events: ${show ? "all" : "none"};
-				transition: opacity ${transitions.duration.short}ms;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				backdrop-filter: blur(2px);
-				padding: 5em;
-				text-align: center;
-				font-size: 14px;
-			`,
-
-	status: css`
-		margin-bottom: 1.5em;
-	`,
-
 	statusSuccess: ({ palette }: Theme) => css`
 		width: 4em;
 		height: 4em;
@@ -83,41 +139,22 @@ const styles = {
 		color: ${palette.success.main};
 	`,
 
-	statusFail: ({ palette }: Theme) => css`
+	statusFailure: ({ palette }: Theme) => css`
 		width: 4em;
 		height: 4em;
 		font-size: 14px;
 		color: ${palette.warning.main};
 	`,
 
-	title: ({ palette }: Theme) => css`
-		font-weight: bold;
-		font-size: 20px;
-		line-height: 1;
-		text-align: center;
-		text-transform: uppercase;
-		color: ${palette.primary.main};
-	`,
-
-	message: ({ palette }: Theme) => css`
+	viewButton: css`
 		margin-top: 1em;
-		line-height: 1.5;
-
-		small {
-			font-size: 0.85em;
-			display: inline-block;
-			padding: 0.25em 0.5em;
-			margin-top: 0.5em;
-		}
-
-		em {
-			font-weight: bold;
-			font-style: normal;
-			color: ${palette.primary.main};
-		}
 	`,
 
-	button: css`
-		margin-top: 2em;
+	dismissButton: css`
+		margin-top: 0.5em;
+	`,
+
+	errorCode: css`
+		margin-top: 0.5em;
 	`,
 };

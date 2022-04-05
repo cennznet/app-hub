@@ -1,14 +1,13 @@
 import { ETH_TOKEN_ADDRESS } from "@/constants";
-import { TokenInputHook, useTokenInput } from "@/hooks";
-import useMetaMaskBalances from "@/hooks/useMetaMaskBalances";
 import {
-	BridgeAction,
-	BridgedEthereumToken,
-	EthereumToken,
-	RelayerConfirmingStatus,
-	TxStatus,
-} from "@/types";
-import { Balance, selectMap } from "@/utils";
+	useTokenInput,
+	useTxStatus,
+	TokenInputHook,
+	TxStatusHook,
+} from "@/hooks";
+import useMetaMaskBalances from "@/hooks/useMetaMaskBalances";
+import { BridgeAction, BridgedEthereumToken, EthereumToken } from "@/types";
+import { Balance } from "@/utils";
 import {
 	createContext,
 	Dispatch,
@@ -22,7 +21,7 @@ import {
 
 type ERC20TokenAddress = EthereumToken["address"];
 
-interface BridgeContextType {
+interface BridgeContextType extends TxStatusHook {
 	bridgeAction: BridgeAction;
 	setBridgeAction: Dispatch<SetStateAction<BridgeAction>>;
 
@@ -39,13 +38,6 @@ interface BridgeContextType {
 
 	transferMetaMaskAddress: string;
 	setTransferMetaMaskAddress: Dispatch<SetStateAction<string>>;
-
-	txStatus: TxStatus;
-	setTxStatus: Dispatch<SetStateAction<TxStatus>>;
-
-	setProgressStatus: (status?: RelayerConfirmingStatus) => void;
-	setSuccessStatus: () => void;
-	setFailStatus: (errorCode?: string) => void;
 
 	metaMaskBalance: Balance;
 	updateMetaMaskBalances: () => void;
@@ -90,92 +82,6 @@ const BridgeProvider: FC<BridgeProviderProps> = ({
 			(token) => token.address === transferSelect.tokenId
 		) || ethAsset;
 
-	const [txStatus, setTxStatus] = useState<TxStatus>(null);
-
-	const setProgressStatus = useCallback((status?: RelayerConfirmingStatus) => {
-		const title = selectMap<RelayerConfirmingStatus, TxStatus["title"]>(
-			status,
-			new Map([
-				["EthereumConfirming", <>Confirming on Ethereum</>],
-				[
-					"CennznetConfirming",
-					<>
-						Confirming on CENNZ<span>net</span>
-					</>,
-				],
-			]),
-			"Transaction In Progress"
-		);
-
-		setTxStatus({
-			status: "in-progress",
-			title,
-			message: (
-				<div>
-					Please sign the transaction when prompted and wait until it&apos;s
-					completed
-				</div>
-			),
-		});
-	}, []);
-
-	const setFailStatus = useCallback((errorCode?: string) => {
-		setTxStatus({
-			status: "fail",
-			title: "Transaction Failed",
-			message: (
-				<div>
-					An error occurred while processing your transaction
-					{!!errorCode && (
-						<>
-							<br />
-							<pre>
-								<small>#{errorCode}</small>
-							</pre>
-						</>
-					)}
-				</div>
-			),
-		});
-	}, []);
-
-	const setSuccessStatus = useCallback(() => {
-		const trValue = Balance.format(transferInput.value);
-		const trSymbol = transferAsset.symbol;
-
-		setTxStatus({
-			status: "success",
-			title: "Transaction Completed",
-			...(bridgeAction === "Withdraw" && {
-				message: (
-					<div>
-						You successfully withdrew{" "}
-						<pre>
-							<em>
-								<span>{trValue}</span> <span>{trSymbol}</span>
-							</em>
-						</pre>{" "}
-						from CENNZnet.
-					</div>
-				),
-			}),
-
-			...(bridgeAction === "Deposit" && {
-				message: (
-					<div>
-						You successfully deposited{" "}
-						<pre>
-							<em>
-								<span>{trValue}</span> <span>{trSymbol}</span>
-							</em>
-						</pre>{" "}
-						to CENNZnet.
-					</div>
-				),
-			}),
-		});
-	}, [transferInput.value, transferAsset?.symbol, bridgeAction]);
-
 	const [metaMaskBalance, , updateMetaMaskBalances] =
 		useMetaMaskBalances(transferAsset);
 
@@ -215,12 +121,6 @@ const BridgeProvider: FC<BridgeProviderProps> = ({
 				transferMetaMaskAddress,
 				setTransferMetaMaskAddress,
 
-				txStatus,
-				setTxStatus,
-				setProgressStatus,
-				setSuccessStatus,
-				setFailStatus,
-
 				metaMaskBalance,
 				updateMetaMaskBalances,
 
@@ -228,6 +128,8 @@ const BridgeProvider: FC<BridgeProviderProps> = ({
 				setHistoricalBlockHash,
 				historicalEventProofId,
 				setHistoricalEventProofId,
+
+				...useTxStatus(),
 			}}
 		>
 			{children}
