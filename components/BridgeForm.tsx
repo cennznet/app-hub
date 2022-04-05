@@ -19,9 +19,7 @@ import {
 } from "@/utils";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import { useMetaMaskExtension } from "@/providers/MetaMaskExtensionProvider";
-import HistoricalWithdrawal from "@/components/HistoricalWithdrawal";
-import { EthyEventId } from "@cennznet/types";
-import { EthEventProof } from "@cennznet/api/derives/ethBridge/types";
+import BridgeAdvanced from "@/components/BridgeAdvanced";
 
 interface BridgeFormProps {}
 
@@ -42,8 +40,6 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 		setTxStatus,
 		updateMetaMaskBalances,
 		transferMetaMaskAddress,
-		historicalBlockHash,
-		historicalEventProofId,
 	} = useBridge();
 	const [buttonLabel, setButtonLabel] = useState<string>("Deposit");
 	const [advancedExpanded, setAdvancedExpanded] = useState<boolean>(false);
@@ -170,76 +166,13 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 		extension,
 	]);
 
-	const processHistoricalWithdrawRequest = useCallback(async () => {
-		const setTrValue = transferInput.setValue;
-		const transferAmount = Balance.fromInput(
-			transferInput.value,
-			transferAsset
-		);
-		setProgressStatus();
-
-		const eventProof: Awaited<EthEventProof> =
-			await api.derive.ethBridge.eventProof(
-				historicalEventProofId as unknown as EthyEventId
-			);
-
-		let tx: Awaited<ReturnType<typeof sendWithdrawEthereumRequest>>;
-		try {
-			setProgressStatus("EthereumConfirming");
-			tx = await sendWithdrawEthereumRequest(
-				api,
-				eventProof,
-				transferAmount,
-				transferAsset as BridgedEthereumToken,
-				transferMetaMaskAddress,
-				metaMaskWallet.getSigner(),
-				historicalBlockHash
-			);
-		} catch (error) {
-			console.info(error);
-			return setFailStatus(error?.code);
-		}
-
-		if (tx === "cancelled") return setTxStatus(null);
-
-		setSuccessStatus();
-		setTrValue("");
-		updateMetaMaskBalances();
-		updateCENNZBalances();
-		setAdvancedExpanded(false);
-	}, [
-		api,
-		transferAsset,
-		setProgressStatus,
-		setSuccessStatus,
-		setFailStatus,
-		setTxStatus,
-		transferInput,
-		transferMetaMaskAddress,
-		updateMetaMaskBalances,
-		updateCENNZBalances,
-		metaMaskWallet,
-		historicalBlockHash,
-		historicalEventProofId,
-		setAdvancedExpanded,
-	]);
-
 	const onFormSubmit = useCallback(
 		async (event) => {
 			event.preventDefault();
 			if (bridgeAction === "Deposit") return processDepositRequest();
-			if (bridgeAction === "Withdraw") {
-				if (advancedExpanded) return processHistoricalWithdrawRequest();
-				return processWithdrawRequest();
-			}
+			if (bridgeAction === "Withdraw") return processWithdrawRequest();
 		},
-		[
-			bridgeAction,
-			processDepositRequest,
-			processWithdrawRequest,
-			processHistoricalWithdrawRequest,
-			advancedExpanded,
-		]
+		[bridgeAction, processDepositRequest, processWithdrawRequest]
 	);
 
 	const status = useBridgeStatus();
@@ -254,7 +187,7 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 			{children}
 
 			{bridgeAction === "Withdraw" && (
-				<HistoricalWithdrawal
+				<BridgeAdvanced
 					expanded={advancedExpanded}
 					setExpanded={setAdvancedExpanded}
 				/>
