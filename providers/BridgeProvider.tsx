@@ -44,7 +44,7 @@ interface BridgeContextType {
 	setTxStatus: Dispatch<SetStateAction<TxStatus>>;
 
 	setProgressStatus: (status?: RelayerConfirmingStatus) => void;
-	setSuccessStatus: (historicalAmount?: string) => void;
+	setSuccessStatus: (value?: string) => void;
 	setFailStatus: (errorCode?: string) => void;
 
 	metaMaskBalance: Balance;
