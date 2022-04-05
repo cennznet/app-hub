@@ -13,6 +13,8 @@ import {
 	StakeAssets,
 	ElectionInfo,
 	OverviewTable,
+	DeriveStakingQuery,
+	ElectedCandidate,
 } from "@/types";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
 
@@ -23,7 +25,10 @@ interface StakeContextType {
 	stakeAction: StakeAction;
 	setStakeAction: Dispatch<SetStateAction<StakeAction>>;
 
-	electionInfo: ElectionInfo;
+	electionInfo: {
+		elected: ElectedCandidate[];
+		waiting: ElectedCandidate[];
+	};
 
 	tableView: OverviewTable;
 	setTableView: Dispatch<SetStateAction<OverviewTable>>;
@@ -42,6 +47,20 @@ const StakeProvider: FC<StakeProviderProps> = ({ children, stakeAssets }) => {
 	const [electionInfo, setElectionInfo] = useState<ElectionInfo>();
 	const [tableView, setTableView] = useState<OverviewTable>("elected");
 
+	const parseElectedInfo = (electedInfo: DeriveStakingQuery[]) => {
+		return electedInfo.map((info) => {
+			const electedInfo = {};
+			Object.keys(info).forEach((key) => {
+				try {
+					electedInfo[key] = info[key].toHuman();
+				} catch (_) {
+					electedInfo[key] = info[key];
+				}
+			});
+			return electedInfo;
+		});
+	};
+
 	useEffect(() => {
 		if (!api) return;
 
@@ -51,10 +70,15 @@ const StakeProvider: FC<StakeProviderProps> = ({ children, stakeAssets }) => {
 				api.derive.stakingCennznet.waitingInfo,
 			]);
 
-			setElectionInfo({ elected: await elected(), waiting: await waiting() });
+			return [await elected(), await waiting()];
 		};
 
-		void fetchElectionInfo();
+		fetchElectionInfo().then(([elected, waiting]) =>
+			setElectionInfo({
+				elected: parseElectedInfo(elected.info),
+				waiting: parseElectedInfo(waiting.info),
+			})
+		);
 	}, [api]);
 
 	return (
