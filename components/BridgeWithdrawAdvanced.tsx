@@ -33,7 +33,7 @@ interface BridgeAdvancedProps {
 	setExpanded: Dispatch<SetStateAction<boolean>>;
 }
 
-const BridgeAdvanced: VFC<IntrinsicElements["div"] & BridgeAdvancedProps> = ({
+const BridgeWithdrawAdvanced: VFC<IntrinsicElements["div"] & BridgeAdvancedProps> = ({
 	expanded,
 	setExpanded,
 	...props
@@ -182,7 +182,7 @@ const BridgeAdvanced: VFC<IntrinsicElements["div"] & BridgeAdvancedProps> = ({
 	);
 };
 
-export default BridgeAdvanced;
+export default BridgeWithdrawAdvanced;
 
 const styles = {
 	root: css`

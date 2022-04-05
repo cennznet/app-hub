@@ -19,7 +19,7 @@ import {
 } from "@/utils";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import { useMetaMaskExtension } from "@/providers/MetaMaskExtensionProvider";
-import BridgeAdvanced from "@/components/BridgeAdvanced";
+import BridgeWithdrawAdvanced from "@/components/BridgeWithdrawAdvanced";
 
 interface BridgeFormProps {}
 
@@ -187,7 +187,7 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 			{children}
 
 			{bridgeAction === "Withdraw" && (
-				<BridgeAdvanced
+				<BridgeWithdrawAdvanced
 					expanded={advancedExpanded}
 					setExpanded={setAdvancedExpanded}
 				/>
