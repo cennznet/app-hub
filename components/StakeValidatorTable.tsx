@@ -20,9 +20,11 @@ import AccountIdenticon from "@/components/shared/AccountIdenticon";
 import { poolRegistry } from "@/utils/poolRegistry";
 import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
 import PendingOutlinedIcon from "@mui/icons-material/PendingOutlined";
+import { useCENNZApi } from "@/providers/CENNZApiProvider";
 
 const StakeValidatorTable: VFC = () => {
-	const { electionInfo, stakingAsset } = useStake();
+	const { api } = useCENNZApi();
+	const { electionInfo, stakingAsset, setExtrinsic } = useStake();
 	const [openAccount, setOpenAccount] = useState<string>();
 
 	const chain = ETH_CHAIN_ID === 1 ? "CENNZnet Azalea" : "CENNZnet Nikau";
@@ -110,7 +112,7 @@ const StakeValidatorTable: VFC = () => {
 	const [isValid, setIsValid] = useState<boolean>(false);
 
 	const _validatorSelected = (element: any): void => {
-		const accountSelected: string = element.currentTarget.value;
+		const accountSelected: string = element.target.value;
 		const accounts: string[] = accountIdVec;
 
 		if (element.target.checked && accountSelected) {
@@ -127,7 +129,7 @@ const StakeValidatorTable: VFC = () => {
 
 		if (accounts.length !== 0 && stashAddress !== null) {
 			setIsValid(true);
-			// setExtrinsic(api.tx.staking.nominate(accounts));
+			setExtrinsic(api.tx.staking.nominate(accounts));
 		} else {
 			setIsValid(false);
 		}
@@ -214,7 +216,7 @@ const styles = {
 		border-radius: 4px;
 		overflow-y: auto;
 		white-space: nowrap;
-		max-height: 20em;
+		max-height: 25em;
 		min-width: 100%;
 	`,
 
