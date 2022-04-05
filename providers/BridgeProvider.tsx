@@ -44,16 +44,11 @@ interface BridgeContextType {
 	setTxStatus: Dispatch<SetStateAction<TxStatus>>;
 
 	setProgressStatus: (status?: RelayerConfirmingStatus) => void;
-	setSuccessStatus: () => void;
+	setSuccessStatus: (historicalAmount?: string) => void;
 	setFailStatus: (errorCode?: string) => void;
 
 	metaMaskBalance: Balance;
 	updateMetaMaskBalances: () => void;
-
-	historicalBlockHash: string;
-	setHistoricalBlockHash: Dispatch<SetStateAction<string>>;
-	historicalEventProofId: number;
-	setHistoricalEventProofId: Dispatch<SetStateAction<number>>;
 }
 
 const BridgeContext = createContext<BridgeContextType>({} as BridgeContextType);
@@ -75,9 +70,6 @@ const BridgeProvider: FC<BridgeProviderProps> = ({
 		useState<BridgeContextType["transferCENNZAddress"]>("");
 	const [transferMetaMaskAddress, setTransferMetaMaskAddress] =
 		useState<BridgeContextType["transferMetaMaskAddress"]>("");
-	const [historicalBlockHash, setHistoricalBlockHash] = useState<string>();
-	const [historicalEventProofId, setHistoricalEventProofId] =
-		useState<number>();
 
 	const ethAsset = (ethereumTokens as EthereumToken[])?.find(
 		(token) => token.address === ETH_TOKEN_ADDRESS
@@ -139,42 +131,47 @@ const BridgeProvider: FC<BridgeProviderProps> = ({
 		});
 	}, []);
 
-	const setSuccessStatus = useCallback(() => {
-		const trValue = Balance.format(transferInput.value);
-		const trSymbol = transferAsset.symbol;
+	const setSuccessStatus = useCallback(
+		(historicalAmount?: string) => {
+			const trValue = historicalAmount
+				? historicalAmount
+				: Balance.format(transferInput.value);
+			const trSymbol = transferAsset.symbol;
 
-		setTxStatus({
-			status: "success",
-			title: "Transaction Completed",
-			...(bridgeAction === "Withdraw" && {
-				message: (
-					<div>
-						You successfully withdrew{" "}
-						<pre>
-							<em>
-								<span>{trValue}</span> <span>{trSymbol}</span>
-							</em>
-						</pre>{" "}
-						from CENNZnet.
-					</div>
-				),
-			}),
+			setTxStatus({
+				status: "success",
+				title: "Transaction Completed",
+				...(bridgeAction === "Withdraw" && {
+					message: (
+						<div>
+							You successfully withdrew{" "}
+							<pre>
+								<em>
+									<span>{trValue}</span> <span>{trSymbol}</span>
+								</em>
+							</pre>{" "}
+							from CENNZnet.
+						</div>
+					),
+				}),
 
-			...(bridgeAction === "Deposit" && {
-				message: (
-					<div>
-						You successfully deposited{" "}
-						<pre>
-							<em>
-								<span>{trValue}</span> <span>{trSymbol}</span>
-							</em>
-						</pre>{" "}
-						to CENNZnet.
-					</div>
-				),
-			}),
-		});
-	}, [transferInput.value, transferAsset?.symbol, bridgeAction]);
+				...(bridgeAction === "Deposit" && {
+					message: (
+						<div>
+							You successfully deposited{" "}
+							<pre>
+								<em>
+									<span>{trValue}</span> <span>{trSymbol}</span>
+								</em>
+							</pre>{" "}
+							to CENNZnet.
+						</div>
+					),
+				}),
+			});
+		},
+		[transferInput.value, transferAsset?.symbol, bridgeAction]
+	);
 
 	const [metaMaskBalance, , updateMetaMaskBalances] =
 		useMetaMaskBalances(transferAsset);
@@ -223,11 +220,6 @@ const BridgeProvider: FC<BridgeProviderProps> = ({
 
 				metaMaskBalance,
 				updateMetaMaskBalances,
-
-				historicalBlockHash,
-				setHistoricalBlockHash,
-				historicalEventProofId,
-				setHistoricalEventProofId,
 			}}
 		>
 			{children}
