@@ -3,7 +3,7 @@ import { Api } from "@cennznet/api";
 import {
 	Balance,
 	getPegWithdrawExtrinsic,
-	signAndSendTx2,
+	signAndSendTx,
 	CENNZTransaction,
 } from "@/utils";
 import { Signer } from "@cennznet/api/types";
@@ -23,7 +23,7 @@ export default async function sendWithdrawCENNZRequest(
 		transferAmount,
 		ethereumAddress
 	);
-	const pegTx = await signAndSendTx2(extrinsic, cennzAddress, signer);
+	const pegTx = await signAndSendTx(extrinsic, cennzAddress, signer);
 
 	return pegTx;
 }

@@ -9,7 +9,7 @@ import {
 	Balance,
 	getAddLiquidityExtrinsic,
 	getRemoveLiquidityExtrinsic,
-	signAndSendTx2,
+	signAndSendTx,
 } from "@/utils";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 
@@ -89,7 +89,7 @@ const PoolForm: FC<IntrinsicElements["form"] & PoolFormProps> = ({
 
 			try {
 				setTxPending();
-				const tx = await signAndSendTx2(
+				const tx = await signAndSendTx(
 					extrinsic,
 					selectedAccount.address,
 					wallet.signer
