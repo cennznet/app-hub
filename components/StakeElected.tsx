@@ -19,6 +19,7 @@ import AccountIdenticon from "@/components/shared/AccountIdenticon";
 import { poolRegistry } from "@/utils/poolRegistry";
 import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
 import PendingOutlinedIcon from "@mui/icons-material/PendingOutlined";
+import { hexToBn } from "@polkadot/util";
 
 const StakeElected: VFC = () => {
 	const { electionInfo, stakingAsset } = useStake();
@@ -70,7 +71,12 @@ const StakeElected: VFC = () => {
 		(amount) => {
 			if (!stakingAsset) return;
 
-			return new Balance(String(amount), stakingAsset).toPretty();
+			const electionBalance = new Balance(
+				hexToBn(amount).toString(),
+				stakingAsset
+			);
+
+			return electionBalance.toPretty();
 		},
 		[stakingAsset]
 	);
