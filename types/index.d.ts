@@ -14,6 +14,7 @@ export {
 	DeriveStakingQuery,
 } from "@cennznet/api/derives/staking/types";
 export { EraIndex, Nominations, Option, StorageKey } from "@cennznet/types";
+export { DeriveHeartbeats } from "@polkadot/api-derive/types";
 
 export type BridgeChain = "Ethereum" | "CENNZnet";
 export type BridgeAction = "Deposit" | "Withdraw";

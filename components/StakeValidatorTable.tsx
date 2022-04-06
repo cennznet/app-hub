@@ -15,6 +15,7 @@ import {
 } from "@mui/material";
 import { Balance, extractNominators, getTokenLogo } from "@/utils";
 import {
+	DeriveHeartbeats,
 	ElectedCandidate,
 	Result,
 	Nominations,
@@ -25,26 +26,25 @@ import { ETH_CHAIN_ID } from "@/constants";
 import AccountIdenticon from "@/components/shared/AccountIdenticon";
 import { poolRegistry } from "@/utils/poolRegistry";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
-// import { DeriveHeartbeats } from "@polkadot/api-derive/types";
 import StakeValidatorStatus from "@/components/StakeValidatorStatus";
 
 const StakeValidatorTable: VFC = () => {
 	const { api } = useCENNZApi();
 	const { electionInfo, stakingAsset, setExtrinsic } = useStake();
 	const [openAccount, setOpenAccount] = useState<string>();
-	// const [recentlyOnline, setRecentlyOnline] = useState<DeriveHeartbeats>();
+	const [recentlyOnline, setRecentlyOnline] = useState<DeriveHeartbeats>();
 	const [nominatedBy, setNominatedBy] = useState<Result>();
 
 	useEffect(() => {
 		if (!api) return;
 
-		// const fetchRecentlyOnline = async () =>
-		// 	await api.derive.imOnline?.receivedHeartbeats();
+		const fetchRecentlyOnline = async () =>
+			await api.derive.stakingCennznet.receivedHeartbeats();
 
 		const fetchNominators = async () =>
 			await api.query.staking.nominators.entries();
 
-		// fetchRecentlyOnline().then((recent) => setRecentlyOnline(recent));
+		fetchRecentlyOnline().then((recent) => setRecentlyOnline(recent));
 
 		fetchNominators().then(
 			(nominatorsRaw: [StorageKey, Option<Nominations>][]) => {
@@ -119,10 +119,10 @@ const StakeValidatorTable: VFC = () => {
 						<StakeValidatorStatus
 							isElected={isElected}
 							nominators={nominatedBy?.[candidate.accountId] || []}
-							// onlineCount={recentlyOnline?.[
-							// 	candidate.accountId
-							// ]?.blockCount.toNumber()}
-							// hasMessage={recentlyOnline?.[candidate.accountId]?.hasMessage}
+							onlineCount={recentlyOnline?.[
+								candidate.accountId
+							]?.blockCount.toNumber()}
+							hasMessage={recentlyOnline?.[candidate.accountId]?.hasMessage}
 						/>
 					</TableCell>
 					{/* Nominate Checkbox */}
