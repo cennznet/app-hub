@@ -1,5 +1,5 @@
 import { BridgedEthereumToken } from "@/types";
-import { Balance, getBridgeContract } from "@/utils";
+import { Balance, EthereumTransaction, getBridgeContract } from "@/utils";
 import getERC20PegContract from "@/utils/getERC20PegContract";
 import { Api } from "@cennznet/api";
 import { EthEventProof } from "@cennznet/api/derives/ethBridge/types";
@@ -14,7 +14,7 @@ export default async function sendWithdrawEthereumRequest(
 	ethereumAddress: string,
 	signer: ethers.Signer,
 	blockHash?: string
-): Promise<TransactionResponse | "cancelled"> {
+): Promise<EthereumTransaction> {
 	const notaryKeys = !!blockHash
 		? ((
 				await api.query.ethBridge.notaryKeys.at(blockHash)
@@ -41,20 +41,29 @@ export default async function sendWithdrawEthereumRequest(
 		{ ...eventProof, validators },
 		{ value: verificationFee }
 	);
-
-	try {
-		const tx: TransactionResponse = await pegContract.withdraw(
+	const tx = new EthereumTransaction();
+	pegContract
+		.withdraw(
 			transferAsset.address,
 			transferAmount.toBigNumber(),
 			ethereumAddress,
 			{ ...eventProof, validators },
 			{ value: verificationFee, gasLimit: (gasFee.toNumber() * 1.02).toFixed() }
-		);
+		)
+		.then((pegTx: TransactionResponse) => {
+			tx.setHash(pegTx.hash);
+			return pegTx.wait(2);
+		})
+		.then(() => {
+			tx.setSuccess();
+		})
+		.catch((error) => {
+			if (error?.code === 4001) {
+				tx.setCancel();
+				return;
+			}
+			tx.setFailure(error?.code);
+		});
 
-		await tx.wait();
-		return tx;
-	} catch (error) {
-		if (error?.code === 4001) return "cancelled";
-		throw error;
-	}
+	return tx;
 }
