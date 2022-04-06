@@ -1,4 +1,4 @@
-import { useCallback, useState, VFC } from "react";
+import { useCallback, useEffect, useState, VFC } from "react";
 import { css } from "@emotion/react";
 import { useStake } from "@/providers/StakeProvider";
 import {
@@ -13,19 +13,46 @@ import {
 	Theme,
 	Tooltip,
 } from "@mui/material";
-import { Balance, getTokenLogo } from "@/utils";
-import { ElectedCandidate } from "@/types";
+import { Balance, extractNominators, getTokenLogo } from "@/utils";
+import {
+	DeriveHeartbeats,
+	ElectedCandidate,
+	Result,
+	Nominations,
+	Option,
+	StorageKey,
+} from "@/types";
 import { ETH_CHAIN_ID } from "@/constants";
 import AccountIdenticon from "@/components/shared/AccountIdenticon";
 import { poolRegistry } from "@/utils/poolRegistry";
-import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
-import PendingOutlinedIcon from "@mui/icons-material/PendingOutlined";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
+import StakeValidatorStatus from "@/components/StakeValidatorStatus";
 
 const StakeValidatorTable: VFC = () => {
 	const { api } = useCENNZApi();
 	const { electionInfo, stakingAsset, setExtrinsic } = useStake();
 	const [openAccount, setOpenAccount] = useState<string>();
+	const [recentlyOnline, setRecentlyOnline] = useState<DeriveHeartbeats>();
+	const [nominatedBy, setNominatedBy] = useState<Result>();
+
+	useEffect(() => {
+		if (!api) return;
+
+		const fetchRecentlyOnline = async () =>
+			await api.derive.stakingCennznet.receivedHeartbeats();
+
+		const fetchNominators = async () =>
+			await api.query.staking.nominators.entries();
+
+		fetchRecentlyOnline().then((recent) => setRecentlyOnline(recent));
+
+		fetchNominators().then(
+			(nominatorsRaw: [StorageKey, Option<Nominations>][]) => {
+				const nominators = extractNominators(nominatorsRaw);
+				setNominatedBy(nominators);
+			}
+		);
+	}, [api]);
 
 	const chain = ETH_CHAIN_ID === 1 ? "CENNZnet Azalea" : "CENNZnet Nikau";
 
@@ -44,66 +71,71 @@ const StakeValidatorTable: VFC = () => {
 	);
 
 	const _renderRows = (electedInfo: ElectedCandidate[], isElected: boolean) => {
-		return electedInfo.map((candidate) => (
-			<TableRow key={candidate.accountId} css={styles.candidate}>
-				{/* Account Identicon */}
-				<TableCell>
-					<Tooltip
-						css={styles.accountTooltip}
-						open={openAccount === candidate.accountId}
-						title={candidate.accountId}
-						placement="left"
-						arrow
-					>
-						<div
-							onMouseEnter={() => setOpenAccount(candidate.accountId)}
-							onMouseLeave={() => setOpenAccount(null)}
+		return electedInfo.map((candidate) => {
+			return (
+				<TableRow key={candidate.accountId} css={styles.candidate}>
+					{/* Account Identicon */}
+					<TableCell>
+						<Tooltip
+							css={styles.accountTooltip}
+							open={openAccount === candidate.accountId}
+							title={candidate.accountId}
+							placement="left"
+							arrow
 						>
-							<AccountIdenticon
-								value={candidate.accountId}
-								theme="beachball"
-								size={40}
-								css={styles.identicon}
-							/>
-						</div>
-					</Tooltip>
-				</TableCell>
-				{/* Pool */}
-				<TableCell>
-					{poolRegistry[chain][candidate.accountId] ?? "Unknown"}
-				</TableCell>
-				{/* Commission */}
-				<TableCell sx={{ textAlign: "center" }}>
-					{candidate.validatorPrefs.commission}
-				</TableCell>
-				{/* Total Staked */}
-				<TableCell>
-					<p css={styles.number}>
-						{parseElectionBalance(
-							isElected
-								? candidate.exposure.total
-								: candidate.stakingLedger.active
-						)}
-					</p>
-				</TableCell>
-				{/* Status */}
-				<TableCell>
-					{isElected ? (
-						<CheckCircleOutlinedIcon css={styles.status(isElected)} />
-					) : (
-						<PendingOutlinedIcon css={styles.status(isElected)} />
-					)}
-				</TableCell>
-				{/* Nominate Checkbox */}
-				<TableCell>
-					<Checkbox
-						css={styles.nominate}
-						onClick={_validatorSelected}
-						value={candidate.accountId}
-					/>
-				</TableCell>
-			</TableRow>
-		));
+							<div
+								onMouseEnter={() => setOpenAccount(candidate.accountId)}
+								onMouseLeave={() => setOpenAccount(null)}
+							>
+								<AccountIdenticon
+									value={candidate.accountId}
+									theme="beachball"
+									size={40}
+									css={styles.identicon}
+								/>
+							</div>
+						</Tooltip>
+					</TableCell>
+					{/* Pool */}
+					<TableCell>
+						{poolRegistry[chain][candidate.accountId] ?? "Unknown"}
+					</TableCell>
+					{/* Commission */}
+					<TableCell sx={{ textAlign: "center" }}>
+						{candidate.validatorPrefs.commission}
+					</TableCell>
+					{/* Total Staked */}
+					<TableCell>
+						<p css={styles.number}>
+							{parseElectionBalance(
+								isElected
+									? candidate.exposure.total
+									: candidate.stakingLedger.active
+							)}
+						</p>
+					</TableCell>
+					{/* Status */}
+					<TableCell>
+						<StakeValidatorStatus
+							isElected={isElected}
+							nominators={nominatedBy?.[candidate.accountId] || []}
+							onlineCount={recentlyOnline?.[
+								candidate.accountId
+							]?.blockCount.toNumber()}
+							hasMessage={recentlyOnline?.[candidate.accountId]?.hasMessage}
+						/>
+					</TableCell>
+					{/* Nominate Checkbox */}
+					<TableCell>
+						<Checkbox
+							css={styles.nominate}
+							onClick={_validatorSelected}
+							value={candidate.accountId}
+						/>
+					</TableCell>
+				</TableRow>
+			);
+		});
 	};
 
 	const stashAddress = "5DVHuiWPrWomw1GxgXx6XuDCURPdDcv6YjLchobf156kwnZx";

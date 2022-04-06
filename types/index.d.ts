@@ -13,6 +13,8 @@ export {
 	DeriveStakingWaiting,
 	DeriveStakingQuery,
 } from "@cennznet/api/derives/staking/types";
+export { EraIndex, Nominations, Option, StorageKey } from "@cennznet/types";
+export { DeriveHeartbeats } from "@polkadot/api-derive/types";
 
 export type BridgeChain = "Ethereum" | "CENNZnet";
 export type BridgeAction = "Deposit" | "Withdraw";
@@ -136,3 +138,11 @@ export interface StakingElected {
 }
 
 export type OverviewTable = "elected" | "nominate";
+
+export interface NominatedBy {
+	index: number;
+	nominatorId: string;
+	submittedIn: EraIndex;
+}
+
+export type Result = Record<string, NominatedBy[]>;
