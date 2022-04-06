@@ -1,5 +1,6 @@
 import { Balance } from "@/utils";
 import {
+	AnchorHTMLAttributes,
 	ButtonHTMLAttributes,
 	FormHTMLAttributes,
 	HTMLAttributes,
@@ -41,6 +42,7 @@ export interface IntrinsicElements {
 	form: FormHTMLAttributes<HTMLFormElement>;
 	button: ButtonHTMLAttributes<HTMLButtonElement>;
 	input: InputHTMLAttributes<HTMLInputElement>;
+	a: AnchorHTMLAttributes<HTMLAnchorElement>;
 }
 
 export type PoolAction = "Add" | "Remove";

@@ -10,16 +10,11 @@ import {
 	Theme,
 } from "@mui/material";
 import ExpandMore from "@mui/icons-material/ExpandMore";
-import {
-	fetchUnclaimedWithdrawals,
-	sendWithdrawEthereumRequest,
-} from "@/utils";
-import { EthyEventId } from "@cennznet/types";
+import { fetchUnclaimedWithdrawals } from "@/utils";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import { useBridge } from "@/providers/BridgeProvider";
-import { useMetaMaskWallet } from "@/providers/MetaMaskWalletProvider";
-import { EthEventProof } from "@cennznet/api/derives/ethBridge/types";
+import { useHistoricalWithdrawRequest } from "@/hooks";
 
 interface BridgeAdvancedProps {}
 
@@ -27,21 +22,9 @@ const BridgeWithdrawAdvanced: VFC<
 	IntrinsicElements["div"] & BridgeAdvancedProps
 > = ({ ...props }) => {
 	const { api } = useCENNZApi();
-	const { selectedAccount: CENNZAccount, updateBalances: updateCENNZBalances } =
-		useCENNZWallet();
-	const { selectedAccount: metaMaskAccount, wallet: metaMaskWallet } =
-		useMetaMaskWallet();
-	const {
-		setProgressStatus,
-		setSuccessStatus,
-		setFailStatus,
-		setTxStatus,
-		updateMetaMaskBalances,
-		transferInput,
-		transferSelect,
-		advancedExpanded: expanded,
-		setAdvancedExpanded: setExpanded,
-	}: any = useBridge();
+	const { selectedAccount: CENNZAccount } = useCENNZWallet();
+	const { advancedExpanded: expanded, setAdvancedExpanded: setExpanded }: any =
+		useBridge();
 	const [mounted, setMounted] = useState<boolean>(false);
 	const [unclaimedWithdrawals, setUnclaimedWithdrawals] =
 		useState<WithdrawClaim[]>();
@@ -63,60 +46,7 @@ const BridgeWithdrawAdvanced: VFC<
 		if (expanded) void updateUnclaimedWithdrawals();
 	}, [updateUnclaimedWithdrawals, expanded]);
 
-	const processHistoricalRequest = useCallback(
-		async (unclaimed: WithdrawClaim) => {
-			if (!api || !metaMaskAccount || !metaMaskWallet) return;
-
-			const historicalAmount = unclaimed.transferAmount.toInput();
-
-			transferInput.setValue(historicalAmount);
-			transferSelect.setTokenId(unclaimed.transferAsset.address);
-
-			const eventProof: EthEventProof = await api.derive.ethBridge.eventProof(
-				unclaimed.eventProofId as unknown as EthyEventId
-			);
-
-			let tx: Awaited<ReturnType<typeof sendWithdrawEthereumRequest>>;
-
-			try {
-				setProgressStatus("EthereumConfirming");
-				tx = await sendWithdrawEthereumRequest(
-					api,
-					eventProof,
-					unclaimed.transferAmount,
-					unclaimed.transferAsset,
-					metaMaskAccount.address,
-					metaMaskWallet.getSigner(),
-					eventProof.blockHash
-				);
-			} catch (error) {
-				console.info(error);
-				return setFailStatus(error?.code);
-			}
-
-			if (tx === "cancelled") return setTxStatus(null);
-
-			setSuccessStatus(historicalAmount);
-			transferInput.setValue("");
-			updateMetaMaskBalances();
-			updateCENNZBalances();
-			await updateUnclaimedWithdrawals();
-		},
-		[
-			api,
-			metaMaskAccount,
-			metaMaskWallet,
-			setFailStatus,
-			setProgressStatus,
-			setSuccessStatus,
-			setTxStatus,
-			updateCENNZBalances,
-			updateMetaMaskBalances,
-			transferInput,
-			transferSelect,
-			updateUnclaimedWithdrawals,
-		]
-	);
+	const processHistoricalRequest = useHistoricalWithdrawRequest();
 
 	return (
 		<div {...props} css={styles.root}>
@@ -154,7 +84,9 @@ const BridgeWithdrawAdvanced: VFC<
 											{unclaimed.expiry !== "Expired" && (
 												<button
 													css={styles.claimButton}
-													onClick={() => processHistoricalRequest(unclaimed)}
+													onClick={() =>
+														processHistoricalRequest(unclaimed.eventProofId)
+													}
 													type="button"
 												>
 													claim

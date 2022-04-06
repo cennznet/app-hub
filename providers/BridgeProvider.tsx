@@ -1,14 +1,13 @@
 import { ETH_TOKEN_ADDRESS } from "@/constants";
-import { TokenInputHook, useTokenInput } from "@/hooks";
-import useMetaMaskBalances from "@/hooks/useMetaMaskBalances";
 import {
-	BridgeAction,
-	BridgedEthereumToken,
-	EthereumToken,
-	RelayerConfirmingStatus,
-	TxStatus,
-} from "@/types";
-import { Balance, selectMap } from "@/utils";
+	useTokenInput,
+	useTxStatus,
+	TokenInputHook,
+	TxStatusHook,
+} from "@/hooks";
+import useMetaMaskBalances from "@/hooks/useMetaMaskBalances";
+import { BridgeAction, BridgedEthereumToken, EthereumToken } from "@/types";
+import { Balance } from "@/utils";
 import {
 	createContext,
 	Dispatch,
@@ -22,7 +21,7 @@ import {
 
 type ERC20TokenAddress = EthereumToken["address"];
 
-interface BridgeContextType {
+interface BridgeContextType extends TxStatusHook {
 	bridgeAction: BridgeAction;
 	setBridgeAction: Dispatch<SetStateAction<BridgeAction>>;
 
@@ -214,17 +213,13 @@ const BridgeProvider: FC<BridgeProviderProps> = ({
 				transferMetaMaskAddress,
 				setTransferMetaMaskAddress,
 
-				txStatus,
-				setTxStatus,
-				setProgressStatus,
-				setSuccessStatus,
-				setFailStatus,
-
 				metaMaskBalance,
 				updateMetaMaskBalances,
 
 				advancedExpanded,
 				setAdvancedExpanded,
+
+				...useTxStatus(),
 			}}
 		>
 			{children}

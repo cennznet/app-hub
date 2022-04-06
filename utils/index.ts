@@ -39,3 +39,6 @@ export { default as trackPageView } from "@/utils/trackPageView";
 export { default as getSellAssetExtrinsic } from "@/utils/getSellAssetExtrinsic";
 export { default as selectMap } from "@/utils/selectMap";
 export { default as fetchUnclaimedWithdrawals } from "@/utils/fetchUnclaimedWithdrawals";
+export { default as CENNZTransaction } from "@/utils/CENNZTransaction";
+export { default as EthereumTransaction } from "@/utils/EthereumTransaction";
+export { default as waitForEventProof } from "@/utils/waitForEventProof";

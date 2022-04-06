@@ -1,25 +1,12 @@
-import { BridgedEthereumToken, IntrinsicElements } from "@/types";
 import { FC, useCallback, useEffect, useState } from "react";
+import { IntrinsicElements } from "@/types";
 import SubmitButton from "@/components/shared/SubmitButton";
 import { css } from "@emotion/react";
 import { Theme } from "@mui/material";
 import { useBridge } from "@/providers/BridgeProvider";
 import useBridgeStatus from "@/hooks/useBridgeStatus";
-import { useCENNZApi } from "@/providers/CENNZApiProvider";
-import { useMetaMaskWallet } from "@/providers/MetaMaskWalletProvider";
-import {
-	Balance,
-	ensureBridgeDepositActive,
-	ensureBridgeWithdrawActive,
-	ensureEthereumChain,
-	ensureRelayerDepositDone,
-	sendDepositRequest,
-	sendWithdrawCENNZRequest,
-	sendWithdrawEthereumRequest,
-} from "@/utils";
-import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
-import { useMetaMaskExtension } from "@/providers/MetaMaskExtensionProvider";
 import BridgeWithdrawAdvanced from "@/components/BridgeWithdrawAdvanced";
+import { useDepositRequest, useWithdrawRequest } from "@/hooks";
 
 interface BridgeFormProps {}
 
@@ -27,143 +14,12 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 	children,
 	...props
 }) => {
-	const { api } = useCENNZApi();
-	const { wallet: metaMaskWallet } = useMetaMaskWallet();
-	const {
-		bridgeAction,
-		transferInput,
-		transferAsset,
-		transferCENNZAddress,
-		setProgressStatus,
-		setSuccessStatus,
-		setFailStatus,
-		setTxStatus,
-		updateMetaMaskBalances,
-		transferMetaMaskAddress,
-	} = useBridge();
+	const { bridgeAction } = useBridge();
 	const [buttonLabel, setButtonLabel] = useState<string>("Deposit");
 
-	const {
-		updateBalances: updateCENNZBalances,
-		selectedAccount: cennzAccount,
-		wallet: cennzWallet,
-	} = useCENNZWallet();
-	const { extension } = useMetaMaskExtension();
+	const processDepositRequest = useDepositRequest();
 
-	const processDepositRequest = useCallback(async () => {
-		const setTrValue = transferInput.setValue;
-		const transferAmount = Balance.fromInput(
-			transferInput.value,
-			transferAsset
-		);
-		setProgressStatus();
-
-		let tx: Awaited<ReturnType<typeof sendDepositRequest>>;
-
-		try {
-			await ensureEthereumChain(extension);
-			await ensureBridgeDepositActive(api, metaMaskWallet);
-			tx = await sendDepositRequest(
-				transferAmount,
-				transferAsset,
-				transferCENNZAddress,
-				metaMaskWallet.getSigner()
-			);
-
-			if (tx !== "cancelled")
-				await ensureRelayerDepositDone(tx.hash, 600000, setProgressStatus);
-		} catch (error) {
-			console.info(error);
-			return setFailStatus(error?.code);
-		}
-
-		if (tx === "cancelled") return setTxStatus(null);
-
-		setSuccessStatus();
-		setTrValue("");
-		updateMetaMaskBalances();
-		updateCENNZBalances();
-	}, [
-		api,
-		transferInput,
-		transferAsset,
-		transferCENNZAddress,
-		metaMaskWallet,
-		setProgressStatus,
-		setSuccessStatus,
-		setFailStatus,
-		setTxStatus,
-		updateMetaMaskBalances,
-		updateCENNZBalances,
-		extension,
-	]);
-
-	const processWithdrawRequest = useCallback(async () => {
-		const setTrValue = transferInput.setValue;
-		const transferAmount = Balance.fromInput(
-			transferInput.value,
-			transferAsset
-		);
-		setProgressStatus();
-
-		let eventProof: Awaited<ReturnType<typeof sendWithdrawCENNZRequest>>;
-		try {
-			await ensureEthereumChain(extension);
-			await ensureBridgeWithdrawActive(api, metaMaskWallet);
-			setProgressStatus("CennznetConfirming");
-			eventProof = await sendWithdrawCENNZRequest(
-				api,
-				transferAmount,
-				transferAsset as BridgedEthereumToken,
-				cennzAccount.address,
-				transferMetaMaskAddress,
-				cennzWallet.signer
-			);
-		} catch (error) {
-			console.info(error);
-			return setFailStatus(error?.code);
-		}
-
-		if (eventProof === "cancelled") return setTxStatus(null);
-
-		let tx: Awaited<ReturnType<typeof sendWithdrawEthereumRequest>>;
-		try {
-			setProgressStatus("EthereumConfirming");
-			tx = await sendWithdrawEthereumRequest(
-				api,
-				eventProof,
-				transferAmount,
-				transferAsset as BridgedEthereumToken,
-				transferMetaMaskAddress,
-				metaMaskWallet.getSigner()
-			);
-		} catch (error) {
-			console.info(error);
-			return setFailStatus(error?.code);
-		}
-
-		if (tx === "cancelled") return setTxStatus(null);
-
-		setSuccessStatus();
-		setTrValue("");
-		updateMetaMaskBalances();
-		updateCENNZBalances();
-	}, [
-		api,
-		transferAsset,
-		cennzAccount?.address,
-		cennzWallet?.signer,
-		setProgressStatus,
-		setSuccessStatus,
-		setFailStatus,
-		setTxStatus,
-		transferInput,
-		transferMetaMaskAddress,
-		updateMetaMaskBalances,
-		updateCENNZBalances,
-		metaMaskWallet,
-		extension,
-	]);
+	const processWithdrawRequest = useWithdrawRequest();
 
 	const onFormSubmit = useCallback(
 		async (event) => {
