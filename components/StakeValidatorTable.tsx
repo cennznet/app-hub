@@ -14,14 +14,19 @@ import {
 	Tooltip,
 } from "@mui/material";
 import { Balance, extractNominators, getTokenLogo } from "@/utils";
-import { ElectedCandidate, Result } from "@/types";
+import {
+	ElectedCandidate,
+	Result,
+	Nominations,
+	Option,
+	StorageKey,
+} from "@/types";
 import { ETH_CHAIN_ID } from "@/constants";
 import AccountIdenticon from "@/components/shared/AccountIdenticon";
 import { poolRegistry } from "@/utils/poolRegistry";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
 // import { DeriveHeartbeats } from "@polkadot/api-derive/types";
 import StakeValidatorStatus from "@/components/StakeValidatorStatus";
-import { Nominations, Option, StorageKey } from "@cennznet/types";
 
 const StakeValidatorTable: VFC = () => {
 	const { api } = useCENNZApi();
