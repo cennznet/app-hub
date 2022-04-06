@@ -23,16 +23,17 @@ const StakeValidatorStatus: VFC<StakeValidatorStatusProps> = ({
 	return (
 		<div css={styles.root}>
 			{isElected ? (
-				<Tooltip title="Elected" placement="left" arrow>
+				<Tooltip css={styles.tooltip} title="Elected" placement="left" arrow>
 					<CheckCircleOutlinedIcon css={styles.elected(isElected)} />
 				</Tooltip>
 			) : (
-				<Tooltip title="Candidate" placement="left" arrow>
+				<Tooltip css={styles.tooltip} title="Candidate" placement="left" arrow>
 					<PendingOutlinedIcon css={styles.elected(isElected)} />
 				</Tooltip>
 			)}
 			{(onlineCount || hasMessage) && (
 				<Tooltip
+					css={styles.tooltip}
 					title={`Validator is online and has authored ${
 						onlineCount ?? 0
 					} of the last 120 blocks`}
@@ -44,6 +45,7 @@ const StakeValidatorStatus: VFC<StakeValidatorStatusProps> = ({
 			)}
 			{nominators.length > 200 && (
 				<Tooltip
+					css={styles.tooltip}
 					title={`Validator is oversubscribed with ${nominators.length} nominators`}
 					placement="left"
 					arrow
@@ -62,6 +64,10 @@ const styles = {
 		display: inline-flex;
 		justify-content: space-between;
 		margin-top: 0.2em;
+	`,
+
+	tooltip: css`
+		cursor: help;
 	`,
 
 	elected:
