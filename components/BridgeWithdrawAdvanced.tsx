@@ -84,9 +84,7 @@ const BridgeWithdrawAdvanced: VFC<
 											{unclaimed.expiry !== "Expired" && (
 												<button
 													css={styles.claimButton}
-													onClick={() =>
-														processHistoricalRequest(unclaimed.eventProofId)
-													}
+													onClick={() => processHistoricalRequest(unclaimed)}
 													type="button"
 												>
 													claim

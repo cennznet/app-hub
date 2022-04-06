@@ -3,9 +3,8 @@ import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import { useMetaMaskExtension } from "@/providers/MetaMaskExtensionProvider";
 import { useMetaMaskWallet } from "@/providers/MetaMaskWalletProvider";
-import { BridgedEthereumToken } from "@/types";
+import { WithdrawClaim } from "@/types";
 import {
-	Balance,
 	ensureBridgeWithdrawActive,
 	ensureEthereumChain,
 	sendWithdrawEthereumRequest,
@@ -15,11 +14,11 @@ import { EthyEventId } from "@cennznet/types";
 import { useCallback } from "react";
 
 export default function useHistoricalWithdrawRequest(): (
-	historicalEventProofId: number
+	unclaimed: WithdrawClaim
 ) => Promise<void> {
 	const {
 		transferInput,
-		transferAsset,
+		transferSelect,
 		transferMetaMaskAddress,
 		setTxIdle,
 		setTxPending,
@@ -33,19 +32,19 @@ export default function useHistoricalWithdrawRequest(): (
 	const { extension } = useMetaMaskExtension();
 
 	return useCallback(
-		async (historicalEventProofId: number) => {
+		async (unclaimed: WithdrawClaim) => {
 			const setTrValue = transferInput.setValue;
-			const transferAmount = Balance.fromInput(
-				transferInput.value,
-				transferAsset
-			);
+			const setToken = transferSelect.setTokenId;
+
+			setTrValue(unclaimed.transferAmount.toInput());
+			setToken(unclaimed.transferAsset.address);
 
 			try {
 				setTxPending();
 				await ensureEthereumChain(extension);
 				await ensureBridgeWithdrawActive(api, metaMaskWallet);
 				const eventProof: EthEventProof = await api.derive.ethBridge.eventProof(
-					historicalEventProofId as unknown as EthyEventId
+					unclaimed.eventProofId as unknown as EthyEventId
 				);
 
 				console.log({ eventProof });
@@ -57,14 +56,14 @@ export default function useHistoricalWithdrawRequest(): (
 				sendWithdrawEthereumRequest(
 					api,
 					eventProof,
-					transferAmount,
-					transferAsset as BridgedEthereumToken,
+					unclaimed.transferAmount,
+					unclaimed.transferAsset,
 					transferMetaMaskAddress,
 					metaMaskWallet.getSigner(),
 					eventProof.blockHash
 				)
 					.then((withdrawTx) => {
-						withdrawTx.on("txHashed", (hash) => {
+						withdrawTx.on("txHashed", (_hash) => {
 							setTxPending({
 								relayerStatus: "EthereumConfirming",
 								txHashLink: withdrawTx.getHashLink(),
@@ -76,7 +75,7 @@ export default function useHistoricalWithdrawRequest(): (
 							updateMetaMaskBalances();
 							updateCENNZBalances();
 							setTxSuccess({
-								transferValue: transferAmount,
+								transferValue: unclaimed.transferAmount,
 								txHashLink: withdrawTx.getHashLink(),
 							});
 						});
@@ -105,8 +104,7 @@ export default function useHistoricalWithdrawRequest(): (
 		},
 		[
 			transferInput.setValue,
-			transferInput.value,
-			transferAsset,
+			transferSelect.setTokenId,
 			setTxPending,
 			extension,
 			api,
