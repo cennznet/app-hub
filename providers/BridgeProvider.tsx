@@ -13,7 +13,6 @@ import {
 	Dispatch,
 	FC,
 	SetStateAction,
-	useCallback,
 	useContext,
 	useEffect,
 	useState,
@@ -38,13 +37,6 @@ interface BridgeContextType extends TxStatusHook {
 
 	transferMetaMaskAddress: string;
 	setTransferMetaMaskAddress: Dispatch<SetStateAction<string>>;
-
-	txStatus: TxStatus;
-	setTxStatus: Dispatch<SetStateAction<TxStatus>>;
-
-	setProgressStatus: (status?: RelayerConfirmingStatus) => void;
-	setSuccessStatus: (value?: string) => void;
-	setFailStatus: (errorCode?: string) => void;
 
 	metaMaskBalance: Balance;
 	updateMetaMaskBalances: () => void;
@@ -84,95 +76,6 @@ const BridgeProvider: FC<BridgeProviderProps> = ({
 		(ethereumTokens as EthereumToken[])?.find(
 			(token) => token.address === transferSelect.tokenId
 		) || ethAsset;
-
-	const [txStatus, setTxStatus] = useState<TxStatus>(null);
-
-	const setProgressStatus = useCallback((status?: RelayerConfirmingStatus) => {
-		const title = selectMap<RelayerConfirmingStatus, TxStatus["title"]>(
-			status,
-			new Map([
-				["EthereumConfirming", <>Confirming on Ethereum</>],
-				[
-					"CennznetConfirming",
-					<>
-						Confirming on CENNZ<span>net</span>
-					</>,
-				],
-			]),
-			"Transaction In Progress"
-		);
-
-		setTxStatus({
-			status: "in-progress",
-			title,
-			message: (
-				<div>
-					Please sign the transaction when prompted and wait until it&apos;s
-					completed
-				</div>
-			),
-		});
-	}, []);
-
-	const setFailStatus = useCallback((errorCode?: string) => {
-		setTxStatus({
-			status: "fail",
-			title: "Transaction Failed",
-			message: (
-				<div>
-					An error occurred while processing your transaction
-					{!!errorCode && (
-						<>
-							<br />
-							<pre>
-								<small>#{errorCode}</small>
-							</pre>
-						</>
-					)}
-				</div>
-			),
-		});
-	}, []);
-
-	const setSuccessStatus = useCallback(
-		(value?: string) => {
-			const trValue = value ?? Balance.format(transferInput.value);
-			const trSymbol = transferAsset.symbol;
-
-			setTxStatus({
-				status: "success",
-				title: "Transaction Completed",
-				...(bridgeAction === "Withdraw" && {
-					message: (
-						<div>
-							You successfully withdrew{" "}
-							<pre>
-								<em>
-									<span>{trValue}</span> <span>{trSymbol}</span>
-								</em>
-							</pre>{" "}
-							from CENNZnet.
-						</div>
-					),
-				}),
-
-				...(bridgeAction === "Deposit" && {
-					message: (
-						<div>
-							You successfully deposited{" "}
-							<pre>
-								<em>
-									<span>{trValue}</span> <span>{trSymbol}</span>
-								</em>
-							</pre>{" "}
-							to CENNZnet.
-						</div>
-					),
-				}),
-			});
-		},
-		[transferInput.value, transferAsset?.symbol, bridgeAction]
-	);
 
 	const [metaMaskBalance, , updateMetaMaskBalances] =
 		useMetaMaskBalances(transferAsset);
