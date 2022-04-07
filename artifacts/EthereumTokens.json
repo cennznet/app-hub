@@ -105,6 +105,13 @@
 
     {
       "symbol": "wCENNZ",
+      "address": "0x5de841521336640695584288fcae37a41a9c92a4",
+      "decimals": 4,
+      "chainId": 1
+    },
+
+    {
+      "symbol": "wCENNZ",
       "address": "0x7eCC3E93226a955b2c740F003B455Da6bfd49fac",
       "decimals": 4,
       "chainId": 42
