@@ -102,7 +102,17 @@ export interface StakeAssets {
 	spendingAsset: CENNZAsset;
 }
 
-export type StakeAction = "stake" | "unstake";
+export type StakeAction =
+	| "addStake"
+	| "newStake"
+	| "chill"
+	| "changeNominations"
+	| "cancelWithdrawal"
+	| "changeController"
+	| "changeRewardDestination"
+	| "withdraw"
+	| "unstake"
+	| "viewStake";
 
 export interface StakePair {
 	stashAddress: string;
@@ -146,3 +156,20 @@ export interface NominatedBy {
 }
 
 export type Result = Record<string, NominatedBy[]>;
+
+export interface StakeDestinationInput {
+	action: StakeAction;
+	value: string;
+}
+
+export interface AccountLedger {
+	active: number;
+	stash: string;
+	total: number;
+	unlocking: AccountUnlocking[];
+}
+
+export interface AccountUnlocking {
+	value: number;
+	era: number;
+}
