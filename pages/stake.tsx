@@ -10,11 +10,12 @@ import { css } from "@emotion/react";
 import { NextSeo } from "next-seo";
 import StakeForm from "@/components/StakeForm";
 import StakeAmountInput from "@/components/StakeAmountInput";
-import StakeActionsPair from "@/components/StakeActionsPair";
+import StakeActions from "@/components/StakeActions";
 import StakeOverview from "@/components/StakeOverview";
 import StakeSummary from "@/components/StakeSummary";
 import StakeValidatorTable from "@/components/StakeValidatorTable";
-import StakeStashInput from "@/components/StakeStashInput";
+import StakeDestinationInput from "@/components/StakeDestinationInput";
+import StakeProgress from "@/components/StakeProgress";
 
 export async function getStaticProps() {
 	const api = await Api.create({ provider: API_URL });
@@ -34,10 +35,11 @@ const Pool: VFC<{ stakeAssets: StakeAssets }> = ({ stakeAssets }) => {
 				<NextSeo title="CENNZnet Staking" />
 				<MainPanel defaultTitle="Staking">
 					<StakeForm>
-						<StakeActionsPair />
-						<StakeStashInput />
+						<StakeActions />
+						<StakeDestinationInput />
 						<StakeAmountInput />
 					</StakeForm>
+					<StakeProgress />
 				</MainPanel>
 				<MainPanel defaultTitle="Overview" css={styles.overview}>
 					<StakeOverview>

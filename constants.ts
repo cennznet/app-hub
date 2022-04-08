@@ -39,3 +39,15 @@ export const CENNZ_EXPLORER_URL: string =
 
 export const ETH_EXPLORER_URL: string =
 	process.env.NEXT_PUBLIC_ETH_EXPLORER_URL;
+
+export const STAKE_ACTIONS = {
+	addStake: "Add To Stake",
+	newStake: "New Stake",
+	chill: "Chill",
+	changeNominations: "Change Nominations",
+	cancelWithdrawal: "Cancel Withdrawal",
+	changeController: "Change Controller Account",
+	changeRewardDestination: "Change Reward Destination",
+	withdraw: "Withdraw",
+	unstake: "UNStake",
+};

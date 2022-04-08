@@ -18,13 +18,21 @@ import {
 } from "@/types";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import { SubmittableExtrinsic } from "@cennznet/api/types";
+import {
+	TokenInputHook,
+	TxStatusHook,
+	useTokenInput,
+	useTxStatus,
+} from "@/hooks";
 
-interface StakeContextType {
+interface StakeContextType extends TxStatusHook {
 	stakingAsset: CENNZAsset;
 	spendingAsset: CENNZAsset;
 
 	stakeAction: StakeAction;
 	setStakeAction: Dispatch<SetStateAction<StakeAction>>;
+
+	stakeAmountInput: TokenInputHook<string>[1];
 
 	electionInfo: {
 		elected: ElectedCandidate[];
@@ -34,11 +42,15 @@ interface StakeContextType {
 	tableView: OverviewTable;
 	setTableView: Dispatch<SetStateAction<OverviewTable>>;
 
-	extrinsic: SubmittableExtrinsic<"promise", any>;
-	setExtrinsic: Dispatch<SetStateAction<SubmittableExtrinsic<"promise", any>>>;
+	nominateExtrinsic: SubmittableExtrinsic<"promise", any>;
+	setNominateExtrinsic: Dispatch<
+		SetStateAction<SubmittableExtrinsic<"promise", any>>
+	>;
 
-	stashAddress: string;
-	setStashAddress: Dispatch<SetStateAction<string>>;
+	stakeRewardDestination: string;
+	setStakeRewardDestination: Dispatch<SetStateAction<string>>;
+	stakeControllerAccount: string;
+	setStakeControllerAccount: Dispatch<SetStateAction<string>>;
 }
 
 const StakeContext = createContext<StakeContextType>({} as StakeContextType);
@@ -50,12 +62,17 @@ interface StakeProviderProps {
 const StakeProvider: FC<StakeProviderProps> = ({ children, stakeAssets }) => {
 	const { api } = useCENNZApi();
 	const { stakingAsset, spendingAsset } = stakeAssets;
-	const [stakeAction, setStakeAction] = useState<StakeAction>();
+	const [stakeAction, setStakeAction] = useState<StakeAction>("newStake");
 	const [electionInfo, setElectionInfo] = useState<ElectionInfo>();
 	const [tableView, setTableView] = useState<OverviewTable>("elected");
-	const [extrinsic, setExtrinsic] =
+	const [nominateExtrinsic, setNominateExtrinsic] =
 		useState<SubmittableExtrinsic<"promise", any>>();
-	const [stashAddress, setStashAddress] = useState<string>();
+	const [stakeRewardDestination, setStakeRewardDestination] =
+		useState<string>();
+	const [stakeControllerAccount, setStakeControllerAccount] =
+		useState<string>();
+
+	const [_, stakeAmountInput] = useTokenInput(stakingAsset.assetId);
 
 	const parseElectedInfo = (electedInfo: DeriveStakingQuery[]) => {
 		return electedInfo.map((info) => {
@@ -100,16 +117,22 @@ const StakeProvider: FC<StakeProviderProps> = ({ children, stakeAssets }) => {
 				stakeAction,
 				setStakeAction,
 
+				stakeAmountInput,
+
 				electionInfo,
 
 				tableView,
 				setTableView,
 
-				extrinsic,
-				setExtrinsic,
+				nominateExtrinsic,
+				setNominateExtrinsic,
 
-				stashAddress,
-				setStashAddress,
+				stakeRewardDestination,
+				setStakeRewardDestination,
+				stakeControllerAccount,
+				setStakeControllerAccount,
+
+				...useTxStatus(),
 			}}
 		>
 			{children}
