@@ -81,7 +81,7 @@ const TxSuccess: VFC<IntrinsicElements["div"] & TxSuccessProps> = ({
 	stakeValue,
 	...props
 }) => {
-	const { stakeAction } = useStake();
+	const { stakeAction, stakingAsset, unbondedBalance } = useStake();
 	const message = useMemo(() => {
 		switch (stakeAction) {
 			default:
@@ -102,9 +102,8 @@ const TxSuccess: VFC<IntrinsicElements["div"] & TxSuccessProps> = ({
 				return "changed the reward destination for your stash";
 			case "unstake":
 				return "UNStaked";
-			// TODO: fetch unbonded amount
 			case "withdraw":
-				return "withdrew";
+				return "set a withdraw of";
 		}
 	}, [stakeAction]);
 
@@ -130,6 +129,16 @@ const TxSuccess: VFC<IntrinsicElements["div"] & TxSuccessProps> = ({
 					</>
 				) : (
 					"."
+				)}
+				{stakeAction === "withdraw" && (
+					<>
+						{" "}
+						<em>
+							<span>{unbondedBalance.toBalance()}</span>{" "}
+							<span>{stakingAsset.symbol}</span>
+						</em>
+						.
+					</>
 				)}
 			</p>
 		</div>

@@ -50,4 +50,5 @@ export const STAKE_ACTIONS = {
 	changeRewardDestination: "Change Reward Destination",
 	withdraw: "Withdraw",
 	unstake: "UNStake",
+	viewStake: "View Stake",
 };

@@ -5,6 +5,7 @@ import {
 	SetStateAction,
 	useContext,
 	useEffect,
+	useMemo,
 	useState,
 } from "react";
 import {
@@ -15,6 +16,7 @@ import {
 	OverviewTable,
 	DeriveStakingQuery,
 	ElectedCandidate,
+	AccountLedger,
 } from "@/types";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import { SubmittableExtrinsic } from "@cennznet/api/types";
@@ -24,6 +26,9 @@ import {
 	useTokenInput,
 	useTxStatus,
 } from "@/hooks";
+import { Option } from "@cennznet/types";
+import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
+import { Balance } from "@/utils";
 
 interface StakeContextType extends TxStatusHook {
 	stakingAsset: CENNZAsset;
@@ -51,6 +56,11 @@ interface StakeContextType extends TxStatusHook {
 	setStakeRewardDestination: Dispatch<SetStateAction<string>>;
 	stakeControllerAccount: string;
 	setStakeControllerAccount: Dispatch<SetStateAction<string>>;
+
+	accountLedger: AccountLedger;
+	setAccountLedger: Dispatch<SetStateAction<AccountLedger>>;
+	stakedBalance: Balance;
+	unbondedBalance: Balance;
 }
 
 const StakeContext = createContext<StakeContextType>({} as StakeContextType);
@@ -61,8 +71,10 @@ interface StakeProviderProps {
 
 const StakeProvider: FC<StakeProviderProps> = ({ children, stakeAssets }) => {
 	const { api } = useCENNZApi();
+	const { selectedAccount } = useCENNZWallet();
 	const { stakingAsset, spendingAsset } = stakeAssets;
 	const [stakeAction, setStakeAction] = useState<StakeAction>("newStake");
+	const [accountLedger, setAccountLedger] = useState<AccountLedger>();
 	const [electionInfo, setElectionInfo] = useState<ElectionInfo>();
 	const [tableView, setTableView] = useState<OverviewTable>("elected");
 	const [nominateExtrinsic, setNominateExtrinsic] =
@@ -108,6 +120,31 @@ const StakeProvider: FC<StakeProviderProps> = ({ children, stakeAssets }) => {
 		);
 	}, [api]);
 
+	useEffect(() => {
+		if (!api || !selectedAccount) return;
+
+		const fetchAccountLedger = async () =>
+			await api.query.staking.ledger(selectedAccount.address);
+
+		fetchAccountLedger().then((ledgerOption: Option<any>) => {
+			const ledger = ledgerOption.unwrapOrDefault();
+			setAccountLedger(ledger.toJSON());
+		});
+	}, [api, selectedAccount]);
+
+	const stakedBalance = useMemo(
+		() =>
+			accountLedger?.active && new Balance(accountLedger.active, stakingAsset),
+		[stakingAsset, accountLedger]
+	);
+
+	const unbondedBalance = useMemo(
+		() =>
+			!!accountLedger &&
+			new Balance(accountLedger.total - accountLedger.active, stakingAsset),
+		[stakingAsset, accountLedger]
+	);
+
 	return (
 		<StakeContext.Provider
 			value={{
@@ -131,6 +168,11 @@ const StakeProvider: FC<StakeProviderProps> = ({ children, stakeAssets }) => {
 				setStakeRewardDestination,
 				stakeControllerAccount,
 				setStakeControllerAccount,
+
+				accountLedger,
+				setAccountLedger,
+				stakedBalance,
+				unbondedBalance,
 
 				...useTxStatus(),
 			}}

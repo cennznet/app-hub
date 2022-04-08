@@ -14,7 +14,13 @@ interface StakeAmountInputProps {}
 const StakeAmountInput: VFC<
 	IntrinsicElements["div"] & StakeAmountInputProps
 > = (props) => {
-	const { stakingAsset, stakeAction, stakeAmountInput } = useStake();
+	const {
+		stakingAsset,
+		stakeAction,
+		stakeAmountInput,
+		stakedBalance,
+		unbondedBalance,
+	} = useStake();
 	const { selectedAccount } = useCENNZWallet();
 	const [CENNZBalance] = useCENNZBalances(stakingAsset);
 
@@ -23,23 +29,12 @@ const StakeAmountInput: VFC<
 	const unstake = stakeAction === "unstake";
 	const display = deposit || withdraw || unstake;
 
-	// TODO: fetch staked balance
-	const stakedBalance = useMemo(
-		() => new Balance(10000 * 10000, stakingAsset),
-		[stakingAsset]
-	);
-
-	// TODO: fetch unbonded balance
-	const unbondedBalance = useMemo(
-		() => new Balance(100 * 10000, stakingAsset),
-		[stakingAsset]
-	);
-
 	const onStakeMaxRequest = useMemo(() => {
-		if (deposit) return () => stakeAmountInput.setValue(CENNZBalance.toInput());
-		if (unstake)
+		if (deposit && !!CENNZBalance)
+			return () => stakeAmountInput.setValue(CENNZBalance.toInput());
+		if (unstake && !!stakedBalance)
 			return () => stakeAmountInput.setValue(stakedBalance.toInput());
-		if (withdraw)
+		if (withdraw && !!unbondedBalance)
 			return () => stakeAmountInput.setValue(unbondedBalance.toInput());
 	}, [
 		deposit,
@@ -56,6 +51,19 @@ const StakeAmountInput: VFC<
 		CENNZBalance
 	);
 
+	const maxAmount = useMemo(() => {
+		if (deposit && !!CENNZBalance) return CENNZBalance.toBalance();
+		if (unstake && !!stakedBalance) return stakedBalance.toBalance();
+		if (withdraw && !!unbondedBalance) return unbondedBalance.toBalance();
+	}, [
+		deposit,
+		withdraw,
+		unstake,
+		stakedBalance,
+		CENNZBalance,
+		unbondedBalance,
+	]);
+
 	return (
 		<div {...props} css={styles.root}>
 			{display && (
@@ -70,7 +78,8 @@ const StakeAmountInput: VFC<
 						tokens={[stakingAsset]}
 						id="stakeAmountInput"
 						ref={stakeAmountInputRef}
-						min={stakedBalance ? 1 : 10000}
+						min={deposit ? (stakedBalance ? 1 : 10000) : null}
+						max={maxAmount ?? 0}
 						required
 						scale={4}
 					>
@@ -99,12 +108,12 @@ const StakeAmountInput: VFC<
 							Balance: <span>{CENNZBalance?.toBalance() ?? "0.0000"}</span>
 						</div>
 					)}
-					{stakedBalance && unstake && (
+					{!!stakedBalance && unstake && (
 						<div css={styles.CENNZBalance}>
 							UNStakeable: <span>{stakedBalance?.toBalance() ?? "0.0000"}</span>
 						</div>
 					)}
-					{unbondedBalance && withdraw && (
+					{!!unbondedBalance && withdraw && (
 						<div css={styles.CENNZBalance}>
 							Withdrawable:{" "}
 							<span>{unbondedBalance?.toBalance() ?? "0.0000"}</span>
@@ -168,6 +177,7 @@ const styles = {
 		position: absolute;
 		left: 108px;
 		cursor: pointer;
+
 		&:hover {
 			color: ${palette.primary.main};
 		}

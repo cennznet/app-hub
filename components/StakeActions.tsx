@@ -14,6 +14,7 @@ const StakeActions: VFC = () => {
 		stakeAmountInput,
 		setStakeRewardDestination,
 		setStakeControllerAccount,
+		unbondedBalance,
 	} = useStake();
 
 	const onActionChange = (event) => {
@@ -83,7 +84,9 @@ const StakeActions: VFC = () => {
 				)}
 				{stakeAction === "withdraw" && (
 					<span>
-						Withdraw UNStaked <strong>{stakingAsset.symbol}</strong>.
+						Withdraw{" "}
+						<span css={styles.number}>{unbondedBalance.toBalance()}</span>{" "}
+						UNStaked <strong>{stakingAsset.symbol}</strong>.
 					</span>
 				)}
 			</div>
@@ -135,5 +138,9 @@ const styles = {
 		span {
 			line-height: 150%;
 		}
+	`,
+
+	number: css`
+		font-family: "Roboto Mono", monospace;
 	`,
 };

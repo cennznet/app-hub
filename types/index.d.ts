@@ -111,7 +111,8 @@ export type StakeAction =
 	| "changeController"
 	| "changeRewardDestination"
 	| "withdraw"
-	| "unstake";
+	| "unstake"
+	| "viewStake";
 
 export interface StakePair {
 	stashAddress: string;
@@ -159,4 +160,16 @@ export type Result = Record<string, NominatedBy[]>;
 export interface StakeDestinationInput {
 	action: StakeAction;
 	value: string;
+}
+
+export interface AccountLedger {
+	active: number;
+	stash: string;
+	total: number;
+	unlocking: AccountUnlocking[];
+}
+
+export interface AccountUnlocking {
+	value: number;
+	era: number;
 }
