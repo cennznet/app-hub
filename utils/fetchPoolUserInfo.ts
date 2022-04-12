@@ -19,10 +19,7 @@ export default async function fetchPoolUserInfo(
 	coreAsset: CENNZAsset
 ): Promise<PoolUserInfo> {
 	const [{ asset, core }, currentLiquidity] = await Promise.all([
-		await (api.rpc as any).cennzx.liquidityValue(
-			userAddress,
-			tradeAsset.assetId
-		),
+		await api.rpc.cennzx.liquidityValue(userAddress, tradeAsset.assetId),
 		await api.derive.cennzx.liquidityBalance(tradeAsset.assetId, userAddress),
 	]);
 
