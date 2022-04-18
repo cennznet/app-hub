@@ -1,7 +1,7 @@
 import { Api } from "@cennznet/api";
 import { BridgedEthereumToken, WithdrawClaim } from "@/types";
-import { ETH_CHAIN_ID } from "@/constants";
-import { Balance, fetchBridgeTokens } from "@/utils/index";
+import { BRIDGE_RELAYER_URL } from "@/constants";
+import { Balance, fetchBridgeTokens } from "@/utils";
 
 /**
  * Fetch unclaimed withdraws for the selected account
@@ -14,24 +14,13 @@ export default async function fetchUnclaimedWithdrawals(
 	selectedAccount: string,
 	api: Api
 ): Promise<WithdrawClaim[]> {
-	let apiPrefix: string;
-
-	switch (ETH_CHAIN_ID) {
-		case 1:
-			apiPrefix = "https://bridge-contracts.centralityapp.com";
-			break;
-		case 42:
-			apiPrefix = "https://bridge-contracts.nikau.centrality.me";
-			break;
-	}
-
 	const unclaimedRaw = await fetch(
-		`${apiPrefix}/withdrawals/${selectedAccount}`
+		`${BRIDGE_RELAYER_URL}/withdrawals/${selectedAccount}`
 	)
 		.then((response) => {
-			if (!response.ok) {
-				throw new Error("No UNclaimed withdrawals found");
-			} else return response.json();
+			if (!response.ok) throw new Error("No UNclaimed withdrawals found");
+
+			return response.json();
 		})
 		.catch((err) => console.log(err.message));
 
