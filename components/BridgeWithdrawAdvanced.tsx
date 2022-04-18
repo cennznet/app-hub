@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState, VFC } from "react";
-import { IntrinsicElements, WithdrawClaim } from "@/types";
+import { useEffect, VFC } from "react";
+import { IntrinsicElements } from "@/types";
 import { css } from "@emotion/react";
 import {
 	Accordion,
@@ -10,37 +10,22 @@ import {
 	Theme,
 } from "@mui/material";
 import ExpandMore from "@mui/icons-material/ExpandMore";
-import { fetchUnclaimedWithdrawals } from "@/utils";
-import { useCENNZApi } from "@/providers/CENNZApiProvider";
-import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import { useBridge } from "@/providers/BridgeProvider";
-import { useHistoricalWithdrawRequest } from "@/hooks";
+import { useHistoricalWithdrawRequest, useUnclaimedWithdrawals } from "@/hooks";
 
 interface BridgeAdvancedProps {}
 
 const BridgeWithdrawAdvanced: VFC<
 	IntrinsicElements["div"] & BridgeAdvancedProps
 > = ({ ...props }) => {
-	const { api } = useCENNZApi();
-	const { selectedAccount: CENNZAccount } = useCENNZWallet();
-	const { advancedExpanded: expanded, setAdvancedExpanded: setExpanded }: any =
-		useBridge();
-	const [mounted, setMounted] = useState<boolean>(false);
-	const [unclaimedWithdrawals, setUnclaimedWithdrawals] =
-		useState<WithdrawClaim[]>();
+	const {
+		advancedExpanded: expanded,
+		setAdvancedExpanded: setExpanded,
+		advancedMounted,
+	}: any = useBridge();
+	const [unclaimedWithdrawals, updateUnclaimedWithdrawals] =
+		useUnclaimedWithdrawals();
 	const someUnclaimed = unclaimedWithdrawals?.length > 0;
-
-	const updateUnclaimedWithdrawals = useCallback(async () => {
-		if (!api || !CENNZAccount) return;
-		setMounted(false);
-
-		const unclaimed: Awaited<ReturnType<typeof fetchUnclaimedWithdrawals>> =
-			await fetchUnclaimedWithdrawals(CENNZAccount.address, api);
-
-		setUnclaimedWithdrawals(unclaimed?.filter(Boolean));
-
-		setMounted(true);
-	}, [api, CENNZAccount]);
 
 	useEffect(() => {
 		if (expanded) void updateUnclaimedWithdrawals();
@@ -63,11 +48,13 @@ const BridgeWithdrawAdvanced: VFC<
 				</AccordionSummary>
 				<AccordionDetails>
 					<div css={styles.unclaimedWithdrawals}>
-						{!mounted && <LinearProgress css={[styles.claimCheckProgress]} />}
-						{mounted && !someUnclaimed && (
+						{!advancedMounted && (
+							<LinearProgress css={[styles.claimCheckProgress]} />
+						)}
+						{advancedMounted && !someUnclaimed && (
 							<p>No UNclaimed Withdrawals &nbsp;&#127881;</p>
 						)}
-						{mounted && someUnclaimed && (
+						{advancedMounted && someUnclaimed && (
 							<div>
 								<p>UNclaimed Withdrawals: </p>
 								{unclaimedWithdrawals.map((unclaimed, i) => (
