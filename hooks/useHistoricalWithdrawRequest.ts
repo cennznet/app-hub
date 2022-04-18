@@ -12,6 +12,7 @@ import {
 import { EthEventProof } from "@cennznet/api/derives/ethBridge/types";
 import { EthyEventId } from "@cennznet/types";
 import { useCallback } from "react";
+import { useUnclaimedWithdrawals } from "@/hooks";
 
 export default function useHistoricalWithdrawRequest(): (
 	unclaimed: WithdrawClaim
@@ -30,9 +31,10 @@ export default function useHistoricalWithdrawRequest(): (
 	const { updateBalances: updateCENNZBalances } = useCENNZWallet();
 	const { wallet: metaMaskWallet } = useMetaMaskWallet();
 	const { extension } = useMetaMaskExtension();
+	const [_, updateUnclaimedWithdrawals] = useUnclaimedWithdrawals();
 
 	return useCallback(
-		async (unclaimed: WithdrawClaim) => {
+		async (unclaimed) => {
 			const setTrValue = transferInput.setValue;
 			const setToken = transferSelect.setTokenId;
 
@@ -74,6 +76,7 @@ export default function useHistoricalWithdrawRequest(): (
 							setTrValue("");
 							updateMetaMaskBalances();
 							updateCENNZBalances();
+							updateUnclaimedWithdrawals();
 							setTxSuccess({
 								transferValue: unclaimed.transferAmount,
 								txHashLink: withdrawTx.getHashLink(),
@@ -115,6 +118,7 @@ export default function useHistoricalWithdrawRequest(): (
 			setTxSuccess,
 			setTxFailure,
 			setTxIdle,
+			updateUnclaimedWithdrawals,
 		]
 	);
 }

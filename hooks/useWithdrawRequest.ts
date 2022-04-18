@@ -14,6 +14,7 @@ import {
 } from "@/utils";
 import { EthyEventId } from "@cennznet/types";
 import { useCallback } from "react";
+import { useUnclaimedWithdrawals } from "@/hooks/index";
 
 export default function useWithdrawRequest(): () => Promise<void> {
 	const {
@@ -34,6 +35,7 @@ export default function useWithdrawRequest(): () => Promise<void> {
 	} = useCENNZWallet();
 	const { wallet: metaMaskWallet } = useMetaMaskWallet();
 	const { extension } = useMetaMaskExtension();
+	const [_, updateUnclaimedWithdrawals] = useUnclaimedWithdrawals();
 
 	return useCallback(async () => {
 		const setTrValue = transferInput.setValue;
@@ -98,7 +100,7 @@ export default function useWithdrawRequest(): () => Promise<void> {
 						);
 					})
 					.then((withdrawTx) => {
-						withdrawTx.on("txHashed", (hash) => {
+						withdrawTx.on("txHashed", (_hash) => {
 							setTxPending({
 								relayerStatus: "EthereumConfirming",
 								txHashLink: withdrawTx.getHashLink(),
@@ -116,6 +118,7 @@ export default function useWithdrawRequest(): () => Promise<void> {
 						});
 
 						withdrawTx.on("txFailed", (errorCode) => {
+							updateUnclaimedWithdrawals();
 							return setTxFailure({
 								errorCode,
 								txHashLink: withdrawTx.getHashLink(),
@@ -153,5 +156,6 @@ export default function useWithdrawRequest(): () => Promise<void> {
 		updateMetaMaskBalances,
 		updateCENNZBalances,
 		setTxSuccess,
+		updateUnclaimedWithdrawals,
 	]);
 }
