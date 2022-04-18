@@ -43,6 +43,8 @@ interface BridgeContextType extends TxStatusHook {
 
 	advancedExpanded: boolean;
 	setAdvancedExpanded: Dispatch<SetStateAction<boolean>>;
+	advancedMounted: boolean;
+	setAdvancedMounted: Dispatch<SetStateAction<boolean>>;
 }
 
 const BridgeContext = createContext<BridgeContextType>({} as BridgeContextType);
@@ -65,6 +67,7 @@ const BridgeProvider: FC<BridgeProviderProps> = ({
 	const [transferMetaMaskAddress, setTransferMetaMaskAddress] =
 		useState<BridgeContextType["transferMetaMaskAddress"]>("");
 	const [advancedExpanded, setAdvancedExpanded] = useState<boolean>(false);
+	const [advancedMounted, setAdvancedMounted] = useState<boolean>(false);
 
 	const ethAsset = (ethereumTokens as EthereumToken[])?.find(
 		(token) => token.address === ETH_TOKEN_ADDRESS
@@ -121,6 +124,8 @@ const BridgeProvider: FC<BridgeProviderProps> = ({
 
 				advancedExpanded,
 				setAdvancedExpanded,
+				advancedMounted,
+				setAdvancedMounted,
 
 				...useTxStatus(),
 			}}
