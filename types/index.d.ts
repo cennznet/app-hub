@@ -85,6 +85,7 @@ export type RelayerConfirmingStatus = Extract<
 export interface WithdrawClaim {
 	assetId: number;
 	expiry: string;
+	expiryRaw: number;
 	eventProofId: number;
 	transferAsset: BridgedEthereumToken;
 	transferAmount: Balance;

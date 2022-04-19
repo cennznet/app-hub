@@ -43,6 +43,7 @@ export default async function fetchUnclaimedWithdrawals(
 			return {
 				assetId: Number(withdrawal.assetId),
 				expiry: getExpiryString(withdrawal.expiresAt),
+				expiryRaw: withdrawal.expiresAt,
 				eventProofId: Number(withdrawal.proofId),
 				transferAsset: transferAsset as BridgedEthereumToken,
 				transferAmount,
@@ -63,5 +64,5 @@ const getExpiryString = (expiresAt: number): string => {
 	);
 	const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
 
-	return `Expires in: ${days}d ${hours}h ${minutes}m`;
+	return `${days}d ${hours}h ${minutes}m`;
 };
