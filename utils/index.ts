@@ -42,3 +42,7 @@ export { default as fetchUnclaimedWithdrawals } from "@/utils/fetchUnclaimedWith
 export { default as CENNZTransaction } from "@/utils/CENNZTransaction";
 export { default as EthereumTransaction } from "@/utils/EthereumTransaction";
 export { default as waitForEventProof } from "@/utils/waitForEventProof";
+export {
+	getDaysHoursMinutes,
+	getMinutesAndSeconds,
+} from "@/utils/getExpiryString";

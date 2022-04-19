@@ -1,7 +1,7 @@
 import { Api } from "@cennznet/api";
 import { BridgedEthereumToken, WithdrawClaim } from "@/types";
 import { BRIDGE_RELAYER_URL } from "@/constants";
-import { Balance, fetchBridgeTokens } from "@/utils";
+import { Balance, fetchBridgeTokens, getDaysHoursMinutes } from "@/utils";
 
 /**
  * Fetch unclaimed withdraws for the selected account
@@ -42,7 +42,7 @@ export default async function fetchUnclaimedWithdrawals(
 
 			return {
 				assetId: Number(withdrawal.assetId),
-				expiry: getExpiryString(withdrawal.expiresAt),
+				expiry: getDaysHoursMinutes(withdrawal.expiresAt),
 				expiryRaw: withdrawal.expiresAt,
 				eventProofId: Number(withdrawal.proofId),
 				transferAsset: transferAsset as BridgedEthereumToken,
@@ -51,18 +51,3 @@ export default async function fetchUnclaimedWithdrawals(
 		})
 	);
 }
-
-const getExpiryString = (expiresAt: number): string => {
-	const expiry = expiresAt * 1000;
-	const distance = expiry - Date.now();
-
-	if (distance <= 0) return "Expired";
-
-	const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-	const hours = Math.floor(
-		(distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-	);
-	const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-
-	return `${days}d ${hours}h ${minutes}m`;
-};

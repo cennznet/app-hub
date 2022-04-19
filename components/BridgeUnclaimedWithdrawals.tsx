@@ -12,18 +12,7 @@ import {
 } from "@mui/material";
 import { useHistoricalWithdrawRequest } from "@/hooks";
 import { WithdrawClaim } from "@/types";
-
-const getMinutesAndSeconds = (expiresAt) => {
-	const expiry = expiresAt * 1000;
-	const distance = expiry - Date.now();
-
-	if (distance <= 0) return "Expired";
-
-	const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-	const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-	return `${minutes}m ${seconds}s`;
-};
+import { getMinutesAndSeconds } from "@/utils";
 
 const _renderExpiry = (expiryRaw, expiryString) => {
 	const [expiry, setExpiry] = useState<string>("");
