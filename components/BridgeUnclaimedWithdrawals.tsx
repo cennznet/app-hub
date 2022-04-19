@@ -55,31 +55,33 @@ const BridgeUnclaimedWithdrawals: VFC<{
 				</TableHead>
 				<TableBody>
 					{unclaimedWithdrawals.map((unclaimed) => (
-						<TableRow key={unclaimed.eventProofId}>
-							{/* ID */}
-							<TableCell css={[styles.column, styles.number]}>
-								{unclaimed.eventProofId}
-							</TableCell>
-							{/* Value */}
-							<TableCell css={[styles.column, styles.number]}>
-								{unclaimed.transferAmount.toInput()}{" "}
-								{unclaimed.transferAsset.symbol}
-							</TableCell>
-							{/* Expiry */}
-							{_renderExpiry(unclaimed.expiryRaw, unclaimed.expiry)}
-							{/* Action */}
-							<TableCell css={styles.column}>
-								{unclaimed.expiry !== "Expired" && (
-									<button
-										css={styles.claimButton}
-										onClick={() => processHistoricalRequest(unclaimed)}
-										type="button"
-									>
-										claim
-									</button>
-								)}
-							</TableCell>
-						</TableRow>
+						<>
+							{unclaimed.expiry !== "Expired" && (
+								<TableRow key={unclaimed.eventProofId}>
+									{/* ID */}
+									<TableCell css={[styles.column, styles.number]}>
+										{unclaimed.eventProofId}
+									</TableCell>
+									{/* Value */}
+									<TableCell css={[styles.column, styles.number]}>
+										{unclaimed.transferAmount.toInput()}{" "}
+										{unclaimed.transferAsset.symbol}
+									</TableCell>
+									{/* Expiry */}
+									{_renderExpiry(unclaimed.expiryRaw, unclaimed.expiry)}
+									{/* Action */}
+									<TableCell css={styles.column}>
+										<button
+											css={styles.claimButton}
+											onClick={() => processHistoricalRequest(unclaimed)}
+											type="button"
+										>
+											claim
+										</button>
+									</TableCell>
+								</TableRow>
+							)}
+						</>
 					))}
 				</TableBody>
 			</Table>

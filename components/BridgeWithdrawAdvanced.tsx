@@ -25,7 +25,9 @@ const BridgeWithdrawAdvanced: VFC<
 	}: any = useBridge();
 	const [unclaimedWithdrawals, updateUnclaimedWithdrawals] =
 		useUnclaimedWithdrawals();
-	const someUnclaimed = unclaimedWithdrawals?.length > 0;
+	const someUnclaimed = unclaimedWithdrawals?.some(
+		(unclaimed) => unclaimed.expiry !== "Expired"
+	);
 
 	useEffect(() => {
 		if (expanded) void updateUnclaimedWithdrawals();
