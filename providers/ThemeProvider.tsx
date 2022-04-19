@@ -4,7 +4,7 @@ import {
 	createTheme,
 	Theme,
 } from "@mui/material/styles";
-import useSectionUri from "@/hooks/useSectionUri";
+import { useSectionUri } from "@/hooks";
 
 declare module "@mui/material/styles/createPalette" {
 	export interface TypeText {
@@ -16,6 +16,7 @@ declare module "@mui/material/styles/createPalette" {
 		swap?: string;
 		pool?: string;
 		bridge?: string;
+		stake?: string;
 	}
 
 	export interface PaletteColor {
@@ -23,12 +24,14 @@ declare module "@mui/material/styles/createPalette" {
 		swap?: string;
 		pool?: string;
 		bridge?: string;
+		stake?: string;
 	}
 
 	export interface TypeBackground {
 		swap?: string;
 		pool?: string;
 		bridge?: string;
+		stake?: string;
 		main?: string;
 	}
 }
@@ -40,18 +43,21 @@ const config = {
 			swap: "#1130FF",
 			pool: "#9847FF",
 			bridge: "#2DC8CB",
+			stake: "#BF0079",
 		},
 		secondary: {
 			default: "#B3BDFF",
 			swap: "#B3BDFF",
 			pool: "#E4D1FF",
 			bridge: "#B1EAEB",
+			stake: "#D64F99",
 		},
 		info: {
 			default: "#E4E7FF",
 			swap: "#E4E7FF",
 			pool: "#F5ECFF",
 			bridge: "#E8F8F9",
+			stake: "#F3D1FF",
 		},
 		background: {
 			default: "rgba(228, 231, 255, 0.4)",

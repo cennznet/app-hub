@@ -1,6 +1,6 @@
 import { FC, useEffect, useRef } from "react";
 import { css } from "@emotion/react";
-import useSectionUri from "@/hooks/useSectionUri";
+import { useSectionUri } from "@/hooks";
 import { Theme } from "@mui/material";
 import BackdropSwapGraphicsSVG from "@/assets/vectors/backdrop-swap-graphics.svg";
 import BackdropPoolGraphicsSVG from "@/assets/vectors/backdrop-pool-graphics.svg";

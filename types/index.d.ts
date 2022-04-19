@@ -1,4 +1,3 @@
-import { ethers } from "ethers";
 import { Balance } from "@/utils";
 import {
 	AnchorHTMLAttributes,
@@ -9,6 +8,13 @@ import {
 	InputHTMLAttributes,
 	ReactElement,
 } from "react";
+export {
+	DeriveStakingElected,
+	DeriveStakingWaiting,
+	DeriveStakingQuery,
+} from "@cennznet/api/derives/staking/types";
+export { EraIndex, Nominations, Option, StorageKey } from "@cennznet/types";
+export { DeriveHeartbeats } from "@polkadot/api-derive/types";
 
 export type BridgeChain = "Ethereum" | "CENNZnet";
 export type BridgeAction = "Deposit" | "Withdraw";
@@ -36,7 +42,7 @@ export interface CENNZAssetBalance extends CENNZAsset {
 	value: Balance;
 }
 
-export type SectionUri = "swap" | "pool" | "bridge";
+export type SectionUri = "swap" | "pool" | "bridge" | "stake";
 
 //TODO: Remove after Bridge work done
 export interface TxModalAttributes {
@@ -90,3 +96,53 @@ export type RelayerConfirmingStatus = Extract<
 	RelayerStatus,
 	"EthereumConfirming" | "CennznetConfirming"
 >;
+
+export interface StakeAssets {
+	stakingAsset: CENNZAsset;
+	spendingAsset: CENNZAsset;
+}
+
+export type StakeAction = "stake" | "unstake";
+
+export interface StakePair {
+	stashAddress: string;
+	controllerAddress: string;
+}
+
+export interface ElectionInfo {
+	elected: DeriveStakingElected;
+	waiting: DeriveStakingWaiting;
+}
+
+export interface ElectedCandidate {
+	accountId: string;
+	controllerId: string;
+	exposure: {
+		total: string;
+	};
+	stashId: string;
+	stakingLedger: {
+		active: string;
+		total: string;
+		stash: string;
+	};
+	validatorPrefs: {
+		commission: string;
+	};
+}
+
+export interface StakingElected {
+	electedInfoMap: ElectedCandidate[];
+	nextElected: string[];
+	validators: string[];
+}
+
+export type OverviewTable = "elected" | "nominate";
+
+export interface NominatedBy {
+	index: number;
+	nominatorId: string;
+	submittedIn: EraIndex;
+}
+
+export type Result = Record<string, NominatedBy[]>;
