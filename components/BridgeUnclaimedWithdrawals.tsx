@@ -78,7 +78,7 @@ const BridgeUnclaimedWithdrawals: VFC<{
 							</TableCell>
 							{/* Expiry */}
 							{_renderExpiry(unclaimed.expiryRaw, unclaimed.expiry)}
-							{/* ID */}
+							{/* Action */}
 							<TableCell css={styles.column}>
 								{unclaimed.expiry !== "Expired" && (
 									<button
