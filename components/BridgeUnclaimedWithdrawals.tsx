@@ -44,6 +44,10 @@ const BridgeUnclaimedWithdrawals: VFC = () => {
 	const { unclaimedWithdrawals } = useBridge();
 	const processHistoricalRequest = useHistoricalWithdrawRequest();
 
+	const someUnclaimed = unclaimedWithdrawals?.some(
+		(unclaimed) => unclaimed.expiry !== "Expired"
+	);
+
 	return (
 		<TableContainer css={styles.container}>
 			<Table>
@@ -56,35 +60,44 @@ const BridgeUnclaimedWithdrawals: VFC = () => {
 					</TableRow>
 				</TableHead>
 				<TableBody>
-					{unclaimedWithdrawals
-						?.filter((unclaimed) => unclaimed.expiry !== "Expired")
-						?.map((unclaimed) => (
-							<TableRow css={styles.row} key={unclaimed.eventProofId}>
-								{/* ID */}
-								<TableCell css={[styles.column, styles.number]}>
-									{unclaimed.eventProofId}
-								</TableCell>
-								{/* Value */}
-								<TableCell css={[styles.column, styles.number]}>
-									{unclaimed.transferAmount.toInput()}{" "}
-									{unclaimed.transferAsset.symbol}
-								</TableCell>
-								{/* Expiry */}
-								<ExpiryCell
-									expiryRaw={unclaimed.expiryRaw}
-									expiryString={unclaimed.expiry}
-								/>
-								{/* Action */}
-								<TableCell css={styles.column}>
-									<button
-										onClick={() => processHistoricalRequest(unclaimed)}
-										type="button"
-									>
-										claim
-									</button>
-								</TableCell>
-							</TableRow>
-						))}
+					{!someUnclaimed && (
+						<TableRow css={[styles.row, styles.rowEmpty]}>
+							<TableCell colSpan={4}>
+								No unclaimed withdrawals &nbsp;&#127881;
+							</TableCell>
+						</TableRow>
+					)}
+
+					{someUnclaimed &&
+						unclaimedWithdrawals
+							?.filter((unclaimed) => unclaimed.expiry !== "Expired")
+							?.map((unclaimed) => (
+								<TableRow css={styles.row} key={unclaimed.eventProofId}>
+									{/* ID */}
+									<TableCell css={[styles.column, styles.number]}>
+										{unclaimed.eventProofId}
+									</TableCell>
+									{/* Value */}
+									<TableCell css={[styles.column, styles.number]}>
+										{unclaimed.transferAmount.toInput()}{" "}
+										{unclaimed.transferAsset.symbol}
+									</TableCell>
+									{/* Expiry */}
+									<ExpiryCell
+										expiryRaw={unclaimed.expiryRaw}
+										expiryString={unclaimed.expiry}
+									/>
+									{/* Action */}
+									<TableCell css={styles.column}>
+										<button
+											onClick={() => processHistoricalRequest(unclaimed)}
+											type="button"
+										>
+											claim
+										</button>
+									</TableCell>
+								</TableRow>
+							))}
 				</TableBody>
 			</Table>
 		</TableContainer>
@@ -112,7 +125,18 @@ const styles = {
 	`,
 
 	row: ({ palette, transitions }: Theme) => css`
-		&:nth-of-type(odd) {
+		transition: background-color ${transitions.duration.shortest}ms;
+		&:nth-of-type(even) {
+			background-color: rgba(0, 0, 0, 0.03);
+		}
+
+		&:last-of-type {
+			td {
+				border-bottom: none;
+			}
+		}
+
+		&:hover {
 			background-color: ${palette.info.main};
 		}
 
@@ -120,6 +144,7 @@ const styles = {
 			border-radius: 4px;
 			height: 1.7em;
 			width: 4em;
+			outline: none;
 
 			background-color: white;
 			font-weight: bold;
@@ -136,6 +161,12 @@ const styles = {
 				background-color: ${palette.primary.main};
 				color: white;
 			}
+		}
+	`,
+
+	rowEmpty: css`
+		td {
+			text-align: center;
 		}
 	`,
 
