@@ -25,6 +25,7 @@ export default function useWithdrawRequest(): () => Promise<void> {
 		setTxSuccess,
 		setTxFailure,
 		updateMetaMaskBalances,
+		updateUnclaimedWithdrawals,
 	} = useBridge();
 	const { api } = useCENNZApi();
 	const {
@@ -98,7 +99,7 @@ export default function useWithdrawRequest(): () => Promise<void> {
 						);
 					})
 					.then((withdrawTx) => {
-						withdrawTx.on("txHashed", (hash) => {
+						withdrawTx.on("txHashed", () => {
 							setTxPending({
 								relayerStatus: "EthereumConfirming",
 								txHashLink: withdrawTx.getHashLink(),
@@ -116,13 +117,19 @@ export default function useWithdrawRequest(): () => Promise<void> {
 						});
 
 						withdrawTx.on("txFailed", (errorCode) => {
+							updateUnclaimedWithdrawals();
 							return setTxFailure({
 								errorCode,
 								txHashLink: withdrawTx.getHashLink(),
 							});
 						});
 
-						withdrawTx.on("txCancelled", () => setTxIdle());
+						withdrawTx.on("txCancelled", () => {
+							updateMetaMaskBalances();
+							updateCENNZBalances();
+							updateUnclaimedWithdrawals();
+							setTxIdle();
+						});
 					})
 					.catch((error) => {
 						console.info(error);
@@ -153,5 +160,6 @@ export default function useWithdrawRequest(): () => Promise<void> {
 		updateMetaMaskBalances,
 		updateCENNZBalances,
 		setTxSuccess,
+		updateUnclaimedWithdrawals,
 	]);
 }

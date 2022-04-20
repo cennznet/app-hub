@@ -1,16 +1,12 @@
-import { IntrinsicElements } from "@/types";
 import { FC, useCallback, useEffect, useState } from "react";
+import { IntrinsicElements } from "@/types";
 import SubmitButton from "@/components/shared/SubmitButton";
 import { css } from "@emotion/react";
 import { Theme } from "@mui/material";
 import { useBridge } from "@/providers/BridgeProvider";
 import useBridgeStatus from "@/hooks/useBridgeStatus";
-import HistoricalWithdrawal from "@/components/HistoricalWithdrawal";
-import {
-	useDepositRequest,
-	useHistoricalWithdrawRequest,
-	useWithdrawRequest,
-} from "@/hooks";
+import BridgeWithdrawAdvanced from "@/components/BridgeWithdrawAdvanced";
+import { useDepositRequest, useWithdrawRequest } from "@/hooks";
 
 interface BridgeFormProps {}
 
@@ -20,30 +16,18 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 }) => {
 	const { bridgeAction } = useBridge();
 	const [buttonLabel, setButtonLabel] = useState<string>("Deposit");
-	const [advancedExpanded, setAdvancedExpanded] = useState<boolean>(false);
 
 	const processDepositRequest = useDepositRequest();
 
 	const processWithdrawRequest = useWithdrawRequest();
 
-	const processHistoricalWithdrawRequest = useHistoricalWithdrawRequest();
-
 	const onFormSubmit = useCallback(
 		async (event) => {
 			event.preventDefault();
 			if (bridgeAction === "Deposit") return processDepositRequest();
-			if (bridgeAction === "Withdraw") {
-				if (advancedExpanded) return processHistoricalWithdrawRequest();
-				return processWithdrawRequest();
-			}
+			if (bridgeAction === "Withdraw") return processWithdrawRequest();
 		},
-		[
-			bridgeAction,
-			processDepositRequest,
-			processWithdrawRequest,
-			processHistoricalWithdrawRequest,
-			advancedExpanded,
-		]
+		[bridgeAction, processDepositRequest, processWithdrawRequest]
 	);
 
 	const status = useBridgeStatus();
@@ -57,12 +41,7 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 		<form {...props} css={styles.root} onSubmit={onFormSubmit}>
 			{children}
 
-			{bridgeAction === "Withdraw" && (
-				<HistoricalWithdrawal
-					expanded={advancedExpanded}
-					setExpanded={setAdvancedExpanded}
-				/>
-			)}
+			{bridgeAction === "Withdraw" && <BridgeWithdrawAdvanced />}
 
 			<div css={styles.formSubmit}>
 				<SubmitButton

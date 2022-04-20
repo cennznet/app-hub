@@ -31,7 +31,6 @@ export default function CENNZExtensionProvider({
 }: PropsWithChildren<ProviderProps>) {
 	const { browser, os } = useUserAgent();
 	const [module, setModule] = useState<typeof Extension>();
-	const [extension, setExtension] = useState<InjectedExtension>();
 	const [accounts, setAccounts] = useState<Array<InjectedAccountWithMeta>>();
 
 	const promptInstallExtension = useCallback(() => {

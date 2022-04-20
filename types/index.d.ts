@@ -1,4 +1,3 @@
-import { ethers } from "ethers";
 import { Balance } from "@/utils";
 import {
 	AnchorHTMLAttributes,
@@ -37,14 +36,6 @@ export interface CENNZAssetBalance extends CENNZAsset {
 }
 
 export type SectionUri = "swap" | "pool" | "bridge";
-
-//TODO: Remove after Bridge work done
-export interface TxModalAttributes {
-	state: string;
-	title: string;
-	text: string;
-	hash: string;
-}
 
 export interface IntrinsicElements {
 	div: HTMLAttributes<HTMLDivElement>;
@@ -95,4 +86,13 @@ export interface CENNZEvent {
 	section?: string;
 	method?: string;
 	data?: any[];
+}
+
+export interface WithdrawClaim {
+	assetId: number;
+	expiry: string;
+	expiryRaw: number;
+	eventProofId: number;
+	transferAsset: BridgedEthereumToken;
+	transferAmount: Balance;
 }
