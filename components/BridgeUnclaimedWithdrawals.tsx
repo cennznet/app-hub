@@ -27,7 +27,7 @@ const BridgeUnclaimedWithdrawals: VFC = () => {
 		<TableContainer css={styles.container}>
 			<Table>
 				<TableHead>
-					<TableRow>
+					<TableRow css={styles.rowHead}>
 						<TableCell css={styles.column}>ID</TableCell>
 						<TableCell css={styles.column}>Entry</TableCell>
 						<TableCell css={styles.column}>Action</TableCell>
@@ -125,20 +125,20 @@ const EntryCell: VFC<{ withdrawClaim: WithdrawClaim }> = ({
 };
 
 const styles = {
-	container: css`
-		margin-top: 0.2em;
-		border: 1px solid rgba(0, 0, 0, 0.1);
+	container: ({ palette }: Theme) => css`
+		border: 1px solid ${palette.text.secondary};
 		border-radius: 4px;
 		overflow-y: auto;
 		white-space: nowrap;
 		max-height: 15em;
 	`,
 
-	column: css`
+	column: ({ palette }: Theme) => css`
 		text-align: center;
+		border-bottom: 1px solid ${palette.grey["200"]};
 	`,
 
-	columnMain: ({ palette }: Theme) => css`
+	columnMain: css`
 		text-align: left;
 
 		em {
@@ -155,8 +155,9 @@ const styles = {
 
 	row: ({ palette, transitions }: Theme) => css`
 		transition: background-color ${transitions.duration.shortest}ms;
+
 		&:nth-of-type(even) {
-			background-color: rgba(0, 0, 0, 0.03);
+			background-color: rgba(0, 0, 0, 0.01);
 		}
 
 		&:last-of-type {
@@ -196,6 +197,13 @@ const styles = {
 	rowEmpty: css`
 		td {
 			text-align: center;
+		}
+	`,
+
+	rowHead: ({ palette }: Theme) => css`
+		background-color: ${palette.grey["200"]};
+		th {
+			padding: 0.5em;
 		}
 	`,
 
