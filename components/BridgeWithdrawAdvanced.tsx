@@ -104,8 +104,8 @@ const styles = {
 
 	claimCheckProgress: css`
 		display: inline-flex;
-		margin-left: 1em;
-		margin-bottom: 0.2em;
+		margin-left: 0.5em;
+		margin-bottom: 0.15em;
 		width: 25px;
 		border-radius: 10px;
 		opacity: 0.5;
