@@ -13,32 +13,7 @@ import {
 import { useHistoricalWithdrawRequest } from "@/hooks";
 import { getMinutesAndSeconds } from "@/utils";
 import { useBridge } from "@/providers/BridgeProvider";
-
-const ExpiryCell: VFC<{ expiryRaw: number; expiryString: string }> = ({
-	expiryRaw,
-	expiryString,
-}) => {
-	const [expiry, setExpiry] = useState<string>("");
-	const [seconds, setSeconds] = useState<number>(0);
-
-	useEffect(() => {
-		if (expiryRaw * 1000 > Date.now() + 600000) return setExpiry(expiryString);
-
-		const intervalId = setInterval(() => {
-			setSeconds((seconds) => seconds + 1);
-			setExpiry(getMinutesAndSeconds(expiryRaw - seconds));
-		}, 1000);
-
-		return () => clearInterval(intervalId);
-	}, [expiryString, expiryRaw, seconds, setExpiry]);
-
-	return (
-		<TableCell css={[styles.column, styles.number]}>
-			{expiry && expiry}
-			{!expiry && <LinearProgress css={[styles.expiryProgress]} />}
-		</TableCell>
-	);
-};
+import { WithdrawClaim } from "@/types";
 
 const BridgeUnclaimedWithdrawals: VFC = () => {
 	const { unclaimedWithdrawals } = useBridge();
@@ -52,17 +27,16 @@ const BridgeUnclaimedWithdrawals: VFC = () => {
 		<TableContainer css={styles.container}>
 			<Table>
 				<TableHead>
-					<TableRow>
+					<TableRow css={styles.rowHead}>
 						<TableCell css={styles.column}>ID</TableCell>
-						<TableCell css={styles.column}>Value</TableCell>
-						<TableCell css={styles.column}>Expiry</TableCell>
+						<TableCell css={styles.column}>Entry</TableCell>
 						<TableCell css={styles.column}>Action</TableCell>
 					</TableRow>
 				</TableHead>
 				<TableBody>
 					{!someUnclaimed && (
 						<TableRow css={[styles.row, styles.rowEmpty]}>
-							<TableCell colSpan={4}>
+							<TableCell colSpan={3}>
 								No unclaimed withdrawals &nbsp;&#127881;
 							</TableCell>
 						</TableRow>
@@ -77,23 +51,15 @@ const BridgeUnclaimedWithdrawals: VFC = () => {
 									<TableCell css={[styles.column, styles.number]}>
 										{unclaimed.eventProofId}
 									</TableCell>
-									{/* Value */}
-									<TableCell css={[styles.column, styles.number]}>
-										{unclaimed.transferAmount.toInput()}{" "}
-										{unclaimed.transferAsset.symbol}
-									</TableCell>
 									{/* Expiry */}
-									<ExpiryCell
-										expiryRaw={unclaimed.expiryRaw}
-										expiryString={unclaimed.expiry}
-									/>
+									<EntryCell withdrawClaim={unclaimed} />
 									{/* Action */}
 									<TableCell css={styles.column}>
 										<button
 											onClick={() => processHistoricalRequest(unclaimed)}
 											type="button"
 										>
-											claim
+											Claim
 										</button>
 									</TableCell>
 								</TableRow>
@@ -106,18 +72,81 @@ const BridgeUnclaimedWithdrawals: VFC = () => {
 
 export default BridgeUnclaimedWithdrawals;
 
+const EntryCell: VFC<{ withdrawClaim: WithdrawClaim }> = ({
+	withdrawClaim,
+}) => {
+	const [expiry, setExpiry] = useState<string>("");
+	const [seconds, setSeconds] = useState<number>(0);
+	const {
+		expiryRaw,
+		expiry: expiryString,
+		transferAmount,
+		transferAsset,
+		beneficiary,
+	} = withdrawClaim;
+
+	useEffect(() => {
+		if (expiryRaw * 1000 > Date.now() + 600000) return setExpiry(expiryString);
+
+		const intervalId = setInterval(() => {
+			setSeconds((seconds) => seconds + 1);
+			setExpiry(getMinutesAndSeconds(expiryRaw - seconds));
+		}, 1000);
+
+		return () => clearInterval(intervalId);
+	}, [expiryString, expiryRaw, seconds, setExpiry]);
+
+	const truncatedAddress = `${beneficiary.slice(0, 5)}...${beneficiary.slice(
+		-4
+	)}`;
+
+	return (
+		<TableCell css={[styles.column, styles.columnMain]}>
+			<div>
+				<strong>Transfer:</strong>{" "}
+				<em>
+					<span>{transferAmount.toInput()}</span>{" "}
+					<span>{transferAsset.symbol}</span>
+				</em>
+			</div>
+			<div>
+				<strong>Address:</strong> <em>{truncatedAddress}</em>
+			</div>
+
+			<div>
+				<strong>Expiry:</strong>{" "}
+				<>
+					{!!expiry && expiry}
+					{!expiry && <LinearProgress css={[styles.expiryProgress]} />}
+				</>
+			</div>
+		</TableCell>
+	);
+};
+
 const styles = {
-	container: css`
-		margin-top: 0.2em;
-		border: 1px solid rgba(0, 0, 0, 0.1);
+	container: ({ palette }: Theme) => css`
+		border: 1px solid ${palette.text.secondary};
 		border-radius: 4px;
 		overflow-y: auto;
 		white-space: nowrap;
 		max-height: 15em;
 	`,
 
-	column: css`
+	column: ({ palette }: Theme) => css`
 		text-align: center;
+		border-bottom: 1px solid ${palette.grey["200"]};
+	`,
+
+	columnMain: css`
+		text-align: left;
+
+		em {
+			font-family: "Roboto Mono", monospace;
+			display: inline;
+			letter-spacing: -0.025em;
+			font-style: normal;
+		}
 	`,
 
 	number: css`
@@ -126,8 +155,9 @@ const styles = {
 
 	row: ({ palette, transitions }: Theme) => css`
 		transition: background-color ${transitions.duration.shortest}ms;
+
 		&:nth-of-type(even) {
-			background-color: rgba(0, 0, 0, 0.03);
+			background-color: rgba(0, 0, 0, 0.01);
 		}
 
 		&:last-of-type {
@@ -167,6 +197,13 @@ const styles = {
 	rowEmpty: css`
 		td {
 			text-align: center;
+		}
+	`,
+
+	rowHead: ({ palette }: Theme) => css`
+		background-color: ${palette.grey["200"]};
+		th {
+			padding: 0.5em;
 		}
 	`,
 
