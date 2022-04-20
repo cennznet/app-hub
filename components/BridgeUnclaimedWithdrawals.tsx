@@ -57,7 +57,7 @@ const BridgeUnclaimedWithdrawals: VFC<{
 					{unclaimedWithdrawals.map((unclaimed) => (
 						<>
 							{unclaimed.expiry !== "Expired" && (
-								<TableRow key={unclaimed.eventProofId}>
+								<TableRow css={styles.row} key={unclaimed.eventProofId}>
 									{/* ID */}
 									<TableCell css={[styles.column, styles.number]}>
 										{unclaimed.eventProofId}
@@ -72,7 +72,6 @@ const BridgeUnclaimedWithdrawals: VFC<{
 									{/* Action */}
 									<TableCell css={styles.column}>
 										<button
-											css={styles.claimButton}
 											onClick={() => processHistoricalRequest(unclaimed)}
 											type="button"
 										>
@@ -109,33 +108,39 @@ const styles = {
 		font-family: "Roboto Mono", monospace;
 	`,
 
+	row: ({ palette, transitions }: Theme) => css`
+		&:nth-of-type(odd) {
+			background-color: ${palette.info.main};
+		}
+
+		button {
+			border-radius: 4px;
+			height: 1.7em;
+			width: 4em;
+
+			background-color: white;
+			font-weight: bold;
+			cursor: pointer;
+			transition: background-color ${transitions.duration.short}ms,
+				color ${transitions.duration.short}ms;
+
+			font-size: 13px;
+			text-transform: uppercase;
+			border: 1px solid ${palette.primary.main};
+			color: ${palette.primary.main};
+
+			&:hover {
+				background-color: ${palette.primary.main};
+				color: white;
+			}
+		}
+	`,
+
 	expiryProgress: css`
 		margin: 0 auto;
 		width: 25px;
 		border-radius: 10px;
 		opacity: 0.5;
 		transition: opacity 0.2s;
-	`,
-
-	claimButton: ({ palette, transitions }: Theme) => css`
-		border-radius: 4px;
-		height: 1.7em;
-		width: 4em;
-
-		background-color: white;
-		font-weight: bold;
-		cursor: pointer;
-		transition: background-color ${transitions.duration.short}ms,
-			color ${transitions.duration.short}ms;
-
-		font-size: 13px;
-		text-transform: uppercase;
-		border: 1px solid ${palette.primary.main};
-		color: ${palette.primary.main};
-
-		&:hover {
-			background-color: ${palette.primary.main};
-			color: white;
-		}
 	`,
 };
