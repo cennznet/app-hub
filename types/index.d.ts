@@ -82,6 +82,12 @@ export type RelayerConfirmingStatus = Extract<
 	"EthereumConfirming" | "CennznetConfirming"
 >;
 
+export interface CENNZEvent {
+	section?: string;
+	method?: string;
+	data?: any[];
+}
+
 export interface WithdrawClaim {
 	assetId: number;
 	expiry: string;

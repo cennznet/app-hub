@@ -1,7 +1,7 @@
-import { Api, SubmittableResult } from "@cennznet/api";
+import { SubmittableResult } from "@cennznet/api";
 import Emittery from "emittery";
 import { CENNZ_EXPLORER_URL } from "@/constants";
-import { Event } from "@polkadot/types/interfaces";
+import { CENNZEvent } from "@/types";
 
 interface EmitEvents {
 	txCreated: undefined;
@@ -55,10 +55,10 @@ export default class CENNZTransaction extends Emittery<EmitEvents> {
 		result: SubmittableResult,
 		eventSection: string,
 		eventMethod: string
-	): Event {
+	): CENNZEvent {
 		const { events: records } = result;
 		const record = records.find((record) => {
-			const { event } = record;
+			const event: CENNZEvent = record.event;
 			return event?.section === eventSection && event?.method === eventMethod;
 		});
 
@@ -67,15 +67,14 @@ export default class CENNZTransaction extends Emittery<EmitEvents> {
 
 	getHashLink(): string {
 		let isNikau: boolean;
-		const explorerUrl = CENNZ_EXPLORER_URL.replace("nikau.", (match) => {
+		const explorerUrl = CENNZ_EXPLORER_URL.replace("nikau.", () => {
 			isNikau = true;
 			return "";
 		});
-		const link = this.hash
+		return this.hash
 			? `${explorerUrl}/extrinsic/${this.hash}?${
 					isNikau ? "?network=Nikau" : ""
 			  }`
 			: null;
-		return link;
 	}
 }
