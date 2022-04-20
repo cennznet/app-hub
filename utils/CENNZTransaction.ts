@@ -1,7 +1,6 @@
-import { Api, SubmittableResult } from "@cennznet/api";
+import { SubmittableResult } from "@cennznet/api";
 import Emittery from "emittery";
 import { CENNZ_EXPLORER_URL } from "@/constants";
-import { Event } from "@polkadot/types/interfaces";
 import { CENNZEvent } from "@/types";
 
 interface EmitEvents {
