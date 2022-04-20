@@ -59,7 +59,7 @@ export default function useHistoricalWithdrawRequest(): (
 					eventProof,
 					unclaimed.transferAmount,
 					unclaimed.transferAsset,
-					transferMetaMaskAddress,
+					unclaimed.beneficiary,
 					metaMaskWallet.getSigner(),
 					eventProof.blockHash
 				)
