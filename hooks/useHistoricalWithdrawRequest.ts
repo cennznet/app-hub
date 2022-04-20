@@ -64,7 +64,7 @@ export default function useHistoricalWithdrawRequest(): (
 					eventProof.blockHash
 				)
 					.then((withdrawTx) => {
-						withdrawTx.on("txHashed", (_hash) => {
+						withdrawTx.on("txHashed", () => {
 							setTxPending({
 								relayerStatus: "EthereumConfirming",
 								txHashLink: withdrawTx.getHashLink(),

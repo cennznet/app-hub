@@ -1,4 +1,4 @@
-import { useLayoutEffect, useState, VFC } from "react";
+import { useEffect, useState, VFC } from "react";
 import { css } from "@emotion/react";
 import {
 	LinearProgress,
@@ -14,11 +14,14 @@ import { useHistoricalWithdrawRequest } from "@/hooks";
 import { getMinutesAndSeconds } from "@/utils";
 import { useBridge } from "@/providers/BridgeProvider";
 
-const _renderExpiry = (expiryRaw, expiryString) => {
+const ExpiryCell: VFC<{ expiryRaw: number; expiryString: string }> = ({
+	expiryRaw,
+	expiryString,
+}) => {
 	const [expiry, setExpiry] = useState<string>("");
 	const [seconds, setSeconds] = useState<number>(0);
 
-	useLayoutEffect(() => {
+	useEffect(() => {
 		if (expiryRaw * 1000 > Date.now() + 600000) return setExpiry(expiryString);
 
 		const intervalId = setInterval(() => {
@@ -53,34 +56,35 @@ const BridgeUnclaimedWithdrawals: VFC = () => {
 					</TableRow>
 				</TableHead>
 				<TableBody>
-					{unclaimedWithdrawals?.map((unclaimed) => (
-						<>
-							{unclaimed.expiry !== "Expired" && (
-								<TableRow css={styles.row} key={unclaimed.eventProofId}>
-									{/* ID */}
-									<TableCell css={[styles.column, styles.number]}>
-										{unclaimed.eventProofId}
-									</TableCell>
-									{/* Value */}
-									<TableCell css={[styles.column, styles.number]}>
-										{unclaimed.transferAmount.toInput()}{" "}
-										{unclaimed.transferAsset.symbol}
-									</TableCell>
-									{/* Expiry */}
-									{_renderExpiry(unclaimed.expiryRaw, unclaimed.expiry)}
-									{/* Action */}
-									<TableCell css={styles.column}>
-										<button
-											onClick={() => processHistoricalRequest(unclaimed)}
-											type="button"
-										>
-											claim
-										</button>
-									</TableCell>
-								</TableRow>
-							)}
-						</>
-					))}
+					{unclaimedWithdrawals
+						?.filter((unclaimed) => unclaimed.expiry !== "Expired")
+						?.map((unclaimed) => (
+							<TableRow css={styles.row} key={unclaimed.eventProofId}>
+								{/* ID */}
+								<TableCell css={[styles.column, styles.number]}>
+									{unclaimed.eventProofId}
+								</TableCell>
+								{/* Value */}
+								<TableCell css={[styles.column, styles.number]}>
+									{unclaimed.transferAmount.toInput()}{" "}
+									{unclaimed.transferAsset.symbol}
+								</TableCell>
+								{/* Expiry */}
+								<ExpiryCell
+									expiryRaw={unclaimed.expiryRaw}
+									expiryString={unclaimed.expiry}
+								/>
+								{/* Action */}
+								<TableCell css={styles.column}>
+									<button
+										onClick={() => processHistoricalRequest(unclaimed)}
+										type="button"
+									>
+										claim
+									</button>
+								</TableCell>
+							</TableRow>
+						))}
 				</TableBody>
 			</Table>
 		</TableContainer>

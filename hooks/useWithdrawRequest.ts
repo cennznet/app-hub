@@ -99,7 +99,7 @@ export default function useWithdrawRequest(): () => Promise<void> {
 						);
 					})
 					.then((withdrawTx) => {
-						withdrawTx.on("txHashed", (_hash) => {
+						withdrawTx.on("txHashed", () => {
 							setTxPending({
 								relayerStatus: "EthereumConfirming",
 								txHashLink: withdrawTx.getHashLink(),
@@ -125,6 +125,8 @@ export default function useWithdrawRequest(): () => Promise<void> {
 						});
 
 						withdrawTx.on("txCancelled", () => {
+							updateMetaMaskBalances();
+							updateCENNZBalances();
 							updateUnclaimedWithdrawals();
 							setTxIdle();
 						});
