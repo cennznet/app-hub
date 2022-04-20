@@ -55,7 +55,6 @@ interface BridgeContextType extends TxStatusHook {
 	setAdvancedMounted: Dispatch<SetStateAction<boolean>>;
 
 	unclaimedWithdrawals: WithdrawClaim[];
-	setUnclaimedWithdrawals: Dispatch<SetStateAction<WithdrawClaim[]>>;
 	updateUnclaimedWithdrawals: () => void;
 }
 
@@ -156,7 +155,6 @@ const BridgeProvider: FC<BridgeProviderProps> = ({
 				setAdvancedMounted,
 
 				unclaimedWithdrawals,
-				setUnclaimedWithdrawals,
 				updateUnclaimedWithdrawals,
 
 				...useTxStatus(),
