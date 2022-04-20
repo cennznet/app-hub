@@ -21,12 +21,8 @@ const BridgeWithdrawAdvanced: VFC<
 		advancedExpanded: expanded,
 		setAdvancedExpanded: setExpanded,
 		advancedMounted,
-		unclaimedWithdrawals,
 		updateUnclaimedWithdrawals,
 	}: any = useBridge();
-	const someUnclaimed = unclaimedWithdrawals?.some(
-		(unclaimed) => unclaimed.expiry !== "Expired"
-	);
 
 	useEffect(() => {
 		if (expanded) void updateUnclaimedWithdrawals();
@@ -47,18 +43,11 @@ const BridgeWithdrawAdvanced: VFC<
 				</AccordionSummary>
 				<AccordionDetails>
 					<br />
-					<label htmlFor="unclaimedWithdrawalsTable">
-						{(!advancedMounted || someUnclaimed) && (
-							<span>unclaimed withdrawals</span>
-						)}
-						{advancedMounted && !someUnclaimed && (
-							<span>no unclaimed withdrawals &nbsp;&#127881;</span>
-						)}
-					</label>
+					<label css={styles.claimLabel}>Unclaimed Withdrawals</label>
 					{!advancedMounted && (
 						<LinearProgress css={[styles.claimCheckProgress]} />
 					)}
-					{advancedMounted && someUnclaimed && <BridgeUnclaimedWithdrawals />}
+					{advancedMounted && <BridgeUnclaimedWithdrawals />}
 				</AccordionDetails>
 			</Accordion>
 		</div>
@@ -110,5 +99,11 @@ const styles = {
 		border-radius: 10px;
 		opacity: 0.5;
 		transition: opacity 0.2s;
+	`,
+
+	claimLabel: css`
+		font-weight: bold;
+		margin-bottom: 0.5em;
+		display: inline-block;
 	`,
 };
