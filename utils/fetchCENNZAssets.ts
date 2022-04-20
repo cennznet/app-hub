@@ -18,9 +18,8 @@ import { ALLOWED_ASSET_IDS } from "@/constants";
 export default async function fetchCENNZAssets(
 	api: Api
 ): Promise<CENNZAsset[]> {
-	const registeredAssets: [AssetId, AssetInfo][] = await (
-		api.rpc as any
-	).genericAsset.registeredAssets();
+	const registeredAssets: [AssetId, AssetInfo][] =
+		await api.rpc.genericAsset.registeredAssets();
 
 	// Split up pure Generic Assets with (potential) bridged Generic Assets
 	const { pureAssets, potentialBridgedAssets } = registeredAssets

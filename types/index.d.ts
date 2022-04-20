@@ -90,3 +90,9 @@ export type RelayerConfirmingStatus = Extract<
 	RelayerStatus,
 	"EthereumConfirming" | "CennznetConfirming"
 >;
+
+export interface CENNZEvent {
+	section?: string;
+	method?: string;
+	data?: any[];
+}

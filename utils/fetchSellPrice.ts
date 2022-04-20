@@ -17,7 +17,7 @@ export default async function fetchSellPrice(
 	exchangeAssetValue: Balance,
 	receiveAsset: CENNZAsset
 ): Promise<Balance> {
-	const { price } = await (api.rpc as any).cennzx.sellPrice(
+	const { price } = await api.rpc.cennzx.sellPrice(
 		exchangeAssetId,
 		exchangeAssetValue.toFixed(0, Balance.roundDown),
 		receiveAsset.assetId
