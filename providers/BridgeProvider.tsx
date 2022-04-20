@@ -6,17 +6,25 @@ import {
 	TxStatusHook,
 } from "@/hooks";
 import useMetaMaskBalances from "@/hooks/useMetaMaskBalances";
-import { BridgeAction, BridgedEthereumToken, EthereumToken } from "@/types";
-import { Balance } from "@/utils";
+import {
+	BridgeAction,
+	BridgedEthereumToken,
+	EthereumToken,
+	WithdrawClaim,
+} from "@/types";
+import { Balance, fetchUnclaimedWithdrawals } from "@/utils";
 import {
 	createContext,
 	Dispatch,
 	FC,
 	SetStateAction,
+	useCallback,
 	useContext,
 	useEffect,
 	useState,
 } from "react";
+import { useCENNZApi } from "@/providers/CENNZApiProvider";
+import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 
 type ERC20TokenAddress = EthereumToken["address"];
 
@@ -45,6 +53,10 @@ interface BridgeContextType extends TxStatusHook {
 	setAdvancedExpanded: Dispatch<SetStateAction<boolean>>;
 	advancedMounted: boolean;
 	setAdvancedMounted: Dispatch<SetStateAction<boolean>>;
+
+	unclaimedWithdrawals: WithdrawClaim[];
+	setUnclaimedWithdrawals: Dispatch<SetStateAction<WithdrawClaim[]>>;
+	updateUnclaimedWithdrawals: () => void;
 }
 
 const BridgeContext = createContext<BridgeContextType>({} as BridgeContextType);
@@ -59,6 +71,8 @@ const BridgeProvider: FC<BridgeProviderProps> = ({
 	withdrawTokens,
 	children,
 }) => {
+	const { api } = useCENNZApi();
+	const { selectedAccount: CENNZAccount } = useCENNZWallet();
 	const [bridgeAction, setBridgeAction] = useState<BridgeAction>("Deposit");
 	const [ethereumTokens, setEthereumTokens] =
 		useState<BridgeContextType["ethereumTokens"]>(depositTokens);
@@ -68,6 +82,20 @@ const BridgeProvider: FC<BridgeProviderProps> = ({
 		useState<BridgeContextType["transferMetaMaskAddress"]>("");
 	const [advancedExpanded, setAdvancedExpanded] = useState<boolean>(false);
 	const [advancedMounted, setAdvancedMounted] = useState<boolean>(false);
+	const [unclaimedWithdrawals, setUnclaimedWithdrawals] =
+		useState<WithdrawClaim[]>();
+
+	const updateUnclaimedWithdrawals = useCallback(async () => {
+		if (!api || !CENNZAccount) return;
+		setAdvancedMounted(false);
+
+		const unclaimed: Awaited<ReturnType<typeof fetchUnclaimedWithdrawals>> =
+			await fetchUnclaimedWithdrawals(CENNZAccount.address, api);
+
+		setUnclaimedWithdrawals(unclaimed?.filter(Boolean));
+
+		setAdvancedMounted(true);
+	}, [api, CENNZAccount, setAdvancedMounted]);
 
 	const ethAsset = (ethereumTokens as EthereumToken[])?.find(
 		(token) => token.address === ETH_TOKEN_ADDRESS
@@ -126,6 +154,10 @@ const BridgeProvider: FC<BridgeProviderProps> = ({
 				setAdvancedExpanded,
 				advancedMounted,
 				setAdvancedMounted,
+
+				unclaimedWithdrawals,
+				setUnclaimedWithdrawals,
+				updateUnclaimedWithdrawals,
 
 				...useTxStatus(),
 			}}

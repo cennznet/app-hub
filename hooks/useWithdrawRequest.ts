@@ -25,7 +25,7 @@ export default function useWithdrawRequest(): () => Promise<void> {
 		setTxSuccess,
 		setTxFailure,
 		updateMetaMaskBalances,
-		setAdvancedExpanded,
+		updateUnclaimedWithdrawals,
 	} = useBridge();
 	const { api } = useCENNZApi();
 	const {
@@ -117,7 +117,7 @@ export default function useWithdrawRequest(): () => Promise<void> {
 						});
 
 						withdrawTx.on("txFailed", (errorCode) => {
-							setAdvancedExpanded(false);
+							updateUnclaimedWithdrawals();
 							return setTxFailure({
 								errorCode,
 								txHashLink: withdrawTx.getHashLink(),
@@ -125,7 +125,7 @@ export default function useWithdrawRequest(): () => Promise<void> {
 						});
 
 						withdrawTx.on("txCancelled", () => {
-							setAdvancedExpanded(false);
+							updateUnclaimedWithdrawals();
 							setTxIdle();
 						});
 					})
@@ -158,6 +158,6 @@ export default function useWithdrawRequest(): () => Promise<void> {
 		updateMetaMaskBalances,
 		updateCENNZBalances,
 		setTxSuccess,
-		setAdvancedExpanded,
+		updateUnclaimedWithdrawals,
 	]);
 }

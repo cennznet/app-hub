@@ -10,7 +10,6 @@ import {
 } from "@mui/material";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import { useBridge } from "@/providers/BridgeProvider";
-import { useUnclaimedWithdrawals } from "@/hooks";
 import BridgeUnclaimedWithdrawals from "@/components/BridgeUnclaimedWithdrawals";
 
 interface BridgeAdvancedProps {}
@@ -22,9 +21,9 @@ const BridgeWithdrawAdvanced: VFC<
 		advancedExpanded: expanded,
 		setAdvancedExpanded: setExpanded,
 		advancedMounted,
+		unclaimedWithdrawals,
+		updateUnclaimedWithdrawals,
 	}: any = useBridge();
-	const [unclaimedWithdrawals, updateUnclaimedWithdrawals] =
-		useUnclaimedWithdrawals();
 	const someUnclaimed = unclaimedWithdrawals?.some(
 		(unclaimed) => unclaimed.expiry !== "Expired"
 	);
@@ -59,11 +58,7 @@ const BridgeWithdrawAdvanced: VFC<
 					{!advancedMounted && (
 						<LinearProgress css={[styles.claimCheckProgress]} />
 					)}
-					{advancedMounted && someUnclaimed && (
-						<BridgeUnclaimedWithdrawals
-							unclaimedWithdrawals={unclaimedWithdrawals}
-						/>
-					)}
+					{advancedMounted && someUnclaimed && <BridgeUnclaimedWithdrawals />}
 				</AccordionDetails>
 			</Accordion>
 		</div>

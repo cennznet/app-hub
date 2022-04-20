@@ -25,7 +25,7 @@ export default function useHistoricalWithdrawRequest(): (
 		setTxSuccess,
 		setTxFailure,
 		updateMetaMaskBalances,
-		setAdvancedExpanded,
+		updateUnclaimedWithdrawals,
 	} = useBridge();
 	const { api } = useCENNZApi();
 	const { updateBalances: updateCENNZBalances } = useCENNZWallet();
@@ -75,7 +75,7 @@ export default function useHistoricalWithdrawRequest(): (
 							setTrValue("");
 							updateMetaMaskBalances();
 							updateCENNZBalances();
-							setAdvancedExpanded(false);
+							updateUnclaimedWithdrawals();
 							setTxSuccess({
 								transferValue: unclaimed.transferAmount,
 								txHashLink: withdrawTx.getHashLink(),
@@ -117,7 +117,7 @@ export default function useHistoricalWithdrawRequest(): (
 			setTxSuccess,
 			setTxFailure,
 			setTxIdle,
-			setAdvancedExpanded,
+			updateUnclaimedWithdrawals,
 		]
 	);
 }

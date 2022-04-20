@@ -11,8 +11,8 @@ import {
 	Theme,
 } from "@mui/material";
 import { useHistoricalWithdrawRequest } from "@/hooks";
-import { WithdrawClaim } from "@/types";
 import { getMinutesAndSeconds } from "@/utils";
+import { useBridge } from "@/providers/BridgeProvider";
 
 const _renderExpiry = (expiryRaw, expiryString) => {
 	const [expiry, setExpiry] = useState<string>("");
@@ -37,9 +37,8 @@ const _renderExpiry = (expiryRaw, expiryString) => {
 	);
 };
 
-const BridgeUnclaimedWithdrawals: VFC<{
-	unclaimedWithdrawals: WithdrawClaim[];
-}> = ({ unclaimedWithdrawals }) => {
+const BridgeUnclaimedWithdrawals: VFC = () => {
+	const { unclaimedWithdrawals } = useBridge();
 	const processHistoricalRequest = useHistoricalWithdrawRequest();
 
 	return (
@@ -54,7 +53,7 @@ const BridgeUnclaimedWithdrawals: VFC<{
 					</TableRow>
 				</TableHead>
 				<TableBody>
-					{unclaimedWithdrawals.map((unclaimed) => (
+					{unclaimedWithdrawals?.map((unclaimed) => (
 						<>
 							{unclaimed.expiry !== "Expired" && (
 								<TableRow css={styles.row} key={unclaimed.eventProofId}>
