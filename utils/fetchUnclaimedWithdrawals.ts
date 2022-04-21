@@ -56,7 +56,7 @@ export default async function fetchUnclaimedWithdrawals(
 				transferAsset: transferAsset as BridgedEthereumToken,
 				transferAmount,
 				beneficiary: withdrawal.beneficiary,
-				eventProof,
+				eventProof: { ...eventProof, eventId: eventProof._id },
 			};
 		})
 	);
