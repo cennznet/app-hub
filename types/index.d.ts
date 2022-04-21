@@ -108,3 +108,10 @@ export interface HistoricalEventProof {
 	s: string[];
 	v: number[];
 }
+
+interface CENNZMetaMaskNetwork {
+	cennzTokenAddress: string;
+	chainId: string;
+	chainName: string;
+	rpcUrl: string;
+}
