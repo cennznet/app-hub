@@ -1,4 +1,4 @@
-import { useEffect, VFC } from "react";
+import { useEffect, useState, VFC } from "react";
 import { IntrinsicElements } from "@/types";
 import { css } from "@emotion/react";
 import {
@@ -21,12 +21,21 @@ const BridgeWithdrawAdvanced: VFC<
 		advancedExpanded: expanded,
 		setAdvancedExpanded: setExpanded,
 		advancedMounted,
+		unclaimedWithdrawals,
 		updateUnclaimedWithdrawals,
 	}: any = useBridge();
+	const [firstRender, setFirstRender] = useState<boolean>(true);
 
 	useEffect(() => {
-		if (expanded) void updateUnclaimedWithdrawals();
-	}, [updateUnclaimedWithdrawals, expanded]);
+		if (expanded || firstRender) updateUnclaimedWithdrawals();
+	}, [expanded, firstRender, updateUnclaimedWithdrawals]);
+
+	useEffect(() => {
+		if (!unclaimedWithdrawals || !firstRender) return;
+
+		setExpanded(true);
+		setFirstRender(false);
+	}, [unclaimedWithdrawals, firstRender, setExpanded]);
 
 	return (
 		<div {...props} css={styles.root}>
