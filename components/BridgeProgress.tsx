@@ -1,4 +1,4 @@
-import { ReactNode, VFC } from "react";
+import { ReactNode, useEffect, VFC } from "react";
 import { IntrinsicElements, RelayerConfirmingStatus } from "@/types";
 import { css } from "@emotion/react";
 import { useBridge } from "@/providers/BridgeProvider";
@@ -19,6 +19,17 @@ const BridgeProgress: VFC<IntrinsicElements["div"] & BridgeProgressProps> = (
 	const { txHashLink, ...txProps } = txStatus?.props ?? {};
 	const dismissible =
 		txStatus?.status === "Success" || txStatus?.status === "Failure";
+
+	useEffect(() => {
+		const beforeUnload = (event: BeforeUnloadEvent) => {
+			event.preventDefault();
+			if (txStatus?.status === "Pending") return (event.returnValue = "");
+		};
+
+		window.addEventListener("beforeunload", beforeUnload);
+
+		return () => window.removeEventListener("beforeunload", beforeUnload);
+	}, [txStatus]);
 
 	return (
 		<ProgressOverlay
