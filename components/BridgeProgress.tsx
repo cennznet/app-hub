@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, VFC } from "react";
+import { ReactNode, VFC } from "react";
 import { IntrinsicElements, RelayerConfirmingStatus } from "@/types";
 import { css } from "@emotion/react";
 import { useBridge } from "@/providers/BridgeProvider";
@@ -9,6 +9,7 @@ import StandardButton from "@/components/shared/StandardButton";
 import ProgressOverlay from "@/components/shared/ProgressOverlay";
 import Link from "@/components/Link";
 import { Balance, selectMap } from "@/utils";
+import { useBeforeUnload } from "@/hooks";
 
 interface BridgeProgressProps {}
 
@@ -20,16 +21,7 @@ const BridgeProgress: VFC<IntrinsicElements["div"] & BridgeProgressProps> = (
 	const dismissible =
 		txStatus?.status === "Success" || txStatus?.status === "Failure";
 
-	useEffect(() => {
-		const beforeUnload = (event: BeforeUnloadEvent) => {
-			event.preventDefault();
-			if (txStatus?.status === "Pending") return (event.returnValue = "");
-		};
-
-		window.addEventListener("beforeunload", beforeUnload);
-
-		return () => window.removeEventListener("beforeunload", beforeUnload);
-	}, [txStatus]);
+	useBeforeUnload(txStatus);
 
 	return (
 		<ProgressOverlay
