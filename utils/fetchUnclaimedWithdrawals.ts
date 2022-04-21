@@ -1,7 +1,12 @@
 import { Api } from "@cennznet/api";
 import { BridgedEthereumToken, WithdrawClaim } from "@/types";
 import { BRIDGE_RELAYER_URL } from "@/constants";
-import { Balance, fetchBridgeTokens, getDaysHoursMinutes } from "@/utils";
+import {
+	Balance,
+	fetchBridgeTokens,
+	fetchUnclaimedEventProof,
+	getDaysHoursMinutes,
+} from "@/utils";
 
 /**
  * Fetch unclaimed withdraws for the selected account
@@ -39,6 +44,9 @@ export default async function fetchUnclaimedWithdrawals(
 				withdrawal.amount.trim(),
 				transferAsset
 			);
+			const eventProof = await fetchUnclaimedEventProof(
+				Number(withdrawal.proofId)
+			);
 
 			return {
 				assetId: Number(withdrawal.assetId),
@@ -48,6 +56,7 @@ export default async function fetchUnclaimedWithdrawals(
 				transferAsset: transferAsset as BridgedEthereumToken,
 				transferAmount,
 				beneficiary: withdrawal.beneficiary,
+				eventProof: { ...eventProof, eventId: eventProof._id },
 			};
 		})
 	);
