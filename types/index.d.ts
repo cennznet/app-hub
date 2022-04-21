@@ -100,6 +100,8 @@ export interface WithdrawClaim {
 }
 
 export interface HistoricalEventProof {
+	_id?: string;
+	eventId?: string;
 	validatorSetId: string;
 	validators: [];
 	r: string[];
