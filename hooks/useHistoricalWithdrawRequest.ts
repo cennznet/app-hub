@@ -7,7 +7,7 @@ import { WithdrawClaim } from "@/types";
 import {
 	ensureBridgeWithdrawActive,
 	ensureEthereumChain,
-	sendHistoricalWithdrawEthereumRequest,
+	sendWithdrawEthereumRequest,
 } from "@/utils";
 import { useCallback } from "react";
 
@@ -46,7 +46,7 @@ export default function useHistoricalWithdrawRequest(): (
 					relayerStatus: "EthereumConfirming",
 				});
 
-				sendHistoricalWithdrawEthereumRequest(
+				sendWithdrawEthereumRequest(
 					api,
 					unclaimed.eventProof,
 					unclaimed.transferAmount,
