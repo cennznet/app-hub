@@ -1,53 +1,40 @@
-import { BridgedEthereumToken } from "@/types";
+import { Api } from "@cennznet/api";
+import { BigNumber, ethers } from "ethers";
+import { BridgedEthereumToken, HistoricalEventProof } from "@/types";
 import {
 	Balance,
 	EthereumTransaction,
 	getERC20PegContract,
 	getBridgeContract,
 } from "@/utils";
-import { Api } from "@cennznet/api";
-import { EthEventProof } from "@cennznet/api/derives/ethBridge/types";
-import { BigNumber, ethers } from "ethers";
 import { TransactionResponse } from "@ethersproject/abstract-provider";
 
-export default async function sendWithdrawEthereumRequest(
+export default async function sendHistoricalWithdrawEthereumRequest(
 	api: Api,
-	eventProof: EthEventProof,
+	eventProof: HistoricalEventProof,
 	transferAmount: Balance,
 	transferAsset: BridgedEthereumToken,
 	ethereumAddress: string,
 	signer: ethers.Signer
 ): Promise<EthereumTransaction> {
-	const notaryKeys = (
-		await api.query.ethBridge.notaryKeys()
-	).toJSON() as string[];
-
-	const validators = notaryKeys.map((validator) => {
-		if (
-			validator ===
-			"0x000000000000000000000000000000000000000000000000000000000000000000"
-		)
-			return ethers.constants.AddressZero;
-
-		return ethers.utils.computeAddress(validator);
-	});
-
 	const bridgeContract = getBridgeContract<"OnBehalf">(signer);
 	const pegContract = getERC20PegContract<"OnBehalf">(signer);
 	const verificationFee: BigNumber = await bridgeContract.verificationFee();
+	console.log("eventProof", eventProof);
+
+	console.log(
+		"sendHistoricalWithdrawEthereumRequest",
+		transferAsset.address,
+		transferAmount.toBigNumber(),
+		ethereumAddress,
+		eventProof,
+		{ value: verificationFee }
+	);
 	const gasFee: BigNumber = await pegContract.estimateGas.withdraw(
 		transferAsset.address,
 		transferAmount.toBigNumber(),
 		ethereumAddress,
-		{ ...eventProof, validators },
-		{ value: verificationFee }
-	);
-	console.log(
-		"sendWithdrawEthereumRequest",
-		transferAsset.address,
-		transferAmount.toBigNumber(),
-		ethereumAddress,
-		{ ...eventProof, validators },
+		eventProof,
 		{ value: verificationFee }
 	);
 	const tx = new EthereumTransaction();
@@ -56,7 +43,7 @@ export default async function sendWithdrawEthereumRequest(
 			transferAsset.address,
 			transferAmount.toBigNumber(),
 			ethereumAddress,
-			{ ...eventProof, validators },
+			eventProof,
 			{ value: verificationFee, gasLimit: (gasFee.toNumber() * 1.02).toFixed() }
 		)
 		.then((pegTx: TransactionResponse) => {

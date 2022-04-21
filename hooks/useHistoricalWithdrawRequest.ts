@@ -7,10 +7,8 @@ import { WithdrawClaim } from "@/types";
 import {
 	ensureBridgeWithdrawActive,
 	ensureEthereumChain,
-	sendWithdrawEthereumRequest,
+	sendHistoricalWithdrawEthereumRequest,
 } from "@/utils";
-import { EthEventProof } from "@cennznet/api/derives/ethBridge/types";
-import { EthyEventId } from "@cennznet/types";
 import { useCallback } from "react";
 
 export default function useHistoricalWithdrawRequest(): (
@@ -19,7 +17,6 @@ export default function useHistoricalWithdrawRequest(): (
 	const {
 		transferInput,
 		transferSelect,
-		transferMetaMaskAddress,
 		setTxIdle,
 		setTxPending,
 		setTxSuccess,
@@ -44,24 +41,18 @@ export default function useHistoricalWithdrawRequest(): (
 				setTxPending();
 				await ensureEthereumChain(extension);
 				await ensureBridgeWithdrawActive(api, metaMaskWallet);
-				const eventProof: EthEventProof = await api.derive.ethBridge.eventProof(
-					unclaimed.eventProofId as unknown as EthyEventId
-				);
-
-				console.log({ eventProof });
 
 				setTxPending({
 					relayerStatus: "EthereumConfirming",
 				});
 
-				sendWithdrawEthereumRequest(
+				sendHistoricalWithdrawEthereumRequest(
 					api,
-					eventProof,
+					unclaimed.eventProof,
 					unclaimed.transferAmount,
 					unclaimed.transferAsset,
 					unclaimed.beneficiary,
-					metaMaskWallet.getSigner(),
-					eventProof.blockHash
+					metaMaskWallet.getSigner()
 				)
 					.then((withdrawTx) => {
 						withdrawTx.on("txHashed", () => {
@@ -111,7 +102,6 @@ export default function useHistoricalWithdrawRequest(): (
 			extension,
 			api,
 			metaMaskWallet,
-			transferMetaMaskAddress,
 			updateMetaMaskBalances,
 			updateCENNZBalances,
 			setTxSuccess,

@@ -96,4 +96,13 @@ export interface WithdrawClaim {
 	transferAsset: BridgedEthereumToken;
 	transferAmount: Balance;
 	beneficiary: string;
+	eventProof: HistoricalEventProof;
+}
+
+export interface HistoricalEventProof {
+	validatorSetId: string;
+	validators: [];
+	r: string[];
+	s: string[];
+	v: number[];
 }
