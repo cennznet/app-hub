@@ -6,7 +6,6 @@ import {
 	HTMLAttributes,
 	HTMLFormElement,
 	InputHTMLAttributes,
-	ReactElement,
 } from "react";
 
 export type BridgeChain = "Ethereum" | "CENNZnet";
@@ -65,12 +64,6 @@ export interface MetaMaskAccount {
 	address: string;
 }
 
-export interface TxStatus {
-	status: "in-progress" | "success" | "fail";
-	title: string | ReactElement;
-	message: string | ReactElement;
-}
-
 export type RelayerStatus =
 	| "Successful"
 	| "Failed"
@@ -96,4 +89,11 @@ export interface WithdrawClaim {
 	transferAsset: BridgedEthereumToken;
 	transferAmount: Balance;
 	beneficiary: string;
+}
+
+export type TxType = "Idle" | "Pending" | "Success" | "Failure";
+
+export interface TxStatus {
+	status: TxType;
+	props?: any;
 }
