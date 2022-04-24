@@ -54,6 +54,8 @@ beforeAll(async () => {
 	api = await Api.create({ provider: "wss://nikau.centrality.me/public/ws" });
 });
 
+afterAll(async () => await api.disconnect());
+
 describe("fetchUnclaimedWithdrawals", () => {
 	beforeEach(() => {
 		fetchMock.resetMocks();
