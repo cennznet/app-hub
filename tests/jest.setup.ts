@@ -1,5 +1,7 @@
 import { Api } from "@cennznet/api";
 import { CENNZAsset } from "@/types";
+import { enableFetchMocks } from "jest-fetch-mock";
+enableFetchMocks();
 
 jest.mock("@/utils/getTokenLogo");
 jest.mock("@/constants", () => ({
