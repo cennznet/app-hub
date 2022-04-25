@@ -3,62 +3,51 @@ import { ethers } from "ethers";
 import { Codec, Balance as ApiBalance } from "@cennznet/types";
 import BN from "bn.js";
 
-const CENNZ = {
-	assetId: 16000,
-	symbol: "CENNZ",
-	decimals: 4,
-	decimalsValue: 10000,
-};
-const ETH = {
-	assetId: 17002,
-	symbol: "ETH",
-	decimals: 18,
-	decimalsValue: 1000000000000000000,
-};
-const balance = new Balance(100, CENNZ);
-const float = new Balance(12.34, CENNZ);
+const { cennzAsset, ethAsset } = global.getEthereumAssetsForTest();
+const balance = new Balance(100, cennzAsset);
+const float = new Balance(12.34, cennzAsset);
 
 describe("Balance", () => {
 	it("constructs a new Balance", () => {
-		expect(balance.coin).toEqual(CENNZ);
+		expect(balance.coin).toEqual(cennzAsset);
 	});
 	it("can perform Big.js operations", () => {
 		const abs = balance.abs();
 		expect(abs).toEqual(balance);
 
 		const div = balance.div(2);
-		expect(div).toEqual(new Balance(50, CENNZ));
+		expect(div).toEqual(new Balance(50, cennzAsset));
 
 		const minus = balance.minus(30);
 		const sub = balance.minus(70);
-		expect(minus).toEqual(new Balance(70, CENNZ));
-		expect(sub).toEqual(new Balance(30, CENNZ));
+		expect(minus).toEqual(new Balance(70, cennzAsset));
+		expect(sub).toEqual(new Balance(30, cennzAsset));
 
 		const mod = balance.mod(12);
-		expect(mod).toEqual(new Balance(4, CENNZ));
+		expect(mod).toEqual(new Balance(4, cennzAsset));
 
 		const plus = balance.plus(50);
-		expect(plus).toEqual(new Balance(150, CENNZ));
+		expect(plus).toEqual(new Balance(150, cennzAsset));
 
 		const pow = balance.pow(2);
-		expect(pow).toEqual(new Balance(10000, CENNZ));
+		expect(pow).toEqual(new Balance(10000, cennzAsset));
 
 		const prec = float.prec(3);
-		expect(prec).toEqual(new Balance(12.3, CENNZ));
+		expect(prec).toEqual(new Balance(12.3, cennzAsset));
 
 		const round = float.round(1);
-		expect(round).toEqual(new Balance(12.3, CENNZ));
+		expect(round).toEqual(new Balance(12.3, cennzAsset));
 
 		const mul = balance.mul(2);
 		const times = balance.mul(3);
-		expect(mul).toEqual(new Balance(200, CENNZ));
-		expect(times).toEqual(new Balance(300, CENNZ));
+		expect(mul).toEqual(new Balance(200, cennzAsset));
+		expect(times).toEqual(new Balance(300, cennzAsset));
 
 		const increase = balance.increase(5);
-		expect(increase).toEqual(new Balance(105, CENNZ));
+		expect(increase).toEqual(new Balance(105, cennzAsset));
 
 		const decrease = balance.decrease(3);
-		expect(decrease).toEqual(new Balance(97, CENNZ));
+		expect(decrease).toEqual(new Balance(97, cennzAsset));
 	});
 	it("can convert to input", () => {
 		const input = balance.toInput();
@@ -88,56 +77,58 @@ describe("Balance", () => {
 	it("can edit decimals", () => {
 		const withDecimals = balance.withDecimals(18);
 
-		expect(withDecimals).toEqual(new Balance(100, { ...CENNZ, decimals: 18 }));
+		expect(withDecimals).toEqual(
+			new Balance(100, { ...cennzAsset, decimals: 18 })
+		);
 	});
 	it("can edit symbol", () => {
-		const withSymbol = balance.withSymbol("wCENNZ");
+		const withSymbol = balance.withSymbol("wcennzAsset");
 
 		expect(withSymbol).toEqual(
-			new Balance(100, { ...CENNZ, symbol: "wCENNZ" })
+			new Balance(100, { ...cennzAsset, symbol: "wcennzAsset" })
 		);
 	});
 	it("can change coin", () => {
-		const withCoin = balance.withCoin(ETH);
+		const withCoin = balance.withCoin(ethAsset);
 
-		expect(withCoin).toEqual(new Balance(100, ETH));
+		expect(withCoin).toEqual(new Balance(100, ethAsset));
 	});
 	it.skip("TODO: can construct from Codec", () => {
 		let codec: Codec;
-		const fromCodec = Balance.fromCodec(codec, CENNZ);
+		const fromCodec = Balance.fromCodec(codec, cennzAsset);
 
 		expect(fromCodec).toEqual(balance);
 	});
 	it("can construct from BN", () => {
-		const fromBN = Balance.fromBN(new BN(100), CENNZ);
+		const fromBN = Balance.fromBN(new BN(100), cennzAsset);
 
 		expect(fromBN).toEqual(balance);
 	});
 	it.skip("TODO: can construct from ApiBalance", () => {
 		let apiBalance: ApiBalance;
-		const fromApiBalance = Balance.fromApiBalance(apiBalance, CENNZ);
+		const fromApiBalance = Balance.fromApiBalance(apiBalance, cennzAsset);
 
 		expect(fromApiBalance).toEqual(balance);
 	});
 	it("can construct from input", () => {
-		const fromInput = Balance.fromInput("0.01", CENNZ);
+		const fromInput = Balance.fromInput("0.01", cennzAsset);
 
 		expect(fromInput).toEqual(balance);
 	});
 	it("can construct from BigNumber", () => {
 		const fromBigNumber = Balance.fromBigNumber(
 			ethers.utils.parseUnits("0.01", 4),
-			CENNZ
+			cennzAsset
 		);
 
 		expect(fromBigNumber).toEqual(balance);
 	});
 	it("can format balance for display", () => {
-		const format = Balance.format(12345.6789123, CENNZ);
+		const format = Balance.format(12345.6789123, cennzAsset);
 
 		expect(format).toEqual("12345.6789");
 
-		const formatTiny = Balance.format(0.000001, CENNZ);
+		const formatTiny = Balance.format(0.000001, cennzAsset);
 
 		expect(formatTiny).toEqual("<0.0001");
 	});
