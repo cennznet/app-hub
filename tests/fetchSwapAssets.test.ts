@@ -1,14 +1,7 @@
 import { Api } from "@cennznet/api";
 import fetchSwapAssets from "@/utils/fetchSwapAssets";
 
-let api: Api;
-beforeAll(async () => {
-	api = await Api.create({ provider: "wss://nikau.centrality.me/public/ws" });
-});
-
-afterAll(async () => {
-	await api.disconnect();
-});
+const api: Api = global.getCENNZApiForTest();
 
 describe("fetchSwapAssets", () => {
 	it("returns expected result", async () => {
