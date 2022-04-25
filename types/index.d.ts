@@ -8,6 +8,7 @@ import {
 	InputHTMLAttributes,
 	ReactElement,
 } from "react";
+import { u128 } from "@polkadot/types-codec";
 
 export type BridgeChain = "Ethereum" | "CENNZnet";
 export type BridgeAction = "Deposit" | "Withdraw";
@@ -33,6 +34,7 @@ export interface BridgedEthereumToken extends EthereumToken {
 
 export interface CENNZAssetBalance extends CENNZAsset {
 	value: Balance;
+	rawValue?: u128
 }
 
 export type SectionUri = "swap" | "pool" | "bridge";

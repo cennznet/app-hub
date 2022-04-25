@@ -9,7 +9,7 @@ import { stringToHex, hexToBn } from "@polkadot/util";
  *
  * @param {Api} api
  * @param {string} address
- * @return {Promise<BalanceInfo[]>}
+ * @return {Promise<CENNZAssetBalance[]>}
  */
 export default async function fetchCENNZAssetBalances(
 	api: Api,
