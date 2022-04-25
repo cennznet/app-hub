@@ -34,7 +34,7 @@ export interface BridgedEthereumToken extends EthereumToken {
 
 export interface CENNZAssetBalance extends CENNZAsset {
 	value: Balance;
-	rawValue?: u128
+	rawValue?: u128;
 }
 
 export type SectionUri = "swap" | "pool" | "bridge";
