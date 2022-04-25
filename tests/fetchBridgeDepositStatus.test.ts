@@ -1,19 +1,16 @@
 import fetchBridgeDepositStatus, {
 	ensureBridgeDepositActive,
 } from "@/utils/fetchBridgeDepositStatus";
-import { Api } from "@cennznet/api";
-import { ethers } from "ethers";
-import { mock } from "@depay/web3-mock";
-import { Web3Provider } from "@ethersproject/providers";
 import { KOVAN_PEG_CONTRACT } from "@/constants";
 import ERC20Peg from "@/artifacts/ERC20Peg.json";
 
-const api: Api = global.getCENNZApiForTest();
+const api = global.getCENNZApiForTest();
+const { blockchain, provider, mock } = global.getWeb3MockForTest();
 
 describe("fetchBridgeDepositStatus", () => {
 	it("returns Active if deposits active", async () => {
 		mock({
-			blockchain: "ethereum",
+			blockchain,
 			call: {
 				to: KOVAN_PEG_CONTRACT,
 				api: ERC20Peg,
@@ -21,9 +18,6 @@ describe("fetchBridgeDepositStatus", () => {
 				return: true,
 			},
 		});
-		const provider: Web3Provider = new ethers.providers.Web3Provider(
-			global.ethereum
-		);
 
 		const status = await fetchBridgeDepositStatus(api, provider);
 
@@ -31,7 +25,7 @@ describe("fetchBridgeDepositStatus", () => {
 	});
 	it("returns Inactive if deposits inactive", async () => {
 		mock({
-			blockchain: "ethereum",
+			blockchain,
 			call: {
 				to: KOVAN_PEG_CONTRACT,
 				api: ERC20Peg,
@@ -39,9 +33,6 @@ describe("fetchBridgeDepositStatus", () => {
 				return: false,
 			},
 		});
-		const provider: Web3Provider = new ethers.providers.Web3Provider(
-			global.ethereum
-		);
 
 		const status = await fetchBridgeDepositStatus(api, provider);
 
@@ -52,7 +43,7 @@ describe("fetchBridgeDepositStatus", () => {
 describe("ensureBridgeDepositActive", () => {
 	it("returns status if active", async () => {
 		mock({
-			blockchain: "ethereum",
+			blockchain,
 			call: {
 				to: KOVAN_PEG_CONTRACT,
 				api: ERC20Peg,
@@ -60,9 +51,6 @@ describe("ensureBridgeDepositActive", () => {
 				return: true,
 			},
 		});
-		const provider: Web3Provider = new ethers.providers.Web3Provider(
-			global.ethereum
-		);
 
 		const status = await ensureBridgeDepositActive(api, provider);
 
@@ -70,7 +58,7 @@ describe("ensureBridgeDepositActive", () => {
 	});
 	it("throws if inactive", async () => {
 		mock({
-			blockchain: "ethereum",
+			blockchain,
 			call: {
 				to: KOVAN_PEG_CONTRACT,
 				api: ERC20Peg,
@@ -78,9 +66,6 @@ describe("ensureBridgeDepositActive", () => {
 				return: false,
 			},
 		});
-		const provider: Web3Provider = new ethers.providers.Web3Provider(
-			global.ethereum
-		);
 
 		try {
 			await ensureBridgeDepositActive(api, provider);

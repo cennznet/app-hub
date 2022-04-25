@@ -1,6 +1,10 @@
 import { Api } from "@cennznet/api";
 import { BridgedEthereumToken, CENNZAsset } from "@/types";
+import { mock } from "@depay/web3-mock";
 import { enableFetchMocks } from "jest-fetch-mock";
+import { ethers } from "ethers";
+import { Web3Provider } from "@ethersproject/providers";
+
 enableFetchMocks();
 
 jest.mock("@/utils/getTokenLogo");
@@ -28,6 +32,24 @@ global.getCENNZApiForTest = () => {
 	});
 
 	return api;
+};
+
+global.getWeb3MockForTest = (): {
+	blockchain: string;
+	provider: Web3Provider;
+	mock: mock;
+} => {
+	const blockchain = "ethereum";
+	mock({
+		blockchain,
+	});
+	const provider = new ethers.providers.Web3Provider(global.ethereum);
+
+	return {
+		blockchain,
+		provider,
+		mock,
+	};
 };
 
 global.getCENNZCoreAssetsForTest = (): {

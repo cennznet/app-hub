@@ -1,18 +1,9 @@
 import getBridgeContract from "@/utils/getBridgeContract";
-import { Web3Provider } from "@ethersproject/providers";
 import { ethers } from "ethers";
-import { mock } from "@depay/web3-mock";
 import CENNZnetBridge from "@/artifacts/CENNZnetBridge.json";
 import { KOVAN_BRIDGE_CONTRACT } from "@/constants";
 
-const blockchain = "ethereum";
-let provider: Web3Provider;
-beforeAll(() => {
-	mock({
-		blockchain,
-	});
-	provider = new ethers.providers.Web3Provider(global.ethereum);
-});
+const { provider } = global.getWeb3MockForTest();
 
 describe("getBridgeContract", () => {
 	it("returns read only contract", async () => {

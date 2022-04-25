@@ -1,18 +1,9 @@
 import getERC20TokenContract from "@/utils/getERC20TokenContract";
-import { Web3Provider } from "@ethersproject/providers";
 import { ethers } from "ethers";
-import { mock } from "@depay/web3-mock";
 import GenericERC20Token from "@/artifacts/GenericERC20Token.json";
 
 const { cennzAsset } = global.getEthereumAssetsForTest();
-const blockchain = "ethereum";
-let provider: Web3Provider;
-beforeAll(() => {
-	mock({
-		blockchain,
-	});
-	provider = new ethers.providers.Web3Provider(global.ethereum);
-});
+const { provider } = global.getWeb3MockForTest();
 
 describe("getERC20TokenContract", () => {
 	it("returns read only contract", async () => {

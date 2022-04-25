@@ -1,18 +1,9 @@
 import getERC20PegContract from "@/utils/getERC20PegContract";
-import { Web3Provider } from "@ethersproject/providers";
 import { ethers } from "ethers";
-import { mock } from "@depay/web3-mock";
 import ERC20Peg from "@/artifacts/ERC20Peg.json";
 import { KOVAN_PEG_CONTRACT } from "@/constants";
 
-const blockchain = "ethereum";
-let provider: Web3Provider;
-beforeAll(() => {
-	mock({
-		blockchain,
-	});
-	provider = new ethers.providers.Web3Provider(global.ethereum);
-});
+const { provider } = global.getWeb3MockForTest();
 
 describe("getERC20PegContract", () => {
 	it("returns read only contract", async () => {

@@ -1,18 +1,9 @@
 import fetchMetaMaskBalance from "@/utils/fetchMetaMaskBalance";
-import { Web3Provider } from "@ethersproject/providers";
-import { mock } from "@depay/web3-mock";
-import { BigNumber, ethers } from "ethers";
+import { BigNumber } from "ethers";
 import GenericERC20Token from "@/artifacts/GenericERC20Token.json";
 import { Balance } from "@/utils";
 
-const blockchain = "ethereum";
-let provider: Web3Provider;
-beforeAll(() => {
-	mock({
-		blockchain,
-	});
-	provider = new ethers.providers.Web3Provider(global.ethereum);
-});
+const { blockchain, provider, mock } = global.getWeb3MockForTest();
 const { cennzAsset, ethAsset } = global.getEthereumAssetsForTest();
 const testingAccount = "0x699aC2aedF058e76eD900FCc8cB31aB316B35bF2";
 
