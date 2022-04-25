@@ -9,6 +9,7 @@ jest.mock("@/constants", () => ({
 	CPAY_ASSET_ID: 16001,
 	ALLOWED_ASSET_IDS: [16000, 16001],
 	ETH_CHAIN_ID: 42,
+	KOVAN_PEG_CONTRACT: "0xa39E871e6e24f2d1Dd6AdA830538aBBE7b30F78F",
 }));
 
 global.getCENNZApiForTest = () => {

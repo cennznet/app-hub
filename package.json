@@ -41,7 +41,7 @@
   },
   "devDependencies": {
     "@depay/web3-blockchains": "^4.2.0",
-    "@depay/web3-mock": "^11.6.2",
+    "@depay/web3-mock": "^11.7.0",
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^12.1.4",
     "@testing-library/react-hooks": "^7.0.2",

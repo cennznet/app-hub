@@ -530,7 +530,7 @@ __metadata:
     "@cennznet/api": ^2.1.0
     "@cennznet/types": ^2.1.0
     "@depay/web3-blockchains": ^4.2.0
-    "@depay/web3-mock": ^11.6.2
+    "@depay/web3-mock": ^11.7.0
     "@emotion/react": ^11.8.2
     "@emotion/styled": ^11.8.1
     "@metamask/detect-provider": ^1.2.0
@@ -592,13 +592,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@depay/web3-mock@npm:^11.6.2":
-  version: 11.6.2
-  resolution: "@depay/web3-mock@npm:11.6.2"
+"@depay/web3-mock@npm:^11.7.0":
+  version: 11.7.0
+  resolution: "@depay/web3-mock@npm:11.7.0"
   peerDependencies:
     "@depay/web3-blockchains": ^4.2.0
     ethers: ^5.4.6
-  checksum: 626d47936ff2e7a45418c6bb02d5db93e65e8013048ff44dbf4ba6183d9131724fec8d67c14bf8a892bdc543aacc775b4929e1ca8efdb6a46a874403472cce3d
+  checksum: dd2c4f9ef1b25272528fffbbeb9591ee7fc871d7799c32c8b12c52c198467c265239ed9b3e1c445f6c229757cd1455a8c0872157fe3183bfb023885d2be76fc3
   languageName: node
   linkType: hard
 
