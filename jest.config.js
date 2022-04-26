@@ -25,6 +25,7 @@ module.exports = {
 		"<rootDir>/node_modules/",
 		"<rootDir>/.next/",
 		"<rootDir>/tests/bridge/",
+		"<rootDir>/tests/signAndSendTx",
 	],
 	testEnvironment: "jsdom",
 	transform: {
