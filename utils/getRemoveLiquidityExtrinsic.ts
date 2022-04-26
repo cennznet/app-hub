@@ -3,7 +3,6 @@ import { Balance } from "@/utils";
 import { Api } from "@cennznet/api";
 import { SubmittableExtrinsic } from "@cennznet/api/types";
 
-// TODO: Need test
 export default function getRemoveLiquidityExtrinsic(
 	api: Api,
 	exchangeInfo: PoolExchangeInfo,
