@@ -8,6 +8,7 @@ import { Web3Provider } from "@ethersproject/providers";
 enableFetchMocks();
 
 jest.mock("@/utils/getTokenLogo");
+jest.mock("@/utils/CENNZTransaction");
 jest.mock("@/constants", () => ({
 	CENNZ_ASSET_ID: 16000,
 	CPAY_ASSET_ID: 16001,

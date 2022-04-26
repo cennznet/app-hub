@@ -1,37 +1,45 @@
 import signAndSendTx from "@/utils/signAndSendTx";
 import { Signer, SubmittableExtrinsic } from "@cennznet/api/types";
-import { CENNZTransaction } from "@/utils";
-import { SingleAccountSigner } from "@/utils/__mocks__/SingleAccountSigner";
-import { Keyring } from "@polkadot/keyring";
 
-const { cennzAsset } = global.getEthereumAssetsForTest();
-const api = global.getCENNZApiForTest();
+const cennzAccount = global.getCENNZTestingAccount();
 
-let alice, extrinsic: SubmittableExtrinsic<"promise">, signer: Signer;
-beforeAll(async () => {
-	const keyring = new Keyring({ type: "sr25519" });
-	alice = keyring.addFromUri("//Alice");
-	signer = new SingleAccountSigner(api.registry, alice);
-
-	api.setSigner(signer);
-
-	extrinsic = api.tx.erc20Peg.withdraw(cennzAsset.assetId, "10", alice.address);
-});
+const extrinsic = {
+	signAndSend: jest.fn(async (address, options, statusCb) => {
+		if (address === "cancel") throw { message: "Cancelled" };
+		statusCb({ txHash: "0x000000000000000" });
+	}) as any,
+};
 
 describe("signAndSendTx", () => {
-	it("signs and sends", async () => {
-		const transaction: CENNZTransaction = await signAndSendTx(
-			extrinsic,
-			alice.address,
-			signer
+	it("calls extrinsic.signAndSend with correct address", async () => {
+		await signAndSendTx(
+			extrinsic as SubmittableExtrinsic<"promise">,
+			cennzAccount,
+			{} as Signer
 		);
 
-		const expected = await extrinsic.signAndSend(alice);
-		expect(transaction.hash).toEqual(expected.hash);
+		expect(extrinsic.signAndSend).toHaveBeenCalled();
+		expect(extrinsic.signAndSend.mock.calls[0][0]).toEqual(cennzAccount);
 	});
-	it("throws if error", async () => {
-		signAndSendTx(extrinsic, "bad-address", signer).catch((error) => {
-			expect(error).toBeInstanceOf(Error);
+	it("sets txHash and txResult", async () => {
+		const transaction = await signAndSendTx(
+			extrinsic as SubmittableExtrinsic<"promise">,
+			cennzAccount,
+			{} as Signer
+		);
+
+		expect(transaction.setHash).toHaveBeenCalledWith("0x000000000000000");
+		expect(transaction.setResult).toHaveBeenCalledWith({
+			txHash: "0x000000000000000",
 		});
+	});
+	it("calls tx.setCancel if tx is cancelled", async () => {
+		const transaction = await signAndSendTx(
+			extrinsic as SubmittableExtrinsic<"promise">,
+			"cancel",
+			{} as Signer
+		);
+
+		expect(transaction.setCancel).toHaveBeenCalled();
 	});
 });
