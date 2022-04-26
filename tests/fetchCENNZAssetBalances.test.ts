@@ -1,7 +1,7 @@
 import fetchCENNZAssetBalances from "@/utils/fetchCENNZAssetBalances";
 import { u128 } from "@polkadot/types-codec";
 
-const testingAccount = "5FbMzsoEpd2mt8eyKpKUxwJ5S9W7nJVJkCer2Jk7tvSpB1vF";
+const testingAccount = global.getCENNZTestingAccount();
 
 const api = global.getCENNZApiForTest();
 

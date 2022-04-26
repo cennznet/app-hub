@@ -5,7 +5,7 @@ import { Balance } from "@/utils";
 
 const { blockchain, provider, mock } = global.getWeb3MockForTest();
 const { cennzAsset, ethAsset } = global.getEthereumAssetsForTest();
-const testingAccount = "0x699aC2aedF058e76eD900FCc8cB31aB316B35bF2";
+const testingAccount = global.getEthereumTestingAccount();
 
 describe("fetchMetaMaskBalance", () => {
 	it("returns expected value ETH", async () => {

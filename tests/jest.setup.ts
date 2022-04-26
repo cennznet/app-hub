@@ -18,6 +18,9 @@ jest.mock("@/constants", () => ({
 	KOVAN_BRIDGE_CONTRACT: "0x6484A31Df401792c784cD93aAAb3E933B406DdB3",
 }));
 
+global.getCENNZTestingAccount = () => "5FbMzsoEpd2mt8eyKpKUxwJ5S9W7nJVJkCer2Jk7tvSpB1vF"
+global.getEthereumTestingAccount = () => "0x699aC2aedF058e76eD900FCc8cB31aB316B35bF2"
+
 global.getCENNZApiForTest = () => {
 	let api: Api = new Api({
 		provider: "wss://nikau.centrality.me/public/ws",
