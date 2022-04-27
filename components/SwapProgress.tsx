@@ -9,6 +9,7 @@ import StandardButton from "@/components/shared/StandardButton";
 import { Balance, selectMap } from "@/utils";
 import Link from "@/components/Link";
 import ProgressOverlay from "@/components/shared/ProgressOverlay";
+import { useBeforeUnload } from "@/hooks";
 
 interface SwapProgressProps {}
 
@@ -19,6 +20,8 @@ const SwapProgress: VFC<IntrinsicElements["div"] & SwapProgressProps> = (
 	const { txHashLink, ...txProps } = txStatus?.props ?? {};
 	const dismissible =
 		txStatus?.status === "Success" || txStatus?.status === "Failure";
+
+	useBeforeUnload(txStatus);
 
 	return (
 		<ProgressOverlay
