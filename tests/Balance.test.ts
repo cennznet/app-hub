@@ -1,4 +1,5 @@
 import Balance from "@/utils/Balance";
+import MockBalance from "@/utils/__mocks__/Balance";
 import { ethers } from "ethers";
 import { Codec, Balance as ApiBalance } from "@cennznet/types";
 import BN from "bn.js";
@@ -93,22 +94,23 @@ describe("Balance", () => {
 
 		expect(withCoin).toEqual(new Balance(100, ethAsset));
 	});
-	it.skip("TODO: can construct from Codec", () => {
-		let codec: Codec;
-		const fromCodec = Balance.fromCodec(codec, cennzAsset);
+	it("can construct from Codec", () => {
+		const fromCodec = MockBalance.fromCodec({} as Codec, cennzAsset);
 
-		expect(fromCodec).toEqual(balance);
+		expect(fromCodec).toEqual(new MockBalance("100", cennzAsset));
 	});
 	it("can construct from BN", () => {
 		const fromBN = Balance.fromBN(new BN(100), cennzAsset);
 
 		expect(fromBN).toEqual(balance);
 	});
-	it.skip("TODO: can construct from ApiBalance", () => {
-		let apiBalance: ApiBalance;
-		const fromApiBalance = Balance.fromApiBalance(apiBalance, cennzAsset);
+	it("can construct from ApiBalance", () => {
+		const fromApiBalance = MockBalance.fromApiBalance(
+			{} as ApiBalance,
+			cennzAsset
+		);
 
-		expect(fromApiBalance).toEqual(balance);
+		expect(fromApiBalance).toEqual(new MockBalance("100", cennzAsset));
 	});
 	it("can construct from input", () => {
 		const fromInput = Balance.fromInput("0.01", cennzAsset);
