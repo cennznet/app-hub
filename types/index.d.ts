@@ -107,7 +107,8 @@ interface CENNZMetaMaskNetwork {
 	chainId: string;
 	chainName: string;
 	rpcUrl: string;
-  
+}
+
 export type TxType = "Idle" | "Pending" | "Success" | "Failure";
 
 export interface TxStatus {
