@@ -1,11 +1,5 @@
 import { useCallback, useState } from "react";
-
-type TxType = "Idle" | "Pending" | "Success" | "Failure";
-
-interface TxStatus {
-	status: TxType;
-	props?: any;
-}
+import { TxStatus, TxType } from "@/types";
 
 export interface TxStatusHook {
 	txStatus: TxStatus;

@@ -1,4 +1,4 @@
-import { CENNZAsset, PoolAction, TxStatus } from "@/types";
+import { CENNZAsset, PoolAction } from "@/types";
 import {
 	createContext,
 	Dispatch,
