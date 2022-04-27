@@ -10,7 +10,6 @@ import { ETH_TOKEN_ADDRESS } from "@/constants";
 import { decodeAddress } from "@polkadot/keyring";
 import { TransactionResponse } from "@ethersproject/abstract-provider";
 
-// TODO: Needs test
 export default async function sendDepositRequest(
 	transferAmount: Balance,
 	transferToken: EthereumToken | BridgedEthereumToken,
