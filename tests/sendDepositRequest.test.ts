@@ -1,85 +1,63 @@
 import sendDepositRequest from "@/utils/sendDepositRequest";
-import { Balance, EthereumTransaction } from "@/utils";
-import { KOVAN_PEG_CONTRACT } from "@/constants";
-import { ethers } from "ethers";
-import ERC20Peg from "@/artifacts/ERC20Peg.json";
-import GenericERC20Token from "@/artifacts/GenericERC20Token.json";
-import { anything } from "@depay/web3-mock";
+import { Balance, EthereumTransaction, waitUntil } from "@/utils";
 
 const { ethAsset, cennzAsset } = global.getEthereumAssetsForTest();
 const cennzAccount = global.getCENNZTestingAccount();
 const ethereumAccount = global.getEthereumTestingAccount();
-const { blockchain, mock, provider } = global.getWeb3MockForTest();
+const { provider } = global.getWeb3MockForTest();
 
-// beforeAll(() => {
-//   mock({
-//     blockchain,
-//     wallet: "metamask",
-//     accounts: [ethereumAccount],
-//     balance: {
-//       for: ethereumAccount,
-//       return: ethers.utils.parseUnits("1000"),
-//     },
-//   });
-// })
+jest.mock("@/utils/getERC20PegContract");
+jest.mock("@/utils/getERC20TokenContract");
 
 describe("sendDepositRequest", () => {
 	it("sends request ETH", async () => {
-		const transferAmount = new Balance(1, ethAsset);
-
-		// const mockTx = mock({
-		//   blockchain,
-		//   transaction: {
-		//     to: KOVAN_PEG_CONTRACT,
-		//     api: ERC20Peg,
-		//     method: "deposit",
-		//     params: anything
-		//   }
-		// })
-
-		const tx: EthereumTransaction = await sendDepositRequest(
-			transferAmount,
+		const transaction: EthereumTransaction = await sendDepositRequest(
+			new Balance(1, ethAsset),
 			ethAsset,
 			cennzAccount,
 			provider.getSigner(ethereumAccount)
 		);
 
-		expect(tx).toBeDefined();
-		// expect(mockedTx).toHaveBeenCalled();
+		await waitUntil(1000);
+
+		expect(transaction.setHash).toHaveBeenCalledWith("0x000000000000000");
+		expect(transaction.setSuccess).toHaveBeenCalled();
 	});
 	it("sends request ERC20", async () => {
-		const transferAmount = new Balance(10, cennzAsset);
-
-		const mockApproval = mock({
-			blockchain,
-			transaction: {
-				to: cennzAsset.address,
-				api: GenericERC20Token,
-				method: "approve",
-				params: anything,
-				return: true,
-			},
-		});
-
-		// const mockTx = mock({
-		//   blockchain,
-		//   transaction: {
-		//     to: KOVAN_PEG_CONTRACT,
-		//     api: ERC20Peg,
-		//     method: "deposit",
-		//     params: anything
-		//   }
-		// })
-
-		const tx: EthereumTransaction = await sendDepositRequest(
-			transferAmount,
+		const transaction: EthereumTransaction = await sendDepositRequest(
+			new Balance(10, cennzAsset),
 			cennzAsset,
 			cennzAccount,
 			provider.getSigner(ethereumAccount)
 		);
 
-		expect(tx).toBeDefined();
-		expect(mockApproval).toHaveBeenCalled();
-		//expect(mockTx).toHaveBeenCalled();
+		await waitUntil(1000);
+
+		expect(transaction.setHash).toHaveBeenCalledWith("0x000000000000000");
+		expect(transaction.setSuccess).toHaveBeenCalled();
+	});
+	it("calls tx.setCancel if error code is 4001", async () => {
+		const transaction: EthereumTransaction = await sendDepositRequest(
+			new Balance(0, ethAsset),
+			ethAsset,
+			cennzAccount,
+			provider.getSigner(ethereumAccount)
+		);
+
+		await waitUntil(1000);
+
+		expect(transaction.setCancel).toHaveBeenCalled();
+	});
+	it("calls tx.setFailure if error code is other than 4001", async () => {
+		const transaction: EthereumTransaction = await sendDepositRequest(
+			new Balance(5, ethAsset),
+			ethAsset,
+			cennzAccount,
+			provider.getSigner(ethereumAccount)
+		);
+
+		await waitUntil(1000);
+
+		expect(transaction.setFailure).toHaveBeenCalled();
 	});
 });

@@ -9,6 +9,7 @@ enableFetchMocks();
 
 jest.mock("@/utils/getTokenLogo");
 jest.mock("@/utils/CENNZTransaction");
+jest.mock("@/utils/EthereumTransaction");
 jest.mock("@/constants", () => ({
 	CENNZ_ASSET_ID: 16000,
 	CPAY_ASSET_ID: 16001,
