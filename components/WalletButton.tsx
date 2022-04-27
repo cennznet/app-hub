@@ -10,6 +10,7 @@ import CENNZWallet from "@/components/CENNZWallet";
 import { useWalletSelect } from "@/providers/WalletSelectProvider";
 import { useMetaMaskWallet } from "@/providers/MetaMaskWalletProvider";
 import Jazzicon, { jsNumberForAddress } from "react-jazzicon";
+import { WalletOption } from "@/types";
 
 type WalletState = "Connected" | "NotConnected";
 
@@ -25,9 +26,10 @@ const WalletButton: React.FC = () => {
 	}, [CENNZAccount, metaMaskAccount]);
 
 	const onWalletClick = useCallback(async () => {
-		if (selectedWallet === "MetaMask") return;
+		if (selectedWallet === "MetaMask")
+			return navigator.clipboard.writeText(metaMaskAccount.address);
 		setWalletOpen(true);
-	}, [selectedWallet, setWalletOpen]);
+	}, [selectedWallet, setWalletOpen, metaMaskAccount]);
 
 	useEffect(() => {
 		if (selectedWallet === "MetaMask") {
@@ -39,7 +41,10 @@ const WalletButton: React.FC = () => {
 
 	return (
 		<>
-			<div css={styles.walletButton(walletOpen)} onClick={onWalletClick}>
+			<div
+				css={styles.walletButton(walletOpen, selectedWallet)}
+				onClick={onWalletClick}
+			>
 				<div css={styles.walletIcon}>
 					{(walletState === "NotConnected" || !selectedWallet) && (
 						<img
@@ -91,13 +96,13 @@ export default WalletButton;
 
 export const styles = {
 	walletButton:
-		(walletOpen: boolean) =>
+		(walletOpen: boolean, wallet: WalletOption) =>
 		({ palette, shadows, transitions }: Theme) =>
 			css`
 				position: absolute;
 				top: 0;
 				right: 3em;
-				cursor: pointer;
+				cursor: ${wallet === "MetaMask" ? "copy" : "pointer"};
 				box-shadow: ${shadows[1]};
 				height: 48px;
 				display: flex;
