@@ -115,3 +115,5 @@ export interface TxStatus {
 	status: TxType;
 	props?: any;
 }
+
+export type WalletOption = "CENNZnet" | "MetaMask";
