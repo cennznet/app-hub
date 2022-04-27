@@ -1,56 +1,88 @@
-import React, { useState, useMemo, useCallback } from "react";
+import React, { useMemo, useCallback, useEffect } from "react";
 import { css } from "@emotion/react";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import WalletModal from "@/components/WalletModal";
 import AccountIdenticon from "@/components/shared/AccountIdenticon";
 import CENNZIconSVG from "@/assets/vectors/cennznet-icon.svg";
 import { Theme } from "@mui/material";
+import WalletSelect from "@/components/WalletSelect";
+import CENNZWallet from "@/components/CENNZWallet";
+import { useWalletSelect } from "@/providers/WalletSelectProvider";
+import { useMetaMaskWallet } from "@/providers/MetaMaskWalletProvider";
+import Jazzicon, { jsNumberForAddress } from "react-jazzicon";
 
-type WalletState = "NotConnected" | "Connecting" | "Connected";
+type WalletState = "Connected" | "NotConnected";
 
-const WalletButton: React.FC<{}> = () => {
-	const [modalOpen, setModalOpen] = useState<boolean>(false);
-	const { selectedAccount, balances, connectWallet } = useCENNZWallet();
+const WalletButton: React.FC = () => {
+	const { walletOpen, setWalletOpen, selectedWallet, setSelectedWallet } =
+		useWalletSelect();
+	const { selectedAccount: CENNZAccount } = useCENNZWallet();
+	const { selectedAccount: metaMaskAccount } = useMetaMaskWallet();
+
 	const walletState = useMemo<WalletState>(() => {
-		if (!selectedAccount) return "NotConnected";
-		if (selectedAccount && !balances?.length) return "Connecting";
+		if (!CENNZAccount || !metaMaskAccount) return "NotConnected";
 		return "Connected";
-	}, [selectedAccount, balances]);
+	}, [CENNZAccount, metaMaskAccount]);
 
 	const onWalletClick = useCallback(async () => {
-		if (walletState !== "NotConnected") return setModalOpen(true);
+		if (selectedWallet === "MetaMask") return;
+		setWalletOpen(true);
+	}, [selectedWallet, setWalletOpen]);
 
-		await connectWallet();
-		setModalOpen(true);
-	}, [walletState, connectWallet]);
+	useEffect(() => {
+		if (selectedWallet === "MetaMask") {
+			setWalletOpen(false);
+			if (!metaMaskAccount?.address) return setSelectedWallet(null);
+		}
+		if (metaMaskAccount?.address) return setSelectedWallet("MetaMask");
+	}, [setWalletOpen, selectedWallet, setSelectedWallet, metaMaskAccount]);
 
 	return (
 		<>
-			<div css={styles.walletButton(modalOpen)} onClick={onWalletClick}>
+			<div css={styles.walletButton(walletOpen)} onClick={onWalletClick}>
 				<div css={styles.walletIcon}>
-					<img
-						src={CENNZIconSVG.src}
-						alt="CENNZnet Logo"
-						css={styles.walletIconImg}
-					/>
+					{(walletState === "NotConnected" || !selectedWallet) && (
+						<img
+							src={CENNZIconSVG.src}
+							alt="CENNZnet Logo"
+							css={styles.walletIconImg}
+						/>
+					)}
 
-					{!!selectedAccount?.address && (
+					{!!CENNZAccount?.address && selectedWallet === "CENNZnet" && (
 						<AccountIdenticon
 							css={styles.walletIconIdenticon}
 							theme="beachball"
 							size={28}
-							value={selectedAccount.address}
+							value={CENNZAccount.address}
+						/>
+					)}
+					{!!metaMaskAccount?.address && selectedWallet === "MetaMask" && (
+						<Jazzicon
+							diameter={28}
+							seed={jsNumberForAddress(metaMaskAccount?.address as string)}
 						/>
 					)}
 				</div>
+
 				<div css={styles.walletState}>
-					{walletState !== "NotConnected" && (
-						<span>{selectedAccount?.meta?.name?.toUpperCase?.()}</span>
+					{walletState === "Connected" && selectedWallet === "CENNZnet" && (
+						<span>{CENNZAccount?.meta?.name?.toUpperCase?.()}</span>
 					)}
-					{walletState === "NotConnected" && <span>CONNECT CENNZnet</span>}
+					{walletState === "Connected" && selectedWallet === "MetaMask" && (
+						<span>
+							{metaMaskAccount?.address
+								.slice(0, 6)
+								.concat("...", metaMaskAccount?.address.slice(-4))}
+						</span>
+					)}
+					{!selectedWallet && <span>CONNECT WALLET</span>}
 				</div>
 			</div>
-			<WalletModal setModalOpen={setModalOpen} modalOpen={modalOpen} />
+			<WalletModal>
+				{!selectedWallet && <WalletSelect />}
+				{selectedWallet === "CENNZnet" && <CENNZWallet />}
+			</WalletModal>
 		</>
 	);
 };
@@ -59,7 +91,7 @@ export default WalletButton;
 
 export const styles = {
 	walletButton:
-		(modalOpen: boolean) =>
+		(walletOpen: boolean) =>
 		({ palette, shadows, transitions }: Theme) =>
 			css`
 				position: absolute;
@@ -70,8 +102,8 @@ export const styles = {
 				height: 48px;
 				display: flex;
 				align-items: center;
-				background-color: ${modalOpen ? palette.primary.default : "#FFFFFF"};
-				color: ${modalOpen ? "#FFFFFF !important" : palette.primary.default};
+				background-color: ${walletOpen ? palette.primary.default : "#FFFFFF"};
+				color: ${walletOpen ? "#FFFFFF !important" : palette.primary.default};
 				transition: background-color ${transitions.duration.short}ms,
 					color ${transitions.duration.short}ms;
 				border-radius: 4px;
