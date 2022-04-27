@@ -9,14 +9,15 @@ import {
 	useEffect,
 	useState,
 	useCallback,
+	useMemo,
 } from "react";
 import type * as Extension from "@polkadot/extension-dapp";
 import { useUserAgent } from "@/providers/UserAgentProvider";
 
 interface ExtensionContext {
 	accounts: InjectedAccountWithMeta[];
-	extension: InjectedExtension;
 	promptInstallExtension: () => void;
+	getInstalledExtension: () => Promise<InjectedExtension>;
 }
 
 const CENNZExtensionContext = createContext<ExtensionContext>(
@@ -30,7 +31,6 @@ export default function CENNZExtensionProvider({
 }: PropsWithChildren<ProviderProps>) {
 	const { browser, os } = useUserAgent();
 	const [module, setModule] = useState<typeof Extension>();
-	const [extension, setExtension] = useState<InjectedExtension>();
 	const [accounts, setAccounts] = useState<Array<InjectedAccountWithMeta>>();
 
 	const promptInstallExtension = useCallback(() => {
@@ -62,25 +62,19 @@ export default function CENNZExtensionProvider({
 		import("@polkadot/extension-dapp").then(setModule);
 	}, []);
 
-	useEffect(() => {
+	const getInstalledExtension = useMemo(() => {
 		if (!module) return;
 
-		const getExtension = async () => {
+		return async () => {
 			const { web3Enable, web3FromSource } = module;
 			await web3Enable("CENNZnet App Hub");
-			const extension = await web3FromSource("cennznet-extension").catch(
-				() => null
-			);
-
-			setExtension(extension);
+			return await web3FromSource("cennznet-extension").catch(() => null);
 		};
-
-		getExtension();
 	}, [module]);
 
 	useEffect(() => {
-		if (!module || !extension) return;
-		let unsubscibre: () => void;
+		if (!module) return;
+		let unsubscribe: () => void;
 
 		const fetchAccounts = async () => {
 			const { web3Enable, web3Accounts, web3AccountsSubscribe } = module;
@@ -94,19 +88,24 @@ export default function CENNZExtensionProvider({
 
 			setAccounts(accounts);
 
-			unsubscibre = await web3AccountsSubscribe((accounts) => {
+			unsubscribe = await web3AccountsSubscribe((accounts) => {
 				setAccounts([...accounts]);
 			});
 		};
 
 		fetchAccounts();
 
-		return unsubscibre;
-	}, [module, extension]);
+		return unsubscribe;
+	}, [module]);
 
 	return (
 		<CENNZExtensionContext.Provider
-			value={{ ...module, accounts, extension, promptInstallExtension }}
+			value={{
+				...module,
+				accounts,
+				getInstalledExtension,
+				promptInstallExtension,
+			}}
 		>
 			{children}
 		</CENNZExtensionContext.Provider>

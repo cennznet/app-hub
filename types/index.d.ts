@@ -1,12 +1,11 @@
-import { ethers } from "ethers";
 import { Balance } from "@/utils";
 import {
+	AnchorHTMLAttributes,
 	ButtonHTMLAttributes,
 	FormHTMLAttributes,
 	HTMLAttributes,
 	HTMLFormElement,
 	InputHTMLAttributes,
-	ReactElement,
 } from "react";
 
 export type BridgeChain = "Ethereum" | "CENNZnet";
@@ -37,19 +36,12 @@ export interface CENNZAssetBalance extends CENNZAsset {
 
 export type SectionUri = "swap" | "pool" | "bridge";
 
-//TODO: Remove after Bridge work done
-export interface TxModalAttributes {
-	state: string;
-	title: string;
-	text: string;
-	hash: string;
-}
-
 export interface IntrinsicElements {
 	div: HTMLAttributes<HTMLDivElement>;
 	form: FormHTMLAttributes<HTMLFormElement>;
 	button: ButtonHTMLAttributes<HTMLButtonElement>;
 	input: InputHTMLAttributes<HTMLInputElement>;
+	a: AnchorHTMLAttributes<HTMLAnchorElement>;
 }
 
 export type PoolAction = "Add" | "Remove";
@@ -72,12 +64,6 @@ export interface MetaMaskAccount {
 	address: string;
 }
 
-export interface TxStatus {
-	status: "in-progress" | "success" | "fail";
-	title: string | ReactElement;
-	message: string | ReactElement;
-}
-
 export type RelayerStatus =
 	| "Successful"
 	| "Failed"
@@ -88,3 +74,37 @@ export type RelayerConfirmingStatus = Extract<
 	RelayerStatus,
 	"EthereumConfirming" | "CennznetConfirming"
 >;
+
+export interface CENNZEvent {
+	section?: string;
+	method?: string;
+	data?: any[];
+}
+
+export interface WithdrawClaim {
+	assetId: number;
+	expiry: string;
+	expiryRaw: number;
+	eventProofId: number;
+	transferAsset: BridgedEthereumToken;
+	transferAmount: Balance;
+	beneficiary: string;
+	eventProof: HistoricalEventProof;
+}
+
+export interface HistoricalEventProof {
+	_id?: string;
+	eventId?: string;
+	validatorSetId: string;
+	validators: [];
+	r: string[];
+	s: string[];
+	v: number[];
+}
+
+export type TxType = "Idle" | "Pending" | "Success" | "Failure";
+
+export interface TxStatus {
+	status: TxType;
+	props?: any;
+}
