@@ -16,6 +16,7 @@ export { default as useTxStatus } from "@/hooks/useTxStatus";
 export { default as useDepositRequest } from "@/hooks/useDepositRequest";
 export { default as useWithdrawRequest } from "@/hooks/useWithdrawRequest";
 export { default as useHistoricalWithdrawRequest } from "@/hooks/useHistoricalWithdrawRequest";
+export { default as useBeforeUnload } from "@/hooks/useBeforeUnload";
 
 export type { TokenInputHook } from "@/hooks/useTokenInput";
 export type { PoolExchangeInfoHook } from "@/hooks/usePoolExchangeInfo";
