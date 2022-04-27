@@ -1,11 +1,8 @@
 import { Api } from "@cennznet/api";
 import { BridgedEthereumToken, CENNZAsset } from "@/types";
 import { mock } from "@depay/web3-mock";
-import { enableFetchMocks } from "jest-fetch-mock";
 import { ethers } from "ethers";
 import { Web3Provider } from "@ethersproject/providers";
-
-enableFetchMocks();
 
 jest.mock("@/utils/getTokenLogo");
 jest.mock("@/utils/CENNZTransaction");
@@ -86,13 +83,13 @@ global.getEthereumAssetsForTest = (): {
 		address: "0xb7e26f93211932865430a03236dd043f7248993b",
 		symbol: "CENNZ",
 		decimals: 4,
-		decimalsValue: 10000,
+		decimalsValue: Math.pow(10, 4),
 	},
 	ethAsset: {
 		assetId: 17002,
 		address: "0x0000000000000000000000000000000000000000",
 		symbol: "ETH",
 		decimals: 18,
-		decimalsValue: 1000000000000000000,
+		decimalsValue: Math.pow(10, 18),
 	},
 });
