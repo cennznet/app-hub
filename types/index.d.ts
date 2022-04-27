@@ -102,7 +102,7 @@ export interface HistoricalEventProof {
 	v: number[];
 }
 
-interface CENNZMetaMaskNetwork {
+export interface CENNZMetaMaskNetwork {
 	cennzTokenAddress: string;
 	chainId: string;
 	chainName: string;
