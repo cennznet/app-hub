@@ -5,11 +5,8 @@ import {
 	FC,
 	SetStateAction,
 	useContext,
-	useEffect,
 	useState,
 } from "react";
-import { useCENNZWallet } from "./CENNZWalletProvider";
-import { useMetaMaskWallet } from "./MetaMaskWalletProvider";
 
 interface WalletSelectContextType {
 	walletOpen: boolean;
@@ -26,21 +23,8 @@ const WalletSelectContext = createContext<WalletSelectContextType>(
 interface WalletSelectProviderProps {}
 
 const WalletSelectProvider: FC<WalletSelectProviderProps> = ({ children }) => {
-	const { connectWallet: connectCENNZWallet } = useCENNZWallet();
-	const { connectWallet: connectMetaMaskWallet } = useMetaMaskWallet();
 	const [walletOpen, setWalletOpen] = useState<boolean>(false);
 	const [selectedWallet, setSelectedWallet] = useState<WalletOption>();
-
-	useEffect(() => {
-		if (!selectedWallet) return;
-
-		const connectWallet = async (wallet: WalletOption) => {
-			if (wallet === "CENNZnet") return connectCENNZWallet();
-			if (wallet === "MetaMask") return connectMetaMaskWallet();
-		};
-
-		void connectWallet(selectedWallet);
-	}, [selectedWallet, connectCENNZWallet, connectMetaMaskWallet]);
 
 	return (
 		<WalletSelectContext.Provider
