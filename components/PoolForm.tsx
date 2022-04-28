@@ -7,11 +7,15 @@ import { usePool } from "@/providers/PoolProvider";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import {
 	Balance,
+	CENNZTransaction,
 	getAddLiquidityExtrinsic,
 	getRemoveLiquidityExtrinsic,
 	signAndSendTx,
 } from "@/utils";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
+import signViaMetaMask from "@/utils/signViaMetaMask";
+import { useWalletSelect } from "@/providers/WalletSelectProvider";
+import { useMetaMaskWallet } from "@/providers/MetaMaskWalletProvider";
 
 interface PoolFormProps {}
 
@@ -41,7 +45,13 @@ const PoolForm: FC<IntrinsicElements["form"] & PoolFormProps> = ({
 		updateExchangeRate,
 	} = usePool();
 
-	const { selectedAccount, wallet, updateBalances } = useCENNZWallet();
+	const {
+		selectedAccount: CENNZAccount,
+		wallet,
+		updateBalances,
+	} = useCENNZWallet();
+	const { selectedAccount: metaMaskAccount } = useMetaMaskWallet();
+	const { selectedWallet } = useWalletSelect();
 
 	useEffect(() => {
 		if (poolAction === "Add") return setButtonLabel("Add to Pool");
@@ -89,11 +99,15 @@ const PoolForm: FC<IntrinsicElements["form"] & PoolFormProps> = ({
 
 			try {
 				setTxPending();
-				const tx = await signAndSendTx(
-					extrinsic,
-					selectedAccount.address,
-					wallet.signer
-				);
+				let tx: CENNZTransaction;
+				if (selectedWallet === "CENNZnet")
+					tx = await signAndSendTx(
+						extrinsic,
+						CENNZAccount.address,
+						wallet.signer
+					);
+				if (selectedWallet === "MetaMask")
+					tx = await signViaMetaMask(api, metaMaskAccount.address, extrinsic);
 
 				tx.on("txCancelled", () => setTxIdle());
 
@@ -146,11 +160,13 @@ const PoolForm: FC<IntrinsicElements["form"] & PoolFormProps> = ({
 			updatePoolUserInfo,
 			updateExchangeRate,
 			api,
-			selectedAccount?.address,
+			CENNZAccount?.address,
+			metaMaskAccount?.address,
 			wallet?.signer,
 			coreAsset,
 			tradeAsset,
 			poolAction,
+			selectedWallet,
 		]
 	);
 

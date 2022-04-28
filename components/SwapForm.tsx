@@ -6,7 +6,15 @@ import SubmitButton from "@/components/shared/SubmitButton";
 import { useSwap } from "@/providers/SwapProvider";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
-import { Balance, getSellAssetExtrinsic, signAndSendTx } from "@/utils";
+import {
+	Balance,
+	CENNZTransaction,
+	getSellAssetExtrinsic,
+	signAndSendTx,
+} from "@/utils";
+import signViaMetaMask from "@/utils/signViaMetaMask";
+import { useMetaMaskWallet } from "@/providers/MetaMaskWalletProvider";
+import { useWalletSelect } from "@/providers/WalletSelectProvider";
 
 interface SwapFormProps {}
 
@@ -27,7 +35,13 @@ const SwapForm: FC<IntrinsicElements["form"] & SwapFormProps> = ({
 		setTxSuccess,
 		setTxFailure,
 	} = useSwap();
-	const { selectedAccount, wallet, updateBalances } = useCENNZWallet();
+	const {
+		selectedAccount: CENNZAccount,
+		wallet,
+		updateBalances,
+	} = useCENNZWallet();
+	const { selectedAccount: metaMaskAccount } = useMetaMaskWallet();
+	const { selectedWallet } = useWalletSelect();
 
 	const onFormSubmit = useCallback(
 		async (event) => {
@@ -46,11 +60,15 @@ const SwapForm: FC<IntrinsicElements["form"] & SwapFormProps> = ({
 					Number(slippage)
 				);
 
-				const tx = await signAndSendTx(
-					extrinsic,
-					selectedAccount.address,
-					wallet.signer
-				);
+				let tx: CENNZTransaction;
+				if (selectedWallet === "CENNZnet")
+					tx = await signAndSendTx(
+						extrinsic,
+						CENNZAccount.address,
+						wallet.signer
+					);
+				if (selectedWallet === "MetaMask")
+					tx = await signViaMetaMask(api, metaMaskAccount.address, extrinsic);
 
 				tx.on("txCancelled", () => setTxIdle());
 
@@ -92,7 +110,8 @@ const SwapForm: FC<IntrinsicElements["form"] & SwapFormProps> = ({
 			exValue,
 			reValue,
 			slippage,
-			selectedAccount?.address,
+			CENNZAccount?.address,
+			metaMaskAccount?.address,
 			wallet?.signer,
 			updateBalances,
 			setExValue,
@@ -100,6 +119,7 @@ const SwapForm: FC<IntrinsicElements["form"] & SwapFormProps> = ({
 			setTxPending,
 			setTxSuccess,
 			setTxIdle,
+			selectedWallet,
 		]
 	);
 

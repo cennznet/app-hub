@@ -3,6 +3,7 @@ import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import { useMetaMaskExtension } from "@/providers/MetaMaskExtensionProvider";
 import { useMetaMaskWallet } from "@/providers/MetaMaskWalletProvider";
+import { useWalletSelect } from "@/providers/WalletSelectProvider";
 import { BridgedEthereumToken } from "@/types";
 import {
 	Balance,
@@ -35,6 +36,7 @@ export default function useWithdrawRequest(): () => Promise<void> {
 	} = useCENNZWallet();
 	const { wallet: metaMaskWallet } = useMetaMaskWallet();
 	const { extension } = useMetaMaskExtension();
+	const { selectedWallet } = useWalletSelect();
 
 	return useCallback(async () => {
 		const setTrValue = transferInput.setValue;
@@ -45,7 +47,7 @@ export default function useWithdrawRequest(): () => Promise<void> {
 
 		try {
 			setTxPending();
-			await ensureEthereumChain(extension);
+			await ensureEthereumChain(extension, selectedWallet);
 			await ensureBridgeWithdrawActive(api, metaMaskWallet);
 			const tx = await sendWithdrawCENNZRequest(
 				api,
@@ -53,7 +55,8 @@ export default function useWithdrawRequest(): () => Promise<void> {
 				transferAsset as BridgedEthereumToken,
 				cennzAccount.address,
 				transferMetaMaskAddress,
-				cennzWallet.signer
+				cennzWallet.signer,
+				selectedWallet
 			);
 
 			tx.on("txCancelled", () => setTxIdle());
@@ -161,5 +164,6 @@ export default function useWithdrawRequest(): () => Promise<void> {
 		updateCENNZBalances,
 		setTxSuccess,
 		updateUnclaimedWithdrawals,
+		selectedWallet,
 	]);
 }
