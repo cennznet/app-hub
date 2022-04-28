@@ -4,11 +4,12 @@ import { VFC } from "react";
 import { LinearProgress, Tooltip, Theme } from "@mui/material";
 import { usePool } from "@/providers/PoolProvider";
 import { Balance } from "@/utils";
-import { usePoolGasFee, usePoolCoreAssetValue } from "@/hooks";
+import {
+	usePoolGasFee,
+	usePoolCoreAssetValue,
+	useSelectedAccount,
+} from "@/hooks";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
-import { useMetaMaskWallet } from "@/providers/MetaMaskWalletProvider";
-import { useWalletSelect } from "@/providers/WalletSelectProvider";
 
 interface PoolStatsProps {}
 
@@ -42,11 +43,7 @@ const PoolStats: VFC<IntrinsicElements["div"] & PoolStatsProps> = (props) => {
 
 	const { coreAssetValue } = usePoolCoreAssetValue("1");
 
-	const { selectedAccount: CENNZAccount } = useCENNZWallet();
-	const { selectedAccount: metaMaskAccount } = useMetaMaskWallet();
-	const { selectedWallet } = useWalletSelect();
-	const selectedAccount =
-		selectedWallet === "CENNZnet" ? CENNZAccount : metaMaskAccount;
+	const selectedAccount = useSelectedAccount();
 
 	return (
 		<div {...props} css={styles.root}>

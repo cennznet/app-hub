@@ -1,9 +1,8 @@
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
-import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import { useCallback, useEffect, useState } from "react";
-import { cvmToCENNZAddress, fetchPoolUserInfo } from "@/utils";
+import { fetchPoolUserInfo } from "@/utils";
 import { CENNZAsset, PoolUserInfo } from "@/types";
-import { useMetaMaskWallet } from "@/providers/MetaMaskWalletProvider";
+import { useSelectedAccount } from "@/hooks";
 import { useWalletSelect } from "@/providers/WalletSelectProvider";
 
 export interface PoolUserInfoHook {
@@ -16,8 +15,7 @@ export default function usePoolUserInfo(
 	tradeAsset: CENNZAsset,
 	coreAsset: CENNZAsset
 ): PoolUserInfoHook {
-	const { selectedAccount: CENNZAccount } = useCENNZWallet();
-	const { selectedAccount: metaMaskAccount } = useMetaMaskWallet();
+	const selectedAccount = useSelectedAccount();
 	const { selectedWallet } = useWalletSelect();
 	const { api } = useCENNZApi();
 	const [userInfo, setUserInfo] = useState<PoolUserInfo>(null);
@@ -25,31 +23,18 @@ export default function usePoolUserInfo(
 
 	const updatePoolUserInfo = useCallback(async () => {
 		if (!api) return;
-		if (
-			(selectedWallet === "CENNZnet" && !CENNZAccount?.address) ||
-			(selectedWallet === "MetaMask" && !metaMaskAccount?.address)
-		)
-			return setLoading(false);
+		if (!selectedAccount?.address) return setLoading(false);
 		setLoading(true);
 		const userInfo = await fetchPoolUserInfo(
 			api,
-			selectedWallet === "CENNZnet"
-				? CENNZAccount.address
-				: cvmToCENNZAddress(metaMaskAccount.address),
+			selectedAccount.address,
 			tradeAsset,
 			coreAsset
 		);
 
 		setUserInfo(userInfo);
 		setLoading(false);
-	}, [
-		api,
-		CENNZAccount?.address,
-		tradeAsset,
-		coreAsset,
-		metaMaskAccount?.address,
-		selectedWallet,
-	]);
+	}, [api, selectedAccount?.address, tradeAsset, coreAsset]);
 
 	useEffect(() => {
 		if (!selectedWallet) return;
