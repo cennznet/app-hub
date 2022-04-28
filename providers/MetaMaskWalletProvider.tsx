@@ -8,11 +8,11 @@ import {
 	useState,
 } from "react";
 import { ethers } from "ethers";
-import { MetaMaskAccount } from "@/types";
+import { MetaMaskAccount, WalletOption } from "@/types";
 import { ensureEthereumChain } from "@/utils";
 
 interface MetaMaskWalletContextType {
-	connectWallet: (callback?: () => void) => Promise<void>;
+	connectWallet: (selectedWallet?: WalletOption) => Promise<void>;
 	selectedAccount: MetaMaskAccount;
 	wallet: ethers.providers.Web3Provider;
 }
@@ -33,13 +33,12 @@ const MetaMaskWalletProvider: FC<MetaMaskWalletProviderProps> = ({
 		useState<MetaMaskWalletContextType["selectedAccount"]>(null);
 
 	const connectWallet = useCallback(
-		async (callback) => {
+		async (selectedWallet: WalletOption) => {
 			if (!extension) {
-				callback?.();
 				return promptInstallExtension();
 			}
 
-			await ensureEthereumChain(extension);
+			await ensureEthereumChain(extension, selectedWallet);
 
 			const accounts = (await extension.request({
 				method: "eth_requestAccounts",
@@ -55,22 +54,6 @@ const MetaMaskWalletProvider: FC<MetaMaskWalletProviderProps> = ({
 		},
 		[extension, promptInstallExtension]
 	);
-
-	useEffect(() => {
-		if (!extension) return;
-		const checkAccounts = async () => {
-			const accounts = (await extension.request({
-				method: "eth_accounts",
-			})) as string[];
-			if (!accounts?.length) return;
-
-			setSelectedAccount({ address: accounts[0] });
-			setWallet(new ethers.providers.Web3Provider(extension as any));
-			await ensureEthereumChain(extension);
-		};
-
-		checkAccounts();
-	}, [extension]);
 
 	useEffect(() => {
 		if (!selectedAccount?.address || !extension) return;
