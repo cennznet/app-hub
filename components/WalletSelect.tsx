@@ -13,11 +13,14 @@ const WalletSelect: VFC = () => {
 	const { connectWallet: connectCENNZWallet } = useCENNZWallet();
 	const { connectWallet: connectMetaMaskWallet } = useMetaMaskWallet();
 
-	const onOptionClick = useCallback((wallet: WalletOption) => {
-		setSelectedWallet(wallet)
-		if (wallet === "CENNZnet") return connectCENNZWallet();
-		if (wallet === "MetaMask") return connectMetaMaskWallet(wallet);
-	}, [setSelectedWallet, connectCENNZWallet, connectMetaMaskWallet])
+	const onOptionClick = useCallback(
+		(wallet: WalletOption) => {
+			setSelectedWallet(wallet);
+			if (wallet === "CENNZnet") return connectCENNZWallet();
+			if (wallet === "MetaMask") return connectMetaMaskWallet(wallet);
+		},
+		[setSelectedWallet, connectCENNZWallet, connectMetaMaskWallet]
+	);
 
 	return (
 		<div css={styles.modalContent}>
