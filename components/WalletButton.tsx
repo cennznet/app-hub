@@ -21,9 +21,9 @@ const WalletButton: React.FC = () => {
 	const { selectedAccount: metaMaskAccount } = useMetaMaskWallet();
 
 	const walletState = useMemo<WalletState>(() => {
+		if (!!selectedWallet) return "Connected";
 		if (!CENNZAccount || !metaMaskAccount) return "NotConnected";
-		return "Connected";
-	}, [CENNZAccount, metaMaskAccount]);
+	}, [CENNZAccount, metaMaskAccount, selectedWallet]);
 
 	const onWalletClick = useCallback(async () => {
 		if (selectedWallet === "MetaMask")
@@ -34,9 +34,9 @@ const WalletButton: React.FC = () => {
 	useEffect(() => {
 		if (selectedWallet === "MetaMask") {
 			setWalletOpen(false);
-			if (!metaMaskAccount?.address) return setSelectedWallet(null);
+			if (!metaMaskAccount) return setSelectedWallet(null);
 		}
-		if (metaMaskAccount?.address) return setSelectedWallet("MetaMask");
+		if (metaMaskAccount) return setSelectedWallet("MetaMask");
 	}, [setWalletOpen, selectedWallet, setSelectedWallet, metaMaskAccount]);
 
 	return (
