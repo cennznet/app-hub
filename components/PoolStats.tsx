@@ -7,6 +7,8 @@ import { Balance } from "@/utils";
 import { usePoolGasFee, usePoolCoreAssetValue } from "@/hooks";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
+import { useMetaMaskWallet } from "@/providers/MetaMaskWalletProvider";
+import { useWalletSelect } from "@/providers/WalletSelectProvider";
 
 interface PoolStatsProps {}
 
@@ -40,7 +42,11 @@ const PoolStats: VFC<IntrinsicElements["div"] & PoolStatsProps> = (props) => {
 
 	const { coreAssetValue } = usePoolCoreAssetValue("1");
 
-	const { selectedAccount } = useCENNZWallet();
+	const { selectedAccount: CENNZAccount } = useCENNZWallet();
+	const { selectedAccount: metaMaskAccount } = useMetaMaskWallet();
+	const { selectedWallet } = useWalletSelect();
+	const selectedAccount =
+		selectedWallet === "CENNZnet" ? CENNZAccount : metaMaskAccount;
 
 	return (
 		<div {...props} css={styles.root}>
@@ -78,7 +84,7 @@ const PoolStats: VFC<IntrinsicElements["div"] & PoolStatsProps> = (props) => {
 						<span>
 							{`${tradeAssetReserve.toBalance({
 								withSymbol: true,
-							})} + ${coreAssetReserve.toBalance({ withSymbol: true })}`}
+							})} + ${coreAssetReserve?.toBalance({ withSymbol: true })}`}
 						</span>
 					)}
 					{tradeAssetReserve === null && <span>+</span>}
