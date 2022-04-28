@@ -104,7 +104,12 @@ export default function CENNZWalletProvider({
 
 	//3. Fetch asset balance
 	const updateBalances = useCallback(async () => {
-		if (!api || (selectedWallet === "MetaMask" && !selectedAccount)) return;
+		if (
+			!api ||
+			!selectedWallet ||
+			(selectedWallet === "MetaMask" && !selectedAccount)
+		)
+			return;
 		const updateCENNZBalances = async () => {
 			const balances = await fetchCENNZAssetBalances(
 				api,
