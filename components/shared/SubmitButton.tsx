@@ -20,8 +20,8 @@ const SubmitButton: FC<
 	} = useMetaMaskWallet();
 
 	const isSubmittable = useMemo(
-		() => !(requireMetaMask && !metaMaskAccount),
-		[requireMetaMask, metaMaskAccount]
+		() => !(requireMetaMask && !metaMaskAccount) && selectedWallet,
+		[requireMetaMask, metaMaskAccount, selectedWallet]
 	);
 
 	return (
