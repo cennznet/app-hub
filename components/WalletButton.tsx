@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, useEffect } from "react";
+import React, { useMemo, useEffect } from "react";
 import { css } from "@emotion/react";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import WalletModal from "@/components/WalletModal";
@@ -6,11 +6,10 @@ import AccountIdenticon from "@/components/shared/AccountIdenticon";
 import CENNZIconSVG from "@/assets/vectors/cennznet-icon.svg";
 import { Theme } from "@mui/material";
 import WalletSelect from "@/components/WalletSelect";
-import CENNZWallet from "@/components/CENNZWallet";
+import Wallet from "@/components/Wallet";
 import { useWalletSelect } from "@/providers/WalletSelectProvider";
 import { useMetaMaskWallet } from "@/providers/MetaMaskWalletProvider";
 import Jazzicon, { jsNumberForAddress } from "react-jazzicon";
-import { WalletOption } from "@/types";
 
 type WalletState = "Connected" | "NotConnected";
 
@@ -25,15 +24,8 @@ const WalletButton: React.FC = () => {
 		if (!CENNZAccount || !metaMaskAccount) return "NotConnected";
 	}, [CENNZAccount, metaMaskAccount, selectedWallet]);
 
-	const onWalletClick = useCallback(async () => {
-		if (selectedWallet === "MetaMask")
-			return navigator.clipboard.writeText(metaMaskAccount.address);
-		setWalletOpen(true);
-	}, [selectedWallet, setWalletOpen, metaMaskAccount]);
-
 	useEffect(() => {
 		if (selectedWallet === "MetaMask") {
-			setWalletOpen(false);
 			if (!metaMaskAccount) return setSelectedWallet(null);
 		}
 		if (metaMaskAccount) return setSelectedWallet("MetaMask");
@@ -41,10 +33,7 @@ const WalletButton: React.FC = () => {
 
 	return (
 		<>
-			<div
-				css={styles.walletButton(walletOpen, selectedWallet)}
-				onClick={onWalletClick}
-			>
+			<div css={styles.walletButton(walletOpen)} onClick={() => setWalletOpen(true)}>
 				<div css={styles.walletIcon}>
 					{(walletState === "NotConnected" || !selectedWallet) && (
 						<img
@@ -86,7 +75,7 @@ const WalletButton: React.FC = () => {
 			</div>
 			<WalletModal>
 				{!selectedWallet && <WalletSelect />}
-				{selectedWallet === "CENNZnet" && <CENNZWallet />}
+				{selectedWallet && <Wallet />}
 			</WalletModal>
 		</>
 	);
@@ -96,13 +85,13 @@ export default WalletButton;
 
 export const styles = {
 	walletButton:
-		(walletOpen: boolean, wallet: WalletOption) =>
+		(walletOpen: boolean) =>
 		({ palette, shadows, transitions }: Theme) =>
 			css`
 				position: absolute;
 				top: 0;
 				right: 3em;
-				cursor: ${wallet === "MetaMask" ? "copy" : "pointer"};
+				cursor: pointer;
 				box-shadow: ${shadows[1]};
 				height: 48px;
 				display: flex;

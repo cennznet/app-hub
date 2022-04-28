@@ -8,11 +8,13 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import getTokenLogo from "@/utils/getTokenLogo";
 import { CENNZ_ASSET_ID, CPAY_ASSET_ID } from "@/constants";
 import { useWalletSelect } from "@/providers/WalletSelectProvider";
+import { useSelectedAccount } from "@/hooks";
 
-const CENNZWallet: FC = () => {
+const Wallet: FC = () => {
 	const { setWalletOpen, walletOpen, setSelectedWallet } = useWalletSelect();
-	const { balances, selectedAccount, selectAccount, disconnectWallet } =
-		useCENNZWallet();
+	const { balances, selectAccount, disconnectWallet } = useCENNZWallet();
+	const { selectedWallet } = useWalletSelect();
+	const selectedAccount = useSelectedAccount();
 	const { accounts } = useCENNZExtension();
 
 	const onWalletDisconnect = useCallback(() => {
@@ -60,7 +62,9 @@ const CENNZWallet: FC = () => {
 					size={50}
 				/>
 				<div css={styles.accountDetails}>
-					<div css={styles.accountName}>{selectedAccount?.meta?.name}</div>
+					<div css={styles.accountName}>
+						{selectedAccount?.meta?.name ?? "METAMASK"}
+					</div>
 					<div
 						css={styles.accountAddress}
 						onClick={() =>
@@ -77,7 +81,7 @@ const CENNZWallet: FC = () => {
 								)
 							)}
 					</div>
-					{accounts?.length > 1 && (
+					{selectedWallet === "CENNZnet" && accounts?.length > 1 && (
 						<div css={styles.switchAccount}>
 							<select
 								onChange={onAccountSelect}
@@ -143,14 +147,16 @@ const CENNZWallet: FC = () => {
 				</div>
 			</div>
 			<Divider />
-			<nav css={styles.walletActions}>
-				<span onClick={onWalletDisconnect}>Disconnect</span>
-			</nav>
+			{selectedWallet === "CENNZnet" && (
+				<nav css={styles.walletActions}>
+					<span onClick={onWalletDisconnect}>Disconnect</span>
+				</nav>
+			)}
 		</div>
 	);
 };
 
-export default CENNZWallet;
+export default Wallet;
 
 export const styles = {
 	modalRoot: css`
