@@ -1,12 +1,23 @@
-import { VFC } from "react";
+import { useCallback, VFC } from "react";
 import { css } from "@emotion/react";
 import { Theme } from "@mui/material";
 import { useWalletSelect } from "@/providers/WalletSelectProvider";
 import CENNZIconSVG from "@/assets/vectors/cennznet-icon.svg";
 import MetaMaskIconSVG from "@/assets/vectors/metamask.svg";
+import { WalletOption } from "@/types";
+import { useMetaMaskWallet } from "@/providers/MetaMaskWalletProvider";
+import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 
 const WalletSelect: VFC = () => {
 	const { setSelectedWallet } = useWalletSelect();
+	const { connectWallet: connectCENNZWallet } = useCENNZWallet();
+	const { connectWallet: connectMetaMaskWallet } = useMetaMaskWallet();
+
+	const onOptionClick = useCallback((wallet: WalletOption) => {
+		setSelectedWallet(wallet)
+		if (wallet === "CENNZnet") return connectCENNZWallet();
+		if (wallet === "MetaMask") return connectMetaMaskWallet(wallet);
+	}, [setSelectedWallet, connectCENNZWallet, connectMetaMaskWallet])
 
 	return (
 		<div css={styles.modalContent}>
@@ -14,7 +25,7 @@ const WalletSelect: VFC = () => {
 			<div css={styles.selectOptions}>
 				<div
 					css={[styles.cennzButton, styles.selectOption]}
-					onClick={() => setSelectedWallet("CENNZnet")}
+					onClick={() => onOptionClick("CENNZnet")}
 				>
 					<div css={styles.walletIcon}>
 						<img
@@ -28,7 +39,7 @@ const WalletSelect: VFC = () => {
 				<br />
 				<div
 					css={[styles.metaMaskButton, styles.selectOption]}
-					onClick={() => setSelectedWallet("MetaMask")}
+					onClick={() => onOptionClick("MetaMask")}
 				>
 					<div css={styles.walletIcon}>
 						<img
