@@ -159,9 +159,7 @@ const PoolForm: FC<IntrinsicElements["form"] & PoolFormProps> = ({
 			{children}
 
 			<div css={styles.formSubmit}>
-				<SubmitButton requireCENNZnet={true} requireMetaMask={false}>
-					{buttonLabel}
-				</SubmitButton>
+				<SubmitButton>{buttonLabel}</SubmitButton>
 			</div>
 		</form>
 	);

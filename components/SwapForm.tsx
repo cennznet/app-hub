@@ -1,5 +1,5 @@
 import { IntrinsicElements } from "@/types";
-import { FC, useCallback, useEffect } from "react";
+import { FC, useCallback } from "react";
 import { css } from "@emotion/react";
 import { Theme } from "@mui/material";
 import SubmitButton from "@/components/shared/SubmitButton";
@@ -108,9 +108,7 @@ const SwapForm: FC<IntrinsicElements["form"] & SwapFormProps> = ({
 			{children}
 
 			<div css={styles.formSubmit}>
-				<SubmitButton requireCENNZnet={true} requireMetaMask={false}>
-					Swap
-				</SubmitButton>
+				<SubmitButton>Swap</SubmitButton>
 			</div>
 		</form>
 	);
