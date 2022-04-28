@@ -17,7 +17,7 @@ const WalletSelect: VFC = () => {
 		(wallet: WalletOption) => {
 			setSelectedWallet(wallet);
 			if (wallet === "CENNZnet") return connectCENNZWallet();
-			if (wallet === "MetaMask") return connectMetaMaskWallet(wallet);
+			if (wallet === "MetaMask") return connectMetaMaskWallet();
 		},
 		[setSelectedWallet, connectCENNZWallet, connectMetaMaskWallet]
 	);
