@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from "react";
+import React, { useMemo } from "react";
 import { css } from "@emotion/react";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import WalletModal from "@/components/WalletModal";
@@ -14,7 +14,7 @@ import Jazzicon, { jsNumberForAddress } from "react-jazzicon";
 type WalletState = "Connected" | "NotConnected";
 
 const WalletButton: React.FC = () => {
-	const { walletOpen, setWalletOpen, selectedWallet, setSelectedWallet } =
+	const { walletOpen, setWalletOpen, selectedWallet } =
 		useWalletSelect();
 	const { selectedAccount: CENNZAccount } = useCENNZWallet();
 	const { selectedAccount: metaMaskAccount } = useMetaMaskWallet();
@@ -24,16 +24,12 @@ const WalletButton: React.FC = () => {
 		if (!CENNZAccount || !metaMaskAccount) return "NotConnected";
 	}, [CENNZAccount, metaMaskAccount, selectedWallet]);
 
-	useEffect(() => {
-		if (selectedWallet === "MetaMask") {
-			if (!metaMaskAccount) return setSelectedWallet(null);
-		}
-		if (metaMaskAccount) return setSelectedWallet("MetaMask");
-	}, [setWalletOpen, selectedWallet, setSelectedWallet, metaMaskAccount]);
-
 	return (
 		<>
-			<div css={styles.walletButton(walletOpen)} onClick={() => setWalletOpen(true)}>
+			<div
+				css={styles.walletButton(walletOpen)}
+				onClick={() => setWalletOpen(true)}
+			>
 				<div css={styles.walletIcon}>
 					{(walletState === "NotConnected" || !selectedWallet) && (
 						<img
