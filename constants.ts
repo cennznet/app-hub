@@ -39,3 +39,5 @@ export const CENNZ_EXPLORER_URL: string =
 
 export const ETH_EXPLORER_URL: string =
 	process.env.NEXT_PUBLIC_ETH_EXPLORER_URL;
+
+export const COMMIT_SHA: string = process.env.VERCEL_GIT_COMMIT_SHA;
