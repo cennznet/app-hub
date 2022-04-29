@@ -1,6 +1,7 @@
 import fetchUnclaimedWithdrawals from "@/utils/fetchUnclaimedWithdrawals";
-import { Api } from "@cennznet/api";
 import { Balance, getDaysHoursMinutes } from "@/utils";
+
+const api = global.getCENNZApiForTest();
 
 const mockProof1 = {
 	_id: "100",
@@ -48,13 +49,6 @@ const mockWithdrawals = {
 		},
 	],
 };
-
-let api: Api;
-beforeAll(async () => {
-	api = await Api.create({ provider: "wss://nikau.centrality.me/public/ws" });
-});
-
-afterAll(async () => await api.disconnect());
 
 describe("fetchUnclaimedWithdrawals", () => {
 	beforeEach(() => {
