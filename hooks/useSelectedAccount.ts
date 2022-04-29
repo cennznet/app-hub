@@ -11,7 +11,6 @@ export default function useSelectedAccount(): Partial<InjectedAccountWithMeta> {
 	const { selectedWallet } = useWalletSelect();
 
 	return useMemo(() => {
-		console.log({ selectedWallet, CENNZAccount });
 		if (selectedWallet === "CENNZnet") return CENNZAccount;
 		if (selectedWallet === "MetaMask" && !!metaMaskAccount?.address)
 			return { address: cvmToCENNZAddress(metaMaskAccount.address) };
