@@ -4,7 +4,6 @@ import {
 	InputAdornment,
 	TextField,
 	TextFieldProps,
-	Theme,
 } from "@mui/material";
 import { useMemo, forwardRef } from "react";
 import Jazzicon, { jsNumberForAddress } from "react-jazzicon";
@@ -48,7 +47,7 @@ const AddressInput = forwardRef<
 			required
 			InputProps={{
 				startAdornment: (
-					<InputAdornment position="start" css={styles.adorment}>
+					<InputAdornment position="start" css={styles.adornment}>
 						{topAdorment}
 					</InputAdornment>
 				),
@@ -76,7 +75,7 @@ const styles = {
 		width: 26px;
 	`,
 
-	adorment: ({ palette }: Theme) => css`
+	adornment: css`
 		margin-right: 0;
 		> div {
 			margin-right: 0.5em !important;
