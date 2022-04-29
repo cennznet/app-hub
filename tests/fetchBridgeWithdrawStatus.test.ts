@@ -3,9 +3,25 @@ import fetchBridgeWithdrawStatus, {
 } from "@/utils/fetchBridgeWithdrawStatus";
 import { KOVAN_PEG_CONTRACT } from "@/constants";
 import ERC20Peg from "@/artifacts/ERC20Peg.json";
+import { Api } from "@cennznet/api";
 
-const api = global.getCENNZApiForTest();
 const { blockchain, provider, mock } = global.getWeb3MockForTest();
+
+const mockApi = (active: boolean) =>
+	({
+		query: {
+			erc20Peg: {
+				withdrawalsActive: jest.fn(() => ({
+					isTrue: active,
+				})),
+			},
+			ethBridge: {
+				bridgePaused: jest.fn(() => ({
+					isFalse: active,
+				})),
+			},
+		},
+	} as unknown as Api);
 
 describe("fetchBridgeWithdrawStatus", () => {
 	it("returns Active if withdrawals active", async () => {
@@ -19,7 +35,7 @@ describe("fetchBridgeWithdrawStatus", () => {
 			},
 		});
 
-		const status = await fetchBridgeWithdrawStatus(api, provider);
+		const status = await fetchBridgeWithdrawStatus(mockApi(true), provider);
 
 		expect(status).toEqual("Active");
 	});
@@ -34,7 +50,7 @@ describe("fetchBridgeWithdrawStatus", () => {
 			},
 		});
 
-		const status = await fetchBridgeWithdrawStatus(api, provider);
+		const status = await fetchBridgeWithdrawStatus(mockApi(false), provider);
 
 		expect(status).toEqual("Inactive");
 	});
@@ -52,7 +68,7 @@ describe("ensureBridgeWithdrawActive", () => {
 			},
 		});
 
-		const status = await ensureBridgeWithdrawActive(api, provider);
+		const status = await ensureBridgeWithdrawActive(mockApi(true), provider);
 
 		expect(status).toEqual("Active");
 	});
@@ -68,7 +84,7 @@ describe("ensureBridgeWithdrawActive", () => {
 		});
 
 		try {
-			await ensureBridgeWithdrawActive(api, provider);
+			await ensureBridgeWithdrawActive(mockApi(false), provider);
 		} catch (err) {
 			expect(err.code).toEqual("WITHDRAW_INACTIVE");
 		}

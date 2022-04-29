@@ -1,7 +1,6 @@
-import { Api } from "@cennznet/api";
 import fetchSwapAssets from "@/utils/fetchSwapAssets";
 
-const api: Api = global.getCENNZApiForTest();
+const api = global.getCENNZApiForTest();
 
 describe("fetchSwapAssets", () => {
 	it("returns expected result", async () => {

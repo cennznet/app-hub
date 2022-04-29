@@ -94,7 +94,10 @@ describe("Balance", () => {
 		expect(withCoin).toEqual(new Balance(100, ethAsset));
 	});
 	it("can construct from Codec", () => {
-		const fromCodec = Balance.fromCodec(api.registry.createType("Balance", 100), cennzAsset)
+		const fromCodec = Balance.fromCodec(
+			api.registry.createType("Balance", 100),
+			cennzAsset
+		);
 
 		expect(fromCodec).toEqual(new Balance("100", cennzAsset));
 	});
@@ -104,7 +107,10 @@ describe("Balance", () => {
 		expect(fromBN).toEqual(balance);
 	});
 	it("can construct from ApiBalance", () => {
-		const fromCodec = Balance.fromApiBalance(api.registry.createType("Balance", 100), cennzAsset)
+		const fromCodec = Balance.fromApiBalance(
+			api.registry.createType("Balance", 100),
+			cennzAsset
+		);
 
 		expect(fromCodec).toEqual(new Balance("100", cennzAsset));
 	});

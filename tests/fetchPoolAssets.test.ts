@@ -1,7 +1,6 @@
-import { Api } from "@cennznet/api";
 import fetchPoolAssets from "@/utils/fetchPoolAssets";
 
-const api: Api = global.getCENNZApiForTest();
+const api = global.getCENNZApiForTest();
 
 describe("fetchPoolAssets", () => {
 	it("returns expected result", async () => {
