@@ -105,4 +105,13 @@ describe("fetchUnclaimedWithdrawals", () => {
 
 		expect(unclaimed).toEqual(expected);
 	});
+	it("throws if no unclaimed withdrawals found", async () => {
+		fetchMock.once(null, { status: 404 });
+		try {
+			await fetchUnclaimedWithdrawals("mock-address", api);
+		} catch (error) {
+			expect(fetch).toHaveBeenCalledTimes(1);
+			expect(error.message).toEqual("No UNclaimed withdrawals found");
+		}
+	});
 });
