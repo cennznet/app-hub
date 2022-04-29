@@ -14,8 +14,7 @@ import Jazzicon, { jsNumberForAddress } from "react-jazzicon";
 type WalletState = "Connected" | "NotConnected";
 
 const WalletButton: React.FC = () => {
-	const { walletOpen, setWalletOpen, selectedWallet } =
-		useWalletSelect();
+	const { walletOpen, setWalletOpen, selectedWallet } = useWalletSelect();
 	const { selectedAccount: CENNZAccount } = useCENNZWallet();
 	const { selectedAccount: metaMaskAccount } = useMetaMaskWallet();
 

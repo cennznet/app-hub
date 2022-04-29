@@ -107,7 +107,8 @@ export default function CENNZWalletProvider({
 		if (
 			!api ||
 			!selectedWallet ||
-			(selectedWallet === "MetaMask" && !selectedAccount)
+			(selectedWallet === "MetaMask" && !selectedAccount) ||
+			(selectedWallet === "CENNZnet" && !CENNZAccount)
 		)
 			return;
 		const updateCENNZBalances = async () => {

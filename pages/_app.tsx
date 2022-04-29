@@ -57,10 +57,10 @@ function MyApp({ Component, pageProps }: MyAppProps) {
 			<ThemeProvider>
 				<CssGlobal />
 				<UserAgentProvider>
-					<WalletSelectProvider>
-						<CENNZExtensionProvider>
-							<MetaMaskExtensionProvider>
-								<CENNZApiProvider endpoint={API_URL}>
+					<CENNZExtensionProvider>
+						<MetaMaskExtensionProvider>
+							<CENNZApiProvider endpoint={API_URL}>
+								<WalletSelectProvider>
 									<MetaMaskWalletProvider>
 										<CENNZWalletProvider>
 											<GlobalModalProvider>
@@ -72,10 +72,10 @@ function MyApp({ Component, pageProps }: MyAppProps) {
 											</GlobalModalProvider>
 										</CENNZWalletProvider>
 									</MetaMaskWalletProvider>
-								</CENNZApiProvider>
-							</MetaMaskExtensionProvider>
-						</CENNZExtensionProvider>
-					</WalletSelectProvider>
+								</WalletSelectProvider>
+							</CENNZApiProvider>
+						</MetaMaskExtensionProvider>
+					</CENNZExtensionProvider>
 				</UserAgentProvider>
 			</ThemeProvider>
 		</>

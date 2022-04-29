@@ -31,26 +31,23 @@ const MetaMaskWalletProvider: FC<MetaMaskWalletProviderProps> = ({
 	const [selectedAccount, setSelectedAccount] =
 		useState<MetaMaskWalletContextType["selectedAccount"]>(null);
 
-	const connectWallet = useCallback(
-		async () => {
-			if (!extension) {
-				return promptInstallExtension();
-			}
+	const connectWallet = useCallback(async () => {
+		if (!extension) {
+			return promptInstallExtension();
+		}
 
-			const accounts = (await extension.request({
-				method: "eth_requestAccounts",
-			})) as string[];
+		const accounts = (await extension.request({
+			method: "eth_requestAccounts",
+		})) as string[];
 
-			if (!accounts?.length)
-				return alert(
-					"Please create at least one account in MetaMask extension to continue."
-				);
+		if (!accounts?.length)
+			return alert(
+				"Please create at least one account in MetaMask extension to continue."
+			);
 
-			setSelectedAccount({ address: accounts[0] });
-			setWallet(new ethers.providers.Web3Provider(extension as any, "any"));
-		},
-		[extension, promptInstallExtension]
-	);
+		setSelectedAccount({ address: accounts[0] });
+		setWallet(new ethers.providers.Web3Provider(extension as any, "any"));
+	}, [extension, promptInstallExtension]);
 
 	useEffect(() => {
 		if (!selectedAccount?.address || !extension) return;

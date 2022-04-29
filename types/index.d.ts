@@ -117,3 +117,6 @@ export interface TxStatus {
 }
 
 export type WalletOption = "CENNZnet" | "MetaMask";
+
+export type ChainOption = "CENNZnet" | "Ethereum";
+

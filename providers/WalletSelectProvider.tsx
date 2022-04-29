@@ -1,12 +1,14 @@
-import { WalletOption } from "@/types";
+import { ChainOption, WalletOption } from "@/types";
 import {
 	createContext,
 	Dispatch,
 	FC,
 	SetStateAction,
-	useContext,
-	useState,
+	useContext, useEffect,
+	useState
 } from "react";
+import { CENNZ_METAMASK_NETWORK, ETH_CHAIN_ID } from "@/constants";
+import { useMetaMaskExtension } from "@/providers/MetaMaskExtensionProvider";
 
 interface WalletSelectContextType {
 	walletOpen: boolean;
@@ -14,6 +16,9 @@ interface WalletSelectContextType {
 
 	selectedWallet: WalletOption;
 	setSelectedWallet: Dispatch<SetStateAction<WalletOption>>;
+
+	connectedChain: ChainOption
+	setConnectedChain: (chain: ChainOption) => void;
 }
 
 const WalletSelectContext = createContext<WalletSelectContextType>(
@@ -23,8 +28,26 @@ const WalletSelectContext = createContext<WalletSelectContextType>(
 interface WalletSelectProviderProps {}
 
 const WalletSelectProvider: FC<WalletSelectProviderProps> = ({ children }) => {
+	const { extension } = useMetaMaskExtension();
+
 	const [walletOpen, setWalletOpen] = useState<boolean>(false);
 	const [selectedWallet, setSelectedWallet] = useState<WalletOption>();
+	const [connectedChain, setConnectedChain] = useState<ChainOption>();
+
+	useEffect(() => {
+		if (!extension) return;
+
+		const onChainChanged = (chainId: string) => {
+			if (chainId === CENNZ_METAMASK_NETWORK.chainId) return setConnectedChain("CENNZnet")
+			if (chainId === (ETH_CHAIN_ID === 1 ? "0x1" : "0x2a")) return setConnectedChain("Ethereum")
+		}
+
+		extension.on("chainChanged", onChainChanged)
+
+		return () => {
+			extension.removeListener("chainChanged", onChainChanged);
+		}
+	}, [extension])
 
 	return (
 		<WalletSelectContext.Provider
@@ -34,6 +57,9 @@ const WalletSelectProvider: FC<WalletSelectProviderProps> = ({ children }) => {
 
 				selectedWallet,
 				setSelectedWallet,
+
+				connectedChain,
+				setConnectedChain,
 			}}
 		>
 			{children}
