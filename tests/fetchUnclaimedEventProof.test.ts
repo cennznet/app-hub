@@ -23,13 +23,13 @@ describe("fetchUnclaimedEventProof", () => {
 		expect(eventProof).toEqual(mockProof);
 	});
 
-	it("rejects if no proof found", async () => {
-		fetchMock.mockReject(new Error("No event proof found"));
+	it("throws if no event proof found", async () => {
+		fetchMock.once(null, { status: 404 });
 		try {
 			await fetchUnclaimedEventProof(0);
-		} catch (err) {
+		} catch (error) {
 			expect(fetch).toHaveBeenCalledTimes(1);
-			expect(err.message).toEqual("No event proof found");
+			expect(error.message).toEqual("No event proof found");
 		}
 	});
 });
