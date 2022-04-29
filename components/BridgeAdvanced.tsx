@@ -14,9 +14,9 @@ import BridgeUnclaimedWithdrawals from "@/components/BridgeUnclaimedWithdrawals"
 
 interface BridgeAdvancedProps {}
 
-const BridgeWithdrawAdvanced: VFC<
-	IntrinsicElements["div"] & BridgeAdvancedProps
-> = ({ ...props }) => {
+const BridgeAdvanced: VFC<IntrinsicElements["div"] & BridgeAdvancedProps> = ({
+	...props
+}) => {
 	const {
 		advancedExpanded: expanded,
 		setAdvancedExpanded: setExpanded,
@@ -63,7 +63,7 @@ const BridgeWithdrawAdvanced: VFC<
 	);
 };
 
-export default BridgeWithdrawAdvanced;
+export default BridgeAdvanced;
 
 const styles = {
 	root: css`

@@ -5,7 +5,7 @@ import { css } from "@emotion/react";
 import { Theme } from "@mui/material";
 import { useBridge } from "@/providers/BridgeProvider";
 import useBridgeStatus from "@/hooks/useBridgeStatus";
-import BridgeWithdrawAdvanced from "@/components/BridgeWithdrawAdvanced";
+import BridgeAdvanced from "@/components/BridgeAdvanced";
 import { useDepositRequest, useWithdrawRequest } from "@/hooks";
 
 interface BridgeFormProps {}
@@ -41,7 +41,7 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 		<form {...props} css={styles.root} onSubmit={onFormSubmit}>
 			{children}
 
-			{bridgeAction === "Withdraw" && <BridgeWithdrawAdvanced />}
+			{bridgeAction === "Withdraw" && <BridgeAdvanced />}
 
 			<div css={styles.formSubmit}>
 				<SubmitButton requireMetaMask={true} disabled={status === "Inactive"}>
