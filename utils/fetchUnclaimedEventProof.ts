@@ -6,9 +6,9 @@ export default async function fetchUnclaimedEventProof(
 ): Promise<HistoricalEventProof> {
 	return await fetch(`${BRIDGE_RELAYER_URL}/proofs/${eventProofId}`)
 		.then((response) => {
-			if (!response.ok) throw "No event proof found";
+			if (!response.ok) throw { message: "No event proof found" };
 
 			return response.json();
 		})
-		.catch((err) => console.log(err.message));
+		.catch((error) => console.log(error.message));
 }
