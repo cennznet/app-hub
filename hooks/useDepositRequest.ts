@@ -1,13 +1,10 @@
 import { useBridge } from "@/providers/BridgeProvider";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
-import { useMetaMaskExtension } from "@/providers/MetaMaskExtensionProvider";
 import { useMetaMaskWallet } from "@/providers/MetaMaskWalletProvider";
-import { useWalletSelect } from "@/providers/WalletSelectProvider";
 import {
 	Balance,
 	ensureBridgeDepositActive,
-	ensureEthereumChain,
 	ensureRelayerDepositDone,
 	sendDepositRequest,
 } from "@/utils";
@@ -16,7 +13,6 @@ import { useCallback } from "react";
 export default function useDepositRequest(): () => Promise<void> {
 	const { api } = useCENNZApi();
 	const { wallet: metaMaskWallet } = useMetaMaskWallet();
-	const { extension } = useMetaMaskExtension();
 	const { updateBalances: updateCENNZBalances } = useCENNZWallet();
 	const {
 		transferInput,
@@ -28,7 +24,6 @@ export default function useDepositRequest(): () => Promise<void> {
 		setTxFailure,
 		updateMetaMaskBalances,
 	} = useBridge();
-	const { selectedWallet } = useWalletSelect();
 
 	return useCallback(async () => {
 		const setTrValue = transferInput.setValue;
@@ -39,7 +34,6 @@ export default function useDepositRequest(): () => Promise<void> {
 
 		try {
 			setTxPending();
-			await ensureEthereumChain(extension, selectedWallet);
 			await ensureBridgeDepositActive(api, metaMaskWallet);
 			const tx = await sendDepositRequest(
 				transferAmount,
@@ -98,11 +92,9 @@ export default function useDepositRequest(): () => Promise<void> {
 		metaMaskWallet,
 		updateMetaMaskBalances,
 		updateCENNZBalances,
-		extension,
 		setTxIdle,
 		setTxFailure,
 		setTxPending,
 		setTxSuccess,
-		selectedWallet,
 	]);
 }
