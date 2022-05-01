@@ -9,6 +9,7 @@ import StandardButton from "@/components/shared/StandardButton";
 import Link from "@/components/Link";
 import ProgressOverlay from "@/components/shared/ProgressOverlay";
 import { Balance, selectMap } from "@/utils";
+import { useBeforeUnload } from "@/hooks";
 
 interface PoolProgressProps {}
 
@@ -19,6 +20,8 @@ const PoolProgress: VFC<IntrinsicElements["div"] & PoolProgressProps> = (
 	const { txHashLink, ...txProps } = txStatus?.props ?? {};
 	const dismissible =
 		txStatus?.status === "Success" || txStatus?.status === "Failure";
+
+	useBeforeUnload(txStatus);
 
 	return (
 		<ProgressOverlay

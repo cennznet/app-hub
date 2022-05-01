@@ -6,7 +6,6 @@ import {
 	HTMLAttributes,
 	HTMLFormElement,
 	InputHTMLAttributes,
-	ReactElement,
 } from "react";
 import { u128 } from "@polkadot/types-codec";
 
@@ -67,12 +66,6 @@ export interface MetaMaskAccount {
 	address: string;
 }
 
-export interface TxStatus {
-	status: "in-progress" | "success" | "fail";
-	title: string | ReactElement;
-	message: string | ReactElement;
-}
-
 export type RelayerStatus =
 	| "Successful"
 	| "Failed"
@@ -109,4 +102,11 @@ export interface HistoricalEventProof {
 	r: string[];
 	s: string[];
 	v: number[];
+}
+
+export type TxType = "Idle" | "Pending" | "Success" | "Failure";
+
+export interface TxStatus {
+	status: TxType;
+	props?: any;
 }

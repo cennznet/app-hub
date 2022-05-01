@@ -9,6 +9,7 @@ import StandardButton from "@/components/shared/StandardButton";
 import ProgressOverlay from "@/components/shared/ProgressOverlay";
 import Link from "@/components/Link";
 import { Balance, selectMap } from "@/utils";
+import { useBeforeUnload } from "@/hooks";
 
 interface BridgeProgressProps {}
 
@@ -19,6 +20,8 @@ const BridgeProgress: VFC<IntrinsicElements["div"] & BridgeProgressProps> = (
 	const { txHashLink, ...txProps } = txStatus?.props ?? {};
 	const dismissible =
 		txStatus?.status === "Success" || txStatus?.status === "Failure";
+
+	useBeforeUnload(txStatus);
 
 	return (
 		<ProgressOverlay
