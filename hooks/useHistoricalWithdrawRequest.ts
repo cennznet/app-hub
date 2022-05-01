@@ -3,7 +3,6 @@ import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import { useMetaMaskExtension } from "@/providers/MetaMaskExtensionProvider";
 import { useMetaMaskWallet } from "@/providers/MetaMaskWalletProvider";
-import { useWalletSelect } from "@/providers/WalletSelectProvider";
 import { WithdrawClaim } from "@/types";
 import {
 	ensureBridgeWithdrawActive,
@@ -29,7 +28,6 @@ export default function useHistoricalWithdrawRequest(): (
 	const { updateBalances: updateCENNZBalances } = useCENNZWallet();
 	const { wallet: metaMaskWallet } = useMetaMaskWallet();
 	const { extension } = useMetaMaskExtension();
-	const { selectedWallet } = useWalletSelect();
 
 	return useCallback(
 		async (unclaimed) => {
@@ -41,7 +39,7 @@ export default function useHistoricalWithdrawRequest(): (
 
 			try {
 				setTxPending();
-				await ensureEthereumChain(extension, selectedWallet);
+				await ensureEthereumChain(extension, "CENNZnet");
 				await ensureBridgeWithdrawActive(api, metaMaskWallet);
 
 				setTxPending({
@@ -110,7 +108,6 @@ export default function useHistoricalWithdrawRequest(): (
 			setTxFailure,
 			setTxIdle,
 			updateUnclaimedWithdrawals,
-			selectedWallet,
 		]
 	);
 }
