@@ -5,7 +5,7 @@ const api = global.getCENNZApiForTest();
 const { cennzAsset, cpayAsset } = getCENNZCoreAssetsForTest();
 
 describe("getRemoveLiquidityExtrinsic", () => {
-	it("returns expected extrinsic", async () => {
+	it("defines extrinsic with correct values", async () => {
 		const exchangeInfo = await fetchPoolExchangeInfo(
 			api,
 			cennzAsset,
@@ -16,14 +16,14 @@ describe("getRemoveLiquidityExtrinsic", () => {
 		const tradeAssetValue = new Balance(10, cennzAsset);
 		const slippage = 5;
 
-		const extrinsic = await getRemoveLiquidityExtrinsic(
+		const extrinsic = (await getRemoveLiquidityExtrinsic(
 			api,
 			exchangeInfo,
 			cennzAsset,
 			tradeAssetValue,
 			coreAssetValue,
 			slippage
-		);
+		)) as any;
 
 		const { coreAssetReserve, exchangeLiquidity } = exchangeInfo;
 		const liquidityAmount = coreAssetReserve.gt(0)
@@ -32,13 +32,9 @@ describe("getRemoveLiquidityExtrinsic", () => {
 		const minTradeAmount = tradeAssetValue.decrease(slippage);
 		const minCoreAmount = coreAssetValue.decrease(slippage);
 
-		const expected = api.tx.cennzx.removeLiquidity(
-			cennzAsset.assetId,
-			liquidityAmount.toFixed(0),
-			minTradeAmount.toFixed(0),
-			minCoreAmount.toFixed(0)
-		);
-
-		expect(extrinsic).toEqual(expected);
+		expect(extrinsic.args[0].toJSON()).toEqual(cennzAsset.assetId);
+		expect(extrinsic.args[1].toString()).toEqual(liquidityAmount.toFixed(0));
+		expect(extrinsic.args[2].toString()).toEqual(minTradeAmount.toFixed(0));
+		expect(extrinsic.args[3].toString()).toEqual(minCoreAmount.toFixed(0));
 	});
 });

@@ -6,21 +6,17 @@ const { cennzAsset } = global.getCENNZCoreAssetsForTest();
 const testingAccount = global.getEthereumTestingAccount();
 
 describe("getPegWithdrawExtrinsic", () => {
-	it("returns expected extrinsic", () => {
+	it("defines extrinsic with correct values", () => {
 		const transferAssetValue = new Balance(10, cennzAsset);
 		const extrinsic = getPegWithdrawExtrinsic(
 			api,
 			cennzAsset.assetId,
 			transferAssetValue,
 			testingAccount
-		);
+		) as any;
 
-		const expected = api.tx.erc20Peg.withdraw(
-			cennzAsset.assetId,
-			transferAssetValue.toFixed(0),
-			testingAccount
-		);
-
-		expect(extrinsic).toEqual(expected);
+		expect(extrinsic.args[0].toJSON()).toEqual(cennzAsset.assetId);
+		expect(extrinsic.args[1].toString()).toEqual(transferAssetValue.toFixed(0));
+		expect(extrinsic.args[2].toJSON()).toEqual(testingAccount.toLowerCase());
 	});
 });

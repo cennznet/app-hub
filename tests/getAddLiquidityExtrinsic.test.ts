@@ -5,7 +5,7 @@ const api = global.getCENNZApiForTest();
 const { cennzAsset, cpayAsset } = getCENNZCoreAssetsForTest();
 
 describe("getAddLiquidityExtrinsic", () => {
-	it("returns expected extrinsic", async () => {
+	it("defines extrinsic with correct values", async () => {
 		const exchangeInfo = await fetchPoolExchangeInfo(
 			api,
 			cennzAsset,
@@ -16,14 +16,14 @@ describe("getAddLiquidityExtrinsic", () => {
 		const tradeAssetValue = new Balance(10, cennzAsset);
 		const slippage = 5;
 
-		const extrinsic = await getAddLiquidityExtrinsic(
+		const extrinsic = (await getAddLiquidityExtrinsic(
 			api,
 			exchangeInfo,
 			cennzAsset.assetId,
 			tradeAssetValue,
 			coreAssetValue,
 			slippage
-		);
+		)) as any;
 
 		const { coreAssetReserve, exchangeLiquidity } = exchangeInfo;
 		const minLiquidity = coreAssetReserve.gt(0)
@@ -34,13 +34,9 @@ describe("getAddLiquidityExtrinsic", () => {
 			: coreAssetValue;
 		const maxTradeAmount = tradeAssetValue.increase(slippage);
 
-		const expected = api.tx.cennzx.addLiquidity(
-			cennzAsset.assetId,
-			minLiquidity.toFixed(0),
-			maxTradeAmount.toFixed(0),
-			coreAssetValue.toFixed(0)
-		);
-
-		expect(extrinsic).toEqual(expected);
+		expect(extrinsic.args[0].toJSON()).toEqual(cennzAsset.assetId);
+		expect(extrinsic.args[1].toString()).toEqual(minLiquidity.toFixed(0));
+		expect(extrinsic.args[2].toString()).toEqual(maxTradeAmount.toFixed(0));
+		expect(extrinsic.args[3].toString()).toEqual(coreAssetValue.toFixed(0));
 	});
 });

@@ -5,7 +5,7 @@ const api = global.getCENNZApiForTest();
 const { cennzAsset, cpayAsset } = getCENNZCoreAssetsForTest();
 
 describe("getBuyAssetExtrinsic", () => {
-	it("returns expected extrinsic", async () => {
+	it("defines extrinsic with correct values", async () => {
 		const exchangeAssetValue = new Balance(10, cennzAsset);
 		const receivedAssetValue = new Balance(5, cpayAsset);
 		const slippage = 5;
@@ -17,16 +17,14 @@ describe("getBuyAssetExtrinsic", () => {
 			cpayAsset.assetId,
 			receivedAssetValue,
 			slippage
-		);
+		) as any;
 
-		const expected = api.tx.cennzx.buyAsset(
-			null,
-			cennzAsset.assetId,
-			cpayAsset.assetId,
-			receivedAssetValue.toFixed(0),
-			exchangeAssetValue.decrease(slippage).toFixed(0)
+		expect(extrinsic.args[0].toJSON()).toEqual(null);
+		expect(extrinsic.args[1].toJSON()).toEqual(cennzAsset.assetId);
+		expect(extrinsic.args[2].toJSON()).toEqual(cpayAsset.assetId);
+		expect(extrinsic.args[3].toString()).toEqual(receivedAssetValue.toFixed(0));
+		expect(extrinsic.args[4].toString()).toEqual(
+			exchangeAssetValue.increase(slippage).toFixed(0)
 		);
-
-		expect(extrinsic).toEqual(expected);
 	});
 });
