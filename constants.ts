@@ -64,3 +64,7 @@ export const CENNZ_METAMASK_NETWORK: CENNZMetaMaskNetwork =
 
 export const CENNZ_IPFS: string =
 	"https://gateway.pinata.cloud/ipfs/QmWhNm7tTi6SYbiumULDRk956hxgqaZSX77vcxBNn8fvnw";
+
+export const APP_VERSION: string = process.env.APP_VERSION;
+
+export const COMMIT_SHA: string = process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA;
