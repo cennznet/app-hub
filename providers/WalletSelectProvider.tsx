@@ -34,14 +34,20 @@ const WalletSelectProvider: FC<WalletSelectProviderProps> = ({ children }) => {
 	const [selectedWallet, setSelectedWallet] = useState<WalletOption>();
 	const [connectedChain, setConnectedChain] = useState<ChainOption>();
 
+	const updateConnectedChain = (chainId: string) => {
+		if (chainId === CENNZ_METAMASK_NETWORK.chainId) return setConnectedChain("CENNZnet")
+		if (chainId === (ETH_CHAIN_ID === 1 ? "0x1" : "0x2a")) return setConnectedChain("Ethereum")
+		setConnectedChain(null)
+	}
+
 	useEffect(() => {
 		if (!extension) return;
 
-		const onChainChanged = (chainId: string) => {
-			if (chainId === CENNZ_METAMASK_NETWORK.chainId) return setConnectedChain("CENNZnet")
-			if (chainId === (ETH_CHAIN_ID === 1 ? "0x1" : "0x2a")) return setConnectedChain("Ethereum")
-		}
+		if (extension.isConnected())
+			updateConnectedChain(`0x${Number(extension.networkVersion).toString(16)}`)
 
+
+		const onChainChanged = (chainId: string) => updateConnectedChain(chainId)
 		extension.on("chainChanged", onChainChanged)
 
 		return () => {
