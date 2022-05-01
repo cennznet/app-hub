@@ -1,10 +1,21 @@
+import { VFC, useEffect } from "react";
 import { css } from "@emotion/react";
 import Link from "next/link";
 import { Theme } from "@mui/material";
 import useSectionUri from "@/hooks/useSectionUri";
+import { useMetaMaskExtension } from "@/providers/MetaMaskExtensionProvider";
+import { ensureEthereumChain } from "@/utils";
 
-const Switch: React.FC<{}> = () => {
+const Switch: VFC = () => {
 	const section = useSectionUri();
+	const { extension } = useMetaMaskExtension();
+
+	useEffect(() => {
+		if (!extension) return;
+
+		if (section === "bridge") void ensureEthereumChain(extension, "CENNZnet");
+	}, [extension, section]);
+
 	return (
 		<nav css={styles.container}>
 			<Link href="/swap" passHref={true}>
