@@ -86,7 +86,7 @@ const Wallet: FC = () => {
 							<select
 								onChange={onAccountSelect}
 								value={selectedAccount.address}
-								css={styles.swtichAccountSelect}
+								css={styles.switchAccountSelect}
 							>
 								{accounts.map((acc, index) => (
 									<option value={acc.address} key={index}>
@@ -206,7 +206,7 @@ export const styles = {
 		color: ${palette.primary.default};
 	`,
 
-	swtichAccountSelect: css`
+	switchAccountSelect: css`
 		cursor: pointer;
 		position: absolute;
 		opacity: 0;
