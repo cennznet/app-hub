@@ -6,14 +6,14 @@ import AccountIdenticon from "@/components/shared/AccountIdenticon";
 import { useCENNZExtension } from "@/providers/CENNZExtensionProvider";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import getTokenLogo from "@/utils/getTokenLogo";
-import { CENNZ_ASSET_ID, CPAY_ASSET_ID } from "@/constants";
+import { CENNZ_ASSET_ID, CENNZ_NETWORK, CPAY_ASSET_ID } from "@/constants";
 import { useWalletSelect } from "@/providers/WalletSelectProvider";
 import { useSelectedAccount } from "@/hooks";
 
 const Wallet: FC = () => {
 	const { setWalletOpen, walletOpen, setSelectedWallet } = useWalletSelect();
 	const { balances, selectAccount, disconnectWallet } = useCENNZWallet();
-	const { selectedWallet } = useWalletSelect();
+	const { selectedWallet, connectedChain } = useWalletSelect();
 	const selectedAccount = useSelectedAccount();
 	const { accounts } = useCENNZExtension();
 
@@ -151,6 +151,12 @@ const Wallet: FC = () => {
 				<nav css={styles.walletActions}>
 					<span onClick={onWalletDisconnect}>Disconnect</span>
 				</nav>
+			)}
+			{selectedWallet === "MetaMask" && (
+				<div css={styles.walletActions}>
+					{connectedChain === "CENNZnet"&& <span>Connected to {connectedChain} {CENNZ_NETWORK}</span>}
+					{!connectedChain && <span>Please connect to {CENNZ_NETWORK === "Azalea" ? "Ethereum" : "Kovan"} or CENNZnet {CENNZ_NETWORK}</span>}
+				</div>
 			)}
 		</div>
 	);
