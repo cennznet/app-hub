@@ -2,9 +2,6 @@ import { useMetaMaskWallet } from "@/providers/MetaMaskWalletProvider";
 import { BridgedEthereumToken, EthereumToken } from "@/types";
 import { Balance, fetchMetaMaskBalance } from "@/utils";
 import { useEffect, useMemo, useState } from "react";
-import { useBridge } from "@/providers/BridgeProvider";
-import useSelectedAccount from "./useSelectedAccount";
-import isCENNZAddress from "@/utils/isCENNZAddress";
 import { useWalletSelect } from "@/providers/WalletSelectProvider";
 
 export default function useMetaMaskBalances(
@@ -17,11 +14,7 @@ export default function useMetaMaskBalances(
 	const [balance2, setBalance2] = useState<Balance>(null);
 
 	const updateBalances = useMemo(() => {
-		if (
-			!wallet ||
-			!metaMaskAccount?.address ||
-			(connectedChain !== "Ethereum")
-		)
+		if (!wallet || !metaMaskAccount?.address || connectedChain !== "Ethereum")
 			return;
 
 		return async () => {
@@ -40,7 +33,7 @@ export default function useMetaMaskBalances(
 	}, [wallet, metaMaskAccount?.address, token1, token2, connectedChain]);
 
 	useEffect(() => {
-		updateBalances?.();
+		void updateBalances?.();
 	}, [updateBalances]);
 
 	return [balance1, balance2, updateBalances];

@@ -154,8 +154,18 @@ const Wallet: FC = () => {
 			)}
 			{selectedWallet === "MetaMask" && (
 				<div css={styles.walletActions}>
-					{connectedChain === "CENNZnet"&& <span>Connected to {connectedChain} {CENNZ_NETWORK}</span>}
-					{!connectedChain && <span>Please connect to {CENNZ_NETWORK === "Azalea" ? "Ethereum" : "Kovan"} or CENNZnet {CENNZ_NETWORK}</span>}
+					{connectedChain === "CENNZnet" && (
+						<span>
+							Connected to {connectedChain} {CENNZ_NETWORK}
+						</span>
+					)}
+					{!connectedChain && (
+						<span>
+							Please connect to{" "}
+							{CENNZ_NETWORK === "Azalea" ? "Ethereum" : "Kovan"} or CENNZnet{" "}
+							{CENNZ_NETWORK}
+						</span>
+					)}
 				</div>
 			)}
 		</div>
