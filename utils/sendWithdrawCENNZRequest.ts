@@ -1,10 +1,11 @@
-import { CENNZAsset } from "@/types";
+import { CENNZAsset, WalletOption } from "@/types";
 import { Api } from "@cennznet/api";
 import {
 	Balance,
 	getPegWithdrawExtrinsic,
 	signAndSendTx,
 	CENNZTransaction,
+	signViaMetaMask,
 } from "@/utils";
 import { Signer } from "@cennznet/api/types";
 
@@ -14,7 +15,8 @@ export default async function sendWithdrawCENNZRequest(
 	transferAsset: CENNZAsset,
 	cennzAddress: string,
 	ethereumAddress: string,
-	signer: Signer
+	signer: Signer,
+	wallet: WalletOption
 ): Promise<CENNZTransaction> {
 	const extrinsic = getPegWithdrawExtrinsic(
 		api,
@@ -22,7 +24,12 @@ export default async function sendWithdrawCENNZRequest(
 		transferAmount,
 		ethereumAddress
 	);
-	const pegTx = await signAndSendTx(extrinsic, cennzAddress, signer);
+
+	let pegTx: CENNZTransaction;
+	if (wallet === "CENNZnet")
+		pegTx = await signAndSendTx(extrinsic, cennzAddress, signer);
+	if (wallet === "MetaMask")
+		pegTx = await signViaMetaMask(api, ethereumAddress, extrinsic);
 
 	return pegTx;
 }
