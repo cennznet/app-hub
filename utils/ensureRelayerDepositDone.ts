@@ -3,7 +3,6 @@ import { RelayerStatus, RelayerConfirmingStatus } from "@/types";
 
 type TimeoutReturn = Awaited<ReturnType<typeof waitUntil>>;
 
-// TODO: Needs test
 export default async function ensureRelayerDepositDone(
 	txHash: string,
 	timeout: number = 60000,

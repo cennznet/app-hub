@@ -4,7 +4,6 @@ import { Balance } from "@/utils";
 import { BigNumber, ethers } from "ethers";
 import GenericERC20TokenAbi from "@/artifacts/GenericERC20Token.json";
 
-// TODO: Needs test
 export default async function fetchMetaMaskBalance(
 	provider: ethers.providers.Web3Provider,
 	accountAddress: MetaMaskAccount["address"],

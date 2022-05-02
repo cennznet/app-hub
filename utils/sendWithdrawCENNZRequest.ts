@@ -9,7 +9,6 @@ import {
 import { Signer } from "@cennznet/api/types";
 import signViaMetaMask from "./signViaMetaMask";
 
-// TODO: Needs test
 export default async function sendWithdrawCENNZRequest(
 	api: Api,
 	transferAmount: Balance,

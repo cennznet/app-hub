@@ -1,8 +1,11 @@
 import { Api } from "@cennznet/api";
 import { BridgedEthereumToken, CENNZAsset } from "@/types";
 import { mock } from "@depay/web3-mock";
+import { enableFetchMocks } from "jest-fetch-mock";
 import { ethers } from "ethers";
 import { Web3Provider } from "@ethersproject/providers";
+
+enableFetchMocks();
 
 jest.mock("@/utils/getTokenLogo");
 jest.mock("@/utils/CENNZTransaction");

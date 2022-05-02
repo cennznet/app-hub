@@ -3,7 +3,6 @@ import { Api } from "@cennznet/api";
 import { SubmittableExtrinsic } from "@cennznet/api/types";
 import { Balance } from "@/utils";
 
-// TODO: Need test
 export default function getBuyAssetExtrinsic(
 	api: Api,
 	exchangeAssetId: CENNZAsset["assetId"],

@@ -1,13 +1,7 @@
 import { CENNZTransaction } from "@/utils";
-import { Api, SubmittableResult } from "@cennznet/api";
+import { SubmittableResult } from "@cennznet/api";
 import { Signer, SubmittableExtrinsic } from "@cennznet/api/types";
 
-interface TxReceipt {
-	hash: string;
-	events: any[];
-}
-
-// TODO: Needs test
 export default async function signAndSendTx(
 	extrinsic: SubmittableExtrinsic<"promise", any>,
 	address: string,

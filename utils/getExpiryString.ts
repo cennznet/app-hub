@@ -1,4 +1,4 @@
-export function getDaysHoursMinutes(expiresAt): string {
+export function getDaysHoursMinutes(expiresAt: number): string {
 	const distance = getDistance(expiresAt);
 
 	if (distance <= 0) return "Expired";
@@ -12,7 +12,7 @@ export function getDaysHoursMinutes(expiresAt): string {
 	return `${days}d ${hours}h ${minutes}m`;
 }
 
-export function getMinutesAndSeconds(expiresAt): string {
+export function getMinutesAndSeconds(expiresAt: number): string {
 	const distance = getDistance(expiresAt);
 
 	if (distance <= 0) return "Expired";
@@ -23,7 +23,7 @@ export function getMinutesAndSeconds(expiresAt): string {
 	return `${minutes}m ${seconds}s`;
 }
 
-function getDistance(expiresAt): number {
+export function getDistance(expiresAt: number): number {
 	const expiry = expiresAt * 1000;
 	return expiry - Date.now();
 }

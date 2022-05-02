@@ -10,7 +10,6 @@ type ContractSigner<T> = T extends "ReadOnly"
 	? ethers.Signer
 	: never;
 
-// TODO: Needs test
 export default function getERC20TokenContract<T extends ContractType>(
 	token: EthereumToken,
 	signer: ContractSigner<T>
