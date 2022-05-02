@@ -114,27 +114,31 @@ const BridgeTokenDestination: VFC<
 					</div>
 				)}
 			</div>
-			<div css={styles.formField(bridgeAction === "Deposit")}>
-				<label htmlFor="transferCENNZAddressInput">CENNZnet ADDRESS</label>
-				<AddressInput
-					id="transferCENNZAddressInput"
-					value={transferCENNZAddress}
-					onChange={onTransferCENNZAddressChange}
-					addressType="CENNZnet"
-					ref={cennzAddressInputRef}
-				/>
-			</div>
+			{bridgeAction === "Deposit" && (
+				<div css={styles.formField}>
+					<label htmlFor="transferCENNZAddressInput">CENNZnet ADDRESS</label>
+					<AddressInput
+						id="transferCENNZAddressInput"
+						value={transferCENNZAddress}
+						onChange={onTransferCENNZAddressChange}
+						addressType="CENNZnet"
+						ref={cennzAddressInputRef}
+					/>
+				</div>
+			)}
 
-			<div css={styles.formField(bridgeAction === "Withdraw")}>
-				<label htmlFor="transferMetaMaskAddressInput">ETHEREUM ADDRESS</label>
-				<AddressInput
-					id="transferMetaMaskAddressInput"
-					value={transferMetaMaskAddress}
-					onChange={onTransferMetaMaskAddressChange}
-					addressType="Ethereum"
-					ref={metaMaskAddressInputRef}
-				/>
-			</div>
+			{bridgeAction === "Withdraw" && (
+				<div css={styles.formField}>
+					<label htmlFor="transferMetaMaskAddressInput">ETHEREUM ADDRESS</label>
+					<AddressInput
+						id="transferMetaMaskAddressInput"
+						value={transferMetaMaskAddress}
+						onChange={onTransferMetaMaskAddressChange}
+						addressType="Ethereum"
+						ref={metaMaskAddressInputRef}
+					/>
+				</div>
+			)}
 		</div>
 	);
 };
@@ -144,25 +148,23 @@ export default BridgeTokenDestination;
 const styles = {
 	root: css``,
 
-	formField:
-		(show: boolean) =>
-		({ palette }: Theme) =>
-			css`
-				display: ${show ? "block" : "none"};
-				margin-bottom: 1.5em;
+	formField: ({ palette }: Theme) =>
+		css`
+			display: block;
+			margin-bottom: 1.5em;
 
-				&:last-child {
-					margin-bottom: 0;
-				}
+			&:last-child {
+				margin-bottom: 0;
+			}
 
-				label {
-					font-weight: bold;
-					font-size: 14px;
-					margin-bottom: 0.5em;
-					display: block;
-					color: ${palette.primary.main};
-				}
-			`,
+			label {
+				font-weight: bold;
+				font-size: 14px;
+				margin-bottom: 0.5em;
+				display: block;
+				color: ${palette.primary.main};
+			}
+		`,
 
 	tokenBalance: ({ palette }: Theme) => css`
 		margin-top: 0.25em;
