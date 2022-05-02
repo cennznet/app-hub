@@ -1,9 +1,14 @@
 import { ETH_CHAIN_ID } from "@/constants";
 import { MetaMaskInpageProvider } from "@metamask/providers";
+import { ChainOption } from "@/types";
+import { addCENNZnetToMetaMask } from "@/utils";
 
 export default async function ensureEthereumChain(
-	extension: MetaMaskInpageProvider
+	extension: MetaMaskInpageProvider,
+	chain: ChainOption
 ): Promise<void> {
+	if (chain === "CENNZnet") return addCENNZnetToMetaMask(extension);
+
 	const ethChainId = await extension.request({ method: "eth_chainId" });
 
 	if (
