@@ -153,17 +153,21 @@ const Wallet: FC = () => {
 				</nav>
 			)}
 			{selectedWallet === "MetaMask" && (
-				<div css={styles.walletActions}>
+				<div css={styles.network}>
 					{connectedChain === "CENNZnet" && (
 						<span>
-							Connected to {connectedChain} {CENNZ_NETWORK}
+							Connected to CENNZnet {CENNZ_NETWORK}
+						</span>
+					)}
+					{connectedChain === "Ethereum" && (
+						<span>
+							Connected to {CENNZ_NETWORK === "Azalea" ? "Ethereum Mainnet" : "Kovan Testnet"}
 						</span>
 					)}
 					{!connectedChain && (
 						<span>
 							Please connect to{" "}
-							{CENNZ_NETWORK === "Azalea" ? "Ethereum" : "Kovan"} or CENNZnet{" "}
-							{CENNZ_NETWORK}
+							CENNZnet {CENNZ_NETWORK} or {CENNZ_NETWORK === "Azalea" ? "Ethereum" : "Kovan"}
 						</span>
 					)}
 				</div>
@@ -344,5 +348,10 @@ export const styles = {
 				color: ${palette.primary.default};
 			}
 		}
+	`,
+
+	network: ({ palette }: Theme) => css`
+		padding: 1em 1.5em 1.5em;
+		color: ${palette.grey["700"]};
 	`,
 };
