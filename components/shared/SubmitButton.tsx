@@ -1,52 +1,47 @@
 import { ButtonHTMLAttributes, FC, useMemo } from "react";
 import { css } from "@emotion/react";
 import { Theme } from "@mui/material";
-import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import CENNZIconSVG from "@/assets/vectors/cennznet-icon.svg";
 import MetaMaskSVG from "@/assets/vectors/metamask.svg";
 import { useMetaMaskWallet } from "@/providers/MetaMaskWalletProvider";
+import { useWalletProvider } from "@/providers/WalletProvider";
 
 interface SubmitButtonProps {
-	requireCENNZnet: boolean;
-	requireMetaMask: boolean;
+	requireMetaMask?: boolean;
 }
 
 const SubmitButton: FC<
 	ButtonHTMLAttributes<HTMLButtonElement> & SubmitButtonProps
-> = ({ children, requireCENNZnet, requireMetaMask, disabled, ...props }) => {
-	const { selectedAccount: cennzAccount, connectWallet: connectCENNZWallet } =
-		useCENNZWallet();
+> = ({ children, requireMetaMask, disabled, ...props }) => {
+	const { selectedWallet, setWalletOpen } = useWalletProvider();
 	const {
 		selectedAccount: metaMaskAccount,
 		connectWallet: connectMetaMaskWallet,
 	} = useMetaMaskWallet();
 
-	const isSubmittable = useMemo(() => {
-		if (requireCENNZnet && !cennzAccount) return false;
-
-		if (requireMetaMask && !metaMaskAccount) return false;
-
-		return true;
-	}, [requireCENNZnet, cennzAccount, requireMetaMask, metaMaskAccount]);
+	const isSubmittable = useMemo(
+		() => !(requireMetaMask && !metaMaskAccount) && selectedWallet,
+		[requireMetaMask, metaMaskAccount, selectedWallet]
+	);
 
 	return (
 		<>
-			{!cennzAccount && requireCENNZnet && (
+			{!selectedWallet && (
 				<button
 					type="button"
 					css={[styles.root, styles.cennzButton]}
-					onClick={() => connectCENNZWallet()}
+					onClick={() => setWalletOpen(true)}
 				>
 					<img
 						src={CENNZIconSVG.src}
 						alt="CENNZnet Logo"
 						css={styles.brandLogo}
 					/>
-					CONNECT CENNZnet
+					CONNECT WALLET
 				</button>
 			)}
 
-			{!metaMaskAccount && requireMetaMask && !!cennzAccount && (
+			{!isSubmittable && !!selectedWallet && (
 				<button
 					type="button"
 					css={[styles.root, styles.metaMaskButton]}
