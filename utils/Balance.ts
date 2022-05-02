@@ -11,7 +11,6 @@ interface AsBalanceOptions {
 type BalanceDescriptor = Pick<GenericCoin, "symbol" | "decimals">;
 type BalanceSource = BigSource | Balance;
 
-// TODO: Need test
 export default class Balance extends Big {
 	coin: BalanceDescriptor;
 

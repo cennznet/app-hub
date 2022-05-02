@@ -3,7 +3,6 @@ import { getERC20PegContract } from "@/utils";
 import { Api } from "@cennznet/api";
 import { ethers } from "ethers";
 
-// TODO: Needs test
 export default async function fetchBridgeDepositStatus(
 	api: Api,
 	provider: ethers.providers.Web3Provider

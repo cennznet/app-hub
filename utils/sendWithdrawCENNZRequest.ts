@@ -8,7 +8,6 @@ import {
 } from "@/utils";
 import { Signer } from "@cennznet/api/types";
 
-// TODO: Needs test
 export default async function sendWithdrawCENNZRequest(
 	api: Api,
 	transferAmount: Balance,

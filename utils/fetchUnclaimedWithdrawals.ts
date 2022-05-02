@@ -23,11 +23,11 @@ export default async function fetchUnclaimedWithdrawals(
 		`${BRIDGE_RELAYER_URL}/withdrawals/${selectedAccount}`
 	)
 		.then((response) => {
-			if (!response.ok) throw new Error("No UNclaimed withdrawals found");
+			if (!response.ok) throw { message: "No UNclaimed withdrawals found" };
 
 			return response.json();
 		})
-		.catch((err) => console.log(err.message));
+		.catch((error) => console.log(error.message));
 
 	if (!unclaimedRaw) return;
 

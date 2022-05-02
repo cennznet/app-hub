@@ -6,7 +6,7 @@ context.keys().forEach((key) => {
 	return (tokenLogos[basename] = context(key)?.default);
 });
 
-export default function getTokenLogos(symbol: string): {
+export default function getTokenLogo(symbol: string): {
 	src: string;
 	width: number;
 	height: number;
