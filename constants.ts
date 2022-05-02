@@ -1,3 +1,5 @@
+import { CENNZMetaMaskNetwork } from "@/types";
+
 export const CENNZ_ASSET_ID: number = Number(
 	process.env.NEXT_PUBLIC_CENNZ_ASSET_ID
 );
@@ -43,3 +45,26 @@ export const ETH_EXPLORER_URL: string =
 export const APP_VERSION: string = process.env.APP_VERSION;
 
 export const COMMIT_SHA: string = process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA;
+
+export const CENNZ_NETWORK: string = process.env.NEXT_PUBLIC_CENNZ_NETWORK;
+
+const CENNZ_METAMASK_NETWORKS = {
+	azalea: {
+		cennzTokenAddress: "0x5de841521336640695584288fcae37a41a9c92a4",
+		chainId: "0x5359",
+		chainName: "CENNZnet Azalea",
+		rpcUrl: "https://cennznet.unfrastructure.io/public",
+	},
+	nikau: {
+		cennzTokenAddress: "0xcCccccCc00003E80000000000000000000000000",
+		chainId: "0xbb9",
+		chainName: "CENNZnet Nikau",
+		rpcUrl: "https://nikau.centrality.me/public",
+	},
+};
+
+export const CENNZ_METAMASK_NETWORK: CENNZMetaMaskNetwork =
+	CENNZ_METAMASK_NETWORKS[CENNZ_NETWORK];
+
+export const CENNZ_IPFS: string =
+	"https://gateway.pinata.cloud/ipfs/QmWhNm7tTi6SYbiumULDRk956hxgqaZSX77vcxBNn8fvnw";
