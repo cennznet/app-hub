@@ -28,6 +28,12 @@ global.getEthereumTestingAccount = () =>
 global.getCENNZApiForTest = () => {
 	let api: Api = new Api({
 		provider: "wss://nikau.centrality.me/public/ws",
+		types: {
+			ethWalletCall: {
+				call: "Call",
+				nonce: "Index",
+			},
+		},
 	});
 
 	beforeAll(async () => {
