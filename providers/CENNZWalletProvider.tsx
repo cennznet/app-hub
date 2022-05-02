@@ -89,7 +89,8 @@ export default function CENNZWalletProvider({
 
 	// 2. Pick the right account once a `wallet` has been set
 	useEffect(() => {
-		if (!wallet || !accounts || !selectAccount || selectedWallet !== "CENNZnet") return;
+		if (!wallet || !accounts || !selectAccount || selectedWallet !== "CENNZnet")
+			return;
 
 		const storedAccount = store.get("CENNZNET-ACCOUNT");
 		if (!storedAccount) return selectAccount(accounts[0]);

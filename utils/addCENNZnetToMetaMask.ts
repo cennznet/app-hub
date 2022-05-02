@@ -20,9 +20,7 @@ export default async function addCENNZnetToMetaMask(
 				params: [
 					{
 						chainId: CENNZ_METAMASK_NETWORK.chainId,
-						blockExplorerUrls: [
-							`https://${CENNZ_NETWORK}.uncoverexplorer.com`,
-						],
+						blockExplorerUrls: [`https://${CENNZ_NETWORK}.uncoverexplorer.com`],
 						chainName: CENNZ_METAMASK_NETWORK.chainName,
 						nativeCurrency: {
 							name: "CPAY",
