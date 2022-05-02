@@ -4,6 +4,7 @@ import {
 	useTxStatus,
 	TokenInputHook,
 	TxStatusHook,
+	useSelectedAccount,
 } from "@/hooks";
 import useMetaMaskBalances from "@/hooks/useMetaMaskBalances";
 import {
@@ -24,7 +25,6 @@ import {
 	useState,
 } from "react";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
-import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 
 type ERC20TokenAddress = EthereumToken["address"];
 
@@ -71,7 +71,7 @@ const BridgeProvider: FC<BridgeProviderProps> = ({
 	children,
 }) => {
 	const { api } = useCENNZApi();
-	const { selectedAccount: CENNZAccount } = useCENNZWallet();
+	const selectedAccount = useSelectedAccount();
 	const [bridgeAction, setBridgeAction] = useState<BridgeAction>("Deposit");
 	const [ethereumTokens, setEthereumTokens] =
 		useState<BridgeContextType["ethereumTokens"]>(depositTokens);
@@ -85,16 +85,16 @@ const BridgeProvider: FC<BridgeProviderProps> = ({
 		useState<WithdrawClaim[]>();
 
 	const updateUnclaimedWithdrawals = useCallback(async () => {
-		if (!api || !CENNZAccount) return;
+		if (!api || !selectedAccount) return;
 		setAdvancedMounted(false);
 
 		const unclaimed: Awaited<ReturnType<typeof fetchUnclaimedWithdrawals>> =
-			await fetchUnclaimedWithdrawals(CENNZAccount.address, api);
+			await fetchUnclaimedWithdrawals(selectedAccount.address, api);
 
 		setUnclaimedWithdrawals(unclaimed?.filter(Boolean));
 
 		setAdvancedMounted(true);
-	}, [api, CENNZAccount, setAdvancedMounted]);
+	}, [api, selectedAccount, setAdvancedMounted]);
 
 	const ethAsset = (ethereumTokens as EthereumToken[])?.find(
 		(token) => token.address === ETH_TOKEN_ADDRESS
