@@ -42,10 +42,15 @@ describe("ensureRelayerDepositDone", () => {
 		expect(callback).toHaveBeenCalledTimes(2);
 	});
 	it("throws if status is `timeout`", async () => {
-		fetchMock.once(JSON.stringify({ status: "timeout" }), { status: 200 });
+		fetchMock.once(
+			() =>
+				new Promise((resolve) =>
+					setTimeout(() => resolve({ status: 408 }), 1000)
+				)
+		);
 
 		try {
-			await ensureRelayerDepositDone("mock-hash", 10000);
+			await ensureRelayerDepositDone("mock-hash", 500);
 		} catch (err) {
 			expect(err.code).toEqual("RELAYER_TIMEOUT");
 		}
