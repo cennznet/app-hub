@@ -6,30 +6,23 @@ import AccountIdenticon from "@/components/shared/AccountIdenticon";
 import { useCENNZExtension } from "@/providers/CENNZExtensionProvider";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import getTokenLogo from "@/utils/getTokenLogo";
-import { CENNZ_ASSET_ID, CPAY_ASSET_ID, ETH_CHAIN_ID } from "@/constants";
+import { CENNZ_ASSET_ID, CPAY_ASSET_ID } from "@/constants";
 import { useWalletProvider } from "@/providers/WalletProvider";
 import { useSelectedAccount } from "@/hooks";
-import { ensureEthereumChain } from "@/utils";
-import { useMetaMaskExtension } from "@/providers/MetaMaskExtensionProvider";
 
 const Wallet: FC = () => {
-	const {
-		setWalletOpen,
-		walletOpen,
-		selectedWallet,
-		setSelectedWallet,
-		connectedChain,
-	} = useWalletProvider();
+	const { setWalletOpen, walletOpen, selectedWallet, setSelectedWallet } =
+		useWalletProvider();
 	const { balances, selectAccount, disconnectWallet } = useCENNZWallet();
 	const selectedAccount = useSelectedAccount();
 	const { accounts } = useCENNZExtension();
-	const { extension } = useMetaMaskExtension();
 
 	const onWalletDisconnect = useCallback(() => {
 		setWalletOpen(false);
 		setSelectedWallet(null);
-		disconnectWallet();
-	}, [disconnectWallet, setWalletOpen, setSelectedWallet]);
+
+		if (selectedWallet === "CENNZnet") disconnectWallet();
+	}, [disconnectWallet, setWalletOpen, setSelectedWallet, selectedWallet]);
 
 	const ref = useRef<HTMLDivElement>();
 	const [balanceListHeight, setBalanceListHeight] = useState<number>(0);
@@ -58,12 +51,6 @@ const Wallet: FC = () => {
 		},
 		[accounts, selectAccount]
 	);
-
-	const onNetworkConnect = useCallback(async () => {
-		if (!extension) return;
-
-		await ensureEthereumChain(extension, "Ethereum");
-	}, [extension]);
 
 	if (!selectedAccount) return null;
 
@@ -161,27 +148,9 @@ const Wallet: FC = () => {
 				</div>
 			</div>
 			<Divider />
-			{selectedWallet === "CENNZnet" && (
-				<nav css={styles.walletActions}>
-					<span onClick={onWalletDisconnect}>Disconnect</span>
-				</nav>
-			)}
-			{selectedWallet === "MetaMask" && connectedChain === "Ethereum" && (
-				<div css={styles.network}>
-					<span>
-						Connected to{" "}
-						{ETH_CHAIN_ID === 1 ? "Ethereum Mainnet" : "Kovan Testnet"}
-					</span>
-				</div>
-			)}
-			{selectedWallet === "MetaMask" && connectedChain !== "Ethereum" && (
-				<nav css={styles.walletActions}>
-					<span onClick={onNetworkConnect}>
-						Connect to{" "}
-						{ETH_CHAIN_ID === 1 ? "Ethereum Mainnet" : "Kovan Testnet"}
-					</span>
-				</nav>
-			)}
+			<nav css={styles.walletActions}>
+				<span onClick={onWalletDisconnect}>Disconnect</span>
+			</nav>
 		</div>
 	);
 };
@@ -358,10 +327,5 @@ export const styles = {
 				color: ${palette.primary.default};
 			}
 		}
-	`,
-
-	network: ({ palette }: Theme) => css`
-		padding: 1em 1.5em 1.5em;
-		color: ${palette.grey["700"]};
 	`,
 };
