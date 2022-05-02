@@ -41,6 +41,15 @@ describe("ensureRelayerDepositDone", () => {
 		expect(fetch).toHaveBeenCalledTimes(3);
 		expect(callback).toHaveBeenCalledTimes(2);
 	});
+	it("throws if status is `Failed`", async () => {
+		fetchMock.once(JSON.stringify({ status: "Failed" }), { status: 200 });
+
+		try {
+			await ensureRelayerDepositDone("mock-hash", 10000);
+		} catch (err) {
+			expect(err.code).toEqual("RELAYER_STATUS_FAILED");
+		}
+	});
 	it("throws if status is `timeout`", async () => {
 		fetchMock.once(
 			() =>
@@ -53,15 +62,6 @@ describe("ensureRelayerDepositDone", () => {
 			await ensureRelayerDepositDone("mock-hash", 500);
 		} catch (err) {
 			expect(err.code).toEqual("RELAYER_TIMEOUT");
-		}
-	});
-	it("throws if status is `Failed`", async () => {
-		fetchMock.once(JSON.stringify({ status: "Failed" }), { status: 200 });
-
-		try {
-			await ensureRelayerDepositDone("mock-hash", 10000);
-		} catch (err) {
-			expect(err.code).toEqual("RELAYER_STATUS_FAILED");
 		}
 	});
 });
