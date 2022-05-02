@@ -39,7 +39,7 @@ const MetaMaskWalletProvider: FC<MetaMaskWalletProviderProps> = ({
 				return promptInstallExtension();
 			}
 
-			await ensureEthereumChain(extension);
+			await ensureEthereumChain(extension, "Ethereum");
 
 			const accounts = (await extension.request({
 				method: "eth_requestAccounts",
@@ -66,10 +66,10 @@ const MetaMaskWalletProvider: FC<MetaMaskWalletProviderProps> = ({
 
 			setSelectedAccount({ address: accounts[0] });
 			setWallet(new ethers.providers.Web3Provider(extension as any));
-			await ensureEthereumChain(extension);
+			await ensureEthereumChain(extension, "Ethereum");
 		};
 
-		checkAccounts();
+		void checkAccounts();
 	}, [extension]);
 
 	useEffect(() => {
