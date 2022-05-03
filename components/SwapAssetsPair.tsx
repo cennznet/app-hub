@@ -113,7 +113,7 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
 					id="exchangeInput"
 					ref={exchangeInputRef}
 					required
-					scale={4}
+					scale={exchangeAsset.decimals}
 					min={0.0001}
 				/>
 
@@ -142,7 +142,7 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
 					ref={receiveInputRef}
 					readOnly={true}
 					required
-					scale={4}
+					scale={receiveAsset.decimals}
 					min={0.0001}
 				/>
 				{!!receiveBalance && (

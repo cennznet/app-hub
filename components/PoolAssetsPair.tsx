@@ -80,7 +80,7 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 					id="tradeInput"
 					ref={tradeInputRef}
 					required
-					scale={4}
+					scale={tradeAsset.decimals}
 					min={0.0001}
 				/>
 
@@ -105,7 +105,7 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 					onValueChange={coreInput.onValueChange}
 					tokens={[coreAsset]}
 					required
-					scale={4}
+					scale={coreAsset.decimals}
 					min={0.0001}
 					max={coreBalance?.gt(0) ? coreBalance.toBalance() : null}
 					ref={coreInputRef}
