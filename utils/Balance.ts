@@ -87,9 +87,8 @@ export default class Balance extends Big {
 	toBalance(options = {} as AsBalanceOptions): string {
 		const { withSymbol } = options || {};
 		const { decimals, symbol } = this.coin;
-		const output = Balance.format(this.div(Math.pow(10, decimals)));
+		const output = Balance.format(this.div(Math.pow(10, decimals)), this.coin);
 		const suffix = withSymbol && symbol ? ` ${symbol}` : "";
-
 		return `${output}${suffix}`;
 	}
 
@@ -137,12 +136,11 @@ export default class Balance extends Big {
 	static fromBigNumber(source: BigNumber, coin: BalanceDescriptor): Balance {
 		return new Balance(source.toString(), coin);
 	}
-
 	static format(source: BalanceSource, coin: BalanceDescriptor = null): string {
 		const value = new Balance(source, coin);
 		if (value.lte(0)) return Number(0).toFixed(1);
 		return value.lt(0.0001)
 			? "<0.0001"
-			: parseFloat(value.toFixed(4, Big.roundDown)).toString();
+			: parseFloat(value.toFixed(coin.decimals, Big.roundDown)).toString();
 	}
 }

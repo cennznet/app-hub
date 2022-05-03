@@ -100,7 +100,7 @@ const BridgeTokenDestination: VFC<
 					id="transferInput"
 					ref={transferInputRef}
 					required
-					scale={4}
+					scale={transferAsset.decimals}
 					min={0.0001}
 				/>
 				{transferBalance !== null && (
