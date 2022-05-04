@@ -146,8 +146,6 @@ export default class Balance extends Big {
 	static format(source: BalanceSource, coin: BalanceDescriptor = null): string {
 		const value = new Balance(source, coin);
 		if (value.lte(0)) return Number(0).toFixed(1);
-		return value.lt(0.0001)
-			? "<0.0001"
-			: value.toFixed(coin.decimals).replace(/^0+(\d)|(\d)0+$/gm, "$1$2");
+		return value.toFixed(coin.decimals).replace(/^0+(\d)|(\d)0+$/gm, "$1$2");
 	}
 }
