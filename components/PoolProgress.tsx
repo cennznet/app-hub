@@ -124,7 +124,7 @@ const TxFailure: VFC<IntrinsicElements["div"] & TxFailureProps> = ({
 			<h1>Transaction Failed</h1>
 			<p>
 				An error occurred while processing your transaction. It might have gone
-				through, check your balances before trying again.
+				through, check your balances before try again.
 			</p>
 			{!!errorCode && (
 				<div css={styles.errorCode}>
