@@ -141,6 +141,6 @@ export default class Balance extends Big {
 		if (value.lte(0)) return Number(0).toFixed(1);
 		return value.lt(0.0001)
 			? "<0.0001"
-			: parseFloat(value.toFixed(coin.decimals, Big.roundDown)).toString();
+			: value.toFixed(coin.decimals).replace(/^0+(\d)|(\d)0+$/gm, "$1$2");
 	}
 }
