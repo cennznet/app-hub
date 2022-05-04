@@ -81,7 +81,7 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 					ref={tradeInputRef}
 					required
 					scale={tradeAsset.decimals}
-					min={0.0001}
+					min={Balance.fromString("1", tradeAsset).toInput()}
 				/>
 
 				{!!tradeBalance && poolAction === "Add" && (
@@ -106,7 +106,7 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 					tokens={[coreAsset]}
 					required
 					scale={coreAsset.decimals}
-					min={0.0001}
+					min={Balance.fromString("1", coreAsset).toInput()}
 					max={coreBalance?.gt(0) ? coreBalance.toBalance() : null}
 					ref={coreInputRef}
 				>

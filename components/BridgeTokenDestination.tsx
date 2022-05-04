@@ -101,11 +101,11 @@ const BridgeTokenDestination: VFC<
 					ref={transferInputRef}
 					required
 					scale={transferAsset.decimals}
-					min={0.0001}
+					min={Balance.fromString("1", transferAsset).toInput()}
 				/>
 				{transferBalance !== null && (
 					<div css={styles.tokenBalance}>
-						Balance: <span>{transferBalance?.toBalance() ?? "0.0000"}</span>
+						Balance: <span>{transferBalance?.toBalance() ?? "0.0"}</span>
 					</div>
 				)}
 				{transferBalance === null && !!metaMaskAccount && !!cennzAccount && (

@@ -138,6 +138,11 @@ export default class Balance extends Big {
 	static fromBigNumber(source: BigNumber, coin: BalanceDescriptor): Balance {
 		return new Balance(source.toString(), coin);
 	}
+
+	static fromString(source: string, coin: BalanceDescriptor): Balance {
+		return new Balance(source, coin);
+	}
+
 	static format(source: BalanceSource, coin: BalanceDescriptor = null): string {
 		const value = new Balance(source, coin);
 		if (value.lte(0)) return Number(0).toFixed(1);
