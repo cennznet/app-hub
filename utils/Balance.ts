@@ -129,8 +129,10 @@ export default class Balance extends Big {
 	}
 
 	static fromInput(source: string, coin: BalanceDescriptor): Balance {
-		const value = Number(source || 0) * Math.pow(10, coin?.decimals || 0);
-		return new Balance(value, coin);
+		const value = source
+			? new Big(source).mul(Math.pow(10, coin?.decimals || 0))
+			: 0;
+		return new Balance(value.toString(), coin);
 	}
 
 	static fromBigNumber(source: BigNumber, coin: BalanceDescriptor): Balance {
