@@ -66,15 +66,6 @@ export default class CENNZTransaction extends Emittery<EmitEvents> {
 	}
 
 	getHashLink(): string {
-		let isNikau: boolean;
-		const explorerUrl = CENNZ_EXPLORER_URL.replace("nikau.", () => {
-			isNikau = true;
-			return "";
-		});
-		return this.hash
-			? `${explorerUrl}/extrinsic/${this.hash}?${
-					isNikau ? "?network=Nikau" : ""
-			  }`
-			: null;
+		return `${CENNZ_EXPLORER_URL}/extrinsic/${this?.hash}`;
 	}
 }
