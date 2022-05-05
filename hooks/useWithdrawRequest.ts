@@ -55,7 +55,8 @@ export default function useWithdrawRequest(): () => Promise<void> {
 				selectedAccount.address,
 				transferMetaMaskAddress,
 				cennzWallet?.signer,
-				selectedWallet
+				selectedWallet,
+				extension
 			);
 
 			tx.on("txCancelled", () => setTxIdle());

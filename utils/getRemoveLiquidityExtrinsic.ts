@@ -1,7 +1,11 @@
-import { CENNZAsset, PoolExchangeInfo } from "@/types";
 import { Balance } from "@/utils";
 import { Api } from "@cennznet/api";
-import { SubmittableExtrinsic } from "@cennznet/api/types";
+import {
+	CENNZAsset,
+	CENNZnetExtrinsic,
+	PoolExchangeInfo,
+	SubmittableExtrinsic,
+} from "@/types";
 
 export default function getRemoveLiquidityExtrinsic(
 	api: Api,
@@ -10,7 +14,7 @@ export default function getRemoveLiquidityExtrinsic(
 	tradeAssetValue: Balance,
 	coreAssetValue: Balance,
 	slippage: number
-): SubmittableExtrinsic<"promise"> {
+): CENNZnetExtrinsic | SubmittableExtrinsic<"promise"> {
 	const { coreAssetReserve, exchangeLiquidity } = exchangeInfo;
 
 	const liquidityAmount = coreAssetReserve.gt(0)

@@ -1,7 +1,6 @@
-import { CENNZAsset } from "@/types";
 import { Api } from "@cennznet/api";
-import { SubmittableExtrinsic } from "@cennznet/api/types";
 import { Balance } from "@/utils";
+import { CENNZAsset, CENNZnetExtrinsic, SubmittableExtrinsic } from "@/types";
 
 export default function getSellAssetExtrinsic(
 	api: Api,
@@ -10,7 +9,7 @@ export default function getSellAssetExtrinsic(
 	receiveAssetId: CENNZAsset["assetId"],
 	receivedAssetValue: Balance,
 	slippage: number
-): SubmittableExtrinsic<"promise"> {
+): CENNZnetExtrinsic | SubmittableExtrinsic<"promise"> {
 	return api.tx.cennzx.sellAsset(
 		null,
 		exchangeAssetId,

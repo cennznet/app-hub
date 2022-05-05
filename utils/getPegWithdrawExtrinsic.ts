@@ -1,14 +1,13 @@
-import { CENNZAsset } from "@/types";
+import { CENNZAsset, CENNZnetExtrinsic, SubmittableExtrinsic } from "@/types";
 import { Balance } from "@/utils";
 import { Api } from "@cennznet/api";
-import { SubmittableExtrinsic } from "@cennznet/api/types";
 
 export default function getPegWithdrawExtrinsic(
 	api: Api,
 	transferAssetId: CENNZAsset["assetId"],
 	transferAssetValue: Balance,
 	ethereumAddress: string
-): SubmittableExtrinsic<"promise"> {
+): CENNZnetExtrinsic | SubmittableExtrinsic<"promise"> {
 	return api.tx.erc20Peg.withdraw(
 		transferAssetId,
 		transferAssetValue.toFixed(0),
