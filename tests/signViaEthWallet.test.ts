@@ -6,7 +6,7 @@ const ethereumAccount = global.getEthereumTestingAccount();
 
 const extrinsic = {
 	signViaEthWallet: jest.fn(async (address, _options, _ethereum, statusCb) => {
-		if (address === "cancel") throw { message: "Cancelled" };
+		if (address === "cancel") throw { code: 4001 };
 		statusCb({ txHash: "0x000000000000000" });
 	}) as any,
 };

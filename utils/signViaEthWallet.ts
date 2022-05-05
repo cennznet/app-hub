@@ -24,7 +24,7 @@ export default async function signViaEthWallet(
 			}
 		)
 		.catch((error) => {
-			if (error?.message !== "Cancelled") throw error;
+			if (error?.code !== 4001) throw error;
 			tx.setCancel();
 		});
 
