@@ -26,7 +26,7 @@ interface TokenInputProps {
 const TokenInput = forwardRef<
 	HTMLInputElement,
 	Omit<InputHTMLAttributes<HTMLInputElement>, "onChange"> &
-		Pick<IMask.MaskedNumberOptions, "scale" | "padFractionalZeros"> &
+		Pick<IMask.MaskedNumberOptions, "scale"> &
 		TokenInputProps
 >(
 	(
@@ -38,7 +38,6 @@ const TokenInput = forwardRef<
 			placeholder = "0.0",
 			onValueChange,
 			scale,
-			padFractionalZeros = false,
 			value,
 			css,
 			children,
@@ -48,12 +47,9 @@ const TokenInput = forwardRef<
 	) => {
 		const imaskOptions = useMemo(
 			() => ({
-				scale,
-				padFractionalZeros,
-				radix: ".",
-				mask: Number,
+				mask: `[0000000000].[${new Array(scale || 1).fill(0).join("")}]`,
 			}),
-			[padFractionalZeros, scale]
+			[scale]
 		);
 
 		const onIMaskAccept = useCallback(

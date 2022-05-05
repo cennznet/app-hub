@@ -131,9 +131,8 @@ describe("Balance", () => {
 		const format = Balance.format(12345.6789123, cennzAsset);
 
 		expect(format).toEqual("12345.6789");
-
+		//should be Zero if under the decimal value of the asset
 		const formatTiny = Balance.format(0.000001, cennzAsset);
-
-		expect(formatTiny).toEqual("<0.0001");
+		expect(formatTiny).toEqual("0.0");
 	});
 });

@@ -64,9 +64,9 @@ export default function useWithdrawRequest(): () => Promise<void> {
 				});
 			});
 
-			tx.on("txFailed", (errorCode) =>
+			tx.on("txFailed", (result) =>
 				setTxFailure({
-					errorCode,
+					errorCode: tx.decodeError(result),
 				})
 			);
 

@@ -113,8 +113,8 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
 					id="exchangeInput"
 					ref={exchangeInputRef}
 					required
-					scale={4}
-					min={0.0001}
+					scale={exchangeAsset.decimals}
+					min={Balance.fromString("1", exchangeAsset).toInput()}
 				/>
 
 				{!!exchangeBalance && (
@@ -142,8 +142,8 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
 					ref={receiveInputRef}
 					readOnly={true}
 					required
-					scale={4}
-					min={0.0001}
+					scale={receiveAsset.decimals}
+					min={Balance.fromString("1", receiveAsset).toInput()}
 				/>
 				{!!receiveBalance && (
 					<div css={styles.tokenBalance}>
