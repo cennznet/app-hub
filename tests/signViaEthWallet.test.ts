@@ -21,7 +21,9 @@ describe("signViaEthWallet", () => {
 		);
 
 		expect(extrinsic.signViaEthWallet).toHaveBeenCalled();
-		expect(extrinsic.signViaEthWallet.mock.calls[0][0]).toEqual(ethereumAccount);
+		expect(extrinsic.signViaEthWallet.mock.calls[0][0]).toEqual(
+			ethereumAccount
+		);
 	});
 	it("sets txHash and txResult", async () => {
 		const transaction: CENNZTransaction = await signViaEthWallet(
@@ -36,14 +38,14 @@ describe("signViaEthWallet", () => {
 			txHash: "0x000000000000000",
 		});
 	});
-		it("calls tx.setCancel if tx is cancelled", async () => {
-			const transaction = await signViaEthWallet(
-				{} as Api,
-				"cancel",
-				extrinsic as CENNZnetExtrinsic,
-				global.ethereum
-			);
+	it("calls tx.setCancel if tx is cancelled", async () => {
+		const transaction = await signViaEthWallet(
+			{} as Api,
+			"cancel",
+			extrinsic as CENNZnetExtrinsic,
+			global.ethereum
+		);
 
-			expect(transaction.setCancel).toHaveBeenCalled();
-		});
+		expect(transaction.setCancel).toHaveBeenCalled();
+	});
 });
