@@ -1,9 +1,9 @@
+import { useMemo } from "react";
+import { cvmToAddress } from "@cennznet/types/utils";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import { useMetaMaskWallet } from "@/providers/MetaMaskWalletProvider";
 import { useWalletProvider } from "@/providers/WalletProvider";
-import { cvmToCENNZAddress } from "@/utils";
 import { InjectedAccountWithMeta } from "@polkadot/extension-inject/types";
-import { useMemo } from "react";
 
 export default function useSelectedAccount(): Partial<InjectedAccountWithMeta> {
 	const { selectedAccount: CENNZAccount } = useCENNZWallet();
@@ -13,6 +13,6 @@ export default function useSelectedAccount(): Partial<InjectedAccountWithMeta> {
 	return useMemo(() => {
 		if (selectedWallet === "CENNZnet") return CENNZAccount;
 		if (selectedWallet === "MetaMask" && !!metaMaskAccount?.address)
-			return { address: cvmToCENNZAddress(metaMaskAccount.address) };
+			return { address: cvmToAddress(metaMaskAccount.address) };
 	}, [CENNZAccount, metaMaskAccount, selectedWallet]);
 }
