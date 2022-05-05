@@ -47,6 +47,5 @@ export {
 	getDaysHoursMinutes,
 	getMinutesAndSeconds,
 } from "@/utils/getExpiryString";
-export { default as cvmToCENNZAddress } from "@/utils/cvmToCENNZAddress";
-export { default as signViaMetaMask } from "@/utils/signViaMetaMask";
+export { default as signViaEthWallet } from "@/utils/signViaEthWallet";
 export { default as addCENNZnetToMetaMask } from "@/utils/addCENNZnetToMetaMask";
