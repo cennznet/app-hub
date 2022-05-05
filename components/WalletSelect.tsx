@@ -27,20 +27,6 @@ const WalletSelect: VFC = () => {
 			<label htmlFor="select wallet">select wallet</label>
 			<div css={styles.selectOptions}>
 				<div
-					css={[styles.cennzButton, styles.selectOption]}
-					onClick={() => onOptionClick("CENNZnet")}
-				>
-					<div css={styles.walletIcon}>
-						<img
-							src={CENNZIconSVG.src}
-							alt="CENNZnet Logo"
-							css={styles.selectOptionImg}
-						/>
-					</div>
-					<span>CONNECT CENNZnet</span>
-				</div>
-				<br />
-				<div
 					css={[styles.metaMaskButton, styles.selectOption]}
 					onClick={() => onOptionClick("MetaMask")}
 				>
@@ -52,6 +38,20 @@ const WalletSelect: VFC = () => {
 						/>
 					</div>
 					<span>CONNECT METAMASK</span>
+				</div>
+				<br />
+				<div
+					css={[styles.cennzButton, styles.selectOption]}
+					onClick={() => onOptionClick("CENNZnet")}
+				>
+					<div css={styles.walletIcon}>
+						<img
+							src={CENNZIconSVG.src}
+							alt="CENNZnet Logo"
+							css={styles.selectOptionImg}
+						/>
+					</div>
+					<span>CONNECT CENNZnet</span>
 				</div>
 			</div>
 		</div>
