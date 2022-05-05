@@ -1,6 +1,7 @@
 import fetchGasFee from "@/utils/fetchGasFee";
 import getSellAssetExtrinsic from "@/utils/getSellAssetExtrinsic";
 import { Balance } from "@/utils";
+import { SubmittableExtrinsic } from "@/types";
 
 const api = global.getCENNZApiForTest();
 
@@ -17,7 +18,7 @@ describe("fetchGasFee", () => {
 				cpayAsset.assetId,
 				Balance.fromInput("1", cpayAsset),
 				5
-			),
+			) as SubmittableExtrinsic<"promise">,
 			cpayAsset
 		);
 

@@ -7,6 +7,7 @@ import {
 	getAddLiquidityExtrinsic,
 	getRemoveLiquidityExtrinsic,
 } from "@/utils";
+import { SubmittableExtrinsic } from "@/types";
 
 interface PoolGasFeeHook {
 	gasFee: Balance;
@@ -18,8 +19,7 @@ export default function usePoolGasFee(): PoolGasFeeHook {
 	const { api } = useCENNZApi();
 	const [gasFee, setGasFee] = useState<Balance>(null);
 	const [loading, setLoading] = useState<boolean>(true);
-	const { tradeAsset, coreAsset, poolAction, exchangeInfo, userInfo } =
-		usePool();
+	const { tradeAsset, coreAsset, poolAction, exchangeInfo } = usePool();
 
 	const extrinsic = useMemo(() => {
 		if (!api || !exchangeInfo) return;
@@ -46,13 +46,17 @@ export default function usePoolGasFee(): PoolGasFeeHook {
 	const updateGasFee = useCallback(async () => {
 		if (!api) return;
 		setLoading(true);
-		const gasFee = await fetchGasFee(api, extrinsic, coreAsset);
+		const gasFee = await fetchGasFee(
+			api,
+			extrinsic as SubmittableExtrinsic<"promise">,
+			coreAsset
+		);
 		setGasFee(gasFee);
 		setLoading(false);
 	}, [api, extrinsic, coreAsset]);
 
 	useEffect(() => {
-		updateGasFee?.();
+		void updateGasFee?.();
 	}, [updateGasFee]);
 
 	return {
