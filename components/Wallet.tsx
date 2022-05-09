@@ -10,6 +10,7 @@ import { CENNZ_ASSET_ID, CPAY_ASSET_ID } from "@/constants";
 import { useWalletProvider } from "@/providers/WalletProvider";
 import { useMetaMaskWallet } from "@/providers/MetaMaskWalletProvider";
 import { useSelectedAccount } from "@/hooks";
+import { InjectedAccountWithMeta } from "@polkadot/extension-inject/types";
 
 const Wallet: FC = () => {
 	const { setWalletOpen, walletOpen, selectedWallet, setSelectedWallet } =
@@ -66,7 +67,8 @@ const Wallet: FC = () => {
 				/>
 				<div css={styles.accountDetails}>
 					<div css={styles.accountName}>
-						{selectedAccount?.meta?.name ?? "METAMASK"}
+						{(selectedAccount as InjectedAccountWithMeta)?.meta?.name ??
+							"METAMASK"}
 					</div>
 					<div
 						css={styles.accountAddress}
