@@ -53,12 +53,14 @@ const CENNZ_METAMASK_NETWORKS = {
 		cennzTokenAddress: "0x5de841521336640695584288fcae37a41a9c92a4",
 		chainId: "0x5359",
 		chainName: "CENNZnet Azalea",
+		explorerUrl: "https://uncoverexplorer.com",
 		rpcUrl: "https://cennznet.unfrastructure.io/public",
 	},
 	nikau: {
 		cennzTokenAddress: "0xcCccccCc00003E80000000000000000000000000",
 		chainId: "0xbb9",
 		chainName: "CENNZnet Nikau",
+		explorerUrl: "https://nikau.uncoverexplorer.com",
 		rpcUrl: "https://nikau.centrality.me/public",
 	},
 };

@@ -118,6 +118,7 @@ export interface CENNZMetaMaskNetwork {
 	cennzTokenAddress: string;
 	chainId: string;
 	chainName: string;
+	explorerUrl: string;
 	rpcUrl: string;
 }
 
