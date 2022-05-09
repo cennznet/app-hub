@@ -15,7 +15,7 @@ import {
 import { EthyEventId } from "@cennznet/types";
 import { useCallback } from "react";
 import { useWalletProvider } from "@/providers/WalletProvider";
-import { useSelectedAccount, useUpdateCENNZBalances } from "@/hooks/index";
+import { useSelectedAccount, useUpdateCENNZBalances } from "@/hooks";
 
 export default function useWithdrawRequest(): () => Promise<void> {
 	const {

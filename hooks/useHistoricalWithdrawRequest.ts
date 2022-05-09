@@ -10,7 +10,7 @@ import {
 	sendWithdrawEthereumRequest,
 } from "@/utils";
 import { useCallback } from "react";
-import { useUpdateCENNZBalances } from "@/hooks/index";
+import { useUpdateCENNZBalances } from "@/hooks";
 
 export default function useHistoricalWithdrawRequest(): (
 	unclaimed: WithdrawClaim
