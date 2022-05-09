@@ -11,12 +11,13 @@ import {
 } from "@/utils";
 import { useCallback } from "react";
 import { useWalletProvider } from "@/providers/WalletProvider";
+import { cvmToAddress } from "@cennznet/types/utils";
 
 export default function useDepositRequest(): () => Promise<void> {
 	const { api } = useCENNZApi();
 	const { wallet: metaMaskWallet } = useMetaMaskWallet();
 	const { extension } = useMetaMaskExtension();
-	const { updateCENNZBalances } = useWalletProvider();
+	const { updateCENNZBalances, selectedWallet } = useWalletProvider();
 	const {
 		transferInput,
 		transferAsset,
@@ -26,6 +27,7 @@ export default function useDepositRequest(): () => Promise<void> {
 		setTxSuccess,
 		setTxFailure,
 		updateMetaMaskBalances,
+		transferMetaMaskAddress,
 	} = useBridge();
 
 	return useCallback(async () => {
@@ -35,6 +37,11 @@ export default function useDepositRequest(): () => Promise<void> {
 			transferAsset
 		);
 
+		const CENNZAddress =
+			selectedWallet === "CENNZnet"
+				? transferCENNZAddress
+				: cvmToAddress(transferMetaMaskAddress);
+
 		try {
 			setTxPending();
 			await ensureEthereumChain(extension);
@@ -42,7 +49,7 @@ export default function useDepositRequest(): () => Promise<void> {
 			const tx = await sendDepositRequest(
 				transferAmount,
 				transferAsset,
-				transferCENNZAddress,
+				CENNZAddress,
 				metaMaskWallet.getSigner()
 			);
 
@@ -93,6 +100,7 @@ export default function useDepositRequest(): () => Promise<void> {
 		transferInput,
 		transferAsset,
 		transferCENNZAddress,
+		transferMetaMaskAddress,
 		metaMaskWallet,
 		updateMetaMaskBalances,
 		updateCENNZBalances,
@@ -101,5 +109,6 @@ export default function useDepositRequest(): () => Promise<void> {
 		setTxFailure,
 		setTxPending,
 		setTxSuccess,
+		selectedWallet,
 	]);
 }

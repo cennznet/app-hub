@@ -10,6 +10,7 @@ import AddressInput from "@/components/shared/AddressInput";
 import useAddressValidation from "@/hooks/useAddressValidation";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import { useMetaMaskWallet } from "@/providers/MetaMaskWalletProvider";
+import { useWalletProvider } from "@/providers/WalletProvider";
 
 interface BridgeTokenDestinationProps {}
 
@@ -29,6 +30,7 @@ const BridgeTokenDestination: VFC<
 		metaMaskBalance,
 		advancedExpanded,
 	} = useBridge();
+	const { selectedWallet } = useWalletProvider();
 
 	const [cennzBalance] = useCENNZBalances(
 		transferAsset as BridgedEthereumToken
@@ -116,14 +118,34 @@ const BridgeTokenDestination: VFC<
 			</div>
 			{bridgeAction === "Deposit" && (
 				<div css={styles.formField}>
-					<label htmlFor="transferCENNZAddressInput">CENNZnet ADDRESS</label>
-					<AddressInput
-						id="transferCENNZAddressInput"
-						value={transferCENNZAddress}
-						onChange={onTransferCENNZAddressChange}
-						addressType="CENNZnet"
-						ref={cennzAddressInputRef}
-					/>
+					{selectedWallet === "CENNZnet" && (
+						<>
+							<label htmlFor="transferCENNZAddressInput">
+								CENNZnet ADDRESS
+							</label>
+							<AddressInput
+								id="transferCENNZAddressInput"
+								value={transferCENNZAddress}
+								onChange={onTransferCENNZAddressChange}
+								addressType="CENNZnet"
+								ref={cennzAddressInputRef}
+							/>
+						</>
+					)}
+					{selectedWallet === "MetaMask" && (
+						<>
+							<label htmlFor="transferMetaMaskAddressInput">
+								ETHEREUM ADDRESS
+							</label>
+							<AddressInput
+								id="transferMetaMaskAddressInput"
+								value={transferMetaMaskAddress}
+								onChange={onTransferMetaMaskAddressChange}
+								addressType="Ethereum"
+								ref={metaMaskAddressInputRef}
+							/>
+						</>
+					)}
 				</div>
 			)}
 
