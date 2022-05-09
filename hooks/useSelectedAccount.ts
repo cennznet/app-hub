@@ -5,7 +5,10 @@ import { useMetaMaskWallet } from "@/providers/MetaMaskWalletProvider";
 import { useWalletProvider } from "@/providers/WalletProvider";
 import { InjectedAccountWithMeta } from "@polkadot/extension-inject/types";
 
-export default function useSelectedAccount(): Partial<InjectedAccountWithMeta> {
+export default function useSelectedAccount(): Pick<
+	InjectedAccountWithMeta,
+	"address"
+> {
 	const { selectedAccount: CENNZAccount } = useCENNZWallet();
 	const { selectedAccount: metaMaskAccount } = useMetaMaskWallet();
 	const { selectedWallet } = useWalletProvider();
