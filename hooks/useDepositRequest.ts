@@ -1,5 +1,6 @@
 import { useBridge } from "@/providers/BridgeProvider";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
+import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import { useMetaMaskExtension } from "@/providers/MetaMaskExtensionProvider";
 import { useMetaMaskWallet } from "@/providers/MetaMaskWalletProvider";
 import {
@@ -17,7 +18,8 @@ export default function useDepositRequest(): () => Promise<void> {
 	const { api } = useCENNZApi();
 	const { wallet: metaMaskWallet } = useMetaMaskWallet();
 	const { extension } = useMetaMaskExtension();
-	const { updateCENNZBalances, selectedWallet } = useWalletProvider();
+	const { updateBalances: updateCENNZBalances } = useCENNZWallet();
+	const { selectedWallet } = useWalletProvider();
 	const {
 		transferInput,
 		transferAsset,

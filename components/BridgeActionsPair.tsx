@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState, VFC } from "react";
 import SelectInput from "@/components/shared/SelectInput";
 import SwitchButton from "@/components/shared/SwitchButton";
 import { MenuItem, Theme } from "@mui/material";
-import { useWalletProvider } from "@/providers/WalletProvider";
+import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 
 interface BridgeActionsPairProps {}
 
@@ -24,7 +24,7 @@ const BridgeActionsPair: VFC<
 	];
 
 	const { setBridgeAction, updateMetaMaskBalances } = useBridge();
-	const { updateCENNZBalances } = useWalletProvider();
+	const { updateBalances: updateCENNZBalances } = useCENNZWallet();
 	const [fromOption, setFromOption] = useState<string>("Ethereum");
 	const [toOption, setToOption] = useState<string>("CENNZnet");
 
