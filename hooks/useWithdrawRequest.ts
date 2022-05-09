@@ -15,7 +15,7 @@ import {
 import { EthyEventId } from "@cennznet/types";
 import { useCallback } from "react";
 import { useWalletProvider } from "@/providers/WalletProvider";
-import { useSelectedAccount } from "@/hooks/index";
+import { useSelectedAccount, useUpdateCENNZBalances } from "@/hooks/index";
 
 export default function useWithdrawRequest(): () => Promise<void> {
 	const {
@@ -30,12 +30,13 @@ export default function useWithdrawRequest(): () => Promise<void> {
 		updateUnclaimedWithdrawals,
 	} = useBridge();
 	const { api } = useCENNZApi();
-	const { wallet: cennzWallet, updateBalances: updateCENNZBalances } =
-		useCENNZWallet();
+	const { wallet: cennzWallet, setBalances } = useCENNZWallet();
 	const { wallet: metaMaskWallet } = useMetaMaskWallet();
 	const { extension } = useMetaMaskExtension();
 	const { selectedWallet } = useWalletProvider();
+
 	const selectedAccount = useSelectedAccount();
+	const updateCENNZBalances = useUpdateCENNZBalances();
 
 	return useCallback(async () => {
 		const setTrValue = transferInput.setValue;
@@ -112,7 +113,7 @@ export default function useWithdrawRequest(): () => Promise<void> {
 						withdrawTx.on("txSucceeded", () => {
 							setTrValue("");
 							updateMetaMaskBalances();
-							updateCENNZBalances();
+							updateCENNZBalances(setBalances);
 							setTxSuccess({
 								transferValue: transferAmount,
 								txHashLink: withdrawTx.getHashLink(),
@@ -129,7 +130,7 @@ export default function useWithdrawRequest(): () => Promise<void> {
 
 						withdrawTx.on("txCancelled", () => {
 							updateMetaMaskBalances();
-							updateCENNZBalances();
+							updateCENNZBalances(setBalances);
 							updateUnclaimedWithdrawals();
 							setTxIdle();
 						});
@@ -165,5 +166,6 @@ export default function useWithdrawRequest(): () => Promise<void> {
 		setTxSuccess,
 		updateUnclaimedWithdrawals,
 		selectedWallet,
+		setBalances,
 	]);
 }

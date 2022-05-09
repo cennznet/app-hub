@@ -4,7 +4,9 @@ import {
 } from "@polkadot/extension-inject/types";
 import {
 	createContext,
+	Dispatch,
 	PropsWithChildren,
+	SetStateAction,
 	useCallback,
 	useContext,
 	useEffect,
@@ -13,14 +15,13 @@ import {
 import store from "store";
 import { useCENNZExtension } from "@/providers/CENNZExtensionProvider";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
-import fetchCENNZAssetBalances from "@/utils/fetchCENNZAssetBalances";
 import { CENNZAssetBalance } from "@/types";
 import { useWalletProvider } from "@/providers/WalletProvider";
-import { useSelectedAccount } from "@/hooks";
+import { useUpdateCENNZBalances } from "@/hooks";
 
 interface WalletContext {
 	balances: CENNZAssetBalance[];
-	updateBalances: Function;
+	setBalances: Dispatch<SetStateAction<CENNZAssetBalance[]>>;
 	selectedAccount: InjectedAccountWithMeta;
 	wallet: InjectedExtension;
 	connectWallet: (callback?: () => void) => Promise<void>;
@@ -43,7 +44,8 @@ export default function CENNZWalletProvider({
 	const [wallet, setWallet] = useState<InjectedExtension>(null);
 	const [CENNZAccount, setCENNZAccount] =
 		useState<InjectedAccountWithMeta>(null);
-	const selectedAccount = useSelectedAccount();
+
+	const updateBalances = useUpdateCENNZBalances();
 
 	const connectWallet = useCallback(
 		async (callback) => {
@@ -104,39 +106,16 @@ export default function CENNZWalletProvider({
 		selectAccount(matchedAccount);
 	}, [wallet, accounts, selectAccount, selectedWallet]);
 
-	//3. Fetch asset balance
-	const updateBalances = useCallback(async () => {
-		if (
-			!api ||
-			!selectedWallet ||
-			(selectedWallet === "MetaMask" && !selectedAccount) ||
-			(selectedWallet === "CENNZnet" && !CENNZAccount)
-		)
-			return;
-		const updateCENNZBalances = async () => {
-			const balances = await fetchCENNZAssetBalances(
-				api,
-				selectedWallet === "CENNZnet"
-					? CENNZAccount.address
-					: selectedAccount.address
-			);
-
-			setBalances(balances);
-		};
-
-		return updateCENNZBalances();
-	}, [CENNZAccount, selectedAccount, selectedWallet, api]);
-
 	useEffect(() => {
 		if (!selectedWallet) return;
-		void updateBalances?.();
+		void updateBalances?.(setBalances);
 	}, [updateBalances, selectedWallet]);
 
 	return (
 		<CENNZWalletContext.Provider
 			value={{
 				balances,
-				updateBalances,
+				setBalances,
 				selectedAccount: CENNZAccount,
 				wallet,
 				connectWallet,

@@ -10,6 +10,7 @@ import {
 	sendWithdrawEthereumRequest,
 } from "@/utils";
 import { useCallback } from "react";
+import { useUpdateCENNZBalances } from "@/hooks/index";
 
 export default function useHistoricalWithdrawRequest(): (
 	unclaimed: WithdrawClaim
@@ -25,9 +26,11 @@ export default function useHistoricalWithdrawRequest(): (
 		updateUnclaimedWithdrawals,
 	} = useBridge();
 	const { api } = useCENNZApi();
-	const { updateBalances: updateCENNZBalances } = useCENNZWallet();
+	const { setBalances } = useCENNZWallet();
 	const { wallet: metaMaskWallet } = useMetaMaskWallet();
 	const { extension } = useMetaMaskExtension();
+
+	const updateCENNZBalances = useUpdateCENNZBalances();
 
 	return useCallback(
 		async (unclaimed) => {
@@ -65,7 +68,7 @@ export default function useHistoricalWithdrawRequest(): (
 						withdrawTx.on("txSucceeded", () => {
 							setTrValue("");
 							updateMetaMaskBalances();
-							updateCENNZBalances();
+							updateCENNZBalances(setBalances);
 							updateUnclaimedWithdrawals();
 							setTxSuccess({
 								transferValue: unclaimed.transferAmount,
@@ -108,6 +111,7 @@ export default function useHistoricalWithdrawRequest(): (
 			setTxFailure,
 			setTxIdle,
 			updateUnclaimedWithdrawals,
+			setBalances,
 		]
 	);
 }

@@ -21,6 +21,7 @@ import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import { useWalletProvider } from "@/providers/WalletProvider";
 import { useMetaMaskWallet } from "@/providers/MetaMaskWalletProvider";
 import { useMetaMaskExtension } from "@/providers/MetaMaskExtensionProvider";
+import { useUpdateCENNZBalances } from "@/hooks";
 
 interface PoolFormProps {}
 
@@ -54,10 +55,12 @@ const PoolForm: FC<IntrinsicElements["form"] & PoolFormProps> = ({
 	const {
 		selectedAccount: CENNZAccount,
 		wallet,
-		updateBalances,
+		setBalances,
 	} = useCENNZWallet();
 	const { selectedAccount: metaMaskAccount } = useMetaMaskWallet();
 	const { extension } = useMetaMaskExtension();
+
+	const updateCENNZBalances = useUpdateCENNZBalances();
 
 	useEffect(() => {
 		if (poolAction === "Add") return setButtonLabel("Add to Pool");
@@ -146,7 +149,7 @@ const PoolForm: FC<IntrinsicElements["form"] & PoolFormProps> = ({
 					const tradeValue = Balance.fromCodec(event.data[3], tradeAsset);
 
 					setTrValue("");
-					updateBalances();
+					updateCENNZBalances(setBalances);
 					updatePoolUserInfo();
 					updateExchangeRate();
 					setTxSuccess({
@@ -167,7 +170,7 @@ const PoolForm: FC<IntrinsicElements["form"] & PoolFormProps> = ({
 			setTxSuccess,
 			setTxFailure,
 			setTrValue,
-			updateBalances,
+			updateCENNZBalances,
 			updatePoolUserInfo,
 			updateExchangeRate,
 			api,
@@ -179,6 +182,7 @@ const PoolForm: FC<IntrinsicElements["form"] & PoolFormProps> = ({
 			poolAction,
 			selectedWallet,
 			extension,
+			setBalances,
 		]
 	);
 

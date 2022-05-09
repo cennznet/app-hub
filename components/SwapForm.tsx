@@ -20,6 +20,7 @@ import {
 import { useWalletProvider } from "@/providers/WalletProvider";
 import { useMetaMaskWallet } from "@/providers/MetaMaskWalletProvider";
 import { useMetaMaskExtension } from "@/providers/MetaMaskExtensionProvider";
+import { useUpdateCENNZBalances } from "@/hooks";
 
 interface SwapFormProps {}
 
@@ -43,10 +44,12 @@ const SwapForm: FC<IntrinsicElements["form"] & SwapFormProps> = ({
 	const {
 		selectedAccount: CENNZAccount,
 		wallet,
-		updateBalances,
+		setBalances,
 	} = useCENNZWallet();
 	const { selectedAccount: metaMaskAccount } = useMetaMaskWallet();
 	const { extension } = useMetaMaskExtension();
+
+	const updateCENNZBalances = useUpdateCENNZBalances();
 
 	const onFormSubmit = useCallback(
 		async (event) => {
@@ -100,7 +103,7 @@ const SwapForm: FC<IntrinsicElements["form"] & SwapFormProps> = ({
 					const exchangeValue = Balance.fromCodec(event.data[3], exchangeAsset);
 					const receiveValue = Balance.fromCodec(event.data[4], receiveAsset);
 
-					updateBalances();
+					updateCENNZBalances(setBalances);
 					setExValue("");
 					setTxSuccess({
 						exchangeValue,
@@ -123,7 +126,7 @@ const SwapForm: FC<IntrinsicElements["form"] & SwapFormProps> = ({
 			CENNZAccount?.address,
 			metaMaskAccount?.address,
 			wallet?.signer,
-			updateBalances,
+			updateCENNZBalances,
 			setExValue,
 			setTxFailure,
 			setTxPending,
@@ -131,6 +134,7 @@ const SwapForm: FC<IntrinsicElements["form"] & SwapFormProps> = ({
 			setTxIdle,
 			selectedWallet,
 			extension,
+			setBalances,
 		]
 	);
 

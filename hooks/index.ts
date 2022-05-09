@@ -18,6 +18,7 @@ export { default as useWithdrawRequest } from "@/hooks/useWithdrawRequest";
 export { default as useHistoricalWithdrawRequest } from "@/hooks/useHistoricalWithdrawRequest";
 export { default as useBeforeUnload } from "@/hooks/useBeforeUnload";
 export { default as useSelectedAccount } from "@/hooks/useSelectedAccount";
+export { default as useUpdateCENNZBalances } from "@/hooks/useUpdateCENNZBalances";
 
 export type { TokenInputHook } from "@/hooks/useTokenInput";
 export type { PoolExchangeInfoHook } from "@/hooks/usePoolExchangeInfo";
