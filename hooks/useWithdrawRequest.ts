@@ -30,11 +30,10 @@ export default function useWithdrawRequest(): () => Promise<void> {
 		updateUnclaimedWithdrawals,
 	} = useBridge();
 	const { api } = useCENNZApi();
-	const { wallet: cennzWallet, updateBalances: updateCENNZBalances } =
-		useCENNZWallet();
+	const { wallet: cennzWallet } = useCENNZWallet();
 	const { wallet: metaMaskWallet } = useMetaMaskWallet();
 	const { extension } = useMetaMaskExtension();
-	const { selectedWallet } = useWalletProvider();
+	const { selectedWallet, updateCENNZBalances } = useWalletProvider();
 	const selectedAccount = useSelectedAccount();
 
 	return useCallback(async () => {

@@ -1,6 +1,5 @@
 import { useBridge } from "@/providers/BridgeProvider";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
-import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import { useMetaMaskExtension } from "@/providers/MetaMaskExtensionProvider";
 import { useMetaMaskWallet } from "@/providers/MetaMaskWalletProvider";
 import { WithdrawClaim } from "@/types";
@@ -10,6 +9,7 @@ import {
 	sendWithdrawEthereumRequest,
 } from "@/utils";
 import { useCallback } from "react";
+import { useWalletProvider } from "@/providers/WalletProvider";
 
 export default function useHistoricalWithdrawRequest(): (
 	unclaimed: WithdrawClaim
@@ -25,7 +25,7 @@ export default function useHistoricalWithdrawRequest(): (
 		updateUnclaimedWithdrawals,
 	} = useBridge();
 	const { api } = useCENNZApi();
-	const { updateBalances: updateCENNZBalances } = useCENNZWallet();
+	const { updateCENNZBalances } = useWalletProvider();
 	const { wallet: metaMaskWallet } = useMetaMaskWallet();
 	const { extension } = useMetaMaskExtension();
 

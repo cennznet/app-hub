@@ -4,12 +4,17 @@ import {
 	Dispatch,
 	FC,
 	SetStateAction,
+	useCallback,
 	useContext,
 	useEffect,
 	useState,
 } from "react";
 import { CENNZ_METAMASK_NETWORK, ETH_CHAIN_ID } from "@/constants";
 import { useMetaMaskExtension } from "@/providers/MetaMaskExtensionProvider";
+import { useCENNZApi } from "@/providers/CENNZApiProvider";
+import fetchCENNZAssetBalances from "@/utils/fetchCENNZAssetBalances";
+import { useSelectedAccount } from "@/hooks";
+import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 
 interface WalletContextType {
 	walletOpen: boolean;
@@ -20,6 +25,8 @@ interface WalletContextType {
 
 	connectedChain: ChainOption;
 	setConnectedChain: (chain: ChainOption) => void;
+
+	updateCENNZBalances: Function;
 }
 
 const WalletContext = createContext<WalletContextType>({} as WalletContextType);
@@ -28,6 +35,9 @@ interface WalletProviderProps {}
 
 const WalletProvider: FC<WalletProviderProps> = ({ children }) => {
 	const { extension } = useMetaMaskExtension();
+	const { setBalances } = useCENNZWallet();
+	const { api } = useCENNZApi();
+	const selectedAccount = useSelectedAccount();
 
 	const [walletOpen, setWalletOpen] = useState<boolean>(false);
 	const [selectedWallet, setSelectedWallet] = useState<WalletOption>();
@@ -60,6 +70,22 @@ const WalletProvider: FC<WalletProviderProps> = ({ children }) => {
 		};
 	}, [extension]);
 
+	const updateCENNZBalances = useCallback(async () => {
+		if (!api || !selectedWallet || !selectedAccount) return;
+
+		const balances = await fetchCENNZAssetBalances(
+			api,
+			selectedAccount.address
+		);
+
+		setBalances(balances);
+	}, [selectedAccount, selectedWallet, api, setBalances]);
+
+	useEffect(() => {
+		if (!selectedWallet || !selectedAccount) return;
+		void updateCENNZBalances?.();
+	}, [updateCENNZBalances, selectedWallet, selectedAccount]);
+
 	return (
 		<WalletContext.Provider
 			value={{
@@ -71,6 +97,8 @@ const WalletProvider: FC<WalletProviderProps> = ({ children }) => {
 
 				connectedChain,
 				setConnectedChain,
+
+				updateCENNZBalances,
 			}}
 		>
 			{children}

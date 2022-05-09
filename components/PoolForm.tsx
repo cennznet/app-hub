@@ -29,7 +29,7 @@ const PoolForm: FC<IntrinsicElements["form"] & PoolFormProps> = ({
 	...props
 }) => {
 	const { api } = useCENNZApi();
-	const { selectedWallet } = useWalletProvider();
+	const { selectedWallet, updateCENNZBalances } = useWalletProvider();
 	const [buttonLabel, setButtonLabel] = useState<string>("Add to Pool");
 	const {
 		poolAction,
@@ -51,11 +51,7 @@ const PoolForm: FC<IntrinsicElements["form"] & PoolFormProps> = ({
 		updateExchangeRate,
 	} = usePool();
 
-	const {
-		selectedAccount: CENNZAccount,
-		wallet,
-		updateBalances,
-	} = useCENNZWallet();
+	const { selectedAccount: CENNZAccount, wallet } = useCENNZWallet();
 	const { selectedAccount: metaMaskAccount } = useMetaMaskWallet();
 	const { extension } = useMetaMaskExtension();
 
@@ -146,7 +142,7 @@ const PoolForm: FC<IntrinsicElements["form"] & PoolFormProps> = ({
 					const tradeValue = Balance.fromCodec(event.data[3], tradeAsset);
 
 					setTrValue("");
-					updateBalances();
+					updateCENNZBalances();
 					updatePoolUserInfo();
 					updateExchangeRate();
 					setTxSuccess({
@@ -167,7 +163,7 @@ const PoolForm: FC<IntrinsicElements["form"] & PoolFormProps> = ({
 			setTxSuccess,
 			setTxFailure,
 			setTrValue,
-			updateBalances,
+			updateCENNZBalances,
 			updatePoolUserInfo,
 			updateExchangeRate,
 			api,
