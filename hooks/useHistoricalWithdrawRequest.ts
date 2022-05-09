@@ -39,7 +39,7 @@ export default function useHistoricalWithdrawRequest(): (
 
 			try {
 				setTxPending();
-				await ensureEthereumChain(extension, "Ethereum");
+				await ensureEthereumChain(extension);
 				await ensureBridgeWithdrawActive(api, metaMaskWallet);
 
 				setTxPending({

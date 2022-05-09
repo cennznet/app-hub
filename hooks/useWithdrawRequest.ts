@@ -45,7 +45,7 @@ export default function useWithdrawRequest(): () => Promise<void> {
 
 		try {
 			setTxPending();
-			await ensureEthereumChain(extension, "Ethereum");
+			await ensureEthereumChain(extension);
 			await ensureBridgeWithdrawActive(api, metaMaskWallet);
 			const tx = await sendWithdrawCENNZRequest(
 				api,

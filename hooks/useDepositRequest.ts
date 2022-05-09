@@ -37,7 +37,7 @@ export default function useDepositRequest(): () => Promise<void> {
 
 		try {
 			setTxPending();
-			await ensureEthereumChain(extension, "Ethereum");
+			await ensureEthereumChain(extension);
 			await ensureBridgeDepositActive(api, metaMaskWallet);
 			const tx = await sendDepositRequest(
 				transferAmount,

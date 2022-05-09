@@ -13,7 +13,7 @@ const Switch: VFC = () => {
 	useEffect(() => {
 		if (!extension) return;
 
-		if (section === "bridge") void ensureEthereumChain(extension, "Ethereum");
+		if (section === "bridge") void ensureEthereumChain(extension);
 	}, [extension, section]);
 
 	return (
