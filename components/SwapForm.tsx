@@ -139,9 +139,7 @@ const SwapForm: FC<IntrinsicElements["form"] & SwapFormProps> = ({
 			{children}
 
 			<div css={styles.formSubmit}>
-				<SubmitButton requireMetaMask={selectedWallet === "MetaMask"}>
-					Swap
-				</SubmitButton>
+				<SubmitButton>Swap</SubmitButton>
 			</div>
 		</form>
 	);

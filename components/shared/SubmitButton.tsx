@@ -5,24 +5,28 @@ import CENNZIconSVG from "@/assets/vectors/cennznet-icon.svg";
 import MetaMaskSVG from "@/assets/vectors/metamask.svg";
 import { useMetaMaskWallet } from "@/providers/MetaMaskWalletProvider";
 import { useWalletProvider } from "@/providers/WalletProvider";
+import { useSelectedAccount } from "@/hooks";
 
 interface SubmitButtonProps {
-	requireMetaMask?: boolean;
+	forceRequireMetaMask?: boolean;
 }
 
 const SubmitButton: FC<
 	ButtonHTMLAttributes<HTMLButtonElement> & SubmitButtonProps
-> = ({ children, requireMetaMask, disabled, ...props }) => {
+> = ({ children, forceRequireMetaMask, disabled, ...props }) => {
 	const { selectedWallet, setWalletOpen } = useWalletProvider();
 	const {
 		selectedAccount: metaMaskAccount,
 		connectWallet: connectMetaMaskWallet,
 	} = useMetaMaskWallet();
+	const selectedAccount = useSelectedAccount();
 
-	const isSubmittable = useMemo(
-		() => !(requireMetaMask && !metaMaskAccount) && selectedWallet,
-		[requireMetaMask, metaMaskAccount, selectedWallet]
-	);
+	const isSubmittable = useMemo(() => {
+		if (!selectedAccount) return false;
+		if (forceRequireMetaMask && !metaMaskAccount) return false;
+
+		return true;
+	}, [forceRequireMetaMask, metaMaskAccount, selectedAccount]);
 
 	return (
 		<>
@@ -41,30 +45,34 @@ const SubmitButton: FC<
 				</button>
 			)}
 
-			{!isSubmittable && !!selectedWallet && (
-				<button
-					type="button"
-					css={[styles.root, styles.metaMaskButton]}
-					onClick={() => connectMetaMaskWallet()}
-				>
-					<img
-						src={MetaMaskSVG.src}
-						alt="MetaMask Logo"
-						css={styles.brandLogo}
-					/>
-					CONNECT METAMASK
-				</button>
-			)}
+			{!!selectedWallet && (
+				<>
+					{!isSubmittable && (
+						<button
+							type="button"
+							css={[styles.root, styles.metaMaskButton]}
+							onClick={() => connectMetaMaskWallet()}
+						>
+							<img
+								src={MetaMaskSVG.src}
+								alt="MetaMask Logo"
+								css={styles.brandLogo}
+							/>
+							CONNECT METAMASK
+						</button>
+					)}
 
-			{isSubmittable && (
-				<button
-					css={[styles.root, styles.submitButton]}
-					type="submit"
-					disabled={disabled}
-					{...props}
-				>
-					{children}
-				</button>
+					{isSubmittable && (
+						<button
+							css={[styles.root, styles.submitButton]}
+							type="submit"
+							disabled={disabled}
+							{...props}
+						>
+							{children}
+						</button>
+					)}
+				</>
 			)}
 		</>
 	);

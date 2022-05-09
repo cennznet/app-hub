@@ -187,9 +187,7 @@ const PoolForm: FC<IntrinsicElements["form"] & PoolFormProps> = ({
 			{children}
 
 			<div css={styles.formSubmit}>
-				<SubmitButton requireMetaMask={selectedWallet === "MetaMask"}>
-					{buttonLabel}
-				</SubmitButton>
+				<SubmitButton>{buttonLabel}</SubmitButton>
 			</div>
 		</form>
 	);

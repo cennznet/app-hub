@@ -44,7 +44,10 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 			{bridgeAction === "Withdraw" && <BridgeWithdrawAdvanced />}
 
 			<div css={styles.formSubmit}>
-				<SubmitButton requireMetaMask={true} disabled={status === "Inactive"}>
+				<SubmitButton
+					forceRequireMetaMask={true}
+					disabled={status === "Inactive"}
+				>
 					{buttonLabel}
 				</SubmitButton>
 
