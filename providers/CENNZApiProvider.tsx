@@ -13,12 +13,6 @@ const CENNZApiProvider: FC<{ endpoint: string }> = ({ children, endpoint }) => {
 	useEffect(() => {
 		const instance = new Api({
 			provider: endpoint,
-			types: {
-				ethWalletCall: {
-					call: "Call",
-					nonce: "Index",
-				},
-			},
 		});
 
 		instance.isReady.then(() => {
@@ -27,7 +21,7 @@ const CENNZApiProvider: FC<{ endpoint: string }> = ({ children, endpoint }) => {
 		});
 
 		return () => {
-			instance.disconnect();
+			void instance.disconnect();
 		};
 	}, [endpoint]);
 
