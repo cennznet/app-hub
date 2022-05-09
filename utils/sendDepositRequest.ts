@@ -1,5 +1,10 @@
 import { BridgedEthereumToken, EthereumToken } from "@/types";
-import { Balance, getERC20TokenContract, getERC20PegContract } from "@/utils";
+import {
+	Balance,
+	getERC20TokenContract,
+	getERC20PegContract,
+	EthereumTransaction,
+} from "@/utils";
 import { ethers } from "ethers";
 import { ETH_TOKEN_ADDRESS } from "@/constants";
 import { decodeAddress } from "@polkadot/keyring";
@@ -10,25 +15,14 @@ export default async function sendDepositRequest(
 	transferToken: EthereumToken | BridgedEthereumToken,
 	cennzAddress: string,
 	signer: ethers.Signer
-): Promise<TransactionResponse | "cancelled"> {
+): Promise<EthereumTransaction> {
 	const pegContract = getERC20PegContract<"OnBehalf">(signer);
 	const decodedAddress = decodeAddress(cennzAddress);
 	const transferValue = transferAmount.toBigNumber();
-
-	try {
-		if (transferToken.address === ETH_TOKEN_ADDRESS) {
-			const tx: TransactionResponse = await pegContract.deposit(
-				transferToken.address,
-				transferValue,
-				decodedAddress,
-				{
-					value: transferValue,
-				}
-			);
-
-			await tx.wait();
-			return tx;
-		}
+	const isERC20Contract = transferToken.address !== ETH_TOKEN_ADDRESS;
+	const tx = new EthereumTransaction();
+	const requestContractApproval = async () => {
+		if (!isERC20Contract) return Promise.resolve();
 
 		const tokenContract = getERC20TokenContract<"OnBehalf">(
 			transferToken,
@@ -40,18 +34,36 @@ export default async function sendDepositRequest(
 			transferValue
 		);
 
-		await approveTx.wait();
+		return await approveTx.wait();
+	};
 
-		const tx: TransactionResponse = await pegContract.deposit(
+	await requestContractApproval();
+
+	pegContract
+		.deposit(
 			transferToken.address,
 			transferValue,
-			decodedAddress
-		);
-		await tx.wait();
+			decodedAddress,
+			isERC20Contract
+				? null
+				: {
+						value: transferValue,
+				  }
+		)
+		.then((pegTx: TransactionResponse) => {
+			tx.setHash(pegTx.hash);
+			return pegTx.wait(2);
+		})
+		.then(() => {
+			tx.setSuccess();
+		})
+		.catch((error) => {
+			if (error?.code === 4001) {
+				tx.setCancel();
+				return;
+			}
+			tx.setFailure(error?.code);
+		});
 
-		return tx;
-	} catch (error) {
-		if (error?.code === 4001) return "cancelled";
-		throw error;
-	}
+	return tx;
 }

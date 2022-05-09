@@ -1,14 +1,13 @@
 import { fetchDepositRelayerStatus, waitUntil } from "@/utils";
 import { RelayerStatus, RelayerConfirmingStatus } from "@/types";
 
-type TimoutReturn = Awaited<ReturnType<typeof waitUntil>>;
+type TimeoutReturn = Awaited<ReturnType<typeof waitUntil>>;
 
-// TODO: Needs test
 export default async function ensureRelayerDepositDone(
 	txHash: string,
 	timeout: number = 60000,
 	confirmingCallback?: (status: RelayerConfirmingStatus) => void
-): Promise<RelayerStatus> {
+): Promise<void> {
 	const status = await waitUntilDepositDone(
 		txHash,
 		timeout,
@@ -17,15 +16,13 @@ export default async function ensureRelayerDepositDone(
 
 	if (status === "timeout") throw { code: "RELAYER_TIMEOUT" };
 	if (status === "Failed") throw { code: "RELAYER_STATUS_FAILED" };
-
-	return status;
 }
 
 export async function waitUntilDepositDone(
 	txHash: string,
 	timeout: number = 60000,
 	confirmingCallback?: (status: RelayerConfirmingStatus) => void
-): Promise<RelayerStatus | TimoutReturn> {
+): Promise<RelayerStatus | TimeoutReturn> {
 	let timedOut = false;
 
 	const pollDepositRelayerStatus = () => {

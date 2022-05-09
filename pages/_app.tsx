@@ -10,6 +10,7 @@ import UserAgentProvider from "@/providers/UserAgentProvider";
 import CENNZExtensionProvider from "@/providers/CENNZExtensionProvider";
 import PageBackdrop from "@/components/shared/PageBackdrop";
 import PageFrame from "@/components/shared/PageFrame";
+import PageFooter from "@/components/shared/PageFooter";
 import GlobalModalProvider from "@/providers/GlobalModalProvider";
 import CssGlobal from "@/components/CssGlobal";
 import MetaMaskExtensionProvider from "@/providers/MetaMaskExtensionProvider";
@@ -66,6 +67,7 @@ function MyApp({ Component, pageProps }: MyAppProps) {
 											<WalletButton />
 											<AppSwitch />
 											<Component {...pageProps} />
+											<PageFooter />
 											<PageFrame />
 										</GlobalModalProvider>
 									</MetaMaskWalletProvider>

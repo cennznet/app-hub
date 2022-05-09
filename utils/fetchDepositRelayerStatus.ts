@@ -1,7 +1,6 @@
 import { BRIDGE_RELAYER_URL } from "@/constants";
 import { RelayerStatus } from "@/types";
 
-// TODO: Needs test
 export default async function fetchDepositRelayerStatus(
 	txHash: string
 ): Promise<RelayerStatus> {

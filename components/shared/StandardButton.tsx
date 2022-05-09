@@ -46,7 +46,7 @@ const styles = {
 
 	secondary: ({ palette }: Theme) => css`
 		border: 1px solid white;
-		color: ${palette.grey["800"]};
+		color: ${palette.grey["600"]};
 
 		&: hover {
 			background-color: white;

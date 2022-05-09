@@ -33,3 +33,13 @@ export const MAINNET_PEG_CONTRACT: string =
 
 export const KOVAN_PEG_CONTRACT: string =
 	"0xa39E871e6e24f2d1Dd6AdA830538aBBE7b30F78F";
+
+export const CENNZ_EXPLORER_URL: string =
+	process.env.NEXT_PUBLIC_CENNZ_EXPLORER_URL;
+
+export const ETH_EXPLORER_URL: string =
+	process.env.NEXT_PUBLIC_ETH_EXPLORER_URL;
+
+export const APP_VERSION: string = process.env.APP_VERSION;
+
+export const COMMIT_SHA: string = process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA;

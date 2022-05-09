@@ -505,11 +505,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cennznet/api@npm:^2.1.0-rc.2":
-  version: 2.1.0-rc.2
-  resolution: "@cennznet/api@npm:2.1.0-rc.2"
+"@cennznet/api@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "@cennznet/api@npm:2.1.0"
   dependencies:
-    "@cennznet/types": ^2.1.0-rc.2
+    "@cennznet/types": ^2.1.0
     "@ethersproject/keccak256": ^5.5.0
     "@ethersproject/signing-key": ^5.5.0
     "@polkadot/api": ^7.7.1
@@ -519,7 +519,7 @@ __metadata:
     "@polkadot/types": ^7.7.1
     "@polkadot/x-rxjs": ^6.11.2-6
     eventemitter3: ^4.0.0
-  checksum: c57f13b0c67552b1e8b0e37dbbd96b127d84eb6f07a9d09d36fafe83b835f0e4cdc489b372b9c80ff43389f80d025b55204a9598a7872219567a4b7dce4bcb76
+  checksum: 574824cb883e862860687531ea555241c9026b8056082e0b0f2184e788283e446ccf346c15ae732ff9ed28404ac87a33a95fe55487535ef8c39595ea04ee2b1b
   languageName: node
   linkType: hard
 
@@ -527,10 +527,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@cennznet/app-hub@workspace:."
   dependencies:
-    "@cennznet/api": ^2.1.0-rc.2
-    "@cennznet/types": ^2.1.0-rc.2
+    "@cennznet/api": ^2.1.0
+    "@cennznet/types": ^2.1.0
     "@depay/web3-blockchains": ^4.2.0
-    "@depay/web3-mock": ^11.6.2
+    "@depay/web3-mock": ^11.7.0
     "@emotion/react": ^11.8.2
     "@emotion/styled": ^11.8.1
     "@metamask/detect-provider": ^1.2.0
@@ -549,39 +549,39 @@ __metadata:
     "@types/store": ^2.0.2
     "@types/ua-parser-js": ^0.7.36
     autoprefixer: ^10.4.2
-    axios: ^0.26.1
     babel-jest: ^27.5.1
     big.js: ^6.1.1
-    bignumber.js: ^9.0.2
+    emittery: ^0.10.1
     eslint: 8.11.0
     eslint-config-next: 12.1.0
     eslint-config-prettier: ^8.5.0
     ethers: ^5.6.0
     identity-obj-proxy: ^3.0.0
     jest: ^27.5.1
+    jest-fetch-mock: ^3.0.3
     lodash: ^4.17.21
     next: ^12.1.0
     next-seo: ^5.2.0
     prettier: ^2.5.1
     react: ^17.0.2
-    react-device-detect: ^2.1.2
     react-dom: ^17.0.2
     react-imask: ^6.4.2
     react-jazzicon: ^1.0.3
     store: ^2.0.12
     typescript: 4.6.2
+    ua-parser-js: ^1.0.2
   languageName: unknown
   linkType: soft
 
-"@cennznet/types@npm:^2.1.0-rc.2":
-  version: 2.1.0-rc.2
-  resolution: "@cennznet/types@npm:2.1.0-rc.2"
+"@cennznet/types@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "@cennznet/types@npm:2.1.0"
   dependencies:
     "@polkadot/keyring": ^8.3.3
     "@polkadot/types": ^7.7.1
     "@polkadot/util": ^8.3.3
     "@polkadot/util-crypto": ^8.3.3
-  checksum: 64765d0ede28a723cf1f7c983a526da7ac9efe5f1fc20cae0c105ec39b517d82ddff1b6139fa92012c3f39c5041f04c51a79b13b35727e7b5b491258aece28c5
+  checksum: f229817c40f5632d7b9cecddd577edeb247c37421e1edb482cfc46a7c8ab90828cc5df4e4fc594eaac4510ab616ced4b521ebb1f6d273a84cbf58f2aadf5b3eb
   languageName: node
   linkType: hard
 
@@ -592,13 +592,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@depay/web3-mock@npm:^11.6.2":
-  version: 11.6.2
-  resolution: "@depay/web3-mock@npm:11.6.2"
+"@depay/web3-mock@npm:^11.7.0":
+  version: 11.7.0
+  resolution: "@depay/web3-mock@npm:11.7.0"
   peerDependencies:
     "@depay/web3-blockchains": ^4.2.0
     ethers: ^5.4.6
-  checksum: 626d47936ff2e7a45418c6bb02d5db93e65e8013048ff44dbf4ba6183d9131724fec8d67c14bf8a892bdc543aacc775b4929e1ca8efdb6a46a874403472cce3d
+  checksum: dd2c4f9ef1b25272528fffbbeb9591ee7fc871d7799c32c8b12c52c198467c265239ed9b3e1c445f6c229757cd1455a8c0872157fe3183bfb023885d2be76fc3
   languageName: node
   linkType: hard
 
@@ -3147,15 +3147,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^0.26.1":
-  version: 0.26.1
-  resolution: "axios@npm:0.26.1"
-  dependencies:
-    follow-redirects: ^1.14.8
-  checksum: d9eb58ff4bc0b36a04783fc9ff760e9245c829a5a1052ee7ca6013410d427036b1d10d04e7380c02f3508c5eaf3485b1ae67bd2adbfec3683704745c8d7a6e1a
-  languageName: node
-  linkType: hard
-
 "axobject-query@npm:^2.2.0":
   version: 2.2.0
   resolution: "axobject-query@npm:2.2.0"
@@ -3290,13 +3281,6 @@ __metadata:
   version: 6.1.1
   resolution: "big.js@npm:6.1.1"
   checksum: ba5db278e7d6700d7f92b7421e851bb65b6336d90b882869696c50574623c6be31f81500c3195fb1b391045163ffe62745e1c2bc30b35cb15e1b3e3ed135266b
-  languageName: node
-  linkType: hard
-
-"bignumber.js@npm:^9.0.2":
-  version: 9.0.2
-  resolution: "bignumber.js@npm:9.0.2"
-  checksum: 8637b71d0a99104b20413c47578953970006fec6b4df796b9dcfd9835ea9c402ea0e727eba9a5ca9f9a393c1d88b6168c5bbe0887598b708d4f8b4870ad62e1f
   languageName: node
   linkType: hard
 
@@ -3695,6 +3679,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cross-fetch@npm:^3.0.4":
+  version: 3.1.5
+  resolution: "cross-fetch@npm:3.1.5"
+  dependencies:
+    node-fetch: 2.6.7
+  checksum: f6b8c6ee3ef993ace6277fd789c71b6acf1b504fd5f5c7128df4ef2f125a429e29cd62dc8c127523f04a5f2fa4771ed80e3f3d9695617f441425045f505cf3bb
+  languageName: node
+  linkType: hard
+
 "cross-spawn@npm:^7.0.2, cross-spawn@npm:^7.0.3":
   version: 7.0.3
   resolution: "cross-spawn@npm:7.0.3"
@@ -4004,6 +3997,13 @@ __metadata:
     minimalistic-assert: ^1.0.1
     minimalistic-crypto-utils: ^1.0.1
   checksum: d56d21fd04e97869f7ffcc92e18903b9f67f2d4637a23c860492fbbff5a3155fd9ca0184ce0c865dd6eb2487d234ce9551335c021c376cd2d3b7cb749c7d10f4
+  languageName: node
+  linkType: hard
+
+"emittery@npm:^0.10.1":
+  version: 0.10.1
+  resolution: "emittery@npm:0.10.1"
+  checksum: 75b27db7696aec22fb9b6a92cebd1ba407e13f5dedb512f0f40b896090fe6d4a949329b198d3f5a570abeb45d48651714b9c2f16e910cfacd3a043e419ffa8b9
   languageName: node
   linkType: hard
 
@@ -4717,16 +4717,6 @@ __metadata:
   version: 3.2.4
   resolution: "flatted@npm:3.2.4"
   checksum: 7d33846428ab337ec81ef9b8b9103894c1c81f5f67feb32bd4ed106fbc47da60d56edb42efd36c9f1f30a010272aeccd34ec1ffacfe9dfdff19673b1d4df481b
-  languageName: node
-  linkType: hard
-
-"follow-redirects@npm:^1.14.8":
-  version: 1.14.9
-  resolution: "follow-redirects@npm:1.14.9"
-  peerDependenciesMeta:
-    debug:
-      optional: true
-  checksum: f5982e0eb481818642492d3ca35a86989c98af1128b8e1a62911a3410621bc15d2b079e8170b35b19d3bdee770b73ed431a257ed86195af773771145baa57845
   languageName: node
   linkType: hard
 
@@ -5654,6 +5644,16 @@ __metadata:
     jest-mock: ^27.5.1
     jest-util: ^27.5.1
   checksum: 0f988330c4f3eec092e3fb37ea753b0c6f702e83cd8f4d770af9c2bf964a70bc45fbd34ec6fdb6d71ce98a778d9f54afd673e63f222e4667fff289e8069dba39
+  languageName: node
+  linkType: hard
+
+"jest-fetch-mock@npm:^3.0.3":
+  version: 3.0.3
+  resolution: "jest-fetch-mock@npm:3.0.3"
+  dependencies:
+    cross-fetch: ^3.0.4
+    promise-polyfill: ^8.1.3
+  checksum: fb052f7e0ef1c8192a9c15efdd1b18d281ab68fc6b1648b30bff8880fe24418bdf12190ea79b1996932dc15417c3c01f5b2d77ef7104a7e7943e7cbe8d61071d
   languageName: node
   linkType: hard
 
@@ -6635,7 +6635,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-fetch@npm:^2.6.7":
+"node-fetch@npm:2.6.7, node-fetch@npm:^2.6.7":
   version: 2.6.7
   resolution: "node-fetch@npm:2.6.7"
   dependencies:
@@ -7101,6 +7101,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"promise-polyfill@npm:^8.1.3":
+  version: 8.2.3
+  resolution: "promise-polyfill@npm:8.2.3"
+  checksum: f320278bab8b8ce32f0e2f377d75aabe35c90a79f92b3e001db084d635da1fb8740ba8a26b5c1c2b4cdca5a4c988f9b6b3eb30f0b151d0362d3d9c1675024a8f
+  languageName: node
+  linkType: hard
+
 "promise-retry@npm:^2.0.1":
   version: 2.0.1
   resolution: "promise-retry@npm:2.0.1"
@@ -7179,18 +7186,6 @@ __metadata:
   peerDependencies:
     react: ^15.3.0 || ^16.0.0 || ^17.0.0
   checksum: dae8caae192d4937a151ec3ddad540fe4846d28646aee6d90774abcc6a077761926c99f2bcd9506a76a65524ec2c32b5ec1341e8096fcd3f6335365eaf065137
-  languageName: node
-  linkType: hard
-
-"react-device-detect@npm:^2.1.2":
-  version: 2.1.2
-  resolution: "react-device-detect@npm:2.1.2"
-  dependencies:
-    ua-parser-js: ^0.7.30
-  peerDependencies:
-    react: ">= 0.14.0 < 18.0.0"
-    react-dom: ">= 0.14.0 < 18.0.0"
-  checksum: 3cc16b41324194cb812c2a6214107a2d75d8d4c44f3457b547040e24c24774e3b062d28be6dfa1775608d05a83dbc0dc226ed6e52077e27c1fc957e11dd553dc
   languageName: node
   linkType: hard
 
@@ -8159,10 +8154,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ua-parser-js@npm:^0.7.30":
-  version: 0.7.31
-  resolution: "ua-parser-js@npm:0.7.31"
-  checksum: e2f8324a83d1715601576af85b2b6c03890699aaa7272950fc77ea925c70c5e4f75060ae147dc92124e49f7f0e3d6dd2b0a91e7f40d267e92df8894be967ba8b
+"ua-parser-js@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "ua-parser-js@npm:1.0.2"
+  checksum: ff7f6d79a9c1a38aa85a0e751040fc7e17a0b621bda876838d14ebe55aca4e50e68da0350f181e58801c2d8a35e7db4e12473776e558910c4b7cabcec96aa3bf
   languageName: node
   linkType: hard
 

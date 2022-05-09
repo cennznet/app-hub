@@ -1,7 +1,8 @@
 /** @type {import('next').NextConfig} */
+const { version } = require("./package.json");
 module.exports = {
 	reactStrictMode: true,
-	webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
+	webpack: (config) => {
 		config.module.rules.push({
 			test: /\.(woff|woff2|eot|ttf|otf)$/i,
 			type: "asset/resource",
@@ -19,5 +20,8 @@ module.exports = {
 				permanent: true,
 			},
 		];
+	},
+	env: {
+		APP_VERSION: version,
 	},
 };
