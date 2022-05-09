@@ -41,7 +41,8 @@ export default function CENNZWalletProvider({
 		useCENNZExtension();
 	const [balances, setBalances] = useState<CENNZAssetBalance[]>(null);
 	const [wallet, setWallet] = useState<InjectedExtension>(null);
-	const [CENNZAccount, setAccount] = useState<InjectedAccountWithMeta>(null);
+	const [CENNZAccount, setCENNZAccount] =
+		useState<InjectedAccountWithMeta>(null);
 	const selectedAccount = useSelectedAccount();
 
 	const connectWallet = useCallback(
@@ -66,12 +67,12 @@ export default function CENNZWalletProvider({
 		store.remove("CENNZNET-EXTENSION");
 		store.remove("CENNZNET-ACCOUNT");
 		setWallet(null);
-		setAccount(null);
+		setCENNZAccount(null);
 		setBalances(null);
 	}, []);
 
 	const selectAccount = useCallback((account) => {
-		setAccount(account);
+		setCENNZAccount(account);
 		store.set("CENNZNET-ACCOUNT", account);
 	}, []);
 
