@@ -8,14 +8,16 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import getTokenLogo from "@/utils/getTokenLogo";
 import { CENNZ_ASSET_ID, CPAY_ASSET_ID } from "@/constants";
 import { useWalletProvider } from "@/providers/WalletProvider";
+import { useMetaMaskWallet } from "@/providers/MetaMaskWalletProvider";
 import { useSelectedAccount } from "@/hooks";
 
 const Wallet: FC = () => {
 	const { setWalletOpen, walletOpen, selectedWallet, setSelectedWallet } =
 		useWalletProvider();
 	const { balances, selectAccount, disconnectWallet } = useCENNZWallet();
-	const selectedAccount = useSelectedAccount();
 	const { accounts } = useCENNZExtension();
+	const { selectedAccount: metaMaskAccount } = useMetaMaskWallet();
+	const selectedAccount = useSelectedAccount();
 
 	const onWalletDisconnect = useCallback(() => {
 		setWalletOpen(false);
@@ -69,18 +71,21 @@ const Wallet: FC = () => {
 					<div
 						css={styles.accountAddress}
 						onClick={() =>
-							navigator.clipboard.writeText(selectedAccount.address)
+							navigator.clipboard.writeText(
+								selectedWallet === "CENNZnet"
+									? selectedAccount.address
+									: metaMaskAccount.address
+							)
 						}
 					>
-						{selectedAccount.address
-							.substring(0, 8)
-							.concat(
-								"...",
-								selectedAccount.address.substring(
-									selectedAccount.address.length - 8,
-									selectedAccount.address.length
-								)
-							)}
+						{selectedWallet === "CENNZnet" &&
+							selectedAccount.address
+								.slice(0, 8)
+								.concat("...", selectedAccount.address.slice(-8))}
+						{selectedWallet === "MetaMask" &&
+							metaMaskAccount.address
+								.slice(0, 6)
+								.concat("...", metaMaskAccount.address.slice(-4))}
 					</div>
 					{selectedWallet === "CENNZnet" && accounts?.length > 1 && (
 						<div css={styles.switchAccount}>
