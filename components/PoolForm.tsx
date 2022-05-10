@@ -1,4 +1,8 @@
-import { IntrinsicElements } from "@/types";
+import {
+	CENNZnetExtrinsic,
+	IntrinsicElements,
+	SubmittableExtrinsic,
+} from "@/types";
 import { css } from "@emotion/react";
 import { FC, useCallback, useEffect, useState, useMemo } from "react";
 import SubmitButton from "@/components/shared/SubmitButton";
@@ -7,11 +11,17 @@ import { usePool } from "@/providers/PoolProvider";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import {
 	Balance,
+	CENNZTransaction,
 	getAddLiquidityExtrinsic,
 	getRemoveLiquidityExtrinsic,
 	signAndSendTx,
+	signViaEthWallet,
 } from "@/utils";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
+import { useWalletProvider } from "@/providers/WalletProvider";
+import { useMetaMaskWallet } from "@/providers/MetaMaskWalletProvider";
+import { useMetaMaskExtension } from "@/providers/MetaMaskExtensionProvider";
+import { useUpdateCENNZBalances } from "@/hooks";
 
 interface PoolFormProps {}
 
@@ -20,6 +30,7 @@ const PoolForm: FC<IntrinsicElements["form"] & PoolFormProps> = ({
 	...props
 }) => {
 	const { api } = useCENNZApi();
+	const { selectedWallet } = useWalletProvider();
 	const [buttonLabel, setButtonLabel] = useState<string>("Add to Pool");
 	const {
 		poolAction,
@@ -41,7 +52,11 @@ const PoolForm: FC<IntrinsicElements["form"] & PoolFormProps> = ({
 		updateExchangeRate,
 	} = usePool();
 
-	const { selectedAccount, wallet, updateBalances } = useCENNZWallet();
+	const { selectedAccount: CENNZAccount, wallet } = useCENNZWallet();
+	const { selectedAccount: metaMaskAccount } = useMetaMaskWallet();
+	const { extension } = useMetaMaskExtension();
+
+	const updateCENNZBalances = useUpdateCENNZBalances();
 
 	useEffect(() => {
 		if (poolAction === "Add") return setButtonLabel("Add to Pool");
@@ -89,11 +104,20 @@ const PoolForm: FC<IntrinsicElements["form"] & PoolFormProps> = ({
 
 			try {
 				setTxPending();
-				const tx = await signAndSendTx(
-					extrinsic,
-					selectedAccount.address,
-					wallet.signer
-				);
+				let tx: CENNZTransaction;
+				if (selectedWallet === "CENNZnet")
+					tx = await signAndSendTx(
+						extrinsic as SubmittableExtrinsic<"promise">,
+						CENNZAccount.address,
+						wallet.signer
+					);
+				if (selectedWallet === "MetaMask")
+					tx = await signViaEthWallet(
+						api,
+						metaMaskAccount.address,
+						extrinsic as CENNZnetExtrinsic,
+						extension
+					);
 
 				tx.on("txCancelled", () => setTxIdle());
 
@@ -121,7 +145,7 @@ const PoolForm: FC<IntrinsicElements["form"] & PoolFormProps> = ({
 					const tradeValue = Balance.fromCodec(event.data[3], tradeAsset);
 
 					setTrValue("");
-					updateBalances();
+					updateCENNZBalances();
 					updatePoolUserInfo();
 					updateExchangeRate();
 					setTxSuccess({
@@ -142,15 +166,18 @@ const PoolForm: FC<IntrinsicElements["form"] & PoolFormProps> = ({
 			setTxSuccess,
 			setTxFailure,
 			setTrValue,
-			updateBalances,
+			updateCENNZBalances,
 			updatePoolUserInfo,
 			updateExchangeRate,
 			api,
-			selectedAccount?.address,
+			CENNZAccount?.address,
+			metaMaskAccount?.address,
 			wallet?.signer,
 			coreAsset,
 			tradeAsset,
 			poolAction,
+			selectedWallet,
+			extension,
 		]
 	);
 
@@ -159,9 +186,7 @@ const PoolForm: FC<IntrinsicElements["form"] & PoolFormProps> = ({
 			{children}
 
 			<div css={styles.formSubmit}>
-				<SubmitButton requireCENNZnet={true} requireMetaMask={false}>
-					{buttonLabel}
-				</SubmitButton>
+				<SubmitButton>{buttonLabel}</SubmitButton>
 			</div>
 		</form>
 	);

@@ -47,3 +47,4 @@ export {
 	getDaysHoursMinutes,
 	getMinutesAndSeconds,
 } from "@/utils/getExpiryString";
+export { default as signViaEthWallet } from "@/utils/signViaEthWallet";

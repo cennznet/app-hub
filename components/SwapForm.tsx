@@ -1,12 +1,26 @@
-import { IntrinsicElements } from "@/types";
-import { FC, useCallback, useEffect } from "react";
+import {
+	CENNZnetExtrinsic,
+	IntrinsicElements,
+	SubmittableExtrinsic,
+} from "@/types";
+import { FC, useCallback } from "react";
 import { css } from "@emotion/react";
 import { Theme } from "@mui/material";
 import SubmitButton from "@/components/shared/SubmitButton";
 import { useSwap } from "@/providers/SwapProvider";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
-import { Balance, getSellAssetExtrinsic, signAndSendTx } from "@/utils";
+import {
+	Balance,
+	CENNZTransaction,
+	getSellAssetExtrinsic,
+	signAndSendTx,
+	signViaEthWallet,
+} from "@/utils";
+import { useWalletProvider } from "@/providers/WalletProvider";
+import { useMetaMaskWallet } from "@/providers/MetaMaskWalletProvider";
+import { useMetaMaskExtension } from "@/providers/MetaMaskExtensionProvider";
+import { useUpdateCENNZBalances } from "@/hooks";
 
 interface SwapFormProps {}
 
@@ -15,7 +29,7 @@ const SwapForm: FC<IntrinsicElements["form"] & SwapFormProps> = ({
 	...props
 }) => {
 	const { api } = useCENNZApi();
-
+	const { selectedWallet } = useWalletProvider();
 	const {
 		exchangeAsset,
 		receiveAsset,
@@ -27,7 +41,11 @@ const SwapForm: FC<IntrinsicElements["form"] & SwapFormProps> = ({
 		setTxSuccess,
 		setTxFailure,
 	} = useSwap();
-	const { selectedAccount, wallet, updateBalances } = useCENNZWallet();
+	const { selectedAccount: CENNZAccount, wallet } = useCENNZWallet();
+	const { selectedAccount: metaMaskAccount } = useMetaMaskWallet();
+	const { extension } = useMetaMaskExtension();
+
+	const updateCENNZBalances = useUpdateCENNZBalances();
 
 	const onFormSubmit = useCallback(
 		async (event) => {
@@ -46,11 +64,20 @@ const SwapForm: FC<IntrinsicElements["form"] & SwapFormProps> = ({
 					Number(slippage)
 				);
 
-				const tx = await signAndSendTx(
-					extrinsic,
-					selectedAccount.address,
-					wallet.signer
-				);
+				let tx: CENNZTransaction;
+				if (selectedWallet === "CENNZnet")
+					tx = await signAndSendTx(
+						extrinsic as SubmittableExtrinsic<"promise">,
+						CENNZAccount.address,
+						wallet.signer
+					);
+				if (selectedWallet === "MetaMask")
+					tx = await signViaEthWallet(
+						api,
+						metaMaskAccount.address,
+						extrinsic as CENNZnetExtrinsic,
+						extension
+					);
 
 				tx.on("txCancelled", () => setTxIdle());
 
@@ -72,7 +99,7 @@ const SwapForm: FC<IntrinsicElements["form"] & SwapFormProps> = ({
 					const exchangeValue = Balance.fromCodec(event.data[3], exchangeAsset);
 					const receiveValue = Balance.fromCodec(event.data[4], receiveAsset);
 
-					updateBalances();
+					updateCENNZBalances();
 					setExValue("");
 					setTxSuccess({
 						exchangeValue,
@@ -92,14 +119,17 @@ const SwapForm: FC<IntrinsicElements["form"] & SwapFormProps> = ({
 			exValue,
 			reValue,
 			slippage,
-			selectedAccount?.address,
+			CENNZAccount?.address,
+			metaMaskAccount?.address,
 			wallet?.signer,
-			updateBalances,
+			updateCENNZBalances,
 			setExValue,
 			setTxFailure,
 			setTxPending,
 			setTxSuccess,
 			setTxIdle,
+			selectedWallet,
+			extension,
 		]
 	);
 
@@ -108,9 +138,7 @@ const SwapForm: FC<IntrinsicElements["form"] & SwapFormProps> = ({
 			{children}
 
 			<div css={styles.formSubmit}>
-				<SubmitButton requireCENNZnet={true} requireMetaMask={false}>
-					Swap
-				</SubmitButton>
+				<SubmitButton>Swap</SubmitButton>
 			</div>
 		</form>
 	);

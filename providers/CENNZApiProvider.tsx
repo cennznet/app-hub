@@ -21,7 +21,7 @@ const CENNZApiProvider: FC<{ endpoint: string }> = ({ children, endpoint }) => {
 		});
 
 		return () => {
-			instance.disconnect();
+			void instance.disconnect();
 		};
 	}, [endpoint]);
 

@@ -9,6 +9,9 @@ import {
 } from "react";
 import { u128 } from "@polkadot/types-codec";
 
+export { SubmittableExtrinsic } from "@cennznet/api/types";
+export { CENNZnetExtrinsic } from "@cennznet/types/interfaces/extrinsic";
+
 export type BridgeChain = "Ethereum" | "CENNZnet";
 export type BridgeAction = "Deposit" | "Withdraw";
 export type BridgeStatus = "Inactive" | "Active";
@@ -110,3 +113,15 @@ export interface TxStatus {
 	status: TxType;
 	props?: any;
 }
+
+export interface CENNZMetaMaskNetwork {
+	cennzTokenAddress: string;
+	chainId: string;
+	chainName: string;
+	explorerUrl: string;
+	rpcUrl: string;
+}
+
+export type WalletOption = "CENNZnet" | "MetaMask";
+
+export type ChainOption = "CENNZnet" | "Ethereum";

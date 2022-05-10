@@ -2,6 +2,7 @@ import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import { Balance, fetchGasFee, getSellAssetExtrinsic } from "@/utils";
 import { useEffect, useState, useMemo, useCallback } from "react";
 import { useSwap } from "@/providers/SwapProvider";
+import { SubmittableExtrinsic } from "@/types";
 
 export default function useSwapGasFee(): {
 	gasFee: Balance;
@@ -31,13 +32,17 @@ export default function useSwapGasFee(): {
 	const updateGasFee = useCallback(async () => {
 		if (!api) return;
 		setLoading(true);
-		const gasFee = await fetchGasFee(api, extrinsic, cpayAsset);
+		const gasFee = await fetchGasFee(
+			api,
+			extrinsic as SubmittableExtrinsic<"promise">,
+			cpayAsset
+		);
 		setGasFee(gasFee);
 		setLoading(false);
 	}, [api, extrinsic, cpayAsset]);
 
 	useEffect(() => {
-		updateGasFee?.();
+		void updateGasFee?.();
 	}, [updateGasFee]);
 
 	return {

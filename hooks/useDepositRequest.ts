@@ -1,6 +1,5 @@
 import { useBridge } from "@/providers/BridgeProvider";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
-import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import { useMetaMaskExtension } from "@/providers/MetaMaskExtensionProvider";
 import { useMetaMaskWallet } from "@/providers/MetaMaskWalletProvider";
 import {
@@ -11,12 +10,15 @@ import {
 	sendDepositRequest,
 } from "@/utils";
 import { useCallback } from "react";
+import { useWalletProvider } from "@/providers/WalletProvider";
+import { cvmToAddress } from "@cennznet/types/utils";
+import { useUpdateCENNZBalances } from "@/hooks";
 
 export default function useDepositRequest(): () => Promise<void> {
 	const { api } = useCENNZApi();
 	const { wallet: metaMaskWallet } = useMetaMaskWallet();
 	const { extension } = useMetaMaskExtension();
-	const { updateBalances: updateCENNZBalances } = useCENNZWallet();
+	const { selectedWallet } = useWalletProvider();
 	const {
 		transferInput,
 		transferAsset,
@@ -26,7 +28,10 @@ export default function useDepositRequest(): () => Promise<void> {
 		setTxSuccess,
 		setTxFailure,
 		updateMetaMaskBalances,
+		transferMetaMaskAddress,
 	} = useBridge();
+
+	const updateCENNZBalances = useUpdateCENNZBalances();
 
 	return useCallback(async () => {
 		const setTrValue = transferInput.setValue;
@@ -35,6 +40,11 @@ export default function useDepositRequest(): () => Promise<void> {
 			transferAsset
 		);
 
+		const cennzAddress =
+			selectedWallet === "CENNZnet"
+				? transferCENNZAddress
+				: cvmToAddress(transferMetaMaskAddress);
+
 		try {
 			setTxPending();
 			await ensureEthereumChain(extension);
@@ -42,7 +52,7 @@ export default function useDepositRequest(): () => Promise<void> {
 			const tx = await sendDepositRequest(
 				transferAmount,
 				transferAsset,
-				transferCENNZAddress,
+				cennzAddress,
 				metaMaskWallet.getSigner()
 			);
 
@@ -93,6 +103,7 @@ export default function useDepositRequest(): () => Promise<void> {
 		transferInput,
 		transferAsset,
 		transferCENNZAddress,
+		transferMetaMaskAddress,
 		metaMaskWallet,
 		updateMetaMaskBalances,
 		updateCENNZBalances,
@@ -101,5 +112,6 @@ export default function useDepositRequest(): () => Promise<void> {
 		setTxFailure,
 		setTxPending,
 		setTxSuccess,
+		selectedWallet,
 	]);
 }

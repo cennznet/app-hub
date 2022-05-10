@@ -13,12 +13,10 @@ import {
 import store from "store";
 import { useCENNZExtension } from "@/providers/CENNZExtensionProvider";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
-import fetchCENNZAssetBalances from "@/utils/fetchCENNZAssetBalances";
-import { CENNZAssetBalance } from "@/types";
+import { useWalletProvider } from "@/providers/WalletProvider";
+import { useUpdateCENNZBalances } from "@/hooks";
 
 interface WalletContext {
-	balances: CENNZAssetBalance[];
-	updateBalances: Function;
 	selectedAccount: InjectedAccountWithMeta;
 	wallet: InjectedExtension;
 	connectWallet: (callback?: () => void) => Promise<void>;
@@ -34,11 +32,14 @@ export default function CENNZWalletProvider({
 	children,
 }: PropsWithChildren<ProviderProps>) {
 	const { api } = useCENNZApi();
+	const { selectedWallet, setCENNZBalances } = useWalletProvider();
 	const { promptInstallExtension, getInstalledExtension, accounts } =
 		useCENNZExtension();
-	const [balances, setBalances] = useState<CENNZAssetBalance[]>(null);
 	const [wallet, setWallet] = useState<InjectedExtension>(null);
-	const [selectedAccount, setAccount] = useState<InjectedAccountWithMeta>(null);
+	const [CENNZAccount, setCENNZAccount] =
+		useState<InjectedAccountWithMeta>(null);
+
+	const updateCENNZBalances = useUpdateCENNZBalances();
 
 	const connectWallet = useCallback(
 		async (callback) => {
@@ -62,12 +63,12 @@ export default function CENNZWalletProvider({
 		store.remove("CENNZNET-EXTENSION");
 		store.remove("CENNZNET-ACCOUNT");
 		setWallet(null);
-		setAccount(null);
-		setBalances(null);
-	}, []);
+		setCENNZAccount(null);
+		setCENNZBalances(null);
+	}, [setCENNZBalances]);
 
 	const selectAccount = useCallback((account) => {
-		setAccount(account);
+		setCENNZAccount(account);
 		store.set("CENNZNET-ACCOUNT", account);
 	}, []);
 
@@ -80,12 +81,13 @@ export default function CENNZWalletProvider({
 			setWallet(extension);
 		}
 
-		restoreWallet();
+		void restoreWallet();
 	}, [disconnectWallet, getInstalledExtension]);
 
 	// 2. Pick the right account once a `wallet` has been set
 	useEffect(() => {
-		if (!wallet || !accounts || !selectAccount) return;
+		if (!wallet || !accounts || !selectAccount || selectedWallet !== "CENNZnet")
+			return;
 
 		const storedAccount = store.get("CENNZNET-ACCOUNT");
 		if (!storedAccount) return selectAccount(accounts[0]);
@@ -96,33 +98,17 @@ export default function CENNZWalletProvider({
 		if (!matchedAccount) return selectAccount(accounts[0]);
 
 		selectAccount(matchedAccount);
-	}, [wallet, accounts, selectAccount]);
-
-	//3. Fetch asset balance
-	const updateBalances = useCallback(async () => {
-		if (!selectedAccount?.address || !api) return;
-		const updateCENNZBalances = async () => {
-			const balances = await fetchCENNZAssetBalances(
-				api,
-				selectedAccount.address
-			);
-
-			setBalances(balances);
-		};
-
-		updateCENNZBalances();
-	}, [selectedAccount, api]);
+	}, [wallet, accounts, selectAccount, selectedWallet]);
 
 	useEffect(() => {
-		updateBalances?.();
-	}, [updateBalances]);
+		if (!selectedWallet) return;
+		void updateCENNZBalances?.();
+	}, [updateCENNZBalances, selectedWallet]);
 
 	return (
 		<CENNZWalletContext.Provider
 			value={{
-				balances,
-				updateBalances,
-				selectedAccount,
+				selectedAccount: CENNZAccount,
 				wallet,
 				connectWallet,
 				disconnectWallet,

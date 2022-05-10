@@ -1,75 +1,81 @@
 import { ButtonHTMLAttributes, FC, useMemo } from "react";
 import { css } from "@emotion/react";
 import { Theme } from "@mui/material";
-import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import CENNZIconSVG from "@/assets/vectors/cennznet-icon.svg";
 import MetaMaskSVG from "@/assets/vectors/metamask.svg";
 import { useMetaMaskWallet } from "@/providers/MetaMaskWalletProvider";
+import { useWalletProvider } from "@/providers/WalletProvider";
+import { useSelectedAccount } from "@/hooks";
 
 interface SubmitButtonProps {
-	requireCENNZnet: boolean;
-	requireMetaMask: boolean;
+	forceRequireMetaMask?: boolean;
 }
 
 const SubmitButton: FC<
 	ButtonHTMLAttributes<HTMLButtonElement> & SubmitButtonProps
-> = ({ children, requireCENNZnet, requireMetaMask, disabled, ...props }) => {
-	const { selectedAccount: cennzAccount, connectWallet: connectCENNZWallet } =
-		useCENNZWallet();
+> = ({ children, forceRequireMetaMask, disabled, ...props }) => {
+	const { selectedWallet, setWalletOpen } = useWalletProvider();
 	const {
 		selectedAccount: metaMaskAccount,
 		connectWallet: connectMetaMaskWallet,
 	} = useMetaMaskWallet();
+	const selectedAccount = useSelectedAccount();
 
-	const isSubmittable = useMemo(() => {
-		if (requireCENNZnet && !cennzAccount) return false;
+	const isConnected = useMemo(
+		() => !!selectedWallet || !!selectedAccount,
+		[selectedWallet, selectedAccount]
+	);
 
-		if (requireMetaMask && !metaMaskAccount) return false;
-
-		return true;
-	}, [requireCENNZnet, cennzAccount, requireMetaMask, metaMaskAccount]);
+	const isSubmittable = useMemo(
+		() => !forceRequireMetaMask || (forceRequireMetaMask && !!metaMaskAccount),
+		[forceRequireMetaMask, metaMaskAccount]
+	);
 
 	return (
 		<>
-			{!cennzAccount && requireCENNZnet && (
+			{!isConnected && (
 				<button
 					type="button"
 					css={[styles.root, styles.cennzButton]}
-					onClick={() => connectCENNZWallet()}
+					onClick={() => setWalletOpen(true)}
 				>
 					<img
 						src={CENNZIconSVG.src}
 						alt="CENNZnet Logo"
 						css={styles.brandLogo}
 					/>
-					CONNECT CENNZnet
+					CONNECT WALLET
 				</button>
 			)}
 
-			{!metaMaskAccount && requireMetaMask && !!cennzAccount && (
-				<button
-					type="button"
-					css={[styles.root, styles.metaMaskButton]}
-					onClick={() => connectMetaMaskWallet()}
-				>
-					<img
-						src={MetaMaskSVG.src}
-						alt="MetaMask Logo"
-						css={styles.brandLogo}
-					/>
-					CONNECT METAMASK
-				</button>
-			)}
+			{isConnected && (
+				<>
+					{!isSubmittable && (
+						<button
+							type="button"
+							css={[styles.root, styles.metaMaskButton]}
+							onClick={() => connectMetaMaskWallet()}
+						>
+							<img
+								src={MetaMaskSVG.src}
+								alt="MetaMask Logo"
+								css={styles.brandLogo}
+							/>
+							CONNECT METAMASK
+						</button>
+					)}
 
-			{isSubmittable && (
-				<button
-					css={[styles.root, styles.submitButton]}
-					type="submit"
-					disabled={disabled}
-					{...props}
-				>
-					{children}
-				</button>
+					{isSubmittable && (
+						<button
+							css={[styles.root, styles.submitButton]}
+							type="submit"
+							disabled={disabled}
+							{...props}
+						>
+							{children}
+						</button>
+					)}
+				</>
 			)}
 		</>
 	);

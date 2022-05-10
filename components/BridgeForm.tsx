@@ -7,6 +7,8 @@ import { useBridge } from "@/providers/BridgeProvider";
 import useBridgeStatus from "@/hooks/useBridgeStatus";
 import BridgeWithdrawAdvanced from "@/components/BridgeWithdrawAdvanced";
 import { useDepositRequest, useWithdrawRequest } from "@/hooks";
+import { useWalletProvider } from "@/providers/WalletProvider";
+import { ETH_CHAIN_ID } from "@/constants";
 
 interface BridgeFormProps {}
 
@@ -15,6 +17,8 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 	...props
 }) => {
 	const { bridgeAction } = useBridge();
+	const { connectedChain } = useWalletProvider();
+
 	const [buttonLabel, setButtonLabel] = useState<string>("Deposit");
 
 	const processDepositRequest = useDepositRequest();
@@ -45,9 +49,8 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 
 			<div css={styles.formSubmit}>
 				<SubmitButton
-					requireCENNZnet={true}
-					requireMetaMask={true}
-					disabled={status === "Inactive"}
+					forceRequireMetaMask={true}
+					disabled={status === "Inactive" || connectedChain !== "Ethereum"}
 				>
 					{buttonLabel}
 				</SubmitButton>
@@ -55,6 +58,14 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 				{status === "Inactive" && (
 					<div css={styles.formNote}>
 						{bridgeAction} is temporarily deactivated, please try again later.
+					</div>
+				)}
+
+				{!!connectedChain && connectedChain !== "Ethereum" && (
+					<div css={styles.formNote}>
+						Please connect to{" "}
+						{ETH_CHAIN_ID === 1 ? "Ethereum Mainnet" : "Kovan Test Network"} in
+						MetaMask.
 					</div>
 				)}
 			</div>

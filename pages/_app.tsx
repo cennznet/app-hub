@@ -20,6 +20,7 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { trackPageView } from "@/utils";
 import { DefaultSeo } from "next-seo";
+import WalletProvider from "@/providers/WalletProvider";
 
 type MyAppProps = Omit<AppProps, "pageProps"> & {
 	pageProps: {} & GlobalProps;
@@ -57,24 +58,26 @@ function MyApp({ Component, pageProps }: MyAppProps) {
 			<ThemeProvider>
 				<CssGlobal />
 				<UserAgentProvider>
-					<CENNZExtensionProvider>
-						<MetaMaskExtensionProvider>
-							<CENNZApiProvider endpoint={API_URL}>
-								<CENNZWalletProvider>
+					<MetaMaskExtensionProvider>
+						<WalletProvider>
+							<CENNZExtensionProvider>
+								<CENNZApiProvider endpoint={API_URL}>
 									<MetaMaskWalletProvider>
-										<GlobalModalProvider>
-											<PageBackdrop />
-											<WalletButton />
-											<AppSwitch />
-											<Component {...pageProps} />
-											<PageFooter />
-											<PageFrame />
-										</GlobalModalProvider>
+										<CENNZWalletProvider>
+											<GlobalModalProvider>
+												<PageBackdrop />
+												<WalletButton />
+												<AppSwitch />
+												<Component {...pageProps} />
+												<PageFooter />
+												<PageFrame />
+											</GlobalModalProvider>
+										</CENNZWalletProvider>
 									</MetaMaskWalletProvider>
-								</CENNZWalletProvider>
-							</CENNZApiProvider>
-						</MetaMaskExtensionProvider>
-					</CENNZExtensionProvider>
+								</CENNZApiProvider>
+							</CENNZExtensionProvider>
+						</WalletProvider>
+					</MetaMaskExtensionProvider>
 				</UserAgentProvider>
 			</ThemeProvider>
 		</>

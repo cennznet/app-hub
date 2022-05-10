@@ -13,6 +13,7 @@ import {
 } from "react";
 import type * as Extension from "@polkadot/extension-dapp";
 import { useUserAgent } from "@/providers/UserAgentProvider";
+import { useWalletProvider } from "./WalletProvider";
 
 interface ExtensionContext {
 	accounts: InjectedAccountWithMeta[];
@@ -30,6 +31,7 @@ export default function CENNZExtensionProvider({
 	children,
 }: PropsWithChildren<ProviderProps>) {
 	const { browser, os } = useUserAgent();
+	const { selectedWallet } = useWalletProvider();
 	const [module, setModule] = useState<typeof Extension>();
 	const [accounts, setAccounts] = useState<Array<InjectedAccountWithMeta>>();
 
@@ -73,7 +75,7 @@ export default function CENNZExtensionProvider({
 	}, [module]);
 
 	useEffect(() => {
-		if (!module) return;
+		if (!module || selectedWallet !== "CENNZnet") return;
 		let unsubscribe: () => void;
 
 		const fetchAccounts = async () => {
@@ -93,10 +95,10 @@ export default function CENNZExtensionProvider({
 			});
 		};
 
-		fetchAccounts();
+		void fetchAccounts();
 
 		return unsubscribe;
-	}, [module]);
+	}, [module, selectedWallet]);
 
 	return (
 		<CENNZExtensionContext.Provider
