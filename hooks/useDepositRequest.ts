@@ -42,7 +42,7 @@ export default function useDepositRequest(): () => Promise<void> {
 			transferAsset
 		);
 
-		const CENNZAddress =
+		const cennzAddress =
 			selectedWallet === "CENNZnet"
 				? transferCENNZAddress
 				: cvmToAddress(transferMetaMaskAddress);
@@ -54,7 +54,7 @@ export default function useDepositRequest(): () => Promise<void> {
 			const tx = await sendDepositRequest(
 				transferAmount,
 				transferAsset,
-				CENNZAddress,
+				cennzAddress,
 				metaMaskWallet.getSigner()
 			);
 

@@ -9,13 +9,13 @@ export default function useSelectedAccount(): Pick<
 	InjectedAccountWithMeta,
 	"address"
 > {
-	const { selectedAccount: CENNZAccount } = useCENNZWallet();
+	const { selectedAccount: cennzAccount } = useCENNZWallet();
 	const { selectedAccount: metaMaskAccount } = useMetaMaskWallet();
 	const { selectedWallet } = useWalletProvider();
 
 	return useMemo(() => {
-		if (selectedWallet === "CENNZnet") return CENNZAccount;
+		if (selectedWallet === "CENNZnet") return cennzAccount;
 		if (selectedWallet === "MetaMask" && !!metaMaskAccount?.address)
 			return { address: cvmToAddress(metaMaskAccount.address) };
-	}, [CENNZAccount, metaMaskAccount, selectedWallet]);
+	}, [cennzAccount, metaMaskAccount, selectedWallet]);
 }
