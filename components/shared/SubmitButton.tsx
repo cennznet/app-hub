@@ -21,16 +21,19 @@ const SubmitButton: FC<
 	} = useMetaMaskWallet();
 	const selectedAccount = useSelectedAccount();
 
-	const isSubmittable = useMemo(() => {
-		if (!selectedAccount) return false;
-		if (forceRequireMetaMask && !metaMaskAccount) return false;
+	const isConnected = useMemo(
+		() => !!selectedWallet || !!selectedAccount,
+		[selectedWallet, selectedAccount]
+	);
 
-		return true;
-	}, [forceRequireMetaMask, metaMaskAccount, selectedAccount]);
+	const isSubmittable = useMemo(
+		() => !forceRequireMetaMask || (forceRequireMetaMask && !!metaMaskAccount),
+		[forceRequireMetaMask, metaMaskAccount]
+	);
 
 	return (
 		<>
-			{!selectedWallet && (
+			{!isConnected && (
 				<button
 					type="button"
 					css={[styles.root, styles.cennzButton]}
@@ -45,7 +48,7 @@ const SubmitButton: FC<
 				</button>
 			)}
 
-			{!!selectedWallet && (
+			{isConnected && (
 				<>
 					{!isSubmittable && (
 						<button
