@@ -13,9 +13,14 @@ import { useSelectedAccount } from "@/hooks";
 import { InjectedAccountWithMeta } from "@polkadot/extension-inject/types";
 
 const Wallet: FC = () => {
-	const { setWalletOpen, walletOpen, selectedWallet, setSelectedWallet } =
-		useWalletProvider();
-	const { balances, selectAccount, disconnectWallet } = useCENNZWallet();
+	const {
+		CENNZBalances,
+		setWalletOpen,
+		walletOpen,
+		selectedWallet,
+		setSelectedWallet,
+	} = useWalletProvider();
+	const { selectAccount, disconnectWallet } = useCENNZWallet();
 	const { accounts } = useCENNZExtension();
 	const { selectedAccount: metaMaskAccount } = useMetaMaskWallet();
 	const selectedAccount = useSelectedAccount();
@@ -34,7 +39,8 @@ const Wallet: FC = () => {
 		if (!walletOpen) return;
 		const setListHeight = () => {
 			const balanceList = ref.current;
-			if (!balanceList || !balances?.length) return setBalanceListHeight(0);
+			if (!balanceList || !CENNZBalances?.length)
+				return setBalanceListHeight(0);
 			const rect = balanceList.getBoundingClientRect();
 			setBalanceListHeight(rect.height);
 		};
@@ -43,7 +49,7 @@ const Wallet: FC = () => {
 		setListHeight();
 
 		return () => clearTimeout(id);
-	}, [balances, walletOpen]);
+	}, [CENNZBalances, walletOpen]);
 
 	const onAccountSelect = useCallback(
 		(event) => {
@@ -123,32 +129,30 @@ const Wallet: FC = () => {
 				]}
 			>
 				<div css={styles.accountBalances} ref={ref}>
-					{!!balances?.length && (
+					{!!CENNZBalances?.length && (
 						<>
 							<div css={styles.balanceHeading}>Balance</div>
 
 							<ul css={styles.balanceList}>
-								{balances
-									.filter(
-										(asset) =>
-											asset.value.gt(0) ||
-											[CENNZ_ASSET_ID, CPAY_ASSET_ID].includes(asset.assetId)
-									)
-									.map((asset) => {
-										const logo = getTokenLogo(asset.symbol);
+								{CENNZBalances.filter(
+									(asset) =>
+										asset.value.gt(0) ||
+										[CENNZ_ASSET_ID, CPAY_ASSET_ID].includes(asset.assetId)
+								).map((asset) => {
+									const logo = getTokenLogo(asset.symbol);
 
-										return (
-											<li key={asset.assetId} css={styles.balanceItem}>
-												<figure>
-													{logo && (
-														<img src={logo.src} alt={`${asset.symbol}-logo`} />
-													)}
-												</figure>
-												<span>{asset.value.toBalance()}</span>
-												<label>{asset.symbol}</label>
-											</li>
-										);
-									})}
+									return (
+										<li key={asset.assetId} css={styles.balanceItem}>
+											<figure>
+												{logo && (
+													<img src={logo.src} alt={`${asset.symbol}-logo`} />
+												)}
+											</figure>
+											<span>{asset.value.toBalance()}</span>
+											<label>{asset.symbol}</label>
+										</li>
+									);
+								})}
 							</ul>
 						</>
 					)}

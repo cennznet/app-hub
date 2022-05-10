@@ -4,9 +4,7 @@ import {
 } from "@polkadot/extension-inject/types";
 import {
 	createContext,
-	Dispatch,
 	PropsWithChildren,
-	SetStateAction,
 	useCallback,
 	useContext,
 	useEffect,
@@ -15,13 +13,10 @@ import {
 import store from "store";
 import { useCENNZExtension } from "@/providers/CENNZExtensionProvider";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
-import { CENNZAssetBalance } from "@/types";
 import { useWalletProvider } from "@/providers/WalletProvider";
 import { useUpdateCENNZBalances } from "@/hooks";
 
 interface WalletContext {
-	balances: CENNZAssetBalance[];
-	setBalances: Dispatch<SetStateAction<CENNZAssetBalance[]>>;
 	selectedAccount: InjectedAccountWithMeta;
 	wallet: InjectedExtension;
 	connectWallet: (callback?: () => void) => Promise<void>;
@@ -37,15 +32,14 @@ export default function CENNZWalletProvider({
 	children,
 }: PropsWithChildren<ProviderProps>) {
 	const { api } = useCENNZApi();
-	const { selectedWallet } = useWalletProvider();
+	const { selectedWallet, setCENNZBalances } = useWalletProvider();
 	const { promptInstallExtension, getInstalledExtension, accounts } =
 		useCENNZExtension();
-	const [balances, setBalances] = useState<CENNZAssetBalance[]>(null);
 	const [wallet, setWallet] = useState<InjectedExtension>(null);
 	const [CENNZAccount, setCENNZAccount] =
 		useState<InjectedAccountWithMeta>(null);
 
-	const updateBalances = useUpdateCENNZBalances();
+	const updateCENNZBalances = useUpdateCENNZBalances();
 
 	const connectWallet = useCallback(
 		async (callback) => {
@@ -70,8 +64,8 @@ export default function CENNZWalletProvider({
 		store.remove("CENNZNET-ACCOUNT");
 		setWallet(null);
 		setCENNZAccount(null);
-		setBalances(null);
-	}, []);
+		setCENNZBalances(null);
+	}, [setCENNZBalances]);
 
 	const selectAccount = useCallback((account) => {
 		setCENNZAccount(account);
@@ -108,14 +102,12 @@ export default function CENNZWalletProvider({
 
 	useEffect(() => {
 		if (!selectedWallet) return;
-		void updateBalances?.(setBalances);
-	}, [updateBalances, selectedWallet]);
+		void updateCENNZBalances?.();
+	}, [updateCENNZBalances, selectedWallet]);
 
 	return (
 		<CENNZWalletContext.Provider
 			value={{
-				balances,
-				setBalances,
 				selectedAccount: CENNZAccount,
 				wallet,
 				connectWallet,

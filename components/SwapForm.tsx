@@ -41,11 +41,7 @@ const SwapForm: FC<IntrinsicElements["form"] & SwapFormProps> = ({
 		setTxSuccess,
 		setTxFailure,
 	} = useSwap();
-	const {
-		selectedAccount: CENNZAccount,
-		wallet,
-		setBalances,
-	} = useCENNZWallet();
+	const { selectedAccount: CENNZAccount, wallet } = useCENNZWallet();
 	const { selectedAccount: metaMaskAccount } = useMetaMaskWallet();
 	const { extension } = useMetaMaskExtension();
 
@@ -103,7 +99,7 @@ const SwapForm: FC<IntrinsicElements["form"] & SwapFormProps> = ({
 					const exchangeValue = Balance.fromCodec(event.data[3], exchangeAsset);
 					const receiveValue = Balance.fromCodec(event.data[4], receiveAsset);
 
-					updateCENNZBalances(setBalances);
+					updateCENNZBalances();
 					setExValue("");
 					setTxSuccess({
 						exchangeValue,
@@ -134,7 +130,6 @@ const SwapForm: FC<IntrinsicElements["form"] & SwapFormProps> = ({
 			setTxIdle,
 			selectedWallet,
 			extension,
-			setBalances,
 		]
 	);
 

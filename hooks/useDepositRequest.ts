@@ -1,6 +1,5 @@
 import { useBridge } from "@/providers/BridgeProvider";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
-import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import { useMetaMaskExtension } from "@/providers/MetaMaskExtensionProvider";
 import { useMetaMaskWallet } from "@/providers/MetaMaskWalletProvider";
 import {
@@ -19,7 +18,6 @@ export default function useDepositRequest(): () => Promise<void> {
 	const { api } = useCENNZApi();
 	const { wallet: metaMaskWallet } = useMetaMaskWallet();
 	const { extension } = useMetaMaskExtension();
-	const { setBalances } = useCENNZWallet();
 	const { selectedWallet } = useWalletProvider();
 	const {
 		transferInput,
@@ -80,7 +78,7 @@ export default function useDepositRequest(): () => Promise<void> {
 					.then(() => {
 						setTrValue("");
 						updateMetaMaskBalances();
-						updateCENNZBalances(setBalances);
+						updateCENNZBalances();
 						setTxSuccess({
 							transferValue: transferAmount,
 							txHashLink: tx.getHashLink(),
@@ -115,6 +113,5 @@ export default function useDepositRequest(): () => Promise<void> {
 		setTxPending,
 		setTxSuccess,
 		selectedWallet,
-		setBalances,
 	]);
 }

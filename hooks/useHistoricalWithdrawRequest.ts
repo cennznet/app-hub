@@ -1,6 +1,5 @@
 import { useBridge } from "@/providers/BridgeProvider";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
-import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import { useMetaMaskExtension } from "@/providers/MetaMaskExtensionProvider";
 import { useMetaMaskWallet } from "@/providers/MetaMaskWalletProvider";
 import { WithdrawClaim } from "@/types";
@@ -26,7 +25,6 @@ export default function useHistoricalWithdrawRequest(): (
 		updateUnclaimedWithdrawals,
 	} = useBridge();
 	const { api } = useCENNZApi();
-	const { setBalances } = useCENNZWallet();
 	const { wallet: metaMaskWallet } = useMetaMaskWallet();
 	const { extension } = useMetaMaskExtension();
 
@@ -68,7 +66,7 @@ export default function useHistoricalWithdrawRequest(): (
 						withdrawTx.on("txSucceeded", () => {
 							setTrValue("");
 							updateMetaMaskBalances();
-							updateCENNZBalances(setBalances);
+							updateCENNZBalances();
 							updateUnclaimedWithdrawals();
 							setTxSuccess({
 								transferValue: unclaimed.transferAmount,
@@ -111,7 +109,6 @@ export default function useHistoricalWithdrawRequest(): (
 			setTxFailure,
 			setTxIdle,
 			updateUnclaimedWithdrawals,
-			setBalances,
 		]
 	);
 }
