@@ -51,14 +51,14 @@ export const CENNZ_NETWORK: string = process.env.NEXT_PUBLIC_CENNZ_NETWORK;
 const CENNZ_METAMASK_NETWORKS = {
 	azalea: {
 		cennzTokenAddress: "0x5de841521336640695584288fcae37a41a9c92a4",
-		chainId: "0x5359",
+		chainId: `0x${Number(21337).toString(16)}`,
 		chainName: "CENNZnet Azalea",
 		explorerUrl: "https://uncoverexplorer.com",
 		rpcUrl: "https://cennznet.unfrastructure.io/public",
 	},
 	nikau: {
 		cennzTokenAddress: "0xcCccccCc00003E80000000000000000000000000",
-		chainId: "0xbb9",
+		chainId: `0x${Number(3001).toString(16)}`,
 		chainName: "CENNZnet Nikau",
 		explorerUrl: "https://nikau.uncoverexplorer.com",
 		rpcUrl: "https://nikau.centrality.me/public",
