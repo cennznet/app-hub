@@ -3,7 +3,7 @@ import { BridgedEthereumToken, EthereumToken } from "@/types";
 import { Balance, fetchEthereumBalance } from "@/utils";
 import { useEffect, useMemo, useState } from "react";
 
-export default function useMetaMaskBalances(
+export default function useEthereumBalances(
 	token1: EthereumToken | BridgedEthereumToken,
 	token2?: EthereumToken | BridgedEthereumToken
 ): [Balance, Balance, () => void] {

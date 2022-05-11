@@ -5,8 +5,8 @@ import {
 	TokenInputHook,
 	TxStatusHook,
 	useSelectedAccount,
+	useEthereumBalances,
 } from "@/hooks";
-import useMetaMaskBalances from "@/hooks/useMetaMaskBalances";
 import {
 	BridgeAction,
 	BridgedEthereumToken,
@@ -108,7 +108,7 @@ const BridgeProvider: FC<BridgeProviderProps> = ({
 		) || ethAsset;
 
 	const [metaMaskBalance, , updateMetaMaskBalances] =
-		useMetaMaskBalances(transferAsset);
+		useEthereumBalances(transferAsset);
 
 	useEffect(() => {
 		const setTransferSelectTokenId = transferSelect.setTokenId;
