@@ -15,13 +15,13 @@ type WalletState = "Connected" | "NotConnected";
 
 const WalletButton: React.FC = () => {
 	const { walletOpen, setWalletOpen, selectedWallet } = useWalletProvider();
-	const { selectedAccount: CENNZAccount } = useCENNZWallet();
+	const { selectedAccount: cennzAccount } = useCENNZWallet();
 	const { selectedAccount: metaMaskAccount } = useMetaMaskWallet();
 
 	const walletState = useMemo<WalletState>(() => {
 		if (!!selectedWallet) return "Connected";
-		if (!CENNZAccount || !metaMaskAccount) return "NotConnected";
-	}, [CENNZAccount, metaMaskAccount, selectedWallet]);
+		if (!cennzAccount || !metaMaskAccount) return "NotConnected";
+	}, [cennzAccount, metaMaskAccount, selectedWallet]);
 
 	return (
 		<>
@@ -38,12 +38,12 @@ const WalletButton: React.FC = () => {
 						/>
 					)}
 
-					{!!CENNZAccount?.address && selectedWallet === "CENNZnet" && (
+					{!!cennzAccount?.address && selectedWallet === "CENNZnet" && (
 						<AccountIdenticon
 							css={styles.walletIconIdenticon}
 							theme="beachball"
 							size={28}
-							value={CENNZAccount.address}
+							value={cennzAccount.address}
 						/>
 					)}
 					{!!metaMaskAccount?.address && selectedWallet === "MetaMask" && (
@@ -56,7 +56,7 @@ const WalletButton: React.FC = () => {
 
 				<div css={styles.walletState}>
 					{walletState === "Connected" && selectedWallet === "CENNZnet" && (
-						<span>{CENNZAccount?.meta?.name?.toUpperCase?.()}</span>
+						<span>{cennzAccount?.meta?.name?.toUpperCase?.()}</span>
 					)}
 					{walletState === "Connected" && selectedWallet === "MetaMask" && (
 						<span>

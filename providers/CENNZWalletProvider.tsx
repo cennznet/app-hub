@@ -36,7 +36,7 @@ export default function CENNZWalletProvider({
 	const { promptInstallExtension, getInstalledExtension, accounts } =
 		useCENNZExtension();
 	const [wallet, setWallet] = useState<InjectedExtension>(null);
-	const [CENNZAccount, setCENNZAccount] =
+	const [cennzAccount, setCENNZAccount] =
 		useState<InjectedAccountWithMeta>(null);
 
 	const updateCENNZBalances = useUpdateCENNZBalances();
@@ -108,7 +108,7 @@ export default function CENNZWalletProvider({
 	return (
 		<CENNZWalletContext.Provider
 			value={{
-				selectedAccount: CENNZAccount,
+				selectedAccount: cennzAccount,
 				wallet,
 				connectWallet,
 				disconnectWallet,
