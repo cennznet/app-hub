@@ -16,7 +16,7 @@ export { default as getAddLiquidityExtrinsic } from "@/utils/getAddLiquidityExtr
 export { default as getRemoveLiquidityExtrinsic } from "@/utils/getRemoveLiquidityExtrinsic";
 export { default as Balance } from "@/utils/Balance";
 export { default as ensureEthereumChain } from "@/utils/ensureEthereumChain";
-export { default as fetchMetaMaskBalance } from "@/utils/fetchMetaMaskBalance";
+export { default as fetchEthereumBalance } from "@/utils/fetchEthereumBalance";
 export {
 	default as fetchBridgeDepositStatus,
 	ensureBridgeDepositActive,

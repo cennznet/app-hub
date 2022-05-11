@@ -1,6 +1,6 @@
 import { useMetaMaskWallet } from "@/providers/MetaMaskWalletProvider";
 import { BridgedEthereumToken, EthereumToken } from "@/types";
-import { Balance, fetchMetaMaskBalance } from "@/utils";
+import { Balance, fetchEthereumBalance } from "@/utils";
 import { useEffect, useMemo, useState } from "react";
 
 export default function useMetaMaskBalances(
@@ -16,13 +16,13 @@ export default function useMetaMaskBalances(
 
 		return async () => {
 			setBalance1(null);
-			fetchMetaMaskBalance(wallet, selectedAccount.address, token1).then(
+			fetchEthereumBalance(wallet, selectedAccount.address, token1).then(
 				setBalance1
 			);
 
 			if (token2) {
 				setBalance2(null);
-				fetchMetaMaskBalance(wallet, selectedAccount.address, token2).then(
+				fetchEthereumBalance(wallet, selectedAccount.address, token2).then(
 					setBalance2
 				);
 			}
