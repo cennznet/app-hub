@@ -46,8 +46,8 @@ interface BridgeContextType extends TxStatusHook {
 	transferMetaMaskAddress: string;
 	setTransferMetaMaskAddress: Dispatch<SetStateAction<string>>;
 
-	metaMaskBalance: Balance;
-	updateMetaMaskBalances: () => void;
+	ethereumBalance: Balance;
+	updateEthereumBalances: () => void;
 
 	advancedExpanded: boolean;
 	setAdvancedExpanded: Dispatch<SetStateAction<boolean>>;
@@ -107,7 +107,7 @@ const BridgeProvider: FC<BridgeProviderProps> = ({
 			(token) => token.address === transferSelect.tokenId
 		) || ethAsset;
 
-	const [metaMaskBalance, , updateMetaMaskBalances] =
+	const [ethereumBalance, , updateEthereumBalances] =
 		useEthereumBalances(transferAsset);
 
 	useEffect(() => {
@@ -146,8 +146,8 @@ const BridgeProvider: FC<BridgeProviderProps> = ({
 				transferMetaMaskAddress,
 				setTransferMetaMaskAddress,
 
-				metaMaskBalance,
-				updateMetaMaskBalances,
+				ethereumBalance,
+				updateEthereumBalances,
 
 				advancedExpanded,
 				setAdvancedExpanded,

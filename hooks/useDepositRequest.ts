@@ -27,7 +27,7 @@ export default function useDepositRequest(): () => Promise<void> {
 		setTxPending,
 		setTxSuccess,
 		setTxFailure,
-		updateMetaMaskBalances,
+		updateEthereumBalances,
 		transferMetaMaskAddress,
 	} = useBridge();
 
@@ -77,7 +77,7 @@ export default function useDepositRequest(): () => Promise<void> {
 				)
 					.then(() => {
 						setTrValue("");
-						updateMetaMaskBalances();
+						updateEthereumBalances();
 						updateCENNZBalances();
 						setTxSuccess({
 							transferValue: transferAmount,
@@ -105,7 +105,7 @@ export default function useDepositRequest(): () => Promise<void> {
 		transferCENNZAddress,
 		transferMetaMaskAddress,
 		metaMaskWallet,
-		updateMetaMaskBalances,
+		updateEthereumBalances,
 		updateCENNZBalances,
 		extension,
 		setTxIdle,

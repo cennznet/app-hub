@@ -23,7 +23,7 @@ const BridgeActionsPair: VFC<
 		},
 	];
 
-	const { setBridgeAction, updateMetaMaskBalances } = useBridge();
+	const { setBridgeAction, updateEthereumBalances } = useBridge();
 
 	const [fromOption, setFromOption] = useState<string>("Ethereum");
 	const [toOption, setToOption] = useState<string>("CENNZnet");
@@ -70,12 +70,12 @@ const BridgeActionsPair: VFC<
 
 	useEffect(() => {
 		if (!fromOption) return;
-		if (fromOption === "Ethereum") return updateMetaMaskBalances?.();
+		if (fromOption === "Ethereum") return updateEthereumBalances?.();
 		if (fromOption === "CENNZnet") {
 			void updateCENNZBalances?.();
 			return;
 		}
-	}, [fromOption, updateMetaMaskBalances, updateCENNZBalances]);
+	}, [fromOption, updateEthereumBalances, updateCENNZBalances]);
 
 	return (
 		<div {...props} css={styles.root}>

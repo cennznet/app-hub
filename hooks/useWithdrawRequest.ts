@@ -26,7 +26,7 @@ export default function useWithdrawRequest(): () => Promise<void> {
 		setTxPending,
 		setTxSuccess,
 		setTxFailure,
-		updateMetaMaskBalances,
+		updateEthereumBalances,
 		updateUnclaimedWithdrawals,
 	} = useBridge();
 	const { api } = useCENNZApi();
@@ -112,7 +112,7 @@ export default function useWithdrawRequest(): () => Promise<void> {
 
 						withdrawTx.on("txSucceeded", () => {
 							setTrValue("");
-							updateMetaMaskBalances();
+							updateEthereumBalances();
 							updateCENNZBalances();
 							setTxSuccess({
 								transferValue: transferAmount,
@@ -129,7 +129,7 @@ export default function useWithdrawRequest(): () => Promise<void> {
 						});
 
 						withdrawTx.on("txCancelled", () => {
-							updateMetaMaskBalances();
+							updateEthereumBalances();
 							updateCENNZBalances();
 							updateUnclaimedWithdrawals();
 							setTxIdle();
@@ -161,7 +161,7 @@ export default function useWithdrawRequest(): () => Promise<void> {
 		cennzWallet?.signer,
 		setTxIdle,
 		setTxFailure,
-		updateMetaMaskBalances,
+		updateEthereumBalances,
 		updateCENNZBalances,
 		setTxSuccess,
 		updateUnclaimedWithdrawals,
