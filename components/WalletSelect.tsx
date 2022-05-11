@@ -24,34 +24,32 @@ const WalletSelect: VFC = () => {
 
 	return (
 		<div css={styles.modalContent}>
-			<label htmlFor="select wallet">select wallet</label>
+			<h4 css={styles.selectLabel}>Select Wallet</h4>
 			<div css={styles.selectOptions}>
 				<div
 					css={[styles.metaMaskButton, styles.selectOption]}
 					onClick={() => onOptionClick("MetaMask")}
 				>
-					<div css={styles.walletIcon}>
-						<img
-							src={MetaMaskIconSVG.src}
-							alt="CENNZnet Logo"
-							css={styles.selectOptionImg}
-						/>
-					</div>
-					<span>CONNECT METAMASK</span>
+					<img
+						src={MetaMaskIconSVG.src}
+						alt="CENNZnet Logo"
+						css={styles.selectOptionImg}
+					/>
+
+					<span>METAMASK</span>
 				</div>
 				<br />
 				<div
 					css={[styles.cennzButton, styles.selectOption]}
 					onClick={() => onOptionClick("CENNZnet")}
 				>
-					<div css={styles.walletIcon}>
-						<img
-							src={CENNZIconSVG.src}
-							alt="CENNZnet Logo"
-							css={styles.selectOptionImg}
-						/>
-					</div>
-					<span>CONNECT CENNZnet</span>
+					<img
+						src={CENNZIconSVG.src}
+						alt="CENNZnet Logo"
+						css={styles.selectOptionImg}
+					/>
+
+					<span>CENNZnet</span>
 				</div>
 			</div>
 		</div>
@@ -70,15 +68,16 @@ const styles = {
 		box-shadow: 4px 8px 8px rgba(17, 48, 255, 0.1);
 		border-radius: 4px;
 		outline: none;
+		padding: 1.5em;
+	`,
 
-		label {
-			font-weight: bold;
-			font-size: 14px;
-			text-transform: uppercase;
-			margin: 1em 1em 0.5em;
-			display: block;
-			color: ${palette.primary.main};
-		}
+	selectLabel: ({ palette }: Theme) => css`
+		font-weight: bold;
+		text-align: center;
+		text-transform: uppercase;
+		display: block;
+		color: ${palette.primary.main};
+		margin-top: 0;
 	`,
 
 	selectOptions: css`
@@ -132,15 +131,6 @@ const styles = {
 		display: block;
 		width: 28px;
 		height: 28px;
-		position: absolute;
-		top: 50%;
-		transform: translateY(-50%);
-	`,
-
-	walletIcon: css`
-		width: 28px;
-		height: 28px;
 		margin-right: 0.5em;
-		position: relative;
 	`,
 };

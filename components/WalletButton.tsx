@@ -3,7 +3,7 @@ import { css } from "@emotion/react";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import WalletModal from "@/components/WalletModal";
 import AccountIdenticon from "@/components/shared/AccountIdenticon";
-import CENNZIconSVG from "@/assets/vectors/cennznet-icon.svg";
+import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import { Theme } from "@mui/material";
 import WalletSelect from "@/components/WalletSelect";
 import Wallet from "@/components/Wallet";
@@ -31,11 +31,7 @@ const WalletButton: React.FC = () => {
 			>
 				<div css={styles.walletIcon}>
 					{(walletState === "NotConnected" || !selectedWallet) && (
-						<img
-							src={CENNZIconSVG.src}
-							alt="CENNZnet Logo"
-							css={styles.walletIconImg}
-						/>
+						<AccountBalanceWalletIcon css={styles.walletIconImg} />
 					)}
 
 					{!!cennzAccount?.address && selectedWallet === "CENNZnet" && (
@@ -91,8 +87,8 @@ export const styles = {
 				height: 48px;
 				display: flex;
 				align-items: center;
-				background-color: ${walletOpen ? palette.primary.default : "#FFFFFF"};
-				color: ${walletOpen ? "#FFFFFF !important" : palette.primary.default};
+				background-color: ${walletOpen ? palette.primary.main : "#FFFFFF"};
+				color: ${walletOpen ? "#FFFFFF !important" : palette.primary.main};
 				transition: background-color ${transitions.duration.short}ms,
 					color ${transitions.duration.short}ms;
 				border-radius: 4px;
@@ -101,7 +97,7 @@ export const styles = {
 				max-width: 240px;
 
 				&:hover {
-					background-color: ${palette.primary.default};
+					background-color: ${palette.primary.main};
 					color: white;
 				}
 			`,
@@ -109,7 +105,7 @@ export const styles = {
 	walletIcon: css`
 		width: 28px;
 		height: 28px;
-		margin-right: 0.5em;
+		margin-right: 0.75em;
 		position: relative;
 	`,
 

@@ -1,8 +1,8 @@
 import { ButtonHTMLAttributes, FC, useMemo } from "react";
 import { css } from "@emotion/react";
 import { Theme } from "@mui/material";
-import CENNZIconSVG from "@/assets/vectors/cennznet-icon.svg";
 import MetaMaskSVG from "@/assets/vectors/metamask.svg";
+import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import { useMetaMaskWallet } from "@/providers/MetaMaskWalletProvider";
 import { useWalletProvider } from "@/providers/WalletProvider";
 import { useSelectedAccount } from "@/hooks";
@@ -36,14 +36,10 @@ const SubmitButton: FC<
 			{!isConnected && (
 				<button
 					type="button"
-					css={[styles.root, styles.cennzButton]}
+					css={[styles.root, styles.walletButton]}
 					onClick={() => setWalletOpen(true)}
 				>
-					<img
-						src={CENNZIconSVG.src}
-						alt="CENNZnet Logo"
-						css={styles.brandLogo}
-					/>
+					<AccountBalanceWalletIcon css={styles.brandLogo} />
 					CONNECT WALLET
 				</button>
 			)}
@@ -115,15 +111,15 @@ const styles = {
 		}
 	`,
 
-	cennzButton: ({ palette }: Theme) => css`
+	walletButton: ({ palette }: Theme) => css`
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		border: 1px solid ${palette.primary.default};
-		color: ${palette.primary.default};
+		border: 1px solid ${palette.primary.main};
+		color: ${palette.primary.main};
 
 		&:hover {
-			background-color: ${palette.primary.default};
+			background-color: ${palette.primary.main};
 			color: white;
 		}
 	`,
