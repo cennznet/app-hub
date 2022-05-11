@@ -9,12 +9,12 @@ import getTokenLogo from "@/utils/getTokenLogo";
 import { CENNZ_ASSET_ID, CPAY_ASSET_ID } from "@/constants";
 import { useWalletProvider } from "@/providers/WalletProvider";
 import { useMetaMaskWallet } from "@/providers/MetaMaskWalletProvider";
-import { useSelectedAccount } from "@/hooks";
+import { useSelectedAccount, useUpdateCENNZBalances } from "@/hooks";
 import { InjectedAccountWithMeta } from "@polkadot/extension-inject/types";
 
 const Wallet: FC = () => {
 	const {
-		CENNZBalances,
+		cennzBalances,
 		setWalletOpen,
 		walletOpen,
 		selectedWallet,
@@ -24,6 +24,7 @@ const Wallet: FC = () => {
 	const { accounts } = useCENNZExtension();
 	const { selectedAccount: metaMaskAccount } = useMetaMaskWallet();
 	const selectedAccount = useSelectedAccount();
+	const updateCENNZBalances = useUpdateCENNZBalances();
 
 	const onWalletDisconnect = useCallback(() => {
 		setWalletOpen(false);
@@ -37,9 +38,19 @@ const Wallet: FC = () => {
 
 	useEffect(() => {
 		if (!walletOpen) return;
+		updateCENNZBalances?.();
+	}, [updateCENNZBalances, walletOpen]);
+
+	useEffect(() => {
+		if (!metaMaskAccount?.address) return;
+		setBalanceListHeight(0);
+	}, [metaMaskAccount?.address]);
+
+	useEffect(() => {
+		if (!walletOpen) return;
 		const setListHeight = () => {
 			const balanceList = ref.current;
-			if (!balanceList || !CENNZBalances?.length)
+			if (!balanceList || !cennzBalances?.length)
 				return setBalanceListHeight(0);
 			const rect = balanceList.getBoundingClientRect();
 			setBalanceListHeight(rect.height);
@@ -49,7 +60,7 @@ const Wallet: FC = () => {
 		setListHeight();
 
 		return () => clearTimeout(id);
-	}, [CENNZBalances, walletOpen]);
+	}, [cennzBalances, walletOpen]);
 
 	const onAccountSelect = useCallback(
 		(event) => {
@@ -129,30 +140,32 @@ const Wallet: FC = () => {
 				]}
 			>
 				<div css={styles.accountBalances} ref={ref}>
-					{!!CENNZBalances?.length && (
+					{!!cennzBalances?.length && (
 						<>
 							<div css={styles.balanceHeading}>Balance</div>
 
 							<ul css={styles.balanceList}>
-								{CENNZBalances.filter(
-									(asset) =>
-										asset.value.gt(0) ||
-										[CENNZ_ASSET_ID, CPAY_ASSET_ID].includes(asset.assetId)
-								).map((asset) => {
-									const logo = getTokenLogo(asset.symbol);
+								{cennzBalances
+									.filter(
+										(asset) =>
+											asset.value.gt(0) ||
+											[CENNZ_ASSET_ID, CPAY_ASSET_ID].includes(asset.assetId)
+									)
+									.map((asset) => {
+										const logo = getTokenLogo(asset.symbol);
 
-									return (
-										<li key={asset.assetId} css={styles.balanceItem}>
-											<figure>
-												{logo && (
-													<img src={logo.src} alt={`${asset.symbol}-logo`} />
-												)}
-											</figure>
-											<span>{asset.value.toBalance()}</span>
-											<label>{asset.symbol}</label>
-										</li>
-									);
-								})}
+										return (
+											<li key={asset.assetId} css={styles.balanceItem}>
+												<figure>
+													{logo && (
+														<img src={logo.src} alt={`${asset.symbol}-logo`} />
+													)}
+												</figure>
+												<span>{asset.value.toBalance()}</span>
+												<label>{asset.symbol}</label>
+											</li>
+										);
+									})}
 							</ul>
 						</>
 					)}
@@ -207,6 +220,7 @@ export const styles = {
 		line-height: 1;
 		opacity: 0.7;
 		cursor: copy;
+		font-family: "Roboto Mono", monospace;
 	`,
 
 	switchAccount: ({ palette }: Theme) => css`

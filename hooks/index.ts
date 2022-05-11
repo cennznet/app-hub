@@ -19,6 +19,7 @@ export { default as useHistoricalWithdrawRequest } from "@/hooks/useHistoricalWi
 export { default as useBeforeUnload } from "@/hooks/useBeforeUnload";
 export { default as useSelectedAccount } from "@/hooks/useSelectedAccount";
 export { default as useUpdateCENNZBalances } from "@/hooks/useUpdateCENNZBalances";
+export { default as useEthereumBalances } from "@/hooks/useEthereumBalances";
 
 export type { TokenInputHook } from "@/hooks/useTokenInput";
 export type { PoolExchangeInfoHook } from "@/hooks/usePoolExchangeInfo";

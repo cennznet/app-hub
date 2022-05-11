@@ -1,11 +1,11 @@
 import isCENNZAddress from "@/utils/isCENNZAddress";
 
-const CENNZAccount = global.getCENNZTestingAccount();
+const cennzAccount = global.getCENNZTestingAccount();
 const ethereumAccount = global.getEthereumTestingAccount();
 
 describe("isCENNZAddress", () => {
 	it("returns true if CENNZ address", () => {
-		const isCENNZ = isCENNZAddress(CENNZAccount);
+		const isCENNZ = isCENNZAddress(cennzAccount);
 
 		expect(isCENNZ).toBe(true);
 	});

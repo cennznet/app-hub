@@ -27,7 +27,7 @@ const BridgeTokenDestination: VFC<
 		setTransferCENNZAddress,
 		transferMetaMaskAddress,
 		setTransferMetaMaskAddress,
-		metaMaskBalance,
+		ethereumBalance,
 		advancedExpanded,
 	} = useBridge();
 	const { selectedWallet } = useWalletProvider();
@@ -37,7 +37,7 @@ const BridgeTokenDestination: VFC<
 	);
 
 	const transferBalance =
-		bridgeAction === "Withdraw" ? cennzBalance : metaMaskBalance;
+		bridgeAction === "Withdraw" ? cennzBalance : ethereumBalance;
 
 	const onTransferMaxRequest = useMemo(() => {
 		const setErc20Value = transferInput.setValue;
@@ -114,6 +114,9 @@ const BridgeTokenDestination: VFC<
 					<div css={styles.tokenBalance}>
 						Balance: <LinearProgress css={[styles.formInfoProgress]} />
 					</div>
+				)}
+				{transferBalance === null && (!metaMaskAccount || !cennzAccount) && (
+					<div css={styles.tokenBalance}>Balance: 0.0</div>
 				)}
 			</div>
 			{bridgeAction === "Deposit" && (

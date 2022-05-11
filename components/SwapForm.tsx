@@ -41,7 +41,7 @@ const SwapForm: FC<IntrinsicElements["form"] & SwapFormProps> = ({
 		setTxSuccess,
 		setTxFailure,
 	} = useSwap();
-	const { selectedAccount: CENNZAccount, wallet } = useCENNZWallet();
+	const { selectedAccount: cennzAccount, wallet } = useCENNZWallet();
 	const { selectedAccount: metaMaskAccount } = useMetaMaskWallet();
 	const { extension } = useMetaMaskExtension();
 
@@ -68,7 +68,7 @@ const SwapForm: FC<IntrinsicElements["form"] & SwapFormProps> = ({
 				if (selectedWallet === "CENNZnet")
 					tx = await signAndSendTx(
 						extrinsic as SubmittableExtrinsic<"promise">,
-						CENNZAccount.address,
+						cennzAccount.address,
 						wallet.signer
 					);
 				if (selectedWallet === "MetaMask")
@@ -119,7 +119,7 @@ const SwapForm: FC<IntrinsicElements["form"] & SwapFormProps> = ({
 			exValue,
 			reValue,
 			slippage,
-			CENNZAccount?.address,
+			cennzAccount?.address,
 			metaMaskAccount?.address,
 			wallet?.signer,
 			updateCENNZBalances,

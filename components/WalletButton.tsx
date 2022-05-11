@@ -3,7 +3,7 @@ import { css } from "@emotion/react";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import WalletModal from "@/components/WalletModal";
 import AccountIdenticon from "@/components/shared/AccountIdenticon";
-import CENNZIconSVG from "@/assets/vectors/cennznet-icon.svg";
+import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import { Theme } from "@mui/material";
 import WalletSelect from "@/components/WalletSelect";
 import Wallet from "@/components/Wallet";
@@ -11,17 +11,22 @@ import { useWalletProvider } from "@/providers/WalletProvider";
 import { useMetaMaskWallet } from "@/providers/MetaMaskWalletProvider";
 import Jazzicon, { jsNumberForAddress } from "react-jazzicon";
 
-type WalletState = "Connected" | "NotConnected";
+type WalletState = "Connected" | "Connecting" | "NotConnected";
 
 const WalletButton: React.FC = () => {
 	const { walletOpen, setWalletOpen, selectedWallet } = useWalletProvider();
-	const { selectedAccount: CENNZAccount } = useCENNZWallet();
+	const { selectedAccount: cennzAccount } = useCENNZWallet();
 	const { selectedAccount: metaMaskAccount } = useMetaMaskWallet();
 
 	const walletState = useMemo<WalletState>(() => {
-		if (!!selectedWallet) return "Connected";
-		if (!CENNZAccount || !metaMaskAccount) return "NotConnected";
-	}, [CENNZAccount, metaMaskAccount, selectedWallet]);
+		if (selectedWallet === "CENNZnet")
+			return cennzAccount?.address ? "Connected" : "Connecting";
+
+		if (selectedWallet === "MetaMask")
+			return metaMaskAccount?.address ? "Connected" : "Connecting";
+
+		return "NotConnected";
+	}, [cennzAccount?.address, metaMaskAccount?.address, selectedWallet]);
 
 	return (
 		<>
@@ -30,20 +35,16 @@ const WalletButton: React.FC = () => {
 				onClick={() => setWalletOpen(true)}
 			>
 				<div css={styles.walletIcon}>
-					{(walletState === "NotConnected" || !selectedWallet) && (
-						<img
-							src={CENNZIconSVG.src}
-							alt="CENNZnet Logo"
-							css={styles.walletIconImg}
-						/>
+					{walletState !== "Connected" && (
+						<AccountBalanceWalletIcon css={styles.walletIconImg} />
 					)}
 
-					{!!CENNZAccount?.address && selectedWallet === "CENNZnet" && (
+					{!!cennzAccount?.address && selectedWallet === "CENNZnet" && (
 						<AccountIdenticon
 							css={styles.walletIconIdenticon}
 							theme="beachball"
 							size={28}
-							value={CENNZAccount.address}
+							value={cennzAccount.address}
 						/>
 					)}
 					{!!metaMaskAccount?.address && selectedWallet === "MetaMask" && (
@@ -55,17 +56,25 @@ const WalletButton: React.FC = () => {
 				</div>
 
 				<div css={styles.walletState}>
-					{walletState === "Connected" && selectedWallet === "CENNZnet" && (
-						<span>{CENNZAccount?.meta?.name?.toUpperCase?.()}</span>
+					{walletState === "Connected" && (
+						<>
+							{selectedWallet === "CENNZnet" && (
+								<span>{cennzAccount?.meta?.name?.toUpperCase?.()}</span>
+							)}
+
+							{selectedWallet === "MetaMask" && (
+								<span>
+									{metaMaskAccount?.address
+										.slice(0, 6)
+										.concat("...", metaMaskAccount?.address.slice(-4))}
+								</span>
+							)}
+						</>
 					)}
-					{walletState === "Connected" && selectedWallet === "MetaMask" && (
-						<span>
-							{metaMaskAccount?.address
-								.slice(0, 6)
-								.concat("...", metaMaskAccount?.address.slice(-4))}
-						</span>
-					)}
-					{!selectedWallet && <span>CONNECT WALLET</span>}
+
+					{walletState === "Connecting" && <span>CONNECTING...</span>}
+
+					{walletState === "NotConnected" && <span>CONNECT WALLET</span>}
 				</div>
 			</div>
 			<WalletModal>
@@ -91,8 +100,8 @@ export const styles = {
 				height: 48px;
 				display: flex;
 				align-items: center;
-				background-color: ${walletOpen ? palette.primary.default : "#FFFFFF"};
-				color: ${walletOpen ? "#FFFFFF !important" : palette.primary.default};
+				background-color: ${walletOpen ? palette.primary.main : "#FFFFFF"};
+				color: ${walletOpen ? "#FFFFFF !important" : palette.primary.main};
 				transition: background-color ${transitions.duration.short}ms,
 					color ${transitions.duration.short}ms;
 				border-radius: 4px;
@@ -101,7 +110,7 @@ export const styles = {
 				max-width: 240px;
 
 				&:hover {
-					background-color: ${palette.primary.default};
+					background-color: ${palette.primary.main};
 					color: white;
 				}
 			`,
@@ -109,7 +118,7 @@ export const styles = {
 	walletIcon: css`
 		width: 28px;
 		height: 28px;
-		margin-right: 0.5em;
+		margin-right: 0.75em;
 		position: relative;
 	`,
 

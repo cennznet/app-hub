@@ -52,7 +52,7 @@ const PoolForm: FC<IntrinsicElements["form"] & PoolFormProps> = ({
 		updateExchangeRate,
 	} = usePool();
 
-	const { selectedAccount: CENNZAccount, wallet } = useCENNZWallet();
+	const { selectedAccount: cennzAccount, wallet } = useCENNZWallet();
 	const { selectedAccount: metaMaskAccount } = useMetaMaskWallet();
 	const { extension } = useMetaMaskExtension();
 
@@ -108,7 +108,7 @@ const PoolForm: FC<IntrinsicElements["form"] & PoolFormProps> = ({
 				if (selectedWallet === "CENNZnet")
 					tx = await signAndSendTx(
 						extrinsic as SubmittableExtrinsic<"promise">,
-						CENNZAccount.address,
+						cennzAccount.address,
 						wallet.signer
 					);
 				if (selectedWallet === "MetaMask")
@@ -170,7 +170,7 @@ const PoolForm: FC<IntrinsicElements["form"] & PoolFormProps> = ({
 			updatePoolUserInfo,
 			updateExchangeRate,
 			api,
-			CENNZAccount?.address,
+			cennzAccount?.address,
 			metaMaskAccount?.address,
 			wallet?.signer,
 			coreAsset,

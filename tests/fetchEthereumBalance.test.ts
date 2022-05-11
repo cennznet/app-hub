@@ -1,4 +1,4 @@
-import fetchMetaMaskBalance from "@/utils/fetchMetaMaskBalance";
+import fetchEthereumBalance from "@/utils/fetchEthereumBalance";
 import { BigNumber } from "ethers";
 import GenericERC20Token from "@/artifacts/GenericERC20Token.json";
 import { Balance } from "@/utils";
@@ -7,7 +7,7 @@ const { blockchain, provider, mock } = global.getWeb3MockForTest();
 const { cennzAsset, ethAsset } = global.getEthereumAssetsForTest();
 const testingAccount = global.getEthereumTestingAccount();
 
-describe("fetchMetaMaskBalance", () => {
+describe("fetchEthereumBalance", () => {
 	it("returns expected value ETH", async () => {
 		mock({
 			blockchain,
@@ -16,7 +16,7 @@ describe("fetchMetaMaskBalance", () => {
 				return: BigNumber.from(1),
 			},
 		});
-		const balance = await fetchMetaMaskBalance(
+		const balance = await fetchEthereumBalance(
 			provider,
 			testingAccount,
 			ethAsset
@@ -37,7 +37,7 @@ describe("fetchMetaMaskBalance", () => {
 				return: BigNumber.from(1),
 			},
 		});
-		const balance = await fetchMetaMaskBalance(
+		const balance = await fetchEthereumBalance(
 			provider,
 			testingAccount,
 			cennzAsset

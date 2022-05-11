@@ -1,7 +1,7 @@
 import isEthereumAddress from "@/utils/isEthereumAddress";
 
 const ethereumAccount = global.getEthereumTestingAccount();
-const CENNZAccount = global.getCENNZTestingAccount();
+const cennzAccount = global.getCENNZTestingAccount();
 
 describe("isEthereumAddress", () => {
 	it("returns true if Ethereum address", () => {
@@ -10,7 +10,7 @@ describe("isEthereumAddress", () => {
 		expect(isEthereum).toBe(true);
 	});
 	it("returns false if not Ethereum address", () => {
-		const isEthereum = isEthereumAddress(CENNZAccount);
+		const isEthereum = isEthereumAddress(cennzAccount);
 
 		expect(isEthereum).toBe(false);
 	});

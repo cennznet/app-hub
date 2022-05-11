@@ -21,7 +21,7 @@ export default function useHistoricalWithdrawRequest(): (
 		setTxPending,
 		setTxSuccess,
 		setTxFailure,
-		updateMetaMaskBalances,
+		updateEthereumBalances,
 		updateUnclaimedWithdrawals,
 	} = useBridge();
 	const { api } = useCENNZApi();
@@ -65,7 +65,7 @@ export default function useHistoricalWithdrawRequest(): (
 
 						withdrawTx.on("txSucceeded", () => {
 							setTrValue("");
-							updateMetaMaskBalances();
+							updateEthereumBalances();
 							updateCENNZBalances();
 							updateUnclaimedWithdrawals();
 							setTxSuccess({
@@ -103,7 +103,7 @@ export default function useHistoricalWithdrawRequest(): (
 			extension,
 			api,
 			metaMaskWallet,
-			updateMetaMaskBalances,
+			updateEthereumBalances,
 			updateCENNZBalances,
 			setTxSuccess,
 			setTxFailure,
