@@ -9,7 +9,7 @@ import getTokenLogo from "@/utils/getTokenLogo";
 import { CENNZ_ASSET_ID, CPAY_ASSET_ID } from "@/constants";
 import { useWalletProvider } from "@/providers/WalletProvider";
 import { useMetaMaskWallet } from "@/providers/MetaMaskWalletProvider";
-import { useSelectedAccount } from "@/hooks";
+import { useSelectedAccount, useUpdateCENNZBalances } from "@/hooks";
 import { InjectedAccountWithMeta } from "@polkadot/extension-inject/types";
 
 const Wallet: FC = () => {
@@ -24,6 +24,7 @@ const Wallet: FC = () => {
 	const { accounts } = useCENNZExtension();
 	const { selectedAccount: metaMaskAccount } = useMetaMaskWallet();
 	const selectedAccount = useSelectedAccount();
+	const updateCENNZBalances = useUpdateCENNZBalances();
 
 	const onWalletDisconnect = useCallback(() => {
 		setWalletOpen(false);
@@ -34,6 +35,11 @@ const Wallet: FC = () => {
 
 	const ref = useRef<HTMLDivElement>();
 	const [balanceListHeight, setBalanceListHeight] = useState<number>(0);
+
+	useEffect(() => {
+		if (!walletOpen) return;
+		updateCENNZBalances?.();
+	}, [updateCENNZBalances, walletOpen]);
 
 	useEffect(() => {
 		if (!walletOpen) return;
