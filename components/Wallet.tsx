@@ -42,6 +42,11 @@ const Wallet: FC = () => {
 	}, [updateCENNZBalances, walletOpen]);
 
 	useEffect(() => {
+		if (!metaMaskAccount?.address) return;
+		setBalanceListHeight(0);
+	}, [metaMaskAccount?.address]);
+
+	useEffect(() => {
 		if (!walletOpen) return;
 		const setListHeight = () => {
 			const balanceList = ref.current;

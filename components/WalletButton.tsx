@@ -28,8 +28,6 @@ const WalletButton: React.FC = () => {
 		return "NotConnected";
 	}, [cennzAccount?.address, metaMaskAccount?.address, selectedWallet]);
 
-	console.log({ walletState });
-
 	return (
 		<>
 			<div
