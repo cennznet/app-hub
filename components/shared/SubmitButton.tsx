@@ -1,4 +1,4 @@
-import { ButtonHTMLAttributes, FC, useMemo } from "react";
+import { ButtonHTMLAttributes, FC, useCallback, useMemo } from "react";
 import { css } from "@emotion/react";
 import { Theme } from "@mui/material";
 import MetaMaskSVG from "@/assets/vectors/metamask.svg";
@@ -31,13 +31,26 @@ const SubmitButton: FC<
 		[forceRequireMetaMask, metaMaskAccount]
 	);
 
+	const onConnectWalletClick = useCallback(() => {
+		const innerHeight = window.innerHeight;
+		const scrollHeight = document.body.scrollHeight;
+
+		if (scrollHeight < innerHeight) return setWalletOpen(true);
+
+		window.scrollTo({ top: 0, behavior: "smooth" });
+
+		setTimeout(() => {
+			setWalletOpen(true);
+		}, 500);
+	}, [setWalletOpen]);
+
 	return (
 		<>
 			{!isConnected && (
 				<button
 					type="button"
 					css={[styles.root, styles.walletButton]}
-					onClick={() => setWalletOpen(true)}
+					onClick={onConnectWalletClick}
 				>
 					<AccountBalanceWalletIcon css={styles.brandLogo} />
 					CONNECT WALLET
