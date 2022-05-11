@@ -21,7 +21,7 @@ interface WalletContextType {
 	connectedChain: ChainOption;
 	setConnectedChain: (chain: ChainOption) => void;
 
-	CENNZBalances: CENNZAssetBalance[];
+	cennzBalances: CENNZAssetBalance[];
 	setCENNZBalances: Dispatch<SetStateAction<CENNZAssetBalance[]>>;
 }
 
@@ -35,7 +35,7 @@ const WalletProvider: FC<WalletProviderProps> = ({ children }) => {
 	const [walletOpen, setWalletOpen] = useState<boolean>(false);
 	const [selectedWallet, setSelectedWallet] = useState<WalletOption>();
 	const [connectedChain, setConnectedChain] = useState<ChainOption>();
-	const [CENNZBalances, setCENNZBalances] = useState<CENNZAssetBalance[]>(null);
+	const [cennzBalances, setCENNZBalances] = useState<CENNZAssetBalance[]>(null);
 
 	const updateConnectedChain = (chainId: string) => {
 		if (chainId === CENNZ_METAMASK_NETWORK.chainId)
@@ -76,7 +76,7 @@ const WalletProvider: FC<WalletProviderProps> = ({ children }) => {
 				connectedChain,
 				setConnectedChain,
 
-				CENNZBalances,
+				cennzBalances,
 				setCENNZBalances,
 			}}
 		>
