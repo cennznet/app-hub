@@ -15,13 +15,11 @@ export default function useEthereumBalances(
 		if (!wallet || !selectedAccount?.address) return;
 
 		return async () => {
-			setBalance1(null);
 			fetchEthereumBalance(wallet, selectedAccount.address, token1).then(
 				setBalance1
 			);
 
 			if (token2) {
-				setBalance2(null);
 				fetchEthereumBalance(wallet, selectedAccount.address, token2).then(
 					setBalance2
 				);

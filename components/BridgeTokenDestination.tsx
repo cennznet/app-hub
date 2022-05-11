@@ -115,6 +115,9 @@ const BridgeTokenDestination: VFC<
 						Balance: <LinearProgress css={[styles.formInfoProgress]} />
 					</div>
 				)}
+				{transferBalance === null && (!metaMaskAccount || !cennzAccount) && (
+					<div css={styles.tokenBalance}>Balance: 0.0</div>
+				)}
 			</div>
 			{bridgeAction === "Deposit" && (
 				<div css={styles.formField}>
