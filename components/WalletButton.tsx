@@ -11,7 +11,7 @@ import { useWalletProvider } from "@/providers/WalletProvider";
 import { useMetaMaskWallet } from "@/providers/MetaMaskWalletProvider";
 import Jazzicon, { jsNumberForAddress } from "react-jazzicon";
 
-type WalletState = "Connected" | "NotConnected";
+type WalletState = "Connected" | "Connecting" | "NotConnected";
 
 const WalletButton: React.FC = () => {
 	const { walletOpen, setWalletOpen, selectedWallet } = useWalletProvider();
@@ -19,9 +19,16 @@ const WalletButton: React.FC = () => {
 	const { selectedAccount: metaMaskAccount } = useMetaMaskWallet();
 
 	const walletState = useMemo<WalletState>(() => {
-		if (!!selectedWallet) return "Connected";
-		if (!cennzAccount || !metaMaskAccount) return "NotConnected";
-	}, [cennzAccount, metaMaskAccount, selectedWallet]);
+		if (selectedWallet === "CENNZnet")
+			return cennzAccount?.address ? "Connected" : "Connecting";
+
+		if (selectedWallet === "MetaMask")
+			return metaMaskAccount?.address ? "Connected" : "Connecting";
+
+		return "NotConnected";
+	}, [cennzAccount?.address, metaMaskAccount?.address, selectedWallet]);
+
+	console.log({ walletState });
 
 	return (
 		<>
@@ -30,7 +37,7 @@ const WalletButton: React.FC = () => {
 				onClick={() => setWalletOpen(true)}
 			>
 				<div css={styles.walletIcon}>
-					{(walletState === "NotConnected" || !selectedWallet) && (
+					{walletState !== "Connected" && (
 						<AccountBalanceWalletIcon css={styles.walletIconImg} />
 					)}
 
@@ -51,17 +58,25 @@ const WalletButton: React.FC = () => {
 				</div>
 
 				<div css={styles.walletState}>
-					{walletState === "Connected" && selectedWallet === "CENNZnet" && (
-						<span>{cennzAccount?.meta?.name?.toUpperCase?.()}</span>
+					{walletState === "Connected" && (
+						<>
+							{selectedWallet === "CENNZnet" && (
+								<span>{cennzAccount?.meta?.name?.toUpperCase?.()}</span>
+							)}
+
+							{selectedWallet === "MetaMask" && (
+								<span>
+									{metaMaskAccount?.address
+										.slice(0, 6)
+										.concat("...", metaMaskAccount?.address.slice(-4))}
+								</span>
+							)}
+						</>
 					)}
-					{walletState === "Connected" && selectedWallet === "MetaMask" && (
-						<span>
-							{metaMaskAccount?.address
-								.slice(0, 6)
-								.concat("...", metaMaskAccount?.address.slice(-4))}
-						</span>
-					)}
-					{!selectedWallet && <span>CONNECT WALLET</span>}
+
+					{walletState === "Connecting" && <span>CONNECTING...</span>}
+
+					{walletState === "NotConnected" && <span>CONNECT WALLET</span>}
 				</div>
 			</div>
 			<WalletModal>
