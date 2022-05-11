@@ -215,6 +215,7 @@ export const styles = {
 		line-height: 1;
 		opacity: 0.7;
 		cursor: copy;
+		font-family: "Roboto Mono", monospace;
 	`,
 
 	switchAccount: ({ palette }: Theme) => css`
