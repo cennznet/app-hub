@@ -33,6 +33,11 @@ const Switch: VFC = () => {
 					<span>Bridge</span>
 				</a>
 			</Link>
+			<Link href="/transfer" passHref={true}>
+				<a css={styles.navItem(section === "transfer")}>
+					<span>Transfer</span>
+				</a>
+			</Link>
 		</nav>
 	);
 };

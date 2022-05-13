@@ -39,7 +39,7 @@ export interface CENNZAssetBalance extends CENNZAsset {
 	rawValue?: u128;
 }
 
-export type SectionUri = "swap" | "pool" | "bridge";
+export type SectionUri = "swap" | "pool" | "bridge" | "transfer";
 
 export interface IntrinsicElements {
 	div: HTMLAttributes<HTMLDivElement>;
