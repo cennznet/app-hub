@@ -2,18 +2,21 @@ import {
 	createContext,
 	useContext,
 	useState,
-	FC, useCallback, useEffect,
+	FC,
+	useCallback,
+	useEffect,
 } from "react";
-import {CENNZAsset, CENNZAssetBalance} from "@/types";
+import { CENNZAsset, CENNZAssetBalance } from "@/types";
 import {
 	useTokenInput,
 	useTokensFetcher,
 	useTxStatus,
 	TokenInputHook,
-	TxStatusHook, useSelectedAccount,
+	TxStatusHook,
+	useSelectedAccount,
 } from "@/hooks";
-import {useCENNZApi} from "@/providers/CENNZApiProvider";
-import {useWalletProvider} from "@/providers/WalletProvider";
+import { useCENNZApi } from "@/providers/CENNZApiProvider";
+import { useWalletProvider } from "@/providers/WalletProvider";
 import fetchCENNZAssetBalances from "../utils/fetchCENNZAssetBalances";
 
 type CENNZAssetId = CENNZAsset["assetId"];
@@ -34,29 +37,33 @@ const TransferProvider: FC<TransferProviderProps> = ({ children }) => {
 	const { api } = useCENNZApi();
 	const { selectedWallet, setCENNZBalances } = useWalletProvider();
 	const selectedAccount = useSelectedAccount();
-	const [transferableAssets, setTransferableAssets] = useState<CENNZAssetBalance[]>();
-	const [transferableAssetSelects, setTransferableAssetSelects] = useState<TokenInputHook<CENNZAssetId>[]>();
-	const [transferableAssetInputs, setTransferableAssetInputs] = useState<TokenInputHook<CENNZAssetId>[]>();
+	const [transferableAssets, setTransferableAssets] =
+		useState<CENNZAssetBalance[]>();
+	const [transferableAssetSelects, setTransferableAssetSelects] =
+		useState<TokenInputHook<CENNZAssetId>[]>();
+	const [transferableAssetInputs, setTransferableAssetInputs] =
+		useState<TokenInputHook<CENNZAssetId>[]>();
 
-	useCallback(async ( ) => {
+	useCallback(async () => {
 		if (!api || !selectedWallet || !selectedAccount) return;
 
 		const balances = await fetchCENNZAssetBalances(
 			api,
 			selectedAccount.address
 		);
-		const positiveBalances = balances.filter(balance => balance.value.toNumber() > 0);
+		const positiveBalances = balances.filter(
+			(balance) => balance.value.toNumber() > 0
+		);
 		const allSelects = [];
 		const allInputs = [];
-		positiveBalances.forEach(balance => {
+		positiveBalances.forEach((balance) => {
 			const [currentSelect, currentInput] = useTokenInput(balance.assetId);
 			allSelects.push(currentSelect);
 			allInputs.push(currentInput);
-		})
+		});
 		setTransferableAssets(positiveBalances);
 		setTransferableAssetSelects(allSelects);
 		setTransferableAssetInputs(allInputs);
-
 	}, [selectedAccount, selectedWallet, api, setCENNZBalances]);
 
 	return (

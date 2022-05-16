@@ -6,7 +6,7 @@ import { useSwap } from "@/providers/SwapProvider";
 import { Theme } from "@mui/material";
 import { useCENNZBalances, useBalanceValidation } from "@/hooks";
 import { Balance } from "@/utils";
-import {useTransfer} from "@/providers/TransferProvider";
+import { useTransfer } from "@/providers/TransferProvider";
 
 interface TransferAssetsProps {}
 
