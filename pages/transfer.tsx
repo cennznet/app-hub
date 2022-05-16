@@ -4,14 +4,11 @@ import fetchSwapAssets from "@/utils/fetchSwapAssets";
 import { API_URL } from "@/constants";
 import generateGlobalProps from "@/utils/generateGlobalProps";
 import SwapProvider from "@/providers/SwapProvider";
-import SwapForm from "@/components/SwapForm";
-import SwapAssetsPair from "@/components/SwapAssetsPair";
-import SwapStats from "@/components/SwapStats";
-import SwapSettings from "@/components/SwapSettings";
-import SwapProgress from "@/components/SwapProgress";
 import MainPanel from "@/components/MainPanel";
 import { VFC } from "react";
 import { NextSeo } from "next-seo";
+import TransferForm from "@/components/TransferForm";
+import TransferAssets from "@/components/TransferAssets";
 
 export async function getStaticProps() {
 	const api = await Api.create({ provider: API_URL });
@@ -28,7 +25,11 @@ const Swap: VFC<{ supportedAssets: CENNZAsset[] }> = ({ supportedAssets }) => {
 	return (
 		<SwapProvider supportedAssets={supportedAssets}>
 			<NextSeo title="CENNZnet Transfer" />
-			<MainPanel defaultTitle="Transfer"></MainPanel>
+			<MainPanel defaultTitle="Transfer">
+				<TransferForm>
+					<TransferAssets />
+				</TransferForm>
+			</MainPanel>
 		</SwapProvider>
 	);
 };

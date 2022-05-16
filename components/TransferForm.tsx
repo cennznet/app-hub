@@ -138,7 +138,7 @@ const TransferForm: FC<IntrinsicElements["form"] & TransferFormProps> = ({
 			{children}
 
 			<div css={styles.formSubmit}>
-				<SubmitButton>Swap</SubmitButton>
+				<SubmitButton>Transfer</SubmitButton>
 			</div>
 		</form>
 	);
