@@ -1,4 +1,4 @@
-import { VFC, useEffect, useCallback, useMemo } from "react";
+import { VFC, useEffect, useCallback, useMemo, useState } from "react";
 import { IntrinsicElements } from "@/types";
 import TokenInput from "@/components/shared/TokenInput";
 import { css } from "@emotion/react";
@@ -6,10 +6,11 @@ import { useSwap } from "@/providers/SwapProvider";
 import { Theme } from "@mui/material";
 import { useCENNZBalances, useBalanceValidation } from "@/hooks";
 import { Balance } from "@/utils";
+import {useTransfer} from "@/providers/TransferProvider";
 
-interface SwapAssetsPairProps {}
+interface TransferAssetsProps {}
 
-const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
+const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 	props
 ) => {
 	const {
@@ -24,36 +25,7 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
 		receiveAsset,
 	} = useSwap();
 
-	const setTokensPair = useCallback(
-		(exchangeTokenId, receiveTokenId = null) => {
-			const setExchangeTokenId = exchangeSelect.setTokenId;
-			const setReceiveTokenId = receiveSelect.setTokenId;
-
-			setExchangeTokenId(exchangeTokenId);
-
-			const receiveTokens = exchangeAssets.filter(
-				(token) => token.assetId !== exchangeTokenId
-			);
-
-			setReceiveTokenId((currentTokenId) => {
-				const tokenIdToCheck = receiveTokenId || currentTokenId;
-				const token = receiveTokens.find(
-					(token) => token.assetId === tokenIdToCheck
-				);
-				if (token) return tokenIdToCheck;
-				return receiveTokens[0].assetId;
-			});
-
-			setReceiveAssets(receiveTokens);
-		},
-
-		[
-			exchangeSelect.setTokenId,
-			receiveSelect.setTokenId,
-			exchangeAssets,
-			setReceiveAssets,
-		]
-	);
+	const [assetAmount, setAssetAmount] = useState<number>();
 
 	const [exchangeBalance, receiveBalance] = useCENNZBalances([
 		exchangeAsset,
@@ -76,16 +48,16 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
 		receiveBalance
 	);
 
-	return (
-		<div {...props} css={styles.root}>
-			<div css={styles.formField}>
+	const getTokenInputElements = () => {
+		return (
+			<>
 				<TokenInput
 					onMaxValueRequest={onExchangeMaxRequest}
 					selectedTokenId={exchangeSelect.tokenId}
 					onTokenChange={exchangeSelect.onTokenChange}
 					value={exchangeInput.value}
 					onValueChange={exchangeInput.onValueChange}
-					tokens={exchangeAssets}
+					tokens={exchangeAssets} //TODO only limit to tokens that have balance gt zero and disregard previously added assets
 					id="exchangeInput"
 					ref={exchangeInputRef}
 					required
@@ -97,12 +69,21 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
 						Balance: <span>{exchangeBalance.toBalance()}</span>
 					</div>
 				)}
-			</div>
+			</>
+		);
+	};
+
+	return (
+		<div {...props} css={styles.root}>
+			<div css={styles.formField}>{getTokenInputElements()}</div>
+			<button type="button" onClick={() => setAssetAmount(assetAmount + 1)}>
+				Add Asset
+			</button>
 		</div>
 	);
 };
 
-export default SwapAssetsPair;
+export default TransferAssets;
 
 const styles = {
 	root: css``,
