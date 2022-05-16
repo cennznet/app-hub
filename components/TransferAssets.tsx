@@ -4,10 +4,7 @@ import TokenInput from "@/components/shared/TokenInput";
 import { css } from "@emotion/react";
 import { useSwap } from "@/providers/SwapProvider";
 import { Theme } from "@mui/material";
-import {
-	useCENNZBalances,
-	useBalanceValidation,
-} from "@/hooks";
+import { useCENNZBalances, useBalanceValidation } from "@/hooks";
 import { Balance } from "@/utils";
 
 interface SwapAssetsPairProps {}
@@ -58,10 +55,10 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
 		]
 	);
 
-	const [exchangeBalance, receiveBalance] = useCENNZBalances(
+	const [exchangeBalance, receiveBalance] = useCENNZBalances([
 		exchangeAsset,
-		receiveAsset
-	);
+		receiveAsset,
+	]);
 
 	const onExchangeMaxRequest = useMemo(() => {
 		if (!exchangeBalance) return;

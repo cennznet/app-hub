@@ -32,9 +32,9 @@ const BridgeTokenDestination: VFC<
 	} = useBridge();
 	const { selectedWallet } = useWalletProvider();
 
-	const [cennzBalance] = useCENNZBalances(
-		transferAsset as BridgedEthereumToken
-	);
+	const [cennzBalance] = useCENNZBalances([
+		transferAsset as BridgedEthereumToken,
+	]);
 
 	const transferBalance =
 		bridgeAction === "Withdraw" ? cennzBalance : ethereumBalance;
