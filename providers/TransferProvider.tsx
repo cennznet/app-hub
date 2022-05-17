@@ -1,20 +1,6 @@
-import {
-	createContext,
-	useContext,
-	useState,
-	FC,
-	useCallback,
-	useEffect,
-} from "react";
+import { createContext, useContext, useState, FC, useEffect } from "react";
 import { CENNZAsset, CENNZAssetBalance } from "@/types";
-import {
-	useTokenInput,
-	useTokensFetcher,
-	useTxStatus,
-	TokenInputHook,
-	TxStatusHook,
-	useSelectedAccount,
-} from "@/hooks";
+import { useTxStatus, TxStatusHook, useSelectedAccount } from "@/hooks";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import { useWalletProvider } from "@/providers/WalletProvider";
 import fetchCENNZAssetBalances from "../utils/fetchCENNZAssetBalances";
@@ -22,9 +8,7 @@ import fetchCENNZAssetBalances from "../utils/fetchCENNZAssetBalances";
 type CENNZAssetId = CENNZAsset["assetId"];
 
 interface TransferContextType extends TxStatusHook {
-	transferableAssets: CENNZAsset[];
-	transferableAssetSelects: TokenInputHook<CENNZAssetId>[];
-	transferableAssetInputs: TokenInputHook<CENNZAssetId>[];
+	transferableAssets: CENNZAssetBalance[];
 }
 
 const TransferContext = createContext<TransferContextType>(
@@ -39,39 +23,26 @@ const TransferProvider: FC<TransferProviderProps> = ({ children }) => {
 	const selectedAccount = useSelectedAccount();
 	const [transferableAssets, setTransferableAssets] =
 		useState<CENNZAssetBalance[]>();
-	const [transferableAssetSelects, setTransferableAssetSelects] =
-		useState<TokenInputHook<CENNZAssetId>[]>();
-	const [transferableAssetInputs, setTransferableAssetInputs] =
-		useState<TokenInputHook<CENNZAssetId>[]>();
 
-	useCallback(async () => {
+	useEffect(() => {
 		if (!api || !selectedWallet || !selectedAccount) return;
-
-		const balances = await fetchCENNZAssetBalances(
-			api,
-			selectedAccount.address
-		);
-		const positiveBalances = balances.filter(
-			(balance) => balance.value.toNumber() > 0
-		);
-		const allSelects = [];
-		const allInputs = [];
-		positiveBalances.forEach((balance) => {
-			const [currentSelect, currentInput] = useTokenInput(balance.assetId);
-			allSelects.push(currentSelect);
-			allInputs.push(currentInput);
-		});
-		setTransferableAssets(positiveBalances);
-		setTransferableAssetSelects(allSelects);
-		setTransferableAssetInputs(allInputs);
+		const setAssets = async () => {
+			const balances = await fetchCENNZAssetBalances(
+				api,
+				selectedAccount.address
+			);
+			const positiveBalances = balances.filter(
+				(balance) => balance.value.toNumber() > 0
+			);
+			setTransferableAssets(positiveBalances);
+		};
+		setAssets().catch((err) => console.error(err.message));
 	}, [selectedAccount, selectedWallet, api, setCENNZBalances]);
 
 	return (
 		<TransferContext.Provider
 			value={{
 				transferableAssets,
-				transferableAssetSelects,
-				transferableAssetInputs,
 				...useTxStatus(),
 			}}
 		>
