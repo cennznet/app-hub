@@ -4,6 +4,7 @@ import { css } from "@emotion/react";
 import { Theme } from "@mui/material";
 import { useTransfer } from "@/providers/TransferProvider";
 import TransferAsset, { TransferAssetType } from "@/components/TransferAsset";
+import StandardButton from "@/components/shared/StandardButton";
 
 interface TransferAssetsProps {}
 
@@ -12,15 +13,16 @@ const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 ) => {
 	const { transferableAssets } = useTransfer();
 
-	const [assetAmount, setAssetAmount] = useState<number>();
+	const [assetAmount, setAssetAmount] = useState<number>(1);
 	const [selectedAssets, setSelectedAssets] = useState<TransferAssetType[]>([]);
 
 	return (
 		<div {...props} css={styles.root}>
 			<div css={styles.formField}>
-				{transferableAssets?.map((asset, index) => {
+				{transferableAssets?.slice(0, assetAmount)?.map((asset, index) => {
 					return (
 						<TransferAsset
+							key={index}
 							assetKey={index}
 							asset={asset}
 							tokens={transferableAssets}
@@ -30,9 +32,25 @@ const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 					);
 				})}
 			</div>
-			<button type="button" onClick={() => setAssetAmount(assetAmount + 1)}>
-				Add Asset
-			</button>
+			<div css={styles.addRemoveAssets}>
+				<StandardButton
+					type="button"
+					onClick={() => {
+						if (assetAmount < transferableAssets.length)
+							setAssetAmount(assetAmount + 1);
+					}}
+				>
+					Add Asset
+				</StandardButton>
+				<StandardButton
+					type="button"
+					onClick={() => {
+						if (assetAmount > 1) setAssetAmount(assetAmount - 1);
+					}}
+				>
+					Remove Asset
+				</StandardButton>
+			</div>
 		</div>
 	);
 };
@@ -72,5 +90,10 @@ const styles = {
 			font-weight: bold;
 			letter-spacing: -0.025em;
 		}
+	`,
+	addRemoveAssets: css`
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
 	`,
 };
