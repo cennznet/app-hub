@@ -5,7 +5,7 @@ export default async function ensureEthereumChain(
 	extension: MetaMaskInpageProvider
 ): Promise<void> {
 	const ethChainId = await extension.request({ method: "eth_chainId" });
-	const chainId = `0x${ETH_CHAIN_ID.toString(16)}`
+	const chainId = `0x${ETH_CHAIN_ID.toString(16)}`;
 
 	if (ethChainId === chainId) return;
 
