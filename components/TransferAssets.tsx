@@ -1,9 +1,9 @@
-import { VFC, useState } from "react";
+import { VFC, useState, useEffect } from "react";
 import { IntrinsicElements } from "@/types";
 import { css } from "@emotion/react";
 import { Theme } from "@mui/material";
 import { useTransfer } from "@/providers/TransferProvider";
-import TransferAsset from "@/components/TransferAsset";
+import TransferAsset, { TransferAssetType } from "@/components/TransferAsset";
 
 interface TransferAssetsProps {}
 
@@ -13,12 +13,21 @@ const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 	const { transferableAssets } = useTransfer();
 
 	const [assetAmount, setAssetAmount] = useState<number>();
+	const [selectedAssets, setSelectedAssets] = useState<TransferAssetType[]>([]);
 
 	return (
 		<div {...props} css={styles.root}>
 			<div css={styles.formField}>
-				{transferableAssets?.map((asset) => {
-					return <TransferAsset asset={asset} />;
+				{transferableAssets?.map((asset, index) => {
+					return (
+						<TransferAsset
+							assetKey={index}
+							asset={asset}
+							tokens={transferableAssets}
+							selectedAssets={selectedAssets}
+							setSelectedAssets={setSelectedAssets}
+						/>
+					);
 				})}
 			</div>
 			<button type="button" onClick={() => setAssetAmount(assetAmount + 1)}>

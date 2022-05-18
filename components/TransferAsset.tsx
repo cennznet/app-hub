@@ -1,5 +1,12 @@
-import { VFC, useEffect, useMemo } from "react";
-import { CENNZAssetBalance, IntrinsicElements } from "@/types";
+import {
+	VFC,
+	useEffect,
+	useMemo,
+	Dispatch,
+	SetStateAction,
+	useState,
+} from "react";
+import { CENNZAsset, CENNZAssetBalance, IntrinsicElements } from "@/types";
 import TokenInput from "@/components/shared/TokenInput";
 import { css } from "@emotion/react";
 import { Theme } from "@mui/material";
@@ -7,19 +14,52 @@ import { useCENNZBalances, useBalanceValidation, useTokenInput } from "@/hooks";
 import { Balance } from "@/utils";
 
 interface TransferAssetProps {
+	assetKey: number;
+	asset: CENNZAssetBalance;
+	tokens: CENNZAssetBalance[];
+	selectedAssets: TransferAssetType[];
+	setSelectedAssets: Dispatch<SetStateAction<TransferAssetType[]>>;
+}
+
+export interface TransferAssetType {
+	assetKey: number;
 	asset: CENNZAssetBalance;
 }
 
 const TransferAsset: VFC<IntrinsicElements["div"] & TransferAssetProps> = ({
+	assetKey,
 	asset,
+	tokens,
+	selectedAssets,
+	setSelectedAssets,
 }) => {
+	const [selectedAsset, setSelectedAsset] = useState<CENNZAssetBalance>(asset);
 	const [assetTokenSelect, assetTokenInput] = useTokenInput(asset.assetId);
-	const [assetBalance] = useCENNZBalances([asset]);
+	const [assetBalance] = useCENNZBalances([selectedAsset]);
+
 	useEffect(() => {
-		//TODO create setvalue prop from parent
-		console.info("assetTokenInput", assetTokenInput.value);
-		console.info("assetTokenSelect", assetTokenSelect.tokenId);
-	}, [assetTokenInput, assetTokenSelect]);
+		const currentAsset: CENNZAssetBalance = tokens.find(
+			(token) => token.assetId === assetTokenSelect.tokenId
+		);
+		const newTransferAsset: TransferAssetType = {
+			assetKey: assetKey,
+			asset: {
+				value: assetTokenInput.value,
+				...currentAsset,
+			},
+		};
+		const selectedAssetClone = [...selectedAssets];
+		const currentAssetIdx = selectedAssetClone.findIndex(
+			(asset) => asset.assetKey === assetKey
+		);
+		if (currentAssetIdx !== -1) {
+			selectedAssetClone[currentAssetIdx] = newTransferAsset;
+		} else {
+			selectedAssetClone.push(newTransferAsset);
+		}
+		setSelectedAssets(selectedAssetClone);
+		setSelectedAsset(currentAsset);
+	}, [assetTokenInput.value, assetTokenSelect.tokenId]);
 
 	const onAssetMaxRequest = useMemo(() => {
 		if (!asset) return;
@@ -40,8 +80,7 @@ const TransferAsset: VFC<IntrinsicElements["div"] & TransferAssetProps> = ({
 				onTokenChange={assetTokenSelect.onTokenChange}
 				value={assetTokenInput.value}
 				onValueChange={assetTokenInput.onValueChange}
-				tokens={[asset]}
-				id={`assetInput_${asset.assetId}`}
+				tokens={tokens}
 				ref={assetInputRef}
 				required
 				scale={asset.decimals}
