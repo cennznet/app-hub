@@ -7,7 +7,6 @@ import { BridgedEthereumToken } from "@/types";
 import {
 	Balance,
 	ensureBridgeWithdrawActive,
-	ensureEthereumChain,
 	sendWithdrawCENNZRequest,
 	sendWithdrawEthereumRequest,
 	waitForEventProof,
@@ -47,7 +46,6 @@ export default function useWithdrawRequest(): () => Promise<void> {
 
 		try {
 			setTxPending();
-			await ensureEthereumChain(extension);
 			await ensureBridgeWithdrawActive(api, metaMaskWallet);
 			const tx = await sendWithdrawCENNZRequest(
 				api,

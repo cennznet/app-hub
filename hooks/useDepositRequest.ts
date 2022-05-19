@@ -1,11 +1,9 @@
 import { useBridge } from "@/providers/BridgeProvider";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
-import { useMetaMaskExtension } from "@/providers/MetaMaskExtensionProvider";
 import { useMetaMaskWallet } from "@/providers/MetaMaskWalletProvider";
 import {
 	Balance,
 	ensureBridgeDepositActive,
-	ensureEthereumChain,
 	ensureRelayerDepositDone,
 	sendDepositRequest,
 } from "@/utils";
@@ -17,7 +15,6 @@ import { useUpdateCENNZBalances } from "@/hooks";
 export default function useDepositRequest(): () => Promise<void> {
 	const { api } = useCENNZApi();
 	const { wallet: metaMaskWallet } = useMetaMaskWallet();
-	const { extension } = useMetaMaskExtension();
 	const { selectedWallet } = useWalletProvider();
 	const {
 		transferInput,
@@ -47,7 +44,6 @@ export default function useDepositRequest(): () => Promise<void> {
 
 		try {
 			setTxPending();
-			await ensureEthereumChain(extension);
 			await ensureBridgeDepositActive(api, metaMaskWallet);
 			const tx = await sendDepositRequest(
 				transferAmount,
@@ -107,7 +103,6 @@ export default function useDepositRequest(): () => Promise<void> {
 		metaMaskWallet,
 		updateEthereumBalances,
 		updateCENNZBalances,
-		extension,
 		setTxIdle,
 		setTxFailure,
 		setTxPending,
