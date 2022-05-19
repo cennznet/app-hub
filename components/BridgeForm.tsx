@@ -101,8 +101,9 @@ const styles = {
 				margin: 1em auto 0;
 				color: ${palette.grey["800"]};
 				width: 240px;
-				
-				${isMetaMask && `
+
+				${isMetaMask &&
+				`
 					cursor: pointer;
 					font-style: italic;
 					text-decoration: underline;
