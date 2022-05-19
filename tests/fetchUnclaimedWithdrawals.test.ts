@@ -40,7 +40,7 @@ const mockWithdrawals = {
 		{
 			proofId: "101",
 			amount: "10000000000 ",
-			assetId: "17002",
+			assetId: "17010",
 			beneficiary: "mock-beneficiary",
 			txHash: "mock-hash",
 			hasClaimed: false,
@@ -66,16 +66,16 @@ describe("fetchUnclaimedWithdrawals", () => {
 
 		const transferAsset1 = {
 			assetId: 16000,
-			address: "0x7ecc3e93226a955b2c740f003b455da6bfd49fac",
+			address: "0xb7e26f93211932865430a03236dd043f7248993b",
 			symbol: "CENNZ",
 			decimals: 4,
 			decimalsValue: 10000,
 		};
 
 		const transferAsset2 = {
-			assetId: 17002,
-			address: "0x0000000000000000000000000000000000000000",
-			symbol: "ETH",
+			assetId: 17010,
+			address: "0xc778417e063141139fce010982780140aa0cd5ab",
+			symbol: "WETH",
 			decimals: 18,
 			decimalsValue: 1000000000000000000,
 		};
@@ -92,7 +92,7 @@ describe("fetchUnclaimedWithdrawals", () => {
 				eventProof: { ...mockProof1, eventId: "100" },
 			},
 			{
-				assetId: 17002,
+				assetId: 17010,
 				expiry: getDaysHoursMinutes(1648335972),
 				expiryRaw: 1648335972,
 				eventProofId: 101,

@@ -26,6 +26,11 @@ export default async function fetchCENNZAssets(
 		.map((registeredAsset) => {
 			const [assetId, { symbol, decimalPlaces }] = registeredAsset;
 
+			console.log({
+				symbol: hexToString(symbol.toJSON()),
+				assetId: assetId.toJSON(),
+			});
+
 			return {
 				assetId: assetId.toJSON(),
 				symbol: hexToString(symbol.toJSON()),

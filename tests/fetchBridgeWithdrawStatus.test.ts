@@ -1,7 +1,7 @@
 import fetchBridgeWithdrawStatus, {
 	ensureBridgeWithdrawActive,
 } from "@/utils/fetchBridgeWithdrawStatus";
-import { KOVAN_PEG_CONTRACT } from "@/constants";
+import { ROPSTEN_PEG_CONTRACT } from "@/constants";
 import ERC20Peg from "@/artifacts/ERC20Peg.json";
 import { Api } from "@cennznet/api";
 
@@ -28,7 +28,7 @@ describe("fetchBridgeWithdrawStatus", () => {
 		mock({
 			blockchain,
 			call: {
-				to: KOVAN_PEG_CONTRACT,
+				to: ROPSTEN_PEG_CONTRACT,
 				api: ERC20Peg,
 				method: "withdrawalsActive",
 				return: true,
@@ -43,7 +43,7 @@ describe("fetchBridgeWithdrawStatus", () => {
 		mock({
 			blockchain,
 			call: {
-				to: KOVAN_PEG_CONTRACT,
+				to: ROPSTEN_PEG_CONTRACT,
 				api: ERC20Peg,
 				method: "withdrawalsActive",
 				return: false,
@@ -61,7 +61,7 @@ describe("ensureBridgeWithdrawActive", () => {
 		mock({
 			blockchain,
 			call: {
-				to: KOVAN_PEG_CONTRACT,
+				to: ROPSTEN_PEG_CONTRACT,
 				api: ERC20Peg,
 				method: "withdrawalsActive",
 				return: true,
@@ -76,7 +76,7 @@ describe("ensureBridgeWithdrawActive", () => {
 		mock({
 			blockchain,
 			call: {
-				to: KOVAN_PEG_CONTRACT,
+				to: ROPSTEN_PEG_CONTRACT,
 				api: ERC20Peg,
 				method: "withdrawalsActive",
 				return: false,

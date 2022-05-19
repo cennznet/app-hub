@@ -64,8 +64,8 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 				{!!connectedChain && connectedChain !== "Ethereum" && (
 					<div css={styles.formNote}>
 						Please connect to{" "}
-						{ETH_CHAIN_ID === 1 ? "Ethereum Mainnet" : "Kovan Test Network"} in
-						MetaMask.
+						{ETH_CHAIN_ID === 1 ? "Ethereum Mainnet" : "Ropsten Test Network"}{" "}
+						in MetaMask.
 					</div>
 				)}
 			</div>

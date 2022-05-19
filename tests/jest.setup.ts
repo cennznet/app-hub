@@ -14,10 +14,10 @@ jest.mock("@/constants", () => ({
 	CENNZ_ASSET_ID: 16000,
 	CPAY_ASSET_ID: 16001,
 	ALLOWED_ASSET_IDS: [16000, 16001],
-	ETH_CHAIN_ID: 42,
-	KOVAN_PEG_CONTRACT: "0xa39E871e6e24f2d1Dd6AdA830538aBBE7b30F78F",
+	ETH_CHAIN_ID: 3,
+	ROPSTEN_PEG_CONTRACT: "0x4C411B3Bf36D6DE908C6f4256a72B85E3f2B00bF",
 	ETH_TOKEN_ADDRESS: "0x0000000000000000000000000000000000000000",
-	KOVAN_BRIDGE_CONTRACT: "0x6484A31Df401792c784cD93aAAb3E933B406DdB3",
+	ROPSTEN_BRIDGE_CONTRACT: "0x452b8dd7b00D51e48cEF6254a48B7426d44658B8",
 }));
 
 global.getCENNZTestingAccount = () =>
@@ -27,7 +27,7 @@ global.getEthereumTestingAccount = () =>
 
 global.getCENNZApiForTest = () => {
 	let api: Api = new Api({
-		provider: "wss://nikau.centrality.me/public/ws",
+		provider: "wss://rata.centrality.me/public/ws",
 	});
 
 	beforeAll(async () => {

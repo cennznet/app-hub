@@ -5,15 +5,12 @@ export default async function ensureEthereumChain(
 	extension: MetaMaskInpageProvider
 ): Promise<void> {
 	const ethChainId = await extension.request({ method: "eth_chainId" });
+	const chainId = `0x${ETH_CHAIN_ID.toString(16)}`;
 
-	if (
-		(ETH_CHAIN_ID === 1 && ethChainId === "0x1") ||
-		(ETH_CHAIN_ID === 42 && ethChainId === "0x2a")
-	)
-		return;
+	if (ethChainId === chainId) return;
 
 	await extension.request({
 		method: "wallet_switchEthereumChain",
-		params: [{ chainId: ETH_CHAIN_ID === 1 ? "0x1" : "0x2a" }],
+		params: [{ chainId }],
 	});
 }

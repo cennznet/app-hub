@@ -30,11 +30,17 @@ export const MAINNET_BRIDGE_CONTRACT: string =
 export const KOVAN_BRIDGE_CONTRACT: string =
 	"0x6484A31Df401792c784cD93aAAb3E933B406DdB3";
 
+export const ROPSTEN_BRIDGE_CONTRACT: string =
+	"0x452b8dd7b00D51e48cEF6254a48B7426d44658B8";
+
 export const MAINNET_PEG_CONTRACT: string =
 	"0x76BAc85e1E82cd677faa2b3f00C4a2626C4c6E32";
 
 export const KOVAN_PEG_CONTRACT: string =
 	"0xa39E871e6e24f2d1Dd6AdA830538aBBE7b30F78F";
+
+export const ROPSTEN_PEG_CONTRACT: string =
+	"0x4C411B3Bf36D6DE908C6f4256a72B85E3f2B00bF";
 
 export const CENNZ_EXPLORER_URL: string =
 	process.env.NEXT_PUBLIC_CENNZ_EXPLORER_URL;
@@ -62,6 +68,13 @@ const CENNZ_METAMASK_NETWORKS = {
 		chainName: "CENNZnet Nikau",
 		explorerUrl: "https://nikau.uncoverexplorer.com",
 		rpcUrl: "https://nikau.centrality.me/public",
+	},
+	rata: {
+		cennzTokenAddress: "0xcCccccCc00003E80000000000000000000000000",
+		chainId: `0x${Number(3000).toString(16)}`,
+		chainName: "CENNZnet Rata",
+		explorerUrl: "https://rata.uncoverexplorer.com",
+		rpcUrl: "https://rata.centrality.me/public",
 	},
 };
 
