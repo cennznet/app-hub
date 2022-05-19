@@ -1,7 +1,7 @@
 import getBridgeContract from "@/utils/getBridgeContract";
 import { ethers } from "ethers";
 import CENNZnetBridge from "@/artifacts/CENNZnetBridge.json";
-import { KOVAN_BRIDGE_CONTRACT } from "@/constants";
+import { ROPSTEN_BRIDGE_CONTRACT } from "@/constants";
 
 const { provider } = global.getWeb3MockForTest();
 
@@ -10,7 +10,7 @@ describe("getBridgeContract", () => {
 		const bridge = await getBridgeContract<"ReadOnly">(provider);
 
 		const expected = new ethers.Contract(
-			KOVAN_BRIDGE_CONTRACT,
+			ROPSTEN_BRIDGE_CONTRACT,
 			CENNZnetBridge,
 			provider
 		);
@@ -22,7 +22,7 @@ describe("getBridgeContract", () => {
 		const bridge = await getBridgeContract<"OnBehalf">(signer);
 
 		const expected = new ethers.Contract(
-			KOVAN_BRIDGE_CONTRACT,
+			ROPSTEN_BRIDGE_CONTRACT,
 			CENNZnetBridge,
 			signer
 		);

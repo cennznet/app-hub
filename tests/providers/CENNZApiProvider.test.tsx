@@ -4,7 +4,7 @@ import CENNZApiProvider, { useCENNZApi } from "@/providers/CENNZApiProvider";
 
 test("should set expected `api` state", async () => {
 	const wrapper = ({ children }) => (
-		<CENNZApiProvider endpoint="wss://nikau.centrality.me/public/ws">
+		<CENNZApiProvider endpoint="wss://rata.centrality.me/public/ws">
 			{children}
 		</CENNZApiProvider>
 	);
