@@ -100,7 +100,7 @@ const BridgeProvider: FC<BridgeProviderProps> = ({
 		(token) => token.address === ETH_TOKEN_ADDRESS
 	);
 
-	const [transferSelect, transferInput] = useTokenInput(ethAsset?.address);
+	const [transferSelect, transferInput] = useTokenInput(ethAsset.address);
 
 	const transferAsset =
 		(ethereumTokens as EthereumToken[])?.find(
