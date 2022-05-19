@@ -5,7 +5,7 @@ import MetaMaskSVG from "@/assets/vectors/metamask.svg";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import { useMetaMaskWallet } from "@/providers/MetaMaskWalletProvider";
 import { useWalletProvider } from "@/providers/WalletProvider";
-import { useSelectedAccount } from "@/hooks";
+import { useEnsureEthereumChain, useSelectedAccount } from "@/hooks";
 
 interface SubmitButtonProps {
 	forceRequireMetaMask?: boolean;
@@ -20,6 +20,7 @@ const SubmitButton: FC<
 		connectWallet: connectMetaMaskWallet,
 	} = useMetaMaskWallet();
 	const selectedAccount = useSelectedAccount();
+	const ensureEthereumChain = useEnsureEthereumChain();
 
 	const isConnected = useMemo(
 		() => !!selectedWallet || !!selectedAccount,
@@ -44,6 +45,10 @@ const SubmitButton: FC<
 		}, 500);
 	}, [setWalletOpen]);
 
+	const onConnectMetaMaskClick = useCallback(async () => {
+		await connectMetaMaskWallet(ensureEthereumChain);
+	}, [ensureEthereumChain, connectMetaMaskWallet]);
+
 	return (
 		<>
 			{!isConnected && (
@@ -63,7 +68,7 @@ const SubmitButton: FC<
 						<button
 							type="button"
 							css={[styles.root, styles.metaMaskButton]}
-							onClick={() => connectMetaMaskWallet()}
+							onClick={onConnectMetaMaskClick}
 						>
 							<img
 								src={MetaMaskSVG.src}

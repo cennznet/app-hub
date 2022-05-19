@@ -1,16 +1,18 @@
 import { FC, useCallback, useEffect, useState } from "react";
 import { IntrinsicElements } from "@/types";
-import SubmitButton from "@/components/shared/SubmitButton";
 import { css } from "@emotion/react";
 import { Theme } from "@mui/material";
 import { useBridge } from "@/providers/BridgeProvider";
-import useBridgeStatus from "@/hooks/useBridgeStatus";
-import BridgeWithdrawAdvanced from "@/components/BridgeWithdrawAdvanced";
-import { useDepositRequest, useWithdrawRequest } from "@/hooks";
 import { useWalletProvider } from "@/providers/WalletProvider";
+import SubmitButton from "@/components/shared/SubmitButton";
+import BridgeWithdrawAdvanced from "@/components/BridgeWithdrawAdvanced";
+import {
+	useBridgeStatus,
+	useDepositRequest,
+	useEnsureEthereumChain,
+	useWithdrawRequest,
+} from "@/hooks";
 import { ETH_CHAIN_ID } from "@/constants";
-import { useMetaMaskExtension } from "@/providers/MetaMaskExtensionProvider";
-import { ensureEthereumChain } from "@/utils";
 
 interface BridgeFormProps {}
 
@@ -20,7 +22,7 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 }) => {
 	const { bridgeAction } = useBridge();
 	const { connectedChain } = useWalletProvider();
-	const { extension } = useMetaMaskExtension();
+	const ensureEthereumChain = useEnsureEthereumChain();
 
 	const [buttonLabel, setButtonLabel] = useState<string>("Deposit");
 
@@ -65,10 +67,7 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 				)}
 
 				{connectedChain !== "Ethereum" && (
-					<div
-						css={styles.formNote(true)}
-						onClick={() => ensureEthereumChain(extension)}
-					>
+					<div css={styles.formNote(true)} onClick={ensureEthereumChain}>
 						Connect to{" "}
 						{ETH_CHAIN_ID === 1 ? "Ethereum Mainnet" : "Kovan Test Network"}
 					</div>

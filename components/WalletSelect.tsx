@@ -7,19 +7,28 @@ import MetaMaskIconSVG from "@/assets/vectors/metamask.svg";
 import { WalletOption } from "@/types";
 import { useMetaMaskWallet } from "@/providers/MetaMaskWalletProvider";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
+import { useEnsureEthereumChain } from "@/hooks";
 
 const WalletSelect: VFC = () => {
 	const { setSelectedWallet } = useWalletProvider();
 	const { connectWallet: connectCENNZWallet } = useCENNZWallet();
 	const { connectWallet: connectMetaMaskWallet } = useMetaMaskWallet();
 
+	const ensureEthereumChain = useEnsureEthereumChain();
+
 	const onOptionClick = useCallback(
 		(wallet: WalletOption) => {
 			setSelectedWallet(wallet);
 			if (wallet === "CENNZnet") return connectCENNZWallet();
-			if (wallet === "MetaMask") return connectMetaMaskWallet();
+			if (wallet === "MetaMask")
+				return connectMetaMaskWallet(ensureEthereumChain);
 		},
-		[setSelectedWallet, connectCENNZWallet, connectMetaMaskWallet]
+		[
+			setSelectedWallet,
+			connectCENNZWallet,
+			connectMetaMaskWallet,
+			ensureEthereumChain,
+		]
 	);
 
 	return (
@@ -59,7 +68,7 @@ const WalletSelect: VFC = () => {
 export default WalletSelect;
 
 const styles = {
-	modalContent: ({ palette }: Theme) => css`
+	modalContent: css`
 		position: absolute;
 		top: calc(4em + 48px);
 		right: 3em;
