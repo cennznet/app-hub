@@ -9,8 +9,6 @@ import {
 } from "react";
 import { ethers } from "ethers";
 import { MetaMaskAccount } from "@/types";
-import { ensureEthereumChain } from "@/utils";
-import { useSectionUri } from "@/hooks";
 
 interface MetaMaskWalletContextType {
 	connectWallet: (callback?: () => void) => Promise<void>;
@@ -33,16 +31,12 @@ const MetaMaskWalletProvider: FC<MetaMaskWalletProviderProps> = ({
 	const [selectedAccount, setSelectedAccount] =
 		useState<MetaMaskWalletContextType["selectedAccount"]>(null);
 
-	const section = useSectionUri();
-
 	const connectWallet = useCallback(
 		async (callback) => {
 			if (!extension) {
 				callback?.();
 				return promptInstallExtension();
 			}
-
-			if (section === "bridge") await ensureEthereumChain(extension);
 
 			const accounts = (await extension.request({
 				method: "eth_requestAccounts",
@@ -56,7 +50,7 @@ const MetaMaskWalletProvider: FC<MetaMaskWalletProviderProps> = ({
 			setSelectedAccount({ address: accounts[0] });
 			setWallet(new ethers.providers.Web3Provider(extension as any, "any"));
 		},
-		[extension, promptInstallExtension, section]
+		[extension, promptInstallExtension]
 	);
 
 	useEffect(() => {
