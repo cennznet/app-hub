@@ -18,18 +18,21 @@ const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 	const [displayTokens, setDisplayTokens] = useState<CENNZAssetBalance[][]>([]);
 
 	useEffect(() => {
-		if (selectedAssets.length > 1) {
-			//remove all tokens that are selected from all other display token arrays
-			const selectedAssetIds = selectedAssets.map(
-				(asset) => asset.asset.assetId
-			);
-			const displayTokenArr = selectedAssets.map((selectedAsset) => {
-				return transferableAssets
-					.filter((asset) => !selectedAssetIds.includes(asset.assetId))
-					.concat(selectedAsset.asset);
-			});
-			setDisplayTokens(displayTokenArr);
-		}
+		if (!transferableAssets) return;
+		//remove all tokens that are selected from all other display token arrays
+		const selectedAssetIds = selectedAssets.map((asset) => asset.asset.assetId);
+		const displayTokenArr = selectedAssets.map((selectedAsset) => {
+			return transferableAssets
+				.filter((asset) => !selectedAssetIds.includes(asset.assetId))
+				.concat(selectedAsset.asset);
+		});
+		//add additional display token to prep for user adding asset
+		displayTokenArr.push(
+			transferableAssets.filter(
+				(asset) => !selectedAssetIds.includes(asset.assetId)
+			)
+		);
+		setDisplayTokens(displayTokenArr);
 	}, [selectedAssets]);
 
 	return (
@@ -40,7 +43,7 @@ const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 						<TransferAsset
 							key={index}
 							assetKey={index}
-							asset={asset}
+							asset={assetAmount === 1 ? asset : displayTokens[index][0]}
 							tokens={
 								displayTokens[index] ? displayTokens[index] : transferableAssets
 							}
@@ -54,7 +57,7 @@ const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 				<StandardButton
 					type="button"
 					onClick={() => {
-						if (assetAmount < transferableAssets.length)
+						if (assetAmount < transferableAssets?.length)
 							setAssetAmount(assetAmount + 1);
 					}}
 				>
