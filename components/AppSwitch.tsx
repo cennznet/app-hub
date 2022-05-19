@@ -1,11 +1,20 @@
-import { VFC } from "react";
+import { VFC, useEffect } from "react";
 import { css } from "@emotion/react";
 import Link from "next/link";
 import { Theme } from "@mui/material";
-import { useSectionUri } from "@/hooks";
+import useSectionUri from "@/hooks/useSectionUri";
+import { useMetaMaskExtension } from "@/providers/MetaMaskExtensionProvider";
+import { ensureEthereumChain } from "@/utils";
 
 const Switch: VFC = () => {
 	const section = useSectionUri();
+	const { extension } = useMetaMaskExtension();
+
+	useEffect(() => {
+		if (!extension) return;
+
+		if (section === "bridge") void ensureEthereumChain(extension);
+	}, [extension, section]);
 
 	return (
 		<nav css={styles.container}>
