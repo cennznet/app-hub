@@ -13,10 +13,12 @@ import {
 import { useHistoricalWithdrawRequest } from "@/hooks";
 import { getMinutesAndSeconds } from "@/utils";
 import { useBridge } from "@/providers/BridgeProvider";
+import { useWalletProvider } from "@/providers/WalletProvider";
 import { WithdrawClaim } from "@/types";
 
 const BridgeUnclaimedWithdrawals: VFC = () => {
 	const { unclaimedWithdrawals } = useBridge();
+	const { connectedChain } = useWalletProvider();
 	const processHistoricalRequest = useHistoricalWithdrawRequest();
 
 	const someUnclaimed = unclaimedWithdrawals?.some(
@@ -56,8 +58,9 @@ const BridgeUnclaimedWithdrawals: VFC = () => {
 									{/* Action */}
 									<TableCell css={styles.column}>
 										<button
-											onClick={() => processHistoricalRequest(unclaimed)}
 											type="button"
+											disabled={connectedChain !== "Ethereum"}
+											onClick={() => processHistoricalRequest(unclaimed)}
 										>
 											Claim
 										</button>
@@ -187,9 +190,15 @@ const styles = {
 			border: 1px solid ${palette.primary.main};
 			color: ${palette.primary.main};
 
-			&:hover {
+			&:hover:not(:disabled) {
 				background-color: ${palette.primary.main};
 				color: white;
+			}
+
+			&:disabled {
+				color: ${palette.grey["500"]};
+				border-color: ${palette.grey["500"]};
+				cursor: not-allowed;
 			}
 		}
 	`,
