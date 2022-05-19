@@ -9,6 +9,8 @@ import BridgeWithdrawAdvanced from "@/components/BridgeWithdrawAdvanced";
 import { useDepositRequest, useWithdrawRequest } from "@/hooks";
 import { useWalletProvider } from "@/providers/WalletProvider";
 import { ETH_CHAIN_ID } from "@/constants";
+import { useMetaMaskExtension } from "@/providers/MetaMaskExtensionProvider";
+import { ensureEthereumChain } from "@/utils";
 
 interface BridgeFormProps {}
 
@@ -18,6 +20,7 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 }) => {
 	const { bridgeAction } = useBridge();
 	const { connectedChain } = useWalletProvider();
+	const { extension } = useMetaMaskExtension();
 
 	const [buttonLabel, setButtonLabel] = useState<string>("Deposit");
 
@@ -61,11 +64,13 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 					</div>
 				)}
 
-				{!!connectedChain && connectedChain !== "Ethereum" && (
-					<div css={styles.formNote}>
-						Please connect to{" "}
-						{ETH_CHAIN_ID === 1 ? "Ethereum Mainnet" : "Ropsten Test Network"}{" "}
-						in MetaMask.
+				{connectedChain !== "Ethereum" && (
+					<div
+						css={styles.formNote(true)}
+						onClick={() => ensureEthereumChain(extension)}
+					>
+						Connect to{" "}
+						{ETH_CHAIN_ID === 1 ? "Ethereum Mainnet" : "Ropsten Test Network"}
 					</div>
 				)}
 			</div>
@@ -88,10 +93,20 @@ const styles = {
 		margin: 2em -2.5em 0;
 	`,
 
-	formNote: ({ palette }: Theme) => css`
-		font-size: 14px;
-		margin: 1em auto 0;
-		color: ${palette.grey["800"]};
-		width: 240px;
-	`,
+	formNote:
+		(isMetaMask?: boolean) =>
+		({ palette }: Theme) =>
+			css`
+				font-size: 14px;
+				margin: 1em auto 0;
+				color: ${palette.grey["800"]};
+				width: 240px;
+
+				${isMetaMask &&
+				`
+					cursor: pointer;
+					font-style: italic;
+					text-decoration: underline;
+				`}
+			`,
 };

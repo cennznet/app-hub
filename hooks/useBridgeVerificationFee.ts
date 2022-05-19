@@ -2,6 +2,7 @@ import { useBridge } from "@/providers/BridgeProvider";
 import { useMetaMaskWallet } from "@/providers/MetaMaskWalletProvider";
 import { Balance, getBridgeContract } from "@/utils";
 import { useCallback, useEffect, useState } from "react";
+import { useWalletProvider } from "@/providers/WalletProvider";
 
 interface BridgeVerificationFeeHook {
 	verificationFee: Balance;
@@ -10,10 +11,11 @@ interface BridgeVerificationFeeHook {
 }
 
 export default function useBridgeVerificationFee(): BridgeVerificationFeeHook {
+	const { ethAsset } = useBridge();
 	const { wallet } = useMetaMaskWallet();
+	const { connectedChain } = useWalletProvider();
 	const [loading, setLoading] = useState<boolean>(true);
 	const [verificationFee, setVerificationFee] = useState<Balance>(null);
-	const { ethAsset } = useBridge();
 
 	const updateVerificationFee = useCallback(async () => {
 		if (!wallet) return;
@@ -26,8 +28,9 @@ export default function useBridgeVerificationFee(): BridgeVerificationFeeHook {
 	}, [wallet, ethAsset]);
 
 	useEffect(() => {
-		updateVerificationFee?.();
-	}, [updateVerificationFee]);
+		if (connectedChain !== "Ethereum") return;
+		void updateVerificationFee?.();
+	}, [updateVerificationFee, connectedChain]);
 
 	return {
 		verificationFee,
