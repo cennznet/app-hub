@@ -1,5 +1,5 @@
 import { VFC, useState, useEffect } from "react";
-import { IntrinsicElements } from "@/types";
+import { CENNZAssetBalance, IntrinsicElements } from "@/types";
 import { css } from "@emotion/react";
 import { Theme } from "@mui/material";
 import { useTransfer } from "@/providers/TransferProvider";
@@ -15,6 +15,22 @@ const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 
 	const [assetAmount, setAssetAmount] = useState<number>(1);
 	const [selectedAssets, setSelectedAssets] = useState<TransferAssetType[]>([]);
+	const [displayTokens, setDisplayTokens] = useState<CENNZAssetBalance[][]>([]);
+
+	useEffect(() => {
+		if (selectedAssets.length > 1) {
+			//remove all tokens that are selected from all other display token arrays
+			const selectedAssetIds = selectedAssets.map(
+				(asset) => asset.asset.assetId
+			);
+			const displayTokenArr = selectedAssets.map((selectedAsset) => {
+				return transferableAssets
+					.filter((asset) => !selectedAssetIds.includes(asset.assetId))
+					.concat(selectedAsset.asset);
+			});
+			setDisplayTokens(displayTokenArr);
+		}
+	}, [selectedAssets]);
 
 	return (
 		<div {...props} css={styles.root}>
@@ -25,7 +41,9 @@ const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 							key={index}
 							assetKey={index}
 							asset={asset}
-							tokens={transferableAssets}
+							tokens={
+								displayTokens[index] ? displayTokens[index] : transferableAssets
+							}
 							selectedAssets={selectedAssets}
 							setSelectedAssets={setSelectedAssets}
 						/>
@@ -45,7 +63,10 @@ const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 				<StandardButton
 					type="button"
 					onClick={() => {
-						if (assetAmount > 1) setAssetAmount(assetAmount - 1);
+						if (assetAmount > 1) {
+							setSelectedAssets(selectedAssets.slice(0, assetAmount - 1));
+							setAssetAmount(assetAmount - 1);
+						}
 					}}
 				>
 					Remove Asset

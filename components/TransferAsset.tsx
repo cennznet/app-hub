@@ -44,10 +44,13 @@ const TransferAsset: VFC<IntrinsicElements["div"] & TransferAssetProps> = ({
 		const newTransferAsset: TransferAssetType = {
 			assetKey: assetKey,
 			asset: {
-				value: assetTokenInput.value,
 				...currentAsset,
 			},
 		};
+		newTransferAsset.asset.value = Balance.fromInput(
+			assetTokenInput.value,
+			asset
+		);
 		const selectedAssetClone = [...selectedAssets];
 		const currentAssetIdx = selectedAssetClone.findIndex(
 			(asset) => asset.assetKey === assetKey
