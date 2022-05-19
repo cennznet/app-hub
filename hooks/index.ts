@@ -10,6 +10,7 @@ export { default as usePoolGasFee } from "@/hooks/usePoolGasFee";
 export { default as usePoolCoreAssetValue } from "@/hooks/usePoolCoreAssetValue";
 export { default as useBalanceValidation } from "@/hooks/useBalanceValidation";
 export { default as useBridgeGasFee } from "@/hooks/useBridgeGasFee";
+export { default as useBridgeStatus } from "@/hooks/useBridgeStatus";
 export { default as useBridgeVerificationFee } from "@/hooks/useBridgeVerificationFee";
 export { default as useBlockHashValidation } from "@/hooks/useBlockHashValidation";
 export { default as useTxStatus } from "@/hooks/useTxStatus";
@@ -20,6 +21,7 @@ export { default as useBeforeUnload } from "@/hooks/useBeforeUnload";
 export { default as useSelectedAccount } from "@/hooks/useSelectedAccount";
 export { default as useUpdateCENNZBalances } from "@/hooks/useUpdateCENNZBalances";
 export { default as useEthereumBalances } from "@/hooks/useEthereumBalances";
+export { default as useEnsureEthereumChain } from "@/hooks/useEnsureEthereumChain";
 
 export type { TokenInputHook } from "@/hooks/useTokenInput";
 export type { PoolExchangeInfoHook } from "@/hooks/usePoolExchangeInfo";

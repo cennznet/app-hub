@@ -15,7 +15,6 @@ export { default as fetchPoolUserInfo } from "@/utils/fetchPoolUserInfo";
 export { default as getAddLiquidityExtrinsic } from "@/utils/getAddLiquidityExtrinsic";
 export { default as getRemoveLiquidityExtrinsic } from "@/utils/getRemoveLiquidityExtrinsic";
 export { default as Balance } from "@/utils/Balance";
-export { default as ensureEthereumChain } from "@/utils/ensureEthereumChain";
 export { default as fetchEthereumBalance } from "@/utils/fetchEthereumBalance";
 export {
 	default as fetchBridgeDepositStatus,
