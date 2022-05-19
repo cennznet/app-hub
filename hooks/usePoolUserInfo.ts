@@ -1,8 +1,8 @@
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
-import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import { useCallback, useEffect, useState } from "react";
 import { fetchPoolUserInfo } from "@/utils";
 import { CENNZAsset, PoolUserInfo } from "@/types";
+import { useSelectedAccount } from "@/hooks";
 
 export interface PoolUserInfoHook {
 	userInfo: PoolUserInfo;
@@ -14,10 +14,11 @@ export default function usePoolUserInfo(
 	tradeAsset: CENNZAsset,
 	coreAsset: CENNZAsset
 ): PoolUserInfoHook {
-	const { selectedAccount } = useCENNZWallet();
 	const { api } = useCENNZApi();
 	const [userInfo, setUserInfo] = useState<PoolUserInfo>(null);
 	const [loading, setLoading] = useState<boolean>(true);
+
+	const selectedAccount = useSelectedAccount();
 
 	const updatePoolUserInfo = useCallback(async () => {
 		if (!api) return;

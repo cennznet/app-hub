@@ -4,9 +4,12 @@ import { VFC } from "react";
 import { LinearProgress, Tooltip, Theme } from "@mui/material";
 import { usePool } from "@/providers/PoolProvider";
 import { Balance } from "@/utils";
-import { usePoolGasFee, usePoolCoreAssetValue } from "@/hooks";
+import {
+	usePoolGasFee,
+	usePoolCoreAssetValue,
+	useSelectedAccount,
+} from "@/hooks";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 
 interface PoolStatsProps {}
 
@@ -40,7 +43,7 @@ const PoolStats: VFC<IntrinsicElements["div"] & PoolStatsProps> = (props) => {
 
 	const { coreAssetValue } = usePoolCoreAssetValue("1");
 
-	const { selectedAccount } = useCENNZWallet();
+	const selectedAccount = useSelectedAccount();
 
 	return (
 		<div {...props} css={styles.root}>
@@ -78,7 +81,7 @@ const PoolStats: VFC<IntrinsicElements["div"] & PoolStatsProps> = (props) => {
 						<span>
 							{`${tradeAssetReserve.toBalance({
 								withSymbol: true,
-							})} + ${coreAssetReserve.toBalance({ withSymbol: true })}`}
+							})} + ${coreAssetReserve?.toBalance({ withSymbol: true })}`}
 						</span>
 					)}
 					{tradeAssetReserve === null && <span>+</span>}
