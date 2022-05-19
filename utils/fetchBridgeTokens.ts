@@ -23,8 +23,6 @@ export default async function fetchBridgeTokens<T extends BridgeAction>(
 	const registeredAssets: [AssetId, AssetInfo][] =
 		await api.rpc.genericAsset.registeredAssets();
 
-	console.log({ registeredAssets });
-
 	return (
 		await Promise.all(
 			registeredAssets.map(async ([assetId, { symbol, decimalPlaces }]) => {
