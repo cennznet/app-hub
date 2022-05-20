@@ -14,7 +14,8 @@ export default function useEthereumBalances(
 	const [balance2, setBalance2] = useState<Balance>(null);
 
 	const updateBalances = useMemo(() => {
-		if (!wallet || !selectedAccount?.address) return;
+		if (!wallet || !selectedAccount?.address || connectedChain !== "Ethereum")
+			return;
 
 		return async () => {
 			fetchEthereumBalance(wallet, selectedAccount.address, token1).then(
@@ -27,12 +28,11 @@ export default function useEthereumBalances(
 				);
 			}
 		};
-	}, [wallet, selectedAccount?.address, token1, token2]);
+	}, [wallet, selectedAccount?.address, token1, token2, connectedChain]);
 
 	useEffect(() => {
-		if (connectedChain !== "Ethereum") return;
 		void updateBalances?.();
-	}, [updateBalances, connectedChain]);
+	}, [updateBalances]);
 
 	return [balance1, balance2, updateBalances];
 }

@@ -18,17 +18,16 @@ export default function useBridgeGasFee(): BridgeGasFeeHook {
 	const { connectedChain } = useWalletProvider();
 
 	const updateGasFee = useCallback(async () => {
-		if (!wallet) return;
+		if (!wallet || connectedChain !== "Ethereum") return;
 		setLoading(true);
 		const gasPrice = await wallet.getSigner().getGasPrice();
 		setGasFee(Balance.fromBigNumber(gasPrice, ethAsset).mul(150000));
 		setLoading(false);
-	}, [wallet, ethAsset]);
+	}, [wallet, ethAsset, connectedChain]);
 
 	useEffect(() => {
-		if (connectedChain !== "Ethereum") return;
 		void updateGasFee?.();
-	}, [updateGasFee, connectedChain]);
+	}, [updateGasFee]);
 
 	return { gasFee, updatingGasFee: loading, updateGasFee };
 }

@@ -18,19 +18,18 @@ export default function useBridgeVerificationFee(): BridgeVerificationFeeHook {
 	const { connectedChain } = useWalletProvider();
 
 	const updateVerificationFee = useCallback(async () => {
-		if (!wallet) return;
+		if (!wallet || connectedChain !== "Ethereum") return;
 		setLoading(true);
 		const bridgeContract = getBridgeContract<"OnBehalf">(wallet.getSigner());
 
 		const verificationFee = await bridgeContract.verificationFee();
 		setVerificationFee(Balance.fromBigNumber(verificationFee, ethAsset));
 		setLoading(false);
-	}, [wallet, ethAsset]);
+	}, [wallet, ethAsset, connectedChain]);
 
 	useEffect(() => {
-		if (connectedChain !== "Ethereum") return;
 		void updateVerificationFee?.();
-	}, [updateVerificationFee, connectedChain]);
+	}, [updateVerificationFee]);
 
 	return {
 		verificationFee,
