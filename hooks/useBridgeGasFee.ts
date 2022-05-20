@@ -2,6 +2,7 @@ import { useBridge } from "@/providers/BridgeProvider";
 import { useMetaMaskWallet } from "@/providers/MetaMaskWalletProvider";
 import { Balance } from "@/utils";
 import { useCallback, useEffect, useState } from "react";
+import { useWalletProvider } from "@/providers/WalletProvider";
 
 interface BridgeGasFeeHook {
 	gasFee: Balance;
@@ -14,6 +15,7 @@ export default function useBridgeGasFee(): BridgeGasFeeHook {
 	const [loading, setLoading] = useState<boolean>(true);
 	const [gasFee, setGasFee] = useState<Balance>(null);
 	const { ethAsset } = useBridge();
+	const { connectedChain } = useWalletProvider();
 
 	const updateGasFee = useCallback(async () => {
 		if (!wallet) return;
@@ -24,8 +26,9 @@ export default function useBridgeGasFee(): BridgeGasFeeHook {
 	}, [wallet, ethAsset]);
 
 	useEffect(() => {
-		updateGasFee?.();
-	}, [updateGasFee]);
+		if (connectedChain !== "Ethereum") return;
+		void updateGasFee?.();
+	}, [updateGasFee, connectedChain]);
 
 	return { gasFee, updatingGasFee: loading, updateGasFee };
 }
