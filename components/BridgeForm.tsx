@@ -61,7 +61,7 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 					</div>
 				)}
 
-				{!!connectedChain && connectedChain !== "Ethereum" && (
+				{connectedChain !== "Ethereum" && (
 					<div css={styles.formNote}>
 						Please connect to{" "}
 						{ETH_CHAIN_ID === 1 ? "Ethereum Mainnet" : "Kovan Test Network"} in
