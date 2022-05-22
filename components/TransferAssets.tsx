@@ -1,10 +1,12 @@
-import { VFC, useState, useEffect } from "react";
+import { VFC, useState, useEffect, useCallback } from "react";
 import { CENNZAssetBalance, IntrinsicElements } from "@/types";
 import { css } from "@emotion/react";
 import { Theme } from "@mui/material";
 import { useTransfer } from "@/providers/TransferProvider";
 import TransferAsset, { TransferAssetType } from "@/components/TransferAsset";
 import StandardButton from "@/components/shared/StandardButton";
+import AddressInput from "@/components/shared/AddressInput";
+import useAddressValidation from "@/hooks/useAddressValidation";
 
 interface TransferAssetsProps {}
 
@@ -16,6 +18,19 @@ const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 	const [assetAmount, setAssetAmount] = useState<number>(1);
 	const [selectedAssets, setSelectedAssets] = useState<TransferAssetType[]>([]);
 	const [displayTokens, setDisplayTokens] = useState<CENNZAssetBalance[][]>([]);
+	const [transferCENNZAddress, setTransferCENNZAddress] = useState<string>("");
+
+	const onTransferCENNZAddressChange = useCallback(
+		(event) => {
+			setTransferCENNZAddress(event.target.value);
+		},
+		[setTransferCENNZAddress]
+	);
+
+	const { inputRef: cennzAddressInputRef } = useAddressValidation(
+		transferCENNZAddress,
+		"CENNZnet"
+	);
 
 	useEffect(() => {
 		if (!transferableAssets) return;
@@ -38,6 +53,14 @@ const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 	return (
 		<div {...props} css={styles.root}>
 			<div css={styles.formField}>
+				<label htmlFor="transferCENNZAddressInput">CENNZnet ADDRESS</label>
+				<AddressInput
+					addressType={"CENNZnet"}
+					value={transferCENNZAddress}
+					onChange={onTransferCENNZAddressChange}
+					id="transferCENNZAddressInput"
+					ref={cennzAddressInputRef}
+				/>
 				{transferableAssets?.slice(0, assetAmount)?.map((asset, index) => {
 					return (
 						<TransferAsset
