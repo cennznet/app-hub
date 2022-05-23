@@ -1,14 +1,24 @@
-import { createContext, useContext, useState, FC, useEffect } from "react";
-import { CENNZAsset, CENNZAssetBalance } from "@/types";
+import {
+	createContext,
+	useContext,
+	useState,
+	FC,
+	useEffect,
+	Dispatch,
+	SetStateAction,
+} from "react";
+import { CENNZAssetBalance } from "@/types";
 import { useTxStatus, TxStatusHook, useSelectedAccount } from "@/hooks";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import { useWalletProvider } from "@/providers/WalletProvider";
 import fetchCENNZAssetBalances from "../utils/fetchCENNZAssetBalances";
 
-type CENNZAssetId = CENNZAsset["assetId"];
-
 interface TransferContextType extends TxStatusHook {
 	transferableAssets: CENNZAssetBalance[];
+	receiveAddress: string;
+	setReceiveAddress: Dispatch<SetStateAction<string>>;
+	transferAssets: CENNZAssetBalance[];
+	setTransferAssets: Dispatch<SetStateAction<CENNZAssetBalance[]>>;
 }
 
 const TransferContext = createContext<TransferContextType>(
@@ -23,6 +33,8 @@ const TransferProvider: FC<TransferProviderProps> = ({ children }) => {
 	const selectedAccount = useSelectedAccount();
 	const [transferableAssets, setTransferableAssets] =
 		useState<CENNZAssetBalance[]>();
+	const [receiveAddress, setReceiveAddress] = useState<string>();
+	const [transferAssets, setTransferAssets] = useState<CENNZAssetBalance[]>();
 
 	useEffect(() => {
 		if (!api || !selectedWallet || !selectedAccount) return;
@@ -43,6 +55,10 @@ const TransferProvider: FC<TransferProviderProps> = ({ children }) => {
 		<TransferContext.Provider
 			value={{
 				transferableAssets,
+				setReceiveAddress,
+				receiveAddress,
+				transferAssets,
+				setTransferAssets,
 				...useTxStatus(),
 			}}
 		>

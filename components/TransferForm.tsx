@@ -7,13 +7,11 @@ import { FC, useCallback } from "react";
 import { css } from "@emotion/react";
 import { Theme } from "@mui/material";
 import SubmitButton from "@/components/shared/SubmitButton";
-import { useSwap } from "@/providers/SwapProvider";
 import { useCENNZApi } from "@/providers/CENNZApiProvider";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import {
 	Balance,
 	CENNZTransaction,
-	getSellAssetExtrinsic,
 	signAndSendTx,
 	signViaEthWallet,
 } from "@/utils";
@@ -21,6 +19,8 @@ import { useWalletProvider } from "@/providers/WalletProvider";
 import { useMetaMaskWallet } from "@/providers/MetaMaskWalletProvider";
 import { useMetaMaskExtension } from "@/providers/MetaMaskExtensionProvider";
 import { useUpdateCENNZBalances } from "@/hooks";
+import getBatchTransferAssetExtrinsic from "@/utils/getBatchTransferAssetExtrinsic";
+import { useTransfer } from "@/providers/TransferProvider";
 
 interface TransferFormProps {}
 
@@ -35,99 +35,92 @@ const TransferForm: FC<IntrinsicElements["form"] & TransferFormProps> = ({
 	const { extension } = useMetaMaskExtension();
 
 	const updateCENNZBalances = useUpdateCENNZBalances();
+	const {
+		setTxIdle,
+		setTxPending,
+		setTxSuccess,
+		setTxFailure,
+		receiveAddress,
+		transferAssets,
+	} = useTransfer();
+	const onFormSubmit = useCallback(
+		async (event) => {
+			event.preventDefault();
 
-	// const onFormSubmit = useCallback(
-	// 	async (event) => {
-	// 		event.preventDefault();
-	//
-	// 		if (!api) return;
-	//
-	// 		try {
-	// 			setTxPending();
-	// 			const extrinsic = getSellAssetExtrinsic(
-	// 				api,
-	// 				exchangeAsset.assetId,
-	// 				Balance.fromInput(exValue, exchangeAsset),
-	// 				receiveAsset.assetId,
-	// 				Balance.fromInput(reValue, receiveAsset),
-	// 				Number(slippage)
-	// 			);
-	//
-	// 			let tx: CENNZTransaction;
-	// 			if (selectedWallet === "CENNZnet")
-	// 				tx = await signAndSendTx(
-	// 					extrinsic as SubmittableExtrinsic<"promise">,
-	// 					cennzAccount.address,
-	// 					wallet.signer
-	// 				);
-	// 			if (selectedWallet === "MetaMask")
-	// 				tx = await signViaEthWallet(
-	// 					api,
-	// 					metaMaskAccount.address,
-	// 					extrinsic as CENNZnetExtrinsic,
-	// 					extension
-	// 				);
-	//
-	// 			tx.on("txCancelled", () => setTxIdle());
-	//
-	// 			tx.on("txHashed", () => {
-	// 				setTxPending({
-	// 					txHashLink: tx.getHashLink(),
-	// 				});
-	// 			});
-	//
-	// 			tx.on("txFailed", (result) =>
-	// 				setTxFailure({
-	// 					errorCode: tx.decodeError(result),
-	// 					txHashLink: tx.getHashLink(),
-	// 				})
-	// 			);
-	//
-	// 			tx.on("txSucceeded", (result) => {
-	// 				const event = tx.findEvent(result, "cennzx", "AssetSold");
-	// 				const exchangeValue = Balance.fromCodec(event.data[3], exchangeAsset);
-	// 				const receiveValue = Balance.fromCodec(event.data[4], receiveAsset);
-	//
-	// 				updateCENNZBalances();
-	// 				setExValue("");
-	// 				setTxSuccess({
-	// 					exchangeValue,
-	// 					receiveValue,
-	// 					txHashLink: tx.getHashLink(),
-	// 				});
-	// 			});
-	// 		} catch (error) {
-	// 			console.info(error);
-	// 			return setTxFailure({ errorCode: error?.code as string });
-	// 		}
-	// 	},
-	// 	[
-	// 		api,
-	// 		exchangeAsset,
-	// 		receiveAsset,
-	// 		exValue,
-	// 		reValue,
-	// 		slippage,
-	// 		cennzAccount?.address,
-	// 		metaMaskAccount?.address,
-	// 		wallet?.signer,
-	// 		updateCENNZBalances,
-	// 		setExValue,
-	// 		setTxFailure,
-	// 		setTxPending,
-	// 		setTxSuccess,
-	// 		setTxIdle,
-	// 		selectedWallet,
-	// 		extension,
-	// 	]
-	// );
+			if (!api) return;
+
+			try {
+				setTxPending();
+				const extrinsic = getBatchTransferAssetExtrinsic(
+					api,
+					transferAssets,
+					receiveAddress
+				);
+
+				let tx: CENNZTransaction;
+				if (selectedWallet === "CENNZnet")
+					tx = await signAndSendTx(
+						extrinsic as SubmittableExtrinsic<"promise">,
+						cennzAccount.address,
+						wallet.signer
+					);
+				if (selectedWallet === "MetaMask")
+					tx = await signViaEthWallet(
+						api,
+						metaMaskAccount.address,
+						extrinsic as CENNZnetExtrinsic,
+						extension
+					);
+
+				tx.on("txCancelled", () => setTxIdle());
+
+				tx.on("txHashed", () => {
+					setTxPending({
+						txHashLink: tx.getHashLink(),
+					});
+				});
+
+				tx.on("txFailed", (result) =>
+					setTxFailure({
+						errorCode: tx.decodeError(result),
+						txHashLink: tx.getHashLink(),
+					})
+				);
+
+				tx.on("txSucceeded", (result) => {
+					const event = tx.findEvent(result, "genericAsset", "Transferred");
+					const firstTransferValue = Balance.fromCodec(
+						event.data[3],
+						transferAssets[0]
+					);
+					updateCENNZBalances();
+					setTxSuccess({
+						firstTransferValue,
+						txHashLink: tx.getHashLink(),
+					});
+				});
+			} catch (error) {
+				console.info(error);
+				return setTxFailure({ errorCode: error?.code as string });
+			}
+		},
+		[
+			api,
+			cennzAccount?.address,
+			metaMaskAccount?.address,
+			wallet?.signer,
+			updateCENNZBalances,
+			setTxFailure,
+			setTxPending,
+			setTxSuccess,
+			setTxIdle,
+			selectedWallet,
+			extension,
+		]
+	);
 
 	return (
-		<form
-			{...props}
-			css={styles.root}
-			// onSubmit={onFormSubmit}
-		>
+		<form {...props} css={styles.root} onSubmit={onFormSubmit}>
 			{children}
 
 			<div css={styles.formSubmit}>

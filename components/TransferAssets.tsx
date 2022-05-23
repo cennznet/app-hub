@@ -13,22 +13,26 @@ interface TransferAssetsProps {}
 const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 	props
 ) => {
-	const { transferableAssets } = useTransfer();
+	const {
+		transferableAssets,
+		setTransferAssets,
+		setReceiveAddress,
+		receiveAddress,
+	} = useTransfer();
 
 	const [assetAmount, setAssetAmount] = useState<number>(1);
 	const [selectedAssets, setSelectedAssets] = useState<TransferAssetType[]>([]);
 	const [displayTokens, setDisplayTokens] = useState<CENNZAssetBalance[][]>([]);
-	const [transferCENNZAddress, setTransferCENNZAddress] = useState<string>("");
 
 	const onTransferCENNZAddressChange = useCallback(
 		(event) => {
-			setTransferCENNZAddress(event.target.value);
+			setReceiveAddress(event.target.value);
 		},
-		[setTransferCENNZAddress]
+		[setReceiveAddress]
 	);
 
 	const { inputRef: cennzAddressInputRef } = useAddressValidation(
-		transferCENNZAddress,
+		receiveAddress,
 		"CENNZnet"
 	);
 
@@ -47,7 +51,11 @@ const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 				(asset) => !selectedAssetIds.includes(asset.assetId)
 			)
 		);
+		const transferAssets: CENNZAssetBalance[] = selectedAssets.map(
+			(asset) => asset.asset
+		);
 		setDisplayTokens(displayTokenArr);
+		setTransferAssets(transferAssets);
 	}, [selectedAssets]);
 
 	return (
@@ -56,7 +64,7 @@ const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 				<label htmlFor="transferCENNZAddressInput">CENNZnet ADDRESS</label>
 				<AddressInput
 					addressType={"CENNZnet"}
-					value={transferCENNZAddress}
+					value={receiveAddress}
 					onChange={onTransferCENNZAddressChange}
 					id="transferCENNZAddressInput"
 					ref={cennzAddressInputRef}
