@@ -1,10 +1,12 @@
 import {
 	createContext,
+	memo,
 	useContext,
 	useState,
 	SetStateAction,
 	Dispatch,
 	FC,
+	PropsWithChildren,
 } from "react";
 import { CENNZAsset } from "@/types";
 import { fetchSwapAssets } from "@/utils";
@@ -40,7 +42,10 @@ interface SwapProviderProps {
 	supportedAssets: CENNZAsset[];
 }
 
-const SwapProvider: FC<SwapProviderProps> = ({ supportedAssets, children }) => {
+const SwapProvider: FC<PropsWithChildren<SwapProviderProps>> = ({
+	supportedAssets,
+	children,
+}) => {
 	const [exchangeAssets] = useTokensFetcher<CENNZAsset[]>(
 		fetchSwapAssets,
 		supportedAssets
@@ -91,6 +96,6 @@ const SwapProvider: FC<SwapProviderProps> = ({ supportedAssets, children }) => {
 	);
 };
 
-export default SwapProvider;
+export default memo(SwapProvider);
 
 export const useSwap = (): SwapContextType => useContext(SwapContext);

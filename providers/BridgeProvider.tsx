@@ -16,8 +16,10 @@ import {
 import { Balance, fetchUnclaimedWithdrawals } from "@/utils";
 import {
 	createContext,
+	memo,
 	Dispatch,
 	FC,
+	PropsWithChildren,
 	SetStateAction,
 	useCallback,
 	useContext,
@@ -65,7 +67,7 @@ interface BridgeProviderProps {
 	withdrawTokens: BridgedEthereumToken[];
 }
 
-const BridgeProvider: FC<BridgeProviderProps> = ({
+const BridgeProvider: FC<PropsWithChildren<BridgeProviderProps>> = ({
 	depositTokens,
 	withdrawTokens,
 	children,
@@ -165,7 +167,7 @@ const BridgeProvider: FC<BridgeProviderProps> = ({
 	);
 };
 
-export default BridgeProvider;
+export default memo(BridgeProvider);
 
 export function useBridge(): BridgeContextType {
 	return useContext(BridgeContext);

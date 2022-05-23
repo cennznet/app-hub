@@ -17,7 +17,7 @@ import MetaMaskExtensionProvider from "@/providers/MetaMaskExtensionProvider";
 import { API_URL, VERCEL_URL } from "@/constants";
 import MetaMaskWalletProvider from "@/providers/MetaMaskWalletProvider";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { memo, useEffect } from "react";
 import { trackPageView } from "@/utils";
 import { DefaultSeo } from "next-seo";
 import WalletProvider from "@/providers/WalletProvider";
@@ -84,4 +84,4 @@ function MyApp({ Component, pageProps }: MyAppProps) {
 	);
 }
 
-export default MyApp;
+export default memo(MyApp);

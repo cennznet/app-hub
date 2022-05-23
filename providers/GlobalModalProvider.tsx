@@ -1,5 +1,6 @@
 import {
 	createContext,
+	memo,
 	PropsWithChildren,
 	useCallback,
 	useContext,
@@ -30,9 +31,7 @@ const GlobalModalContext = createContext<GlobalModalContext>(
 
 type ProviderProps = {};
 
-export default function GlobalModalProvider({
-	children,
-}: PropsWithChildren<ProviderProps>) {
+function GlobalModalProvider({ children }: PropsWithChildren<ProviderProps>) {
 	const [modalOpened, setModalOpened] = useState<{ resolve: () => void }>();
 	const onModalRequestClose = useCallback(() => {
 		setModalOpened((previous) => {
@@ -73,6 +72,8 @@ export default function GlobalModalProvider({
 		</>
 	);
 }
+
+export default memo(GlobalModalProvider);
 
 export function useGlobalModal(): GlobalModalContext {
 	return useContext(GlobalModalContext);

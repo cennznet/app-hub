@@ -1,4 +1,4 @@
-import { FC, useMemo } from "react";
+import { FC, memo, PropsWithChildren, useMemo } from "react";
 import {
 	ThemeProvider as MuiThemeProvider,
 	createTheme,
@@ -87,7 +87,9 @@ const config = {
 	},
 } as Partial<Theme>;
 
-const ThemeProvider: FC<{}> = (props) => {
+interface ThemeProviderProps {}
+
+const ThemeProvider: FC<PropsWithChildren<ThemeProviderProps>> = (props) => {
 	const section = useSectionUri();
 	const theme = useMemo<Theme>(() => {
 		return createTheme({
@@ -130,4 +132,4 @@ const ThemeProvider: FC<{}> = (props) => {
 	return <MuiThemeProvider {...props} theme={theme} />;
 };
 
-export default ThemeProvider;
+export default memo(ThemeProvider);

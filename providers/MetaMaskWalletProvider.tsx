@@ -2,6 +2,8 @@ import { useMetaMaskExtension } from "@/providers/MetaMaskExtensionProvider";
 import {
 	createContext,
 	FC,
+	memo,
+	PropsWithChildren,
 	useCallback,
 	useContext,
 	useEffect,
@@ -22,9 +24,9 @@ const MetaMaskWalletContext = createContext<MetaMaskWalletContextType>(
 
 interface MetaMaskWalletProviderProps {}
 
-const MetaMaskWalletProvider: FC<MetaMaskWalletProviderProps> = ({
-	children,
-}) => {
+const MetaMaskWalletProvider: FC<
+	PropsWithChildren<MetaMaskWalletProviderProps>
+> = ({ children }) => {
 	const { extension, promptInstallExtension } = useMetaMaskExtension();
 	const [wallet, setWallet] =
 		useState<MetaMaskWalletContextType["wallet"]>(null);
@@ -92,7 +94,7 @@ const MetaMaskWalletProvider: FC<MetaMaskWalletProviderProps> = ({
 	);
 };
 
-export default MetaMaskWalletProvider;
+export default memo(MetaMaskWalletProvider);
 
 export function useMetaMaskWallet(): MetaMaskWalletContextType {
 	return useContext(MetaMaskWalletContext);

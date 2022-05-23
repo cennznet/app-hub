@@ -1,10 +1,12 @@
 import {
 	createContext,
+	memo,
 	FC,
 	SetStateAction,
 	Dispatch,
 	useState,
 	useContext,
+	PropsWithChildren,
 } from "react";
 
 interface MainPanelContextType {
@@ -20,7 +22,7 @@ interface MainPanelProviderProps {
 	defaultTitle: string;
 }
 
-const MainPanelProvider: FC<MainPanelProviderProps> = ({
+const MainPanelProvider: FC<PropsWithChildren<MainPanelProviderProps>> = ({
 	children,
 	defaultTitle,
 }) => {
@@ -33,7 +35,7 @@ const MainPanelProvider: FC<MainPanelProviderProps> = ({
 	);
 };
 
-export default MainPanelProvider;
+export default memo(MainPanelProvider);
 
 export const useMainPanel = (): MainPanelContextType => {
 	return useContext(MainPanelContext);

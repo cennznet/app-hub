@@ -1,6 +1,8 @@
 import {
 	createContext,
+	memo,
 	FC,
+	PropsWithChildren,
 	useCallback,
 	useContext,
 	useEffect,
@@ -21,9 +23,9 @@ const MetaMaskExtensionContext = createContext<MetaMaskExtensionContextType>(
 
 interface MetaMaskExtensionProviderProps {}
 
-const MetaMaskExtensionProvider: FC<MetaMaskExtensionProviderProps> = ({
-	children,
-}) => {
+const MetaMaskExtensionProvider: FC<
+	PropsWithChildren<MetaMaskExtensionProviderProps>
+> = ({ children }) => {
 	const { browser } = useUserAgent();
 	const [extension, setExtension] =
 		useState<MetaMaskExtensionContextType["extension"]>();
@@ -56,7 +58,7 @@ const MetaMaskExtensionProvider: FC<MetaMaskExtensionProviderProps> = ({
 	);
 };
 
-export default MetaMaskExtensionProvider;
+export default memo(MetaMaskExtensionProvider);
 
 export function useMetaMaskExtension(): MetaMaskExtensionContextType {
 	return useContext(MetaMaskExtensionContext);

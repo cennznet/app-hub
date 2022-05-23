@@ -1,12 +1,14 @@
 import { CENNZAsset, PoolAction } from "@/types";
 import {
 	createContext,
+	memo,
 	Dispatch,
 	FC,
 	SetStateAction,
 	useContext,
 	useState,
 	useEffect,
+	PropsWithChildren,
 } from "react";
 import {
 	useTokenInput,
@@ -49,7 +51,10 @@ interface PoolProviderProps {
 	supportedAssets: CENNZAsset[];
 }
 
-const PoolProvider: FC<PoolProviderProps> = ({ supportedAssets, children }) => {
+const PoolProvider: FC<PropsWithChildren<PoolProviderProps>> = ({
+	supportedAssets,
+	children,
+}) => {
 	const [tradeAssets] = useState<CENNZAsset[]>(
 		supportedAssets.filter((asset) => asset.assetId !== CPAY_ASSET_ID)
 	);
@@ -114,7 +119,7 @@ const PoolProvider: FC<PoolProviderProps> = ({ supportedAssets, children }) => {
 	);
 };
 
-export default PoolProvider;
+export default memo(PoolProvider);
 
 export const usePool = (): PoolContextType => {
 	return useContext(PoolContext);
