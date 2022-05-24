@@ -49,7 +49,7 @@ const TransferAsset: VFC<IntrinsicElements["div"] & TransferAssetProps> = ({
 		};
 		newTransferAsset.asset.value = Balance.fromInput(
 			assetTokenInput.value,
-			asset
+			selectedAsset
 		);
 		const selectedAssetClone = [...selectedAssets];
 		const currentAssetIdx = selectedAssetClone.findIndex(
@@ -65,7 +65,7 @@ const TransferAsset: VFC<IntrinsicElements["div"] & TransferAssetProps> = ({
 	}, [assetTokenInput.value, assetTokenSelect.tokenId]);
 
 	const onAssetMaxRequest = useMemo(() => {
-		if (!asset) return;
+		if (!selectedAsset) return;
 		const setAssetValue = assetTokenInput.setValue;
 		return () => setAssetValue(assetBalance.toBalance());
 	}, [assetBalance, assetTokenInput.setValue]);
