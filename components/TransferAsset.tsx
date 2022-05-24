@@ -86,8 +86,8 @@ const TransferAsset: VFC<IntrinsicElements["div"] & TransferAssetProps> = ({
 				tokens={tokens}
 				ref={assetInputRef}
 				required
-				scale={asset.decimals}
-				min={Balance.fromString("1", asset).toInput()}
+				scale={selectedAsset.decimals}
+				min={Balance.fromString("1", selectedAsset).toInput()}
 			/>
 			{!!assetBalance && (
 				<div css={styles.tokenBalance}>
