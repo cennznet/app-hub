@@ -1,4 +1,4 @@
-import { FC, useCallback, useEffect, useState } from "react";
+import { FC, memo, useCallback, useEffect, useState } from "react";
 import { IntrinsicElements } from "@/types";
 import SubmitButton from "@/components/shared/SubmitButton";
 import { css } from "@emotion/react";
@@ -73,7 +73,7 @@ const BridgeForm: FC<IntrinsicElements["form"] & BridgeFormProps> = ({
 	);
 };
 
-export default BridgeForm;
+export default memo(BridgeForm);
 
 const styles = {
 	root: css`

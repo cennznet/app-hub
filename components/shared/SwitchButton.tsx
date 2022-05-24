@@ -1,9 +1,13 @@
-import { FC, ComponentProps, useState, useCallback } from "react";
+import { FC, ComponentProps, useState, useCallback, memo } from "react";
 import { css } from "@emotion/react";
 import SwapHoriz from "@mui/icons-material/SwapHoriz";
 import { Theme } from "@mui/material";
 
-const SwapButton: FC<{ vertical?: boolean } & ComponentProps<"button">> = ({
+interface SwapButtonProps {
+	vertical?: boolean;
+}
+
+const SwapButton: FC<SwapButtonProps & ComponentProps<"button">> = ({
 	vertical = false,
 	onClick,
 	...props
@@ -29,7 +33,7 @@ const SwapButton: FC<{ vertical?: boolean } & ComponentProps<"button">> = ({
 	);
 };
 
-export default SwapButton;
+export default memo(SwapButton);
 
 const styles = {
 	root: css`

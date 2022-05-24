@@ -1,6 +1,6 @@
 import { BridgedEthereumToken, IntrinsicElements } from "@/types";
 import { css } from "@emotion/react";
-import { useCallback, useEffect, useMemo, VFC } from "react";
+import { memo, useCallback, useEffect, useMemo, FC } from "react";
 import TokenInput from "@/components/shared/TokenInput";
 import { LinearProgress, Theme } from "@mui/material";
 import { useBridge } from "@/providers/BridgeProvider";
@@ -14,7 +14,7 @@ import { useWalletProvider } from "@/providers/WalletProvider";
 
 interface BridgeTokenDestinationProps {}
 
-const BridgeTokenDestination: VFC<
+const BridgeTokenDestination: FC<
 	IntrinsicElements["div"] & BridgeTokenDestinationProps
 > = (props) => {
 	const {
@@ -168,7 +168,7 @@ const BridgeTokenDestination: VFC<
 	);
 };
 
-export default BridgeTokenDestination;
+export default memo(BridgeTokenDestination);
 
 const styles = {
 	root: css``,

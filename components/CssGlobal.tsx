@@ -1,11 +1,11 @@
-import { VFC } from "react";
+import { FC } from "react";
 import { css } from "@emotion/react";
 import { GlobalStyles } from "@mui/material";
 import { Theme } from "@mui/material";
 
 const globalStyles = (
 	<GlobalStyles
-		styles={({ palette, transitions, shadows }: Theme) => css`
+		styles={({ palette, transitions }: Theme) => css`
 			html {
 				scroll-behavior: smooth;
 				-webkit-font-smoothing: antialiased;
@@ -142,7 +142,7 @@ const globalStyles = (
 	/>
 );
 
-const CssGlobal: VFC<{}> = () => {
+const CssGlobal: FC = () => {
 	return globalStyles;
 };
 

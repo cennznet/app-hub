@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, memo } from "react";
 import { Select, SelectProps, Theme } from "@mui/material";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import { css } from "@emotion/react";
@@ -22,6 +22,8 @@ const SelectInput: FC<SelectProps & SelectInputProps> = ({
 		/>
 	);
 };
+
+export default memo(SelectInput);
 
 const styles = {
 	root: css``,
@@ -50,5 +52,3 @@ const styles = {
 		}
 	`,
 };
-
-export default SelectInput;

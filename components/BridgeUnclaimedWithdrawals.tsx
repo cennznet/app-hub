@@ -1,4 +1,4 @@
-import { useEffect, useState, VFC } from "react";
+import { memo, useEffect, useState, FC } from "react";
 import { css } from "@emotion/react";
 import {
 	LinearProgress,
@@ -15,7 +15,7 @@ import { getMinutesAndSeconds } from "@/utils";
 import { useBridge } from "@/providers/BridgeProvider";
 import { WithdrawClaim } from "@/types";
 
-const BridgeUnclaimedWithdrawals: VFC = () => {
+const BridgeUnclaimedWithdrawals: FC = () => {
 	const { unclaimedWithdrawals } = useBridge();
 	const processHistoricalRequest = useHistoricalWithdrawRequest();
 
@@ -72,9 +72,11 @@ const BridgeUnclaimedWithdrawals: VFC = () => {
 
 export default BridgeUnclaimedWithdrawals;
 
-const EntryCell: VFC<{ withdrawClaim: WithdrawClaim }> = ({
-	withdrawClaim,
-}) => {
+interface EntryCellProps {
+	withdrawClaim: WithdrawClaim;
+}
+
+const EntryCellImpl: FC<EntryCellProps> = ({ withdrawClaim }) => {
 	const [expiry, setExpiry] = useState<string>("");
 	const [seconds, setSeconds] = useState<number>(0);
 	const {
@@ -123,6 +125,8 @@ const EntryCell: VFC<{ withdrawClaim: WithdrawClaim }> = ({
 		</TableCell>
 	);
 };
+
+const EntryCell = memo(EntryCellImpl);
 
 const styles = {
 	container: ({ palette }: Theme) => css`

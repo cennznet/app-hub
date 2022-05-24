@@ -1,4 +1,4 @@
-import { VFC } from "react";
+import { FC, memo } from "react";
 import { IntrinsicElements } from "@/types";
 import { css } from "@emotion/react";
 import {
@@ -14,7 +14,7 @@ import { useSwap } from "@/providers/SwapProvider";
 
 interface SwapSettingsProps {}
 
-const SwapSettings: VFC<IntrinsicElements["div"] & SwapSettingsProps> = (
+const SwapSettings: FC<IntrinsicElements["div"] & SwapSettingsProps> = (
 	props
 ) => {
 	const { slippage, setSlippage } = useSwap();
@@ -52,7 +52,7 @@ const SwapSettings: VFC<IntrinsicElements["div"] & SwapSettingsProps> = (
 	);
 };
 
-export default SwapSettings;
+export default memo(SwapSettings);
 
 const styles = {
 	root: css`

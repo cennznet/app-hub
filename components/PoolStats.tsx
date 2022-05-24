@@ -1,6 +1,6 @@
 import { IntrinsicElements } from "@/types";
 import { css } from "@emotion/react";
-import { VFC } from "react";
+import { FC, memo } from "react";
 import { LinearProgress, Tooltip, Theme } from "@mui/material";
 import { usePool } from "@/providers/PoolProvider";
 import { Balance } from "@/utils";
@@ -13,7 +13,7 @@ import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 
 interface PoolStatsProps {}
 
-const PoolStats: VFC<IntrinsicElements["div"] & PoolStatsProps> = (props) => {
+const PoolStats: FC<IntrinsicElements["div"] & PoolStatsProps> = (props) => {
 	const {
 		tradeAsset,
 		tradeInput,
@@ -154,7 +154,7 @@ const PoolStats: VFC<IntrinsicElements["div"] & PoolStatsProps> = (props) => {
 	);
 };
 
-export default PoolStats;
+export default memo(PoolStats);
 
 const styles = {
 	root: ({ palette }: Theme) => css`

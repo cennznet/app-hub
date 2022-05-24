@@ -1,4 +1,4 @@
-import { useCallback, VFC } from "react";
+import { useCallback, FC } from "react";
 import { css } from "@emotion/react";
 import { Theme } from "@mui/material";
 import { useWalletProvider } from "@/providers/WalletProvider";
@@ -8,7 +8,7 @@ import { WalletOption } from "@/types";
 import { useMetaMaskWallet } from "@/providers/MetaMaskWalletProvider";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 
-const WalletSelect: VFC = () => {
+const WalletSelect: FC = () => {
 	const { setSelectedWallet } = useWalletProvider();
 	const { connectWallet: connectCENNZWallet } = useCENNZWallet();
 	const { connectWallet: connectMetaMaskWallet } = useMetaMaskWallet();
@@ -59,7 +59,7 @@ const WalletSelect: VFC = () => {
 export default WalletSelect;
 
 const styles = {
-	modalContent: ({ palette }: Theme) => css`
+	modalContent: css`
 		position: absolute;
 		top: calc(4em + 48px);
 		right: 3em;

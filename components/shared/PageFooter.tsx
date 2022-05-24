@@ -1,9 +1,9 @@
-import { VFC } from "react";
+import { FC } from "react";
 import { COMMIT_SHA, APP_VERSION } from "@/constants";
 import { css } from "@emotion/react";
 import { Theme } from "@mui/material";
 
-const PageFooter: VFC<{}> = () => {
+const PageFooter: FC = () => {
 	const shortenCommitSha = COMMIT_SHA ? COMMIT_SHA.substring(0, 10) : "";
 
 	return (

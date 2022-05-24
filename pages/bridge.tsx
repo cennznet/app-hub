@@ -1,5 +1,5 @@
 import { Api } from "@cennznet/api";
-import { VFC } from "react";
+import { FC, memo } from "react";
 import { API_URL } from "@/constants";
 import BridgeActionsPair from "@/components/BridgeActionsPair";
 import BridgeForm from "@/components/BridgeForm";
@@ -23,10 +23,12 @@ export async function getStaticProps() {
 	};
 }
 
-const Bridge: VFC<{
+interface BridgeProps {
 	depositTokens: EthereumToken[];
 	withdrawTokens: BridgedEthereumToken[];
-}> = ({ depositTokens, withdrawTokens }) => {
+}
+
+const Bridge: FC<BridgeProps> = ({ depositTokens, withdrawTokens }) => {
 	return (
 		<BridgeProvider
 			depositTokens={depositTokens}
@@ -45,4 +47,4 @@ const Bridge: VFC<{
 	);
 };
 
-export default Bridge;
+export default memo(Bridge);

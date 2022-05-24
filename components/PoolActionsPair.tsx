@@ -1,6 +1,6 @@
 import { IntrinsicElements } from "@/types";
 import { css } from "@emotion/react";
-import { useCallback, useEffect, useState, VFC } from "react";
+import { useCallback, useEffect, useState, FC, memo } from "react";
 import SwitchButton from "@/components/shared/SwitchButton";
 import { MenuItem, Theme } from "@mui/material";
 import { usePool } from "@/providers/PoolProvider";
@@ -8,7 +8,7 @@ import SelectInput from "@/components/shared/SelectInput";
 
 interface PoolActionsPairProps {}
 
-const PoolActionsPair: VFC<IntrinsicElements["div"] & PoolActionsPairProps> = (
+const PoolActionsPair: FC<IntrinsicElements["div"] & PoolActionsPairProps> = (
 	props
 ) => {
 	const selectOptions = [
@@ -123,7 +123,7 @@ const PoolActionsPair: VFC<IntrinsicElements["div"] & PoolActionsPairProps> = (
 	);
 };
 
-export default PoolActionsPair;
+export default memo(PoolActionsPair);
 
 const styles = {
 	root: css`

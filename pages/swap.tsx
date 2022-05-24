@@ -10,7 +10,7 @@ import SwapStats from "@/components/SwapStats";
 import SwapSettings from "@/components/SwapSettings";
 import SwapProgress from "@/components/SwapProgress";
 import MainPanel from "@/components/MainPanel";
-import { VFC } from "react";
+import { memo, FC } from "react";
 import { NextSeo } from "next-seo";
 
 export async function getStaticProps() {
@@ -24,7 +24,11 @@ export async function getStaticProps() {
 	};
 }
 
-const Swap: VFC<{ supportedAssets: CENNZAsset[] }> = ({ supportedAssets }) => {
+interface SwapProps {
+	supportedAssets: CENNZAsset[];
+}
+
+const Swap: FC<SwapProps> = ({ supportedAssets }) => {
 	return (
 		<SwapProvider supportedAssets={supportedAssets}>
 			<NextSeo title="CENNZX Exchange" />
@@ -40,4 +44,4 @@ const Swap: VFC<{ supportedAssets: CENNZAsset[] }> = ({ supportedAssets }) => {
 	);
 };
 
-export default Swap;
+export default memo(Swap);

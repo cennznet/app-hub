@@ -1,5 +1,5 @@
 import { IntrinsicElements } from "@/types";
-import { FC } from "react";
+import { FC, memo } from "react";
 import MainPanelProvider from "@/providers/MainPanelProvider";
 import { css } from "@emotion/react";
 import { Theme } from "@mui/material";
@@ -24,7 +24,7 @@ const MainPanel: FC<IntrinsicElements["div"] & MainPanel> = ({
 	);
 };
 
-export default MainPanel;
+export default memo(MainPanel);
 
 const styles = {
 	root: ({ shadows }: Theme) => css`

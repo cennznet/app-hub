@@ -1,4 +1,4 @@
-import { useEffect, VFC } from "react";
+import { useEffect, FC, memo } from "react";
 import { IntrinsicElements } from "@/types";
 import { LinearProgress, Tooltip, Theme } from "@mui/material";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
@@ -9,15 +9,9 @@ import { useSwapExchangeRate, useSwapGasFee } from "@/hooks";
 
 interface SwapStatsProps {}
 
-const SwapStats: VFC<IntrinsicElements["div"] & SwapStatsProps> = (props) => {
-	const {
-		exchangeInput,
-		exchangeAsset,
-		receiveAsset,
-		slippage,
-		txStatus,
-		receiveInput,
-	} = useSwap();
+const SwapStats: FC<IntrinsicElements["div"] & SwapStatsProps> = (props) => {
+	const { exchangeAsset, receiveAsset, slippage, txStatus, receiveInput } =
+		useSwap();
 
 	const { exchangeRate, updatingExchangeRate, updateExchangeRate } =
 		useSwapExchangeRate("1");
@@ -89,7 +83,7 @@ const SwapStats: VFC<IntrinsicElements["div"] & SwapStatsProps> = (props) => {
 	);
 };
 
-export default SwapStats;
+export default memo(SwapStats);
 
 const styles = {
 	root: ({ palette }: Theme) => css`

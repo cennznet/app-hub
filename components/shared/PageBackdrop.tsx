@@ -7,7 +7,7 @@ import BackdropPoolGraphicsSVG from "@/assets/vectors/backdrop-pool-graphics.svg
 import BackdropBridgeGraphicsSVG from "@/assets/vectors/backdrop-bridge-graphics.svg";
 import BackdropSheerSVG from "@/assets/vectors/backdrop-sheer.svg";
 
-const PageBackdrop: FC<{}> = () => {
+const PageBackdrop: FC = () => {
 	const section = useSectionUri();
 	const ref0 = useRef<HTMLDivElement>();
 	const ref1 = useRef<HTMLDivElement>();
@@ -81,7 +81,7 @@ const PageBackdrop: FC<{}> = () => {
 
 export default PageBackdrop;
 
-const Layer1: FC<{}> = () => {
+const Layer1: FC = () => {
 	return (
 		<svg
 			width="1155"

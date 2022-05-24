@@ -1,7 +1,7 @@
 import { useBridge } from "@/providers/BridgeProvider";
 import { IntrinsicElements } from "@/types";
 import { css } from "@mui/material";
-import { useCallback, useEffect, useState, VFC } from "react";
+import { useCallback, useEffect, useState, FC, memo } from "react";
 import SelectInput from "@/components/shared/SelectInput";
 import SwitchButton from "@/components/shared/SwitchButton";
 import { MenuItem, Theme } from "@mui/material";
@@ -9,7 +9,7 @@ import { useUpdateCENNZBalances } from "@/hooks";
 
 interface BridgeActionsPairProps {}
 
-const BridgeActionsPair: VFC<
+const BridgeActionsPair: FC<
 	IntrinsicElements["div"] & BridgeActionsPairProps
 > = (props) => {
 	const selectOptions = [
@@ -128,7 +128,7 @@ const BridgeActionsPair: VFC<
 	);
 };
 
-export default BridgeActionsPair;
+export default memo(BridgeActionsPair);
 
 const styles = {
 	root: css`

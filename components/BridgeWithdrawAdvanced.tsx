@@ -1,4 +1,4 @@
-import { useEffect, useState, VFC } from "react";
+import { useEffect, useState, FC, memo } from "react";
 import { IntrinsicElements } from "@/types";
 import { css } from "@emotion/react";
 import {
@@ -14,7 +14,7 @@ import BridgeUnclaimedWithdrawals from "@/components/BridgeUnclaimedWithdrawals"
 
 interface BridgeAdvancedProps {}
 
-const BridgeWithdrawAdvanced: VFC<
+const BridgeWithdrawAdvanced: FC<
 	IntrinsicElements["div"] & BridgeAdvancedProps
 > = ({ ...props }) => {
 	const {
@@ -27,7 +27,7 @@ const BridgeWithdrawAdvanced: VFC<
 	const [firstRender, setFirstRender] = useState<boolean>(true);
 
 	useEffect(() => {
-		if (expanded || firstRender) updateUnclaimedWithdrawals();
+		if (expanded || firstRender) void updateUnclaimedWithdrawals();
 	}, [expanded, firstRender, updateUnclaimedWithdrawals]);
 
 	useEffect(() => {
@@ -63,7 +63,7 @@ const BridgeWithdrawAdvanced: VFC<
 	);
 };
 
-export default BridgeWithdrawAdvanced;
+export default memo(BridgeWithdrawAdvanced);
 
 const styles = {
 	root: css`

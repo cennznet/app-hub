@@ -2,11 +2,11 @@ import { useBridgeGasFee, useBridgeVerificationFee } from "@/hooks";
 import { useBridge } from "@/providers/BridgeProvider";
 import { IntrinsicElements } from "@/types";
 import { css, LinearProgress, Theme } from "@mui/material";
-import { VFC } from "react";
+import { FC, memo } from "react";
 
 interface BridgeStatsProps {}
 
-const BridgeStats: VFC<IntrinsicElements["div"] & BridgeStatsProps> = (
+const BridgeStats: FC<IntrinsicElements["div"] & BridgeStatsProps> = (
 	props
 ) => {
 	const { gasFee, updatingGasFee } = useBridgeGasFee();
@@ -59,7 +59,7 @@ const BridgeStats: VFC<IntrinsicElements["div"] & BridgeStatsProps> = (
 	);
 };
 
-export default BridgeStats;
+export default memo(BridgeStats);
 
 const styles = {
 	root: ({ palette }: Theme) => css`

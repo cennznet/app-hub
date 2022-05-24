@@ -8,6 +8,7 @@ import {
 import { css } from "@emotion/react";
 import ModalBackdrop from "@/components/shared/ModalBackdrop";
 import StandardButton from "@/components/shared/StandardButton";
+import { memo, FC } from "react";
 
 interface GlobalModalProps {
 	isOpen: boolean;
@@ -19,7 +20,7 @@ interface GlobalModalProps {
 	shouldCloseOnOverlayClick?: boolean;
 }
 
-const GlobalModal: React.FC<GlobalModalProps> = ({
+const GlobalModal: FC<GlobalModalProps> = ({
 	isOpen,
 	title,
 	message,
@@ -54,7 +55,7 @@ const GlobalModal: React.FC<GlobalModalProps> = ({
 	);
 };
 
-export default GlobalModal;
+export default memo(GlobalModal);
 
 export const styles = {
 	root: css`

@@ -4,7 +4,7 @@ import {
 	SubmittableExtrinsic,
 } from "@/types";
 import { css } from "@emotion/react";
-import { FC, useCallback, useEffect, useState, useMemo } from "react";
+import { FC, useCallback, useEffect, useState, useMemo, memo } from "react";
 import SubmitButton from "@/components/shared/SubmitButton";
 import { Theme } from "@mui/material";
 import { usePool } from "@/providers/PoolProvider";
@@ -192,7 +192,7 @@ const PoolForm: FC<IntrinsicElements["form"] & PoolFormProps> = ({
 	);
 };
 
-export default PoolForm;
+export default memo(PoolForm);
 
 const styles = {
 	root: css`

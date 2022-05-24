@@ -1,10 +1,12 @@
-import { FC } from "react";
+import { FC, memo, PropsWithChildren } from "react";
 import { css } from "@emotion/react";
 import { Modal } from "@mui/material";
 import ModalBackdrop from "@/components/shared/ModalBackdrop";
 import { useWalletProvider } from "@/providers/WalletProvider";
 
-const WalletModal: FC = ({ children }) => {
+interface WalletModalProps {}
+
+const WalletModal: FC<PropsWithChildren<WalletModalProps>> = ({ children }) => {
 	const { walletOpen, setWalletOpen } = useWalletProvider();
 
 	const closeWallet = () => setWalletOpen(false);
@@ -14,7 +16,6 @@ const WalletModal: FC = ({ children }) => {
 			open={walletOpen}
 			css={styles.modalRoot}
 			BackdropComponent={ModalBackdrop}
-			onBackdropClick={closeWallet}
 			onClose={closeWallet}
 		>
 			<div>{children}</div>
@@ -22,7 +23,7 @@ const WalletModal: FC = ({ children }) => {
 	);
 };
 
-export default WalletModal;
+export default memo(WalletModal);
 
 export const styles = {
 	modalRoot: css`

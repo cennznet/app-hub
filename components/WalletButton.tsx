@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { FC, useMemo } from "react";
 import { css } from "@emotion/react";
 import { useCENNZWallet } from "@/providers/CENNZWalletProvider";
 import WalletModal from "@/components/WalletModal";
@@ -13,7 +13,7 @@ import Jazzicon, { jsNumberForAddress } from "react-jazzicon";
 
 type WalletState = "Connected" | "Connecting" | "NotConnected";
 
-const WalletButton: React.FC = () => {
+const WalletButton: FC = () => {
 	const { walletOpen, setWalletOpen, selectedWallet } = useWalletProvider();
 	const { selectedAccount: cennzAccount } = useCENNZWallet();
 	const { selectedAccount: metaMaskAccount } = useMetaMaskWallet();

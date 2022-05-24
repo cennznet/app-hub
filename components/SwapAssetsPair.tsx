@@ -1,4 +1,4 @@
-import { VFC, useEffect, useCallback, useMemo } from "react";
+import { FC, useEffect, useCallback, useMemo, memo } from "react";
 import { IntrinsicElements } from "@/types";
 import TokenInput from "@/components/shared/TokenInput";
 import { css } from "@emotion/react";
@@ -14,7 +14,7 @@ import { Balance } from "@/utils";
 
 interface SwapAssetsPairProps {}
 
-const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
+const SwapAssetsPair: FC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
 	props
 ) => {
 	const {
@@ -155,7 +155,7 @@ const SwapAssetsPair: VFC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
 	);
 };
 
-export default SwapAssetsPair;
+export default memo(SwapAssetsPair);
 
 const styles = {
 	root: css``,

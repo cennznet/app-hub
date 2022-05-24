@@ -1,4 +1,4 @@
-import { VFC, ReactNode } from "react";
+import { FC, memo, ReactNode } from "react";
 import { IntrinsicElements } from "@/types";
 import { css } from "@emotion/react";
 import { useSwap } from "@/providers/SwapProvider";
@@ -13,9 +13,7 @@ import { useBeforeUnload } from "@/hooks";
 
 interface SwapProgressProps {}
 
-const SwapProgress: VFC<IntrinsicElements["div"] & SwapProgressProps> = (
-	props
-) => {
+const SwapProgress: FC<IntrinsicElements["div"] & SwapProgressProps> = () => {
 	const { txStatus, setTxIdle } = useSwap();
 	const { txHashLink, ...txProps } = txStatus?.props ?? {};
 	const dismissible =
@@ -62,7 +60,9 @@ export default SwapProgress;
 
 interface TxPendingProps {}
 
-const TxPending: VFC<IntrinsicElements["div"] & TxPendingProps> = (props) => {
+const TxPendingImpl: FC<IntrinsicElements["div"] & TxPendingProps> = (
+	props
+) => {
 	return (
 		<div {...props}>
 			<CircularProgress size="3em" />
@@ -75,16 +75,17 @@ const TxPending: VFC<IntrinsicElements["div"] & TxPendingProps> = (props) => {
 	);
 };
 
+const TxPending = memo(TxPendingImpl);
+
 interface TxSuccessProps {
 	txHash: string;
 	exchangeValue: Balance;
 	receiveValue: Balance;
 }
 
-const TxSuccess: VFC<IntrinsicElements["div"] & TxSuccessProps> = ({
+const TxSuccessImpl: FC<IntrinsicElements["div"] & TxSuccessProps> = ({
 	exchangeValue,
 	receiveValue,
-	...props
 }) => {
 	return (
 		<div>
@@ -107,11 +108,13 @@ const TxSuccess: VFC<IntrinsicElements["div"] & TxSuccessProps> = ({
 	);
 };
 
+const TxSuccess = memo(TxSuccessImpl);
+
 interface TxFailureProps {
 	errorCode?: string;
 }
 
-const TxFailure: VFC<IntrinsicElements["div"] & TxFailureProps> = ({
+const TxFailureImpl: FC<IntrinsicElements["div"] & TxFailureProps> = ({
 	errorCode,
 	...props
 }) => {
@@ -133,6 +136,8 @@ const TxFailure: VFC<IntrinsicElements["div"] & TxFailureProps> = ({
 		</div>
 	);
 };
+
+const TxFailure = memo(TxFailureImpl);
 
 const styles = {
 	statusSuccess: ({ palette }: Theme) => css`

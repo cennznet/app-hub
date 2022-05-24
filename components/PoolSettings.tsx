@@ -1,4 +1,4 @@
-import { VFC } from "react";
+import { FC, memo } from "react";
 import { IntrinsicElements } from "@/types";
 import { css } from "@emotion/react";
 import {
@@ -14,7 +14,7 @@ import { usePool } from "@/providers/PoolProvider";
 
 interface PoolSettingsProps {}
 
-const PoolSettings: VFC<IntrinsicElements["div"] & PoolSettingsProps> = (
+const PoolSettings: FC<IntrinsicElements["div"] & PoolSettingsProps> = (
 	props
 ) => {
 	const { slippage, setSlippage } = usePool();
@@ -52,7 +52,7 @@ const PoolSettings: VFC<IntrinsicElements["div"] & PoolSettingsProps> = (
 	);
 };
 
-export default PoolSettings;
+export default memo(PoolSettings);
 
 const styles = {
 	root: css`

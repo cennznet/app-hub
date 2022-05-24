@@ -5,7 +5,7 @@ import { API_URL } from "@/constants";
 import generateGlobalProps from "@/utils/generateGlobalProps";
 import MainPanel from "@/components/MainPanel";
 import PoolProvider from "@/providers/PoolProvider";
-import { VFC } from "react";
+import { FC, memo } from "react";
 import PoolForm from "@/components/PoolForm";
 import PoolActionsPair from "@/components/PoolActionsPair";
 import PoolAssetsPair from "@/components/PoolAssetsPair";
@@ -25,7 +25,11 @@ export async function getStaticProps() {
 	};
 }
 
-const Pool: VFC<{ supportedAssets: CENNZAsset[] }> = ({ supportedAssets }) => {
+interface PoolProps {
+	supportedAssets: CENNZAsset[];
+}
+
+const Pool: FC<PoolProps> = ({ supportedAssets }) => {
 	return (
 		<PoolProvider supportedAssets={supportedAssets}>
 			<NextSeo title="CENNZX Liquidity" />
@@ -42,4 +46,4 @@ const Pool: VFC<{ supportedAssets: CENNZAsset[] }> = ({ supportedAssets }) => {
 	);
 };
 
-export default Pool;
+export default memo(Pool);

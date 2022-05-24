@@ -1,4 +1,4 @@
-import { VFC, ReactNode } from "react";
+import { FC, memo, ReactNode } from "react";
 import { IntrinsicElements } from "@/types";
 import { css } from "@emotion/react";
 import { usePool } from "@/providers/PoolProvider";
@@ -13,9 +13,7 @@ import { useBeforeUnload } from "@/hooks";
 
 interface PoolProgressProps {}
 
-const PoolProgress: VFC<IntrinsicElements["div"] & PoolProgressProps> = (
-	props
-) => {
+const PoolProgress: FC<IntrinsicElements["div"] & PoolProgressProps> = () => {
 	const { txStatus, setTxIdle } = usePool();
 	const { txHashLink, ...txProps } = txStatus?.props ?? {};
 	const dismissible =
@@ -64,7 +62,9 @@ export default PoolProgress;
 
 interface TxPendingProps {}
 
-const TxPending: VFC<IntrinsicElements["div"] & TxPendingProps> = (props) => {
+const TxPendingImpl: FC<IntrinsicElements["div"] & TxPendingProps> = (
+	props
+) => {
 	return (
 		<div {...props}>
 			<CircularProgress size="3em" />
@@ -77,15 +77,16 @@ const TxPending: VFC<IntrinsicElements["div"] & TxPendingProps> = (props) => {
 	);
 };
 
+const TxPending = memo(TxPendingImpl);
+
 interface TxSuccessProps {
 	tradeValue: Balance;
 	coreValue: Balance;
 }
 
-const TxSuccess: VFC<IntrinsicElements["div"] & TxSuccessProps> = ({
+const TxSuccessImpl: FC<IntrinsicElements["div"] & TxSuccessProps> = ({
 	tradeValue,
 	coreValue,
-	...props
 }) => {
 	const { poolAction } = usePool();
 
@@ -110,11 +111,13 @@ const TxSuccess: VFC<IntrinsicElements["div"] & TxSuccessProps> = ({
 	);
 };
 
+const TxSuccess = memo(TxSuccessImpl);
+
 interface TxFailureProps {
 	errorCode?: string;
 }
 
-const TxFailure: VFC<IntrinsicElements["div"] & TxFailureProps> = ({
+const TxFailureImpl: FC<IntrinsicElements["div"] & TxFailureProps> = ({
 	errorCode,
 	...props
 }) => {
@@ -136,6 +139,8 @@ const TxFailure: VFC<IntrinsicElements["div"] & TxFailureProps> = ({
 		</div>
 	);
 };
+
+const TxFailure = memo(TxFailureImpl);
 
 const styles = {
 	statusSuccess: ({ palette }: Theme) => css`

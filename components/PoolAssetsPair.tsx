@@ -1,7 +1,7 @@
 import { usePool } from "@/providers/PoolProvider";
 import { IntrinsicElements } from "@/types";
 import { css } from "@emotion/react";
-import { VFC, useMemo, useEffect } from "react";
+import { FC, useMemo, useEffect, memo } from "react";
 import TokenInput from "@/components/shared/TokenInput";
 import {
 	useCENNZBalances,
@@ -14,7 +14,7 @@ import { Balance } from "@/utils";
 
 interface PoolAssetsPairProps {}
 
-const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
+const PoolAssetsPair: FC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 	props
 ) => {
 	const {
@@ -162,7 +162,7 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 	);
 };
 
-export default PoolAssetsPair;
+export default memo(PoolAssetsPair);
 
 const styles = {
 	root: css``,

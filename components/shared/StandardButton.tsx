@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import { Theme } from "@mui/material";
-import { FC } from "react";
+import { FC, memo } from "react";
 import { IntrinsicElements } from "@/types";
 
 interface StandardButtonProps {
@@ -18,7 +18,7 @@ const StandardButton: FC<IntrinsicElements["button"] & StandardButtonProps> = ({
 	);
 };
 
-export default StandardButton;
+export default memo(StandardButton);
 
 const styles = {
 	root: ({ transitions }: Theme) => css`
@@ -48,7 +48,7 @@ const styles = {
 		border: 1px solid white;
 		color: ${palette.grey["600"]};
 
-		&: hover {
+		&:hover {
 			background-color: white;
 			color: ${palette.primary.main};
 		}

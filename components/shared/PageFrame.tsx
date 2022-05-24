@@ -4,7 +4,7 @@ import { Theme } from "@mui/material";
 import Link from "next/link";
 import CENNZLogoSVG from "@/assets/vectors/cennznet-logo.svg";
 
-const PageFrame: FC<{}> = () => {
+const PageFrame: FC = () => {
 	return (
 		<div css={styles.container}>
 			<Link href="/">
