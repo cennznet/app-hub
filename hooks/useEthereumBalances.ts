@@ -17,7 +17,7 @@ export default function useEthereumBalances(
 		if (!wallet || !selectedAccount?.address || connectedChain !== "Ethereum")
 			return;
 
-		return async () => {
+		return () => {
 			fetchEthereumBalance(wallet, selectedAccount.address, token1).then(
 				setBalance1
 			);
