@@ -35,7 +35,7 @@ class MyDocument extends Document {
 						href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,600&display=swap"
 					/>
 					<meta name="description" content="App Hub powered by CENNZnet" />
-					<link rel="icon" href="libs/public/favicon.svg" />
+					<link rel="icon" href="/favicon.svg" />
 				</Head>
 				<body>
 					<Main />
