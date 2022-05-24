@@ -10,21 +10,25 @@ module.exports = {
 		"^.+\\.module\\.(css|sass|scss)$": "identity-obj-proxy",
 
 		// Handle CSS imports (without CSS modules)
-		"^.+\\.(css|sass|scss)$": "<rootDir>/__mocks__/styleMock.js",
+		"^.+\\.(css|sass|scss)$": "<rootDir>/libs/utils/__mocks__/styleMock.js",
 
 		// Handle image imports
 		// https://jestjs.io/docs/webpack#handling-static-assets
-		"^.+\\.(jpg|jpeg|png|gif|webp|avif|svg)$": `<rootDir>/__mocks__/fileMock.js`,
+		"^.+\\.(jpg|jpeg|png|gif|webp|avif|svg)$": `<rootDir>/libs/utils/__mocks__/fileMock.js`,
 
 		// Handle module aliases
 		"^@/(.*)$": "<rootDir>/$1",
+		"^@artifacts/(.*)$": "<rootDir>/libs/artifacts/$1",
+		"^@providers/(.*)$": "<rootDir>/libs/providers/$1",
+		"^@utils$": "<rootDir>/libs/utils",
+		"^@utils/(.*)$": "<rootDir>/libs/utils/$1"
 	},
 	// Add more setup options before each test is run
 	// setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
 	testPathIgnorePatterns: [
 		"<rootDir>/node_modules/",
 		"<rootDir>/.next/",
-		"<rootDir>/tests/bridge/",
+		"<rootDir>/libs/tests-old/",
 	],
 	testEnvironment: "jsdom",
 	transform: {
@@ -34,5 +38,5 @@ module.exports = {
 	},
 	transformIgnorePatterns: ["^.+\\.module\\.(css|sass|scss)$"],
 	testTimeout: 10000,
-	setupFiles: ["./tests/jest.setup.ts"],
+	setupFiles: ["<rootDir>/libs/tests/jest.setup.ts"],
 };
