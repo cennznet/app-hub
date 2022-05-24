@@ -1,5 +1,5 @@
 import Document, { Html, Head, Main, NextScript } from "next/document";
-import { GA_ID } from "@/constants";
+import { GA_ID } from "@/libs/constants";
 
 class MyDocument extends Document {
 	render() {
@@ -35,7 +35,7 @@ class MyDocument extends Document {
 						href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,600&display=swap"
 					/>
 					<meta name="description" content="App Hub powered by CENNZnet" />
-					<link rel="icon" href="/favicon.svg" />
+					<link rel="icon" href="libs/public/favicon.svg" />
 				</Head>
 				<body>
 					<Main />

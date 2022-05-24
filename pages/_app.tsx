@@ -1,26 +1,28 @@
 import type { AppProps } from "next/app";
-import ThemeProvider from "@/providers/ThemeProvider";
 import CssBaseline from "@mui/material/CssBaseline";
-import CENNZApiProvider from "@/providers/CENNZApiProvider";
-import CENNZWalletProvider from "@/providers/CENNZWalletProvider";
-import AppSwitch from "@/components/AppSwitch";
-import WalletButton from "@/components/WalletButton";
-import { GlobalProps } from "@/utils/generateGlobalProps";
-import UserAgentProvider from "@/providers/UserAgentProvider";
-import CENNZExtensionProvider from "@/providers/CENNZExtensionProvider";
-import PageBackdrop from "@/components/shared/PageBackdrop";
-import PageFrame from "@/components/shared/PageFrame";
-import PageFooter from "@/components/shared/PageFooter";
-import GlobalModalProvider from "@/providers/GlobalModalProvider";
-import CssGlobal from "@/components/CssGlobal";
-import MetaMaskExtensionProvider from "@/providers/MetaMaskExtensionProvider";
-import { API_URL, VERCEL_URL } from "@/constants";
-import MetaMaskWalletProvider from "@/providers/MetaMaskWalletProvider";
+import { API_URL, VERCEL_URL } from "@/libs/constants";
 import { useRouter } from "next/router";
 import { memo, useEffect } from "react";
-import { trackPageView } from "@/utils";
+import { trackPageView } from "@utils";
 import { DefaultSeo } from "next-seo";
-import WalletProvider from "@/providers/WalletProvider";
+import UserAgentProvider from "@providers/UserAgentProvider";
+import MetaMaskExtensionProvider from "@providers/MetaMaskExtensionProvider";
+import WalletProvider from "@providers/WalletProvider";
+import MetaMaskWalletProvider from "@providers/MetaMaskWalletProvider";
+import CENNZWalletProvider from "@providers/CENNZWalletProvider";
+import GlobalModalProvider from "@providers/GlobalModalProvider";
+import CENNZExtensionProvider from "@providers/CENNZExtensionProvider";
+import CENNZApiProvider from "@providers/CENNZApiProvider";
+import ThemeProvider from "@providers/ThemeProvider";
+import {
+	CssGlobal,
+	PageBackdrop,
+	WalletButton,
+	AppSwitch,
+	PageFooter,
+	PageFrame,
+} from "@components";
+import { GlobalProps } from "@utils/generateGlobalProps";
 
 type MyAppProps = Omit<AppProps, "pageProps"> & {
 	pageProps: {} & GlobalProps;

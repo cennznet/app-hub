@@ -18,6 +18,20 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["*"],
+      "@artifacts/*": ["libs/artifacts/*"],
+      "@assets": ["libs/assets"],
+      "@assets/*": ["libs/assets/*"],
+      "@components": ["libs/components"],
+      "@components/*": ["libs/components/*"],
+      "@hooks": ["libs/hooks"],
+      "@hooks/*": ["libs/hooks/*"],
+      "@providers/*": ["libs/providers/*"],
+      "@tokens": ["libs/assets/tokens"],
+      "@tokens/*": ["libs/assets/tokens/*"],
+      "@utils": ["libs/utils"],
+      "@utils/*": ["libs/utils/*"],
+      "@vectors": ["libs/assets/vectors"],
+      "@vectors/*": ["libs/assets/vectors/*"],
       "@polkadot/types": [
         "./node_modules/@cennznet/types/interfaces/augment-api.d.ts"
       ],
@@ -31,7 +45,7 @@
     "custom.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "types/global.d.ts"
+    "libs/types/global.d.ts"
   ],
   "exclude": ["node_modules"]
 }

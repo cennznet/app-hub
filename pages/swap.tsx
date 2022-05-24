@@ -1,15 +1,17 @@
 import { Api } from "@cennznet/api";
-import { CENNZAsset } from "@/types";
-import fetchSwapAssets from "@/utils/fetchSwapAssets";
-import { API_URL } from "@/constants";
-import generateGlobalProps from "@/utils/generateGlobalProps";
-import SwapProvider from "@/providers/SwapProvider";
-import SwapForm from "@/components/SwapForm";
-import SwapAssetsPair from "@/components/SwapAssetsPair";
-import SwapStats from "@/components/SwapStats";
-import SwapSettings from "@/components/SwapSettings";
-import SwapProgress from "@/components/SwapProgress";
-import MainPanel from "@/components/MainPanel";
+import { CENNZAsset } from "@/libs/types";
+import fetchSwapAssets from "@utils/fetchSwapAssets";
+import { API_URL } from "@/libs/constants";
+import generateGlobalProps from "@utils/generateGlobalProps";
+import SwapProvider from "@providers/SwapProvider";
+import {
+	SwapForm,
+	SwapAssetsPair,
+	SwapStats,
+	SwapSettings,
+	SwapProgress,
+	MainPanel,
+} from "@components";
 import { memo, FC } from "react";
 import { NextSeo } from "next-seo";
 
