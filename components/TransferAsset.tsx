@@ -71,7 +71,7 @@ const TransferAsset: VFC<IntrinsicElements["div"] & TransferAssetProps> = ({
 	}, [assetBalance, assetTokenInput.setValue]);
 
 	const { inputRef: assetInputRef } = useBalanceValidation(
-		Balance.fromInput(assetTokenInput.value, asset),
+		Balance.fromInput(assetTokenInput.value, selectedAsset),
 		assetBalance
 	);
 
