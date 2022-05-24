@@ -77,11 +77,11 @@ const TxPending: VFC<IntrinsicElements["div"] & TxPendingProps> = (props) => {
 
 interface TxSuccessProps {
 	txHash: string;
-	firstTransferValue: Balance;
+	transferValues: Balance[];
 }
 
 const TxSuccess: VFC<IntrinsicElements["div"] & TxSuccessProps> = ({
-	firstTransferValue,
+	transferValues,
 	...props
 }) => {
 	return (
@@ -90,11 +90,17 @@ const TxSuccess: VFC<IntrinsicElements["div"] & TxSuccessProps> = ({
 			<h1>Transaction Completed</h1>
 			<p>
 				You successfully transferred{" "}
-				<em>
-					<span>{firstTransferValue.toBalance()}</span>{" "}
-					<span>{firstTransferValue.getSymbol()}</span>
-				</em>{" "}
-				.
+				{transferValues?.map((transferValue, index) => {
+					return (
+						<>
+							<br />
+							<em key={index}>
+								<span>{transferValue.toBalance()}</span>{" "}
+								<span>{transferValue.getSymbol()}</span>
+							</em>
+						</>
+					);
+				})}
 			</p>
 		</div>
 	);

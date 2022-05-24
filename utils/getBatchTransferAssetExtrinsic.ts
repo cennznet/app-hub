@@ -12,7 +12,7 @@ export default function getBatchTransferAssetExtrinsic(
 ): CENNZnetExtrinsic | SubmittableExtrinsic<"promise"> {
 	const transferTransactions = transferAssets.map((asset) => {
 		const transferValue =
-			parseFloat(asset.value.toBalance()) * 10 ** asset.decimals;
+			parseFloat(asset.value.toBalance()) * asset.decimalsValue;
 		return api.tx.genericAsset.transfer(
 			asset.assetId,
 			recipient,
