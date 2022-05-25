@@ -99,7 +99,10 @@ const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 			<div css={styles.addRemoveAssets}>
 				<StandardButton
 					type="button"
-					disabled={assetAmount.amount === transferableAssets.length}
+					disabled={
+						assetAmount.amount === transferableAssets?.length ||
+						!transferableAssets
+					}
 					onClick={() => {
 						if (assetAmount.amount < transferableAssets?.length)
 							setAssetAmount({ amount: assetAmount.amount + 1 });
