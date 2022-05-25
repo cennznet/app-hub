@@ -33,6 +33,10 @@ const styles = {
 
 		transition: background-color ${transitions.duration.short}ms,
 			color ${transitions.duration.short}ms;
+		&:disabled {
+			cursor: not-allowed;
+			opacity: 0.5;
+		}
 	`,
 
 	primary: ({ palette }: Theme) => css`
