@@ -6,7 +6,7 @@ import {
 	SetStateAction,
 	useState,
 } from "react";
-import { CENNZAsset, CENNZAssetBalance, IntrinsicElements } from "@/types";
+import { CENNZAssetBalance, IntrinsicElements } from "@/types";
 import TokenInput from "@/components/shared/TokenInput";
 import { css } from "@emotion/react";
 import { Theme } from "@mui/material";
@@ -62,7 +62,7 @@ const TransferAsset: VFC<IntrinsicElements["div"] & TransferAssetProps> = ({
 		}
 		setSelectedAssets(selectedAssetClone);
 		setSelectedAsset(currentAsset);
-	}, [assetTokenInput.value, assetTokenSelect.tokenId]);
+	}, [assetTokenInput.value, assetTokenSelect.tokenId, assetBalance]);
 
 	const onAssetMaxRequest = useMemo(() => {
 		if (!selectedAsset) return;

@@ -92,13 +92,11 @@ const TxSuccess: VFC<IntrinsicElements["div"] & TxSuccessProps> = ({
 				You successfully transferred{" "}
 				{transferValues?.map((transferValue, index) => {
 					return (
-						<>
+						<em key={index}>
 							<br />
-							<em key={index}>
-								<span>{transferValue.toBalance()}</span>{" "}
-								<span>{transferValue.getSymbol()}</span>
-							</em>
-						</>
+							<span>{transferValue.toBalance()}</span>{" "}
+							<span>{transferValue.getSymbol()}</span>
+						</em>
 					);
 				})}
 			</p>

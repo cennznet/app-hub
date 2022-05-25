@@ -20,9 +20,15 @@ const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 		receiveAddress,
 	} = useTransfer();
 
-	const [assetAmount, setAssetAmount] = useState<number>(1);
+	const [assetAmount, setAssetAmount] = useState<{ amount: number }>({
+		amount: 1,
+	});
 	const [selectedAssets, setSelectedAssets] = useState<TransferAssetType[]>([]);
 	const [displayTokens, setDisplayTokens] = useState<CENNZAssetBalance[][]>([]);
+
+	useEffect(() => {
+		setAssetAmount({ amount: 1 });
+	}, [transferableAssets]);
 
 	const onTransferCENNZAddressChange = useCallback(
 		(event) => {
@@ -56,7 +62,7 @@ const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 		);
 		setDisplayTokens(displayTokenArr);
 		setTransferAssets(transferAssets);
-	}, [selectedAssets]);
+	}, [selectedAssets, assetAmount]);
 
 	return (
 		<div {...props} css={styles.root}>
@@ -69,27 +75,33 @@ const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 					id="transferCENNZAddressInput"
 					ref={cennzAddressInputRef}
 				/>
-				{transferableAssets?.slice(0, assetAmount)?.map((asset, index) => {
-					return (
-						<TransferAsset
-							key={index}
-							assetKey={index}
-							asset={assetAmount === 1 ? asset : displayTokens[index][0]}
-							tokens={
-								displayTokens[index] ? displayTokens[index] : transferableAssets
-							}
-							selectedAssets={selectedAssets}
-							setSelectedAssets={setSelectedAssets}
-						/>
-					);
-				})}
+				{transferableAssets
+					?.slice(0, assetAmount.amount)
+					?.map((asset, index) => {
+						return (
+							<TransferAsset
+								key={index}
+								assetKey={index}
+								asset={
+									assetAmount.amount === 1 ? asset : displayTokens[index][0]
+								}
+								tokens={
+									displayTokens[index]
+										? displayTokens[index]
+										: transferableAssets
+								}
+								selectedAssets={selectedAssets}
+								setSelectedAssets={setSelectedAssets}
+							/>
+						);
+					})}
 			</div>
 			<div css={styles.addRemoveAssets}>
 				<StandardButton
 					type="button"
 					onClick={() => {
-						if (assetAmount < transferableAssets?.length)
-							setAssetAmount(assetAmount + 1);
+						if (assetAmount.amount < transferableAssets?.length)
+							setAssetAmount({ amount: assetAmount.amount + 1 });
 					}}
 				>
 					Add Asset
@@ -97,9 +109,11 @@ const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 				<StandardButton
 					type="button"
 					onClick={() => {
-						if (assetAmount > 1) {
-							setSelectedAssets(selectedAssets.slice(0, assetAmount - 1));
-							setAssetAmount(assetAmount - 1);
+						if (assetAmount.amount > 1) {
+							setSelectedAssets(
+								selectedAssets.slice(0, assetAmount.amount - 1)
+							);
+							setAssetAmount({ amount: assetAmount.amount - 1 });
 						}
 					}}
 				>

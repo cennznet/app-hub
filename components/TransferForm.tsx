@@ -88,10 +88,14 @@ const TransferForm: FC<IntrinsicElements["form"] & TransferFormProps> = ({
 				);
 
 				tx.on("txSucceeded", (result) => {
+					console.info("result", result);
 					const events = tx.findEvents(result, "genericAsset", "Transferred");
+					console.info("events", events);
+					console.info("transferAssets", transferAssets);
 					const transferValues: Balance[] = events.map((event, index) => {
 						return Balance.fromCodec(event.data[3], transferAssets[index]);
 					});
+					console.info("transferValues", transferValues);
 					updateCENNZBalances();
 					setTxSuccess({
 						transferValues,
