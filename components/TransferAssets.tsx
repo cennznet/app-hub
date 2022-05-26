@@ -85,6 +85,7 @@ const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 					id="transferCENNZAddressInput"
 					ref={cennzAddressInputRef}
 				/>
+				<label css={styles.assetsLabel}>Assets</label>
 				{transferableAssets
 					?.slice(0, assetAmount.amount)
 					?.map((asset, index) => {
@@ -179,5 +180,8 @@ const styles = {
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
+	`,
+	assetsLabel: css`
+		margin-top: 25px;
 	`,
 };
