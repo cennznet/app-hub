@@ -12,6 +12,7 @@ import { css } from "@emotion/react";
 import { Theme } from "@mui/material";
 import { useCENNZBalances, useBalanceValidation, useTokenInput } from "@/hooks";
 import { Balance } from "@/utils";
+import StandardButton from "@/components/shared/StandardButton";
 
 interface TransferAssetProps {
 	assetKey: number;
@@ -19,6 +20,7 @@ interface TransferAssetProps {
 	tokens: CENNZAssetBalance[];
 	selectedAssets: TransferAssetType[];
 	setSelectedAssets: Dispatch<SetStateAction<TransferAssetType[]>>;
+	cancelCallback: Function;
 }
 
 export interface TransferAssetType {
@@ -32,6 +34,7 @@ const TransferAsset: VFC<IntrinsicElements["div"] & TransferAssetProps> = ({
 	tokens,
 	selectedAssets,
 	setSelectedAssets,
+	cancelCallback,
 }) => {
 	const [selectedAsset, setSelectedAsset] = useState<CENNZAssetBalance>(asset);
 	const [assetTokenSelect, assetTokenInput] = useTokenInput(asset.assetId);
@@ -77,18 +80,23 @@ const TransferAsset: VFC<IntrinsicElements["div"] & TransferAssetProps> = ({
 
 	return (
 		<div css={styles.root}>
-			<TokenInput
-				onMaxValueRequest={onAssetMaxRequest}
-				selectedTokenId={assetTokenSelect.tokenId}
-				onTokenChange={assetTokenSelect.onTokenChange}
-				value={assetTokenInput.value}
-				onValueChange={assetTokenInput.onValueChange}
-				tokens={tokens}
-				ref={assetInputRef}
-				required
-				scale={selectedAsset.decimals}
-				min={Balance.fromString("1", selectedAsset).toInput()}
-			/>
+			<div css={styles.transferAssetContainer}>
+				<TokenInput
+					onMaxValueRequest={onAssetMaxRequest}
+					selectedTokenId={assetTokenSelect.tokenId}
+					onTokenChange={assetTokenSelect.onTokenChange}
+					value={assetTokenInput.value}
+					onValueChange={assetTokenInput.onValueChange}
+					tokens={tokens}
+					ref={assetInputRef}
+					required
+					scale={selectedAsset?.decimals}
+					min={Balance.fromString("1", selectedAsset).toInput()}
+				/>
+				<StandardButton onClick={() => cancelCallback()} variant={"secondary"}>
+					X
+				</StandardButton>
+			</div>
 			{!!assetBalance && (
 				<div css={styles.tokenBalance}>
 					Balance: <span>{assetBalance.toBalance()}</span>
@@ -104,6 +112,14 @@ const styles = {
 	root: css`
 		margin-top: 10px;
 		margin-bottom: 10px;
+	`,
+	transferAssetContainer: css`
+		display: flex;
+		justify-content: space-between;
+		button {
+			margin-left: 5px;
+			padding: 0.75em 1em;
+		}
 	`,
 	tokenBalance: ({ palette }: Theme) => css`
 		margin-top: 0.25em;

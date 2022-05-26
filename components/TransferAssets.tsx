@@ -21,15 +21,32 @@ const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 		receiveAddress,
 	} = useTransfer();
 
-	const [assetAmount, setAssetAmount] = useState<{ amount: number }>({
+	const [assetAmount, setAssetAmount] = useState<{
+		amount: number;
+		spliceIndex: number;
+	}>({
 		amount: 1,
+		spliceIndex: null,
 	});
 	const [selectedAssets, setSelectedAssets] = useState<TransferAssetType[]>([]);
-	const [displayTokens, setDisplayTokens] = useState<CENNZAssetBalance[][]>([]);
+	const [dropDownTokens, setDropDownTokens] = useState<CENNZAssetBalance[][]>(
+		[]
+	);
 	const [addressType, setAddressType] = useState<ChainOption>("CENNZnet");
+	const [displayAssets, setDisplayAssets] = useState<CENNZAssetBalance[]>([]);
 
 	useEffect(() => {
-		setAssetAmount({ amount: 1 });
+		console.info(assetAmount);
+		if (!assetAmount.spliceIndex) {
+			setDisplayAssets(transferableAssets?.slice(0, assetAmount.amount));
+		} else {
+			displayAssets.splice(assetAmount.spliceIndex, 1);
+			setDisplayAssets(displayAssets);
+		}
+	}, [assetAmount]);
+
+	useEffect(() => {
+		setAssetAmount({ amount: 1, spliceIndex: null });
 	}, [transferableAssets]);
 
 	const onTransferCENNZAddressChange = useCallback(
@@ -66,10 +83,10 @@ const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 				(asset) => !selectedAssetIds.includes(asset.assetId)
 			)
 		);
-		const transferAssets: CENNZAssetBalance[] = selectedAssets.map(
-			(asset) => asset.asset
-		);
-		setDisplayTokens(displayTokenArr);
+		const transferAssets: CENNZAssetBalance[] = selectedAssets
+			.map((asset) => asset.asset)
+			.slice(0, assetAmount.amount);
+		setDropDownTokens(displayTokenArr.slice(0, assetAmount.amount));
 		setTransferAssets(transferAssets);
 	}, [selectedAssets, assetAmount]);
 
@@ -86,26 +103,30 @@ const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 					ref={cennzAddressInputRef}
 				/>
 				<label css={styles.assetsLabel}>Assets</label>
-				{transferableAssets
-					?.slice(0, assetAmount.amount)
-					?.map((asset, index) => {
-						return (
-							<TransferAsset
-								key={index}
-								assetKey={index}
-								asset={
-									assetAmount.amount === 1 ? asset : displayTokens[index][0]
-								}
-								tokens={
-									displayTokens[index]
-										? displayTokens[index]
-										: transferableAssets
-								}
-								selectedAssets={selectedAssets}
-								setSelectedAssets={setSelectedAssets}
-							/>
-						);
-					})}
+				{displayAssets?.map((asset, index) => {
+					return (
+						<TransferAsset
+							key={index}
+							assetKey={index}
+							asset={
+								assetAmount.amount === 1 ? asset : dropDownTokens[index][0]
+							}
+							tokens={
+								dropDownTokens[index]
+									? dropDownTokens[index]
+									: transferableAssets
+							}
+							selectedAssets={selectedAssets}
+							setSelectedAssets={setSelectedAssets}
+							cancelCallback={() => {
+								setAssetAmount({
+									amount: assetAmount.amount - 1,
+									spliceIndex: index,
+								});
+							}}
+						/>
+					);
+				})}
 			</div>
 			<div css={styles.addRemoveAssets}>
 				<StandardButton
@@ -116,7 +137,10 @@ const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 					}
 					onClick={() => {
 						if (assetAmount.amount < transferableAssets?.length)
-							setAssetAmount({ amount: assetAmount.amount + 1 });
+							setAssetAmount({
+								amount: assetAmount.amount + 1,
+								spliceIndex: null,
+							});
 					}}
 				>
 					Add Asset
@@ -129,7 +153,10 @@ const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 							setSelectedAssets(
 								selectedAssets.slice(0, assetAmount.amount - 1)
 							);
-							setAssetAmount({ amount: assetAmount.amount - 1 });
+							setAssetAmount({
+								amount: assetAmount.amount - 1,
+								spliceIndex: null,
+							});
 						}
 					}}
 				>
