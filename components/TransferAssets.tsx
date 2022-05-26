@@ -1,5 +1,5 @@
 import { VFC, useState, useEffect, useCallback } from "react";
-import { CENNZAssetBalance, IntrinsicElements } from "@/types";
+import { CENNZAssetBalance, ChainOption, IntrinsicElements } from "@/types";
 import { css } from "@emotion/react";
 import { Theme } from "@mui/material";
 import { useTransfer } from "@/providers/TransferProvider";
@@ -7,6 +7,7 @@ import TransferAsset, { TransferAssetType } from "@/components/TransferAsset";
 import StandardButton from "@/components/shared/StandardButton";
 import AddressInput from "@/components/shared/AddressInput";
 import useAddressValidation from "@/hooks/useAddressValidation";
+import isEthereumAddress from "@/utils/isEthereumAddress";
 
 interface TransferAssetsProps {}
 
@@ -25,6 +26,7 @@ const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 	});
 	const [selectedAssets, setSelectedAssets] = useState<TransferAssetType[]>([]);
 	const [displayTokens, setDisplayTokens] = useState<CENNZAssetBalance[][]>([]);
+	const [addressType, setAddressType] = useState<ChainOption>("CENNZnet");
 
 	useEffect(() => {
 		setAssetAmount({ amount: 1 });
@@ -32,14 +34,21 @@ const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 
 	const onTransferCENNZAddressChange = useCallback(
 		(event) => {
-			setReceiveAddress(event.target.value);
+			const address = event.target.value;
+			if (isEthereumAddress(address)) {
+				setAddressType("Ethereum");
+				setReceiveAddress(address);
+			} else {
+				setAddressType("CENNZnet");
+				setReceiveAddress(address);
+			}
 		},
 		[setReceiveAddress]
 	);
 
 	const { inputRef: cennzAddressInputRef } = useAddressValidation(
 		receiveAddress,
-		"CENNZnet"
+		addressType
 	);
 
 	useEffect(() => {
@@ -67,9 +76,10 @@ const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 	return (
 		<div {...props} css={styles.root}>
 			<div css={styles.formField}>
-				<label htmlFor="transferCENNZAddressInput">CENNZnet ADDRESS</label>
+				<label htmlFor="transferCENNZAddressInput">Transfer Address</label>
 				<AddressInput
-					addressType={"CENNZnet"}
+					placeholder={"Enter a CENNZnet or Ethereum address"}
+					addressType={addressType}
 					value={receiveAddress}
 					onChange={onTransferCENNZAddressChange}
 					id="transferCENNZAddressInput"
