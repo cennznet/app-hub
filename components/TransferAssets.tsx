@@ -8,6 +8,7 @@ import StandardButton from "@/components/shared/StandardButton";
 import AddressInput from "@/components/shared/AddressInput";
 import useAddressValidation from "@/hooks/useAddressValidation";
 import isEthereumAddress from "@/utils/isEthereumAddress";
+import { useTransferableAssets } from "@/hooks";
 
 interface TransferAssetsProps {}
 
@@ -15,7 +16,6 @@ const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 	props
 ) => {
 	const {
-		transferableAssets,
 		setTransferAssets,
 		setReceiveAddress,
 		receiveAddress,
@@ -34,6 +34,8 @@ const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 	);
 	const [addressType, setAddressType] = useState<ChainOption>("CENNZnet");
 	const [displayAssets, setDisplayAssets] = useState<CENNZAssetBalance[]>([]);
+
+	const transferableAssets = useTransferableAssets();
 
 	useEffect(() => {
 		console.info(assetAmount);

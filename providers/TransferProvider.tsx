@@ -3,22 +3,18 @@ import {
 	useContext,
 	useState,
 	FC,
-	useEffect,
 	Dispatch,
 	SetStateAction,
 } from "react";
-import { CENNZAssetBalance } from "@/types";
-import { useTxStatus, TxStatusHook, useSelectedAccount } from "@/hooks";
-import { useCENNZApi } from "@/providers/CENNZApiProvider";
-import { useWalletProvider } from "@/providers/WalletProvider";
-import fetchCENNZAssetBalances from "../utils/fetchCENNZAssetBalances";
+import { CENNZAssetBalances } from "@/types";
+import { useTxStatus, TxStatusHook } from "@/hooks";
 
 interface TransferContextType extends TxStatusHook {
-	transferableAssets: CENNZAssetBalance[];
 	receiveAddress: string;
 	setReceiveAddress: Dispatch<SetStateAction<string>>;
-	transferAssets: CENNZAssetBalance[];
-	setTransferAssets: Dispatch<SetStateAction<CENNZAssetBalance[]>>;
+
+	transferAssets: CENNZAssetBalances;
+	setTransferAssets: Dispatch<SetStateAction<CENNZAssetBalances>>;
 }
 
 const TransferContext = createContext<TransferContextType>(
@@ -28,35 +24,15 @@ const TransferContext = createContext<TransferContextType>(
 interface TransferProviderProps {}
 
 const TransferProvider: FC<TransferProviderProps> = ({ children }) => {
-	const { api } = useCENNZApi();
-	const { selectedWallet, setCENNZBalances } = useWalletProvider();
-	const selectedAccount = useSelectedAccount();
-	const [transferableAssets, setTransferableAssets] =
-		useState<CENNZAssetBalance[]>();
 	const [receiveAddress, setReceiveAddress] = useState<string>();
-	const [transferAssets, setTransferAssets] = useState<CENNZAssetBalance[]>();
-
-	useEffect(() => {
-		if (!api || !selectedWallet || !selectedAccount) return;
-		const setAssets = async () => {
-			const balances = await fetchCENNZAssetBalances(
-				api,
-				selectedAccount.address
-			);
-			const positiveBalances = balances.filter(
-				(balance) => balance.value.toNumber() > 0
-			);
-			setTransferableAssets(positiveBalances);
-		};
-		setAssets().catch((err) => console.error(err.message));
-	}, [selectedAccount, selectedWallet, api, setCENNZBalances]);
+	const [transferAssets, setTransferAssets] = useState<CENNZAssetBalances>();
 
 	return (
 		<TransferContext.Provider
 			value={{
-				transferableAssets,
-				setReceiveAddress,
 				receiveAddress,
+				setReceiveAddress,
+
 				transferAssets,
 				setTransferAssets,
 				...useTxStatus(),
