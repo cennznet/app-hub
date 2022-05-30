@@ -15,6 +15,10 @@ export default function useTransferDisplayAssets(): TransferDisplayAssetsHook {
 
 	const resetDisplayAssets = useCallback(() => {
 		setDisplayAssets({
+			amount: 0,
+			assets: null,
+		});
+		setDisplayAssets({
 			amount: 1,
 			assets: transferableAssets.slice(0, 1),
 		});
@@ -23,8 +27,11 @@ export default function useTransferDisplayAssets(): TransferDisplayAssetsHook {
 	useEffect(() => {
 		if (!transferableAssets) return;
 
-		resetDisplayAssets();
-	}, [resetDisplayAssets, transferableAssets]);
+		setDisplayAssets({
+			amount: 1,
+			assets: transferableAssets.slice(0, 1),
+		});
+	}, [transferableAssets]);
 
 	const addDisplayAsset = useCallback(
 		() =>
