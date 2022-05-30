@@ -126,3 +126,8 @@ export interface CENNZMetaMaskNetwork {
 export type WalletOption = "CENNZnet" | "MetaMask";
 
 export type ChainOption = "CENNZnet" | "Ethereum";
+
+export interface TransferDisplayAssets {
+	amount: number;
+	assets: CENNZAssetBalances;
+}

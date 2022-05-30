@@ -1,10 +1,5 @@
 import { ChainOption, IntrinsicElements } from "@/types";
-import {
-	css,
-	InputAdornment,
-	TextField,
-	TextFieldProps,
-} from "@mui/material";
+import { css, InputAdornment, TextField, TextFieldProps } from "@mui/material";
 import { useMemo, forwardRef } from "react";
 import Jazzicon, { jsNumberForAddress } from "react-jazzicon";
 import AccountIdenticon from "@/components/shared/AccountIdenticon";

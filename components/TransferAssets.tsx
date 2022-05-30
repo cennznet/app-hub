@@ -7,23 +7,28 @@ import TransferAsset, { TransferAssetType } from "@/components/TransferAsset";
 import StandardButton from "@/components/shared/StandardButton";
 import AddressInput from "@/components/shared/AddressInput";
 import useAddressValidation from "@/hooks/useAddressValidation";
-import { useTransferableAssets, useTransferDisplayAssets } from "@/hooks";
+import { useTransferableAssets } from "@/hooks";
 
 interface TransferAssetsProps {}
 
 const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 	props
 ) => {
-	const { setTransferAssets, setReceiveAddress, receiveAddress, addressType } =
-		useTransfer();
+	const {
+		setTransferAssets,
+		setReceiveAddress,
+		receiveAddress,
+		addressType,
+		displayAssets,
+		addDisplayAsset,
+		removeDisplayAsset,
+	} = useTransfer();
 
 	const [selectedAssets, setSelectedAssets] = useState<TransferAssetType[]>([]);
 	const [dropDownTokens, setDropDownTokens] = useState<CENNZAssetBalance[][]>(
 		[]
 	);
 	const transferableAssets = useTransferableAssets();
-	const { displayAssets, addDisplayAsset, removeDisplayAsset } =
-		useTransferDisplayAssets();
 
 	const { inputRef: cennzAddressInputRef } = useAddressValidation(
 		receiveAddress,
@@ -88,7 +93,6 @@ const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 							}
 							selectedAssets={selectedAssets}
 							setSelectedAssets={setSelectedAssets}
-							removeDisplayAsset={removeDisplayAsset}
 						/>
 					);
 				})}
@@ -138,29 +142,12 @@ const styles = {
 		}
 	`,
 
-	formControl: (isConnected: boolean) => css`
-		margin-bottom: 1em;
-		margin-top: ${isConnected ? "1em" : "2em"};
-		text-align: center;
-	`,
-
-	tokenBalance: ({ palette }: Theme) => css`
-		margin-top: 0.25em;
-		font-weight: 500;
-		color: ${palette.grey["700"]};
-		font-size: 14px;
-
-		span {
-			font-family: "Roboto Mono", monospace;
-			font-weight: bold;
-			letter-spacing: -0.025em;
-		}
-	`,
 	addRemoveAssets: css`
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
 	`,
+
 	assetsLabel: css`
 		margin-top: 25px;
 	`,

@@ -5,6 +5,7 @@ import {
 	Dispatch,
 	SetStateAction,
 	useState,
+	useCallback,
 } from "react";
 import { CENNZAssetBalance, IntrinsicElements } from "@/types";
 import TokenInput from "@/components/shared/TokenInput";
@@ -13,6 +14,7 @@ import { Theme } from "@mui/material";
 import { useCENNZBalances, useBalanceValidation, useTokenInput } from "@/hooks";
 import { Balance } from "@/utils";
 import StandardButton from "@/components/shared/StandardButton";
+import { useTransfer } from "@/providers/TransferProvider";
 
 interface TransferAssetProps {
 	assetKey: number;
@@ -20,7 +22,6 @@ interface TransferAssetProps {
 	tokens: CENNZAssetBalance[];
 	selectedAssets: TransferAssetType[];
 	setSelectedAssets: Dispatch<SetStateAction<TransferAssetType[]>>;
-	removeDisplayAsset: Function;
 }
 
 export interface TransferAssetType {
@@ -34,8 +35,8 @@ const TransferAsset: VFC<IntrinsicElements["div"] & TransferAssetProps> = ({
 	tokens,
 	selectedAssets,
 	setSelectedAssets,
-	removeDisplayAsset,
 }) => {
+	const { displayAssets, removeDisplayAsset } = useTransfer();
 	const [selectedAsset, setSelectedAsset] = useState<CENNZAssetBalance>(asset);
 	const [assetTokenSelect, assetTokenInput] = useTokenInput(asset.assetId);
 	const [assetBalance] = useCENNZBalances([selectedAsset]);
@@ -65,6 +66,9 @@ const TransferAsset: VFC<IntrinsicElements["div"] & TransferAssetProps> = ({
 		}
 		setSelectedAssets(selectedAssetClone);
 		setSelectedAsset(currentAsset);
+
+		//FIXME: adding 'assetKey', 'selectedAsset', 'selectedAssets', 'setSelectedAssets', and 'tokens' causes a delay in rendering
+		/* eslint-disable-next-line */
 	}, [assetTokenInput.value, assetTokenSelect.tokenId, assetBalance]);
 
 	const onAssetMaxRequest = useMemo(() => {
@@ -77,6 +81,13 @@ const TransferAsset: VFC<IntrinsicElements["div"] & TransferAssetProps> = ({
 		Balance.fromInput(assetTokenInput.value, selectedAsset),
 		assetBalance
 	);
+
+	const onRemoveClick = useCallback(() => {
+		const removeIndex = displayAssets.assets.findIndex(
+			(displayAsset) => displayAsset.assetId === selectedAsset.assetId
+		);
+		removeDisplayAsset(removeIndex);
+	}, [displayAssets, removeDisplayAsset, selectedAsset.assetId]);
 
 	return (
 		<div css={styles.root}>
@@ -93,10 +104,7 @@ const TransferAsset: VFC<IntrinsicElements["div"] & TransferAssetProps> = ({
 					scale={selectedAsset?.decimals}
 					min={Balance.fromString("1", selectedAsset).toInput()}
 				/>
-				<StandardButton
-					onClick={() => removeDisplayAsset()}
-					variant={"secondary"}
-				>
+				<StandardButton onClick={onRemoveClick} variant={"secondary"}>
 					X
 				</StandardButton>
 			</div>

@@ -7,14 +7,22 @@ import {
 	SetStateAction,
 	useMemo,
 } from "react";
-import { CENNZAssetBalances, ChainOption } from "@/types";
-import { useTxStatus, TxStatusHook } from "@/hooks";
+import {
+	CENNZAssetBalances,
+	ChainOption,
+	TransferDisplayAssets,
+} from "@/types";
+import { useTxStatus, TxStatusHook, useTransferDisplayAssets } from "@/hooks";
 import isEthereumAddress from "@/utils/isEthereumAddress";
 
 interface TransferContextType extends TxStatusHook {
 	receiveAddress: string;
 	addressType: ChainOption;
 	setReceiveAddress: Dispatch<SetStateAction<string>>;
+
+	displayAssets: TransferDisplayAssets;
+	addDisplayAsset: () => void;
+	removeDisplayAsset: (index: number) => void;
 
 	transferAssets: CENNZAssetBalances;
 	setTransferAssets: Dispatch<SetStateAction<CENNZAssetBalances>>;
@@ -35,12 +43,19 @@ const TransferProvider: FC<TransferProviderProps> = ({ children }) => {
 		[receiveAddress]
 	);
 
+	const [displayAssets, addDisplayAsset, removeDisplayAsset] =
+		useTransferDisplayAssets();
+
 	return (
 		<TransferContext.Provider
 			value={{
 				receiveAddress,
 				addressType,
 				setReceiveAddress,
+
+				displayAssets,
+				addDisplayAsset,
+				removeDisplayAsset,
 
 				transferAssets,
 				setTransferAssets,

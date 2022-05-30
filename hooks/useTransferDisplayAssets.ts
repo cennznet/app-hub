@@ -1,17 +1,8 @@
-import { CENNZAssetBalances } from "@/types";
 import { useCallback, useEffect, useState } from "react";
 import { useTransferableAssets } from "@/hooks";
+import { DisplayAssets } from "@/types";
 
-interface DisplayAssets {
-	amount: number;
-	assets: CENNZAssetBalances;
-}
-
-export default function useTransferDisplayAssets(): {
-	displayAssets: DisplayAssets;
-	addDisplayAsset: () => void;
-	removeDisplayAsset: (index: number) => void;
-} {
+export default function useTransferDisplayAssets() {
 	const transferableAssets = useTransferableAssets();
 	const [displayAssets, setDisplayAssets] = useState<DisplayAssets>();
 
@@ -44,9 +35,5 @@ export default function useTransferDisplayAssets(): {
 		[displayAssets]
 	);
 
-	return {
-		displayAssets,
-		addDisplayAsset,
-		removeDisplayAsset,
-	};
+	return [displayAssets, addDisplayAsset, removeDisplayAsset] as const;
 }
