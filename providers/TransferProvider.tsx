@@ -11,20 +11,14 @@ import {
 	CENNZAssetBalances,
 	ChainOption,
 	TransferAssets,
-	TransferDisplayAssets,
 } from "@/types";
-import { useTxStatus, TxStatusHook, useTransferDisplayAssets } from "@/hooks";
+import { useTxStatus, TxStatusHook, useTransferDisplayAssets, TransferDisplayAssetsHook } from "@/hooks";
 import isEthereumAddress from "@/utils/isEthereumAddress";
 
-interface TransferContextType extends TxStatusHook {
+interface TransferContextType extends TxStatusHook, TransferDisplayAssetsHook {
 	receiveAddress: string;
 	addressType: ChainOption;
 	setReceiveAddress: Dispatch<SetStateAction<string>>;
-
-	displayAssets: TransferDisplayAssets;
-	addDisplayAsset: () => void;
-	removeDisplayAsset: (index: number) => void;
-	resetDisplayAssets: () => void;
 
 	selectedAssets: TransferAssets;
 	setSelectedAssets: Dispatch<SetStateAction<TransferAssets>>;

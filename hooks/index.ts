@@ -27,3 +27,4 @@ export type { TokenInputHook } from "@/hooks/useTokenInput";
 export type { PoolExchangeInfoHook } from "@/hooks/usePoolExchangeInfo";
 export type { PoolUserInfoHook } from "@/hooks/usePoolUserInfo";
 export type { TxStatusHook } from "@/hooks/useTxStatus";
+export type { TransferDisplayAssetsHook } from "@/hooks/useTransferDisplayAssets"

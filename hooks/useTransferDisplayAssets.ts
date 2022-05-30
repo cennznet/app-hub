@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useTransferableAssets } from "@/hooks";
 import { TransferDisplayAssets } from "@/types";
 
-interface TransferDisplayAssetsHook {
+export interface TransferDisplayAssetsHook {
 	displayAssets: TransferDisplayAssets;
 	addDisplayAsset: () => void;
 	removeDisplayAsset: (index: number) => void;
