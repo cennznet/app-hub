@@ -127,6 +127,13 @@ export type WalletOption = "CENNZnet" | "MetaMask";
 
 export type ChainOption = "CENNZnet" | "Ethereum";
 
+export interface TransferAssetType {
+	assetKey: number;
+	asset: CENNZAssetBalance;
+}
+
+export type TransferAssets = Array<TransferAssetType>;
+
 export interface TransferDisplayAssets {
 	amount: number;
 	assets: CENNZAssetBalances;

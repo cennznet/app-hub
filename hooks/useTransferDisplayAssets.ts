@@ -2,18 +2,29 @@ import { useCallback, useEffect, useState } from "react";
 import { useTransferableAssets } from "@/hooks";
 import { TransferDisplayAssets } from "@/types";
 
-export default function useTransferDisplayAssets() {
+interface TransferDisplayAssetsHook {
+	displayAssets: TransferDisplayAssets;
+	addDisplayAsset: () => void;
+	removeDisplayAsset: (index: number) => void;
+	resetDisplayAssets: () => void;
+}
+
+export default function useTransferDisplayAssets(): TransferDisplayAssetsHook {
 	const transferableAssets = useTransferableAssets();
 	const [displayAssets, setDisplayAssets] = useState<TransferDisplayAssets>();
 
-	useEffect(() => {
-		if (!transferableAssets) return;
-
+	const resetDisplayAssets = useCallback(() => {
 		setDisplayAssets({
 			amount: 1,
 			assets: transferableAssets.slice(0, 1),
 		});
 	}, [transferableAssets]);
+
+	useEffect(() => {
+		if (!transferableAssets) return;
+
+		resetDisplayAssets();
+	}, [resetDisplayAssets, transferableAssets]);
 
 	const addDisplayAsset = useCallback(
 		() =>
@@ -35,5 +46,10 @@ export default function useTransferDisplayAssets() {
 		[displayAssets]
 	);
 
-	return [displayAssets, addDisplayAsset, removeDisplayAsset] as const;
+	return {
+		displayAssets,
+		addDisplayAsset,
+		removeDisplayAsset,
+		resetDisplayAssets,
+	};
 }

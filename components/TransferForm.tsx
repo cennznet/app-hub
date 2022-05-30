@@ -44,6 +44,7 @@ const TransferForm: FC<IntrinsicElements["form"] & TransferFormProps> = ({
 		setTxFailure,
 		receiveAddress,
 		transferAssets,
+		resetDisplayAssets,
 	} = useTransfer();
 	const onFormSubmit = useCallback(
 		async (event) => {
@@ -101,6 +102,7 @@ const TransferForm: FC<IntrinsicElements["form"] & TransferFormProps> = ({
 						transferValues,
 						txHashLink: tx.getHashLink(),
 					});
+					resetDisplayAssets();
 				});
 			} catch (error) {
 				console.info(error);
@@ -109,16 +111,19 @@ const TransferForm: FC<IntrinsicElements["form"] & TransferFormProps> = ({
 		},
 		[
 			api,
-			cennzAccount?.address,
-			metaMaskAccount?.address,
-			wallet?.signer,
-			updateCENNZBalances,
-			setTxFailure,
 			setTxPending,
-			setTxSuccess,
-			setTxIdle,
+			transferAssets,
+			receiveAddress,
 			selectedWallet,
+			cennzAccount?.address,
+			wallet?.signer,
+			metaMaskAccount?.address,
 			extension,
+			setTxIdle,
+			setTxFailure,
+			updateCENNZBalances,
+			setTxSuccess,
+			resetDisplayAssets,
 		]
 	);
 

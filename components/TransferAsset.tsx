@@ -1,15 +1,10 @@
-import {
-	VFC,
-	useEffect,
-	useMemo,
-	Dispatch,
-	SetStateAction,
-	useCallback,
-} from "react";
+import { VFC, useEffect, useMemo, useCallback } from "react";
 import {
 	CENNZAssetBalance,
 	CENNZAssetBalances,
 	IntrinsicElements,
+	TransferAssets,
+	TransferAssetType,
 } from "@/types";
 import TokenInput from "@/components/shared/TokenInput";
 import { css } from "@emotion/react";
@@ -23,21 +18,15 @@ interface TransferAssetProps {
 	assetKey: number;
 	asset: CENNZAssetBalance;
 	tokens: CENNZAssetBalances;
-	setSelectedAssets: Dispatch<SetStateAction<TransferAssetType[]>>;
-}
-
-export interface TransferAssetType {
-	assetKey: number;
-	asset: CENNZAssetBalance;
 }
 
 const TransferAsset: VFC<IntrinsicElements["div"] & TransferAssetProps> = ({
 	assetKey,
 	asset,
 	tokens,
-	setSelectedAssets,
 }) => {
-	const { displayAssets, removeDisplayAsset } = useTransfer();
+	const { displayAssets, removeDisplayAsset, setSelectedAssets } =
+		useTransfer();
 	const [assetTokenSelect, assetTokenInput] = useTokenInput(asset.assetId);
 
 	const currentAsset = useMemo<CENNZAssetBalance>(
@@ -56,7 +45,7 @@ const TransferAsset: VFC<IntrinsicElements["div"] & TransferAssetProps> = ({
 			currentAsset
 		);
 
-		setSelectedAssets((prevAssets) => {
+		setSelectedAssets((prevAssets = [] as TransferAssets) => {
 			const currentAssetIdx = prevAssets.findIndex(
 				(asset) => asset.assetKey === assetKey
 			);
@@ -130,6 +119,7 @@ const styles = {
 		margin-top: 10px;
 		margin-bottom: 10px;
 	`,
+
 	transferAssetContainer: css`
 		display: flex;
 		justify-content: space-between;
@@ -138,6 +128,7 @@ const styles = {
 			padding: 0.75em 1em;
 		}
 	`,
+
 	tokenBalance: ({ palette }: Theme) => css`
 		margin-top: 0.25em;
 		font-weight: 500;

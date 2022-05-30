@@ -3,7 +3,7 @@ import { CENNZAssetBalance, IntrinsicElements } from "@/types";
 import { css } from "@emotion/react";
 import { Theme } from "@mui/material";
 import { useTransfer } from "@/providers/TransferProvider";
-import TransferAsset, { TransferAssetType } from "@/components/TransferAsset";
+import TransferAsset from "@/components/TransferAsset";
 import StandardButton from "@/components/shared/StandardButton";
 import AddressInput from "@/components/shared/AddressInput";
 import useAddressValidation from "@/hooks/useAddressValidation";
@@ -22,9 +22,9 @@ const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 		displayAssets,
 		addDisplayAsset,
 		removeDisplayAsset,
+		selectedAssets,
 	} = useTransfer();
 
-	const [selectedAssets, setSelectedAssets] = useState<TransferAssetType[]>([]);
 	const [dropDownTokens, setDropDownTokens] = useState<CENNZAssetBalance[][]>(
 		[]
 	);
@@ -36,7 +36,7 @@ const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 	);
 
 	useEffect(() => {
-		if (!transferableAssets) return;
+		if (!transferableAssets || !selectedAssets) return;
 		//remove all tokens that are selected from all other display token arrays
 		const selectedAssetIds = selectedAssets.map((asset) => asset.asset.assetId);
 		const displayTokenArr = selectedAssets.map((selectedAsset) => {
@@ -93,7 +93,6 @@ const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 						tokens={
 							dropDownTokens[index] ? dropDownTokens[index] : transferableAssets
 						}
-						setSelectedAssets={setSelectedAssets}
 					/>
 				))}
 			</div>
