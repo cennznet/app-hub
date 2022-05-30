@@ -1,4 +1,4 @@
-import { VFC, useState, useEffect } from "react";
+import { VFC, useState, useEffect, useCallback } from "react";
 import { CENNZAssetBalance, IntrinsicElements } from "@/types";
 import { css } from "@emotion/react";
 import { Theme } from "@mui/material";
@@ -62,6 +62,12 @@ const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 		);
 	}, [selectedAssets, displayAssets?.amount, setTransferAssets]);
 
+	const onAddAssetClick = useCallback(() => {
+		if (displayAssets?.amount > transferableAssets?.length) return;
+
+		addDisplayAsset();
+	}, [addDisplayAsset, displayAssets?.amount, transferableAssets?.length]);
+
 	return (
 		<div {...props} css={styles.root}>
 			<div css={styles.formField}>
@@ -99,10 +105,7 @@ const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 						!transferableAssets ||
 						!displayAssets
 					}
-					onClick={() => {
-						if (displayAssets?.amount < transferableAssets?.length)
-							addDisplayAsset();
-					}}
+					onClick={onAddAssetClick}
 				>
 					Add Asset
 				</StandardButton>
