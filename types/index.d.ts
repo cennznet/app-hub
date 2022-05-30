@@ -12,7 +12,6 @@ import { u128 } from "@polkadot/types-codec";
 export { SubmittableExtrinsic } from "@cennznet/api/types";
 export { CENNZnetExtrinsic } from "@cennznet/types/interfaces/extrinsic";
 
-export type BridgeChain = "Ethereum" | "CENNZnet";
 export type BridgeAction = "Deposit" | "Withdraw";
 export type BridgeStatus = "Inactive" | "Active";
 

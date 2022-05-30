@@ -1,5 +1,5 @@
-import { VFC, useState, useEffect, useCallback } from "react";
-import { CENNZAssetBalance, ChainOption, IntrinsicElements } from "@/types";
+import { VFC, useState, useEffect } from "react";
+import { CENNZAssetBalance, IntrinsicElements } from "@/types";
 import { css } from "@emotion/react";
 import { Theme } from "@mui/material";
 import { useTransfer } from "@/providers/TransferProvider";
@@ -7,7 +7,6 @@ import TransferAsset, { TransferAssetType } from "@/components/TransferAsset";
 import StandardButton from "@/components/shared/StandardButton";
 import AddressInput from "@/components/shared/AddressInput";
 import useAddressValidation from "@/hooks/useAddressValidation";
-import isEthereumAddress from "@/utils/isEthereumAddress";
 import { useTransferableAssets, useTransferDisplayAssets } from "@/hooks";
 
 interface TransferAssetsProps {}
@@ -15,31 +14,16 @@ interface TransferAssetsProps {}
 const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 	props
 ) => {
-	const { setTransferAssets, setReceiveAddress, receiveAddress } =
+	const { setTransferAssets, setReceiveAddress, receiveAddress, addressType } =
 		useTransfer();
 
 	const [selectedAssets, setSelectedAssets] = useState<TransferAssetType[]>([]);
 	const [dropDownTokens, setDropDownTokens] = useState<CENNZAssetBalance[][]>(
 		[]
 	);
-	const [addressType, setAddressType] = useState<ChainOption>("CENNZnet");
 	const transferableAssets = useTransferableAssets();
 	const { displayAssets, addDisplayAsset, removeDisplayAsset } =
 		useTransferDisplayAssets();
-
-	const onTransferCENNZAddressChange = useCallback(
-		(event) => {
-			const address = event.target.value;
-			if (isEthereumAddress(address)) {
-				setAddressType("Ethereum");
-				setReceiveAddress(address);
-			} else {
-				setAddressType("CENNZnet");
-				setReceiveAddress(address);
-			}
-		},
-		[setReceiveAddress]
-	);
 
 	const { inputRef: cennzAddressInputRef } = useAddressValidation(
 		receiveAddress,
@@ -82,7 +66,7 @@ const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 					placeholder={"Enter a CENNZnet or Ethereum address"}
 					addressType={addressType}
 					value={receiveAddress}
-					onChange={onTransferCENNZAddressChange}
+					onChange={(e) => setReceiveAddress(e.target.value)}
 					id="transferCENNZAddressInput"
 					ref={cennzAddressInputRef}
 				/>

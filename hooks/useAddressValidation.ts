@@ -1,4 +1,4 @@
-import { BridgeChain } from "@/types";
+import { ChainOption } from "@/types";
 import isCENNZAddress from "@/utils/isCENNZAddress";
 import isEthereumAddress from "@/utils/isEthereumAddress";
 import { MutableRefObject, useEffect, useRef } from "react";
@@ -9,7 +9,7 @@ interface AddressValidationHook {
 
 export default function useAddressValidation(
 	address: string,
-	addressType: BridgeChain
+	addressType: ChainOption
 ): AddressValidationHook {
 	const inputRef = useRef<HTMLInputElement>();
 
