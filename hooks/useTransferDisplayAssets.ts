@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 import { useTransferableAssets } from "@/hooks";
-import { DisplayAssets } from "@/types";
+import { TransferDisplayAssets } from "@/types";
 
 export default function useTransferDisplayAssets() {
 	const transferableAssets = useTransferableAssets();
-	const [displayAssets, setDisplayAssets] = useState<DisplayAssets>();
+	const [displayAssets, setDisplayAssets] = useState<TransferDisplayAssets>();
 
 	useEffect(() => {
 		if (!transferableAssets) return;
