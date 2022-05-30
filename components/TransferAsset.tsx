@@ -6,7 +6,11 @@ import {
 	SetStateAction,
 	useCallback,
 } from "react";
-import { CENNZAssetBalance, IntrinsicElements } from "@/types";
+import {
+	CENNZAssetBalance,
+	CENNZAssetBalances,
+	IntrinsicElements,
+} from "@/types";
 import TokenInput from "@/components/shared/TokenInput";
 import { css } from "@emotion/react";
 import { Theme } from "@mui/material";
@@ -18,8 +22,7 @@ import { useTransfer } from "@/providers/TransferProvider";
 interface TransferAssetProps {
 	assetKey: number;
 	asset: CENNZAssetBalance;
-	tokens: CENNZAssetBalance[];
-	selectedAssets: TransferAssetType[];
+	tokens: CENNZAssetBalances;
 	setSelectedAssets: Dispatch<SetStateAction<TransferAssetType[]>>;
 }
 
@@ -32,7 +35,6 @@ const TransferAsset: VFC<IntrinsicElements["div"] & TransferAssetProps> = ({
 	assetKey,
 	asset,
 	tokens,
-	selectedAssets,
 	setSelectedAssets,
 }) => {
 	const { displayAssets, removeDisplayAsset } = useTransfer();
@@ -53,25 +55,24 @@ const TransferAsset: VFC<IntrinsicElements["div"] & TransferAssetProps> = ({
 			assetTokenInput.value,
 			currentAsset
 		);
-		const selectedAssetClone = [...selectedAssets];
-		const currentAssetIdx = selectedAssetClone.findIndex(
-			(asset) => asset.assetKey === assetKey
-		);
-		if (currentAssetIdx !== -1) {
-			selectedAssetClone[currentAssetIdx] = newTransferAsset;
-		} else {
-			selectedAssetClone.push(newTransferAsset);
-		}
-		setSelectedAssets(selectedAssetClone);
 
-		//FIXME: adding 'currentAsset' or 'selectedAssets' causes a delay in rendering
-		/* eslint-disable-next-line */
+		setSelectedAssets((prevAssets) => {
+			const currentAssetIdx = prevAssets.findIndex(
+				(asset) => asset.assetKey === assetKey
+			);
+			if (currentAssetIdx !== -1) {
+				prevAssets[currentAssetIdx] = newTransferAsset;
+				return prevAssets;
+			}
+			return prevAssets.concat(newTransferAsset);
+		});
 	}, [
 		assetTokenInput.value,
 		assetTokenSelect.tokenId,
 		assetBalance,
 		setSelectedAssets,
 		assetKey,
+		currentAsset,
 	]);
 
 	const onAssetMaxRequest = useMemo(() => {

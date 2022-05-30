@@ -76,26 +76,21 @@ const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 					ref={cennzAddressInputRef}
 				/>
 				<label css={styles.assetsLabel}>Assets</label>
-				{displayAssets?.assets?.map((asset, index) => {
-					return (
-						<TransferAsset
-							key={index}
-							assetKey={index}
-							asset={
-								displayAssets?.amount !== 1 && dropDownTokens[index]
-									? dropDownTokens[index][0]
-									: asset
-							}
-							tokens={
-								dropDownTokens[index]
-									? dropDownTokens[index]
-									: transferableAssets
-							}
-							selectedAssets={selectedAssets}
-							setSelectedAssets={setSelectedAssets}
-						/>
-					);
-				})}
+				{displayAssets?.assets?.map((asset, index) => (
+					<TransferAsset
+						key={index}
+						assetKey={index}
+						asset={
+							displayAssets?.amount !== 1 && dropDownTokens[index]
+								? dropDownTokens[index][0]
+								: asset
+						}
+						tokens={
+							dropDownTokens[index] ? dropDownTokens[index] : transferableAssets
+						}
+						setSelectedAssets={setSelectedAssets}
+					/>
+				))}
 			</div>
 			<div css={styles.addRemoveAssets}>
 				<StandardButton
