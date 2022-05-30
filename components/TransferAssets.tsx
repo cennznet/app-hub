@@ -51,17 +51,16 @@ const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 			)
 		);
 
-		const transferAssets: CENNZAssetBalance[] = selectedAssets
-			.map((asset) => asset.asset)
-			.slice(0, displayAssets?.amount);
 		setDropDownTokens(displayTokenArr.slice(0, displayAssets?.amount));
-		setTransferAssets(transferAssets);
-	}, [
-		selectedAssets,
-		displayAssets?.amount,
-		transferableAssets,
-		setTransferAssets,
-	]);
+	}, [displayAssets?.amount, selectedAssets, transferableAssets]);
+
+	useEffect(() => {
+		if (!selectedAssets) return;
+
+		setTransferAssets(
+			selectedAssets.map((asset) => asset.asset).slice(0, displayAssets?.amount)
+		);
+	}, [selectedAssets, displayAssets?.amount, setTransferAssets]);
 
 	return (
 		<div {...props} css={styles.root}>
