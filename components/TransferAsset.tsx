@@ -108,9 +108,11 @@ const TransferAsset: VFC<IntrinsicElements["div"] & TransferAssetProps> = ({
 					scale={currentAsset?.decimals}
 					min={Balance.fromString("1", currentAsset).toInput()}
 				/>
-				<StandardButton onClick={onRemoveClick} variant={"secondary"}>
-					X
-				</StandardButton>
+				{displayAssets.amount !== 1 && (
+					<StandardButton onClick={onRemoveClick} variant={"secondary"}>
+						X
+					</StandardButton>
+				)}
 			</div>
 			{!!assetBalance && (
 				<div css={styles.tokenBalance}>
