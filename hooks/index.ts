@@ -21,6 +21,7 @@ export { default as useSelectedAccount } from "@/hooks/useSelectedAccount";
 export { default as useUpdateCENNZBalances } from "@/hooks/useUpdateCENNZBalances";
 export { default as useEthereumBalances } from "@/hooks/useEthereumBalances";
 export { default as useTransferableAssets } from "@/hooks/useTransferableAssets";
+export { default as useTransferDisplayAssets } from "@/hooks/useTransferDisplayAssets";
 
 export type { TokenInputHook } from "@/hooks/useTokenInput";
 export type { PoolExchangeInfoHook } from "@/hooks/usePoolExchangeInfo";

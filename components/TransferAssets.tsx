@@ -8,48 +8,24 @@ import StandardButton from "@/components/shared/StandardButton";
 import AddressInput from "@/components/shared/AddressInput";
 import useAddressValidation from "@/hooks/useAddressValidation";
 import isEthereumAddress from "@/utils/isEthereumAddress";
-import { useTransferableAssets } from "@/hooks";
+import { useTransferableAssets, useTransferDisplayAssets } from "@/hooks";
 
 interface TransferAssetsProps {}
 
 const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 	props
 ) => {
-	const {
-		setTransferAssets,
-		setReceiveAddress,
-		receiveAddress,
-	} = useTransfer();
+	const { setTransferAssets, setReceiveAddress, receiveAddress } =
+		useTransfer();
 
-	const [assetAmount, setAssetAmount] = useState<{
-		amount: number;
-		spliceIndex: number;
-	}>({
-		amount: 1,
-		spliceIndex: null,
-	});
 	const [selectedAssets, setSelectedAssets] = useState<TransferAssetType[]>([]);
 	const [dropDownTokens, setDropDownTokens] = useState<CENNZAssetBalance[][]>(
 		[]
 	);
 	const [addressType, setAddressType] = useState<ChainOption>("CENNZnet");
-	const [displayAssets, setDisplayAssets] = useState<CENNZAssetBalance[]>([]);
-
 	const transferableAssets = useTransferableAssets();
-
-	useEffect(() => {
-		console.info(assetAmount);
-		if (!assetAmount.spliceIndex) {
-			setDisplayAssets(transferableAssets?.slice(0, assetAmount.amount));
-		} else {
-			displayAssets.splice(assetAmount.spliceIndex, 1);
-			setDisplayAssets(displayAssets);
-		}
-	}, [assetAmount]);
-
-	useEffect(() => {
-		setAssetAmount({ amount: 1, spliceIndex: null });
-	}, [transferableAssets]);
+	const { displayAssets, addDisplayAsset, removeDisplayAsset } =
+		useTransferDisplayAssets();
 
 	const onTransferCENNZAddressChange = useCallback(
 		(event) => {
@@ -85,12 +61,18 @@ const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 				(asset) => !selectedAssetIds.includes(asset.assetId)
 			)
 		);
+
 		const transferAssets: CENNZAssetBalance[] = selectedAssets
 			.map((asset) => asset.asset)
-			.slice(0, assetAmount.amount);
-		setDropDownTokens(displayTokenArr.slice(0, assetAmount.amount));
+			.slice(0, displayAssets?.amount);
+		setDropDownTokens(displayTokenArr.slice(0, displayAssets?.amount));
 		setTransferAssets(transferAssets);
-	}, [selectedAssets, assetAmount]);
+	}, [
+		selectedAssets,
+		displayAssets?.amount,
+		transferableAssets,
+		setTransferAssets,
+	]);
 
 	return (
 		<div {...props} css={styles.root}>
@@ -105,13 +87,15 @@ const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 					ref={cennzAddressInputRef}
 				/>
 				<label css={styles.assetsLabel}>Assets</label>
-				{displayAssets?.map((asset, index) => {
+				{displayAssets?.assets?.map((asset, index) => {
 					return (
 						<TransferAsset
 							key={index}
 							assetKey={index}
 							asset={
-								assetAmount.amount === 1 ? asset : dropDownTokens[index][0]
+								displayAssets?.amount !== 1 && dropDownTokens[index]
+									? dropDownTokens[index][0]
+									: asset
 							}
 							tokens={
 								dropDownTokens[index]
@@ -120,12 +104,7 @@ const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 							}
 							selectedAssets={selectedAssets}
 							setSelectedAssets={setSelectedAssets}
-							cancelCallback={() => {
-								setAssetAmount({
-									amount: assetAmount.amount - 1,
-									spliceIndex: index,
-								});
-							}}
+							removeDisplayAsset={removeDisplayAsset}
 						/>
 					);
 				})}
@@ -134,33 +113,21 @@ const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 				<StandardButton
 					type="button"
 					disabled={
-						assetAmount.amount === transferableAssets?.length ||
-						!transferableAssets
+						displayAssets?.amount === transferableAssets?.length ||
+						!transferableAssets ||
+						!displayAssets
 					}
 					onClick={() => {
-						if (assetAmount.amount < transferableAssets?.length)
-							setAssetAmount({
-								amount: assetAmount.amount + 1,
-								spliceIndex: null,
-							});
+						if (displayAssets?.amount < transferableAssets?.length)
+							addDisplayAsset();
 					}}
 				>
 					Add Asset
 				</StandardButton>
 				<StandardButton
-					disabled={assetAmount.amount === 1}
+					disabled={!displayAssets || displayAssets?.amount <= 1}
 					type="button"
-					onClick={() => {
-						if (assetAmount.amount > 1) {
-							setSelectedAssets(
-								selectedAssets.slice(0, assetAmount.amount - 1)
-							);
-							setAssetAmount({
-								amount: assetAmount.amount - 1,
-								spliceIndex: null,
-							});
-						}
-					}}
+					onClick={() => removeDisplayAsset(-1)}
 				>
 					Remove Asset
 				</StandardButton>

@@ -20,7 +20,7 @@ interface TransferAssetProps {
 	tokens: CENNZAssetBalance[];
 	selectedAssets: TransferAssetType[];
 	setSelectedAssets: Dispatch<SetStateAction<TransferAssetType[]>>;
-	cancelCallback: Function;
+	removeDisplayAsset: Function;
 }
 
 export interface TransferAssetType {
@@ -34,7 +34,7 @@ const TransferAsset: VFC<IntrinsicElements["div"] & TransferAssetProps> = ({
 	tokens,
 	selectedAssets,
 	setSelectedAssets,
-	cancelCallback,
+	removeDisplayAsset,
 }) => {
 	const [selectedAsset, setSelectedAsset] = useState<CENNZAssetBalance>(asset);
 	const [assetTokenSelect, assetTokenInput] = useTokenInput(asset.assetId);
@@ -71,7 +71,7 @@ const TransferAsset: VFC<IntrinsicElements["div"] & TransferAssetProps> = ({
 		if (!selectedAsset) return;
 		const setAssetValue = assetTokenInput.setValue;
 		return () => setAssetValue(assetBalance.toBalance());
-	}, [assetBalance, assetTokenInput.setValue]);
+	}, [selectedAsset, assetBalance, assetTokenInput.setValue]);
 
 	const { inputRef: assetInputRef } = useBalanceValidation(
 		Balance.fromInput(assetTokenInput.value, selectedAsset),
@@ -93,7 +93,10 @@ const TransferAsset: VFC<IntrinsicElements["div"] & TransferAssetProps> = ({
 					scale={selectedAsset?.decimals}
 					min={Balance.fromString("1", selectedAsset).toInput()}
 				/>
-				<StandardButton onClick={() => cancelCallback()} variant={"secondary"}>
+				<StandardButton
+					onClick={() => removeDisplayAsset()}
+					variant={"secondary"}
+				>
 					X
 				</StandardButton>
 			</div>
