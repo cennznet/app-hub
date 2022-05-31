@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { css, MenuItem, Theme } from "@mui/material";
-import getTokenLogo from "../utils/getTokenLogo";
+import getTokenLogo from "@/utils/getTokenLogo";
 import SelectInput from "@/components/shared/SelectInput";
 import { useTransfer } from "@/providers/TransferProvider";
 
