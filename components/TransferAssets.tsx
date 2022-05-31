@@ -82,6 +82,7 @@ const styles = {
 	`,
 
 	transferAssetSelect: css`
+		margin-top: 1.5em;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
