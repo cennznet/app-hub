@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useDeferredValue, useLayoutEffect, useState } from "react";
 import { css } from "@emotion/react";
 import dynamic from "next/dynamic";
 import type { IdentityProps } from "@polkadot/react-identicon/types";
@@ -13,12 +13,13 @@ interface Props extends IdentityProps {
 
 const AccountIdenticon: FC<Props> = ({ value, fadeOnChange, ...props }) => {
 	const [visible, setVisible] = useState<boolean>(false);
+	const address = useDeferredValue(value);
 
-	useEffect(() => {
-		if (!value || !fadeOnChange) return;
+	useLayoutEffect(() => {
+		if (!address || !fadeOnChange) return;
 		setVisible(false);
 		setTimeout(() => setVisible(true), 200);
-	}, [value, fadeOnChange]);
+	}, [address, fadeOnChange]);
 
 	return (
 		<Identicon
