@@ -45,6 +45,7 @@ const TransferForm: FC<IntrinsicElements["form"] & TransferFormProps> = ({
 		receiveAddress,
 		transferAssets,
 	} = useTransfer();
+
 	const onFormSubmit = useCallback(
 		async (event) => {
 			event.preventDefault();
@@ -109,16 +110,18 @@ const TransferForm: FC<IntrinsicElements["form"] & TransferFormProps> = ({
 		},
 		[
 			api,
-			cennzAccount?.address,
-			metaMaskAccount?.address,
-			wallet?.signer,
-			updateCENNZBalances,
-			setTxFailure,
 			setTxPending,
-			setTxSuccess,
-			setTxIdle,
+			transferAssets,
+			receiveAddress,
 			selectedWallet,
+			cennzAccount?.address,
+			wallet?.signer,
+			metaMaskAccount?.address,
 			extension,
+			setTxIdle,
+			setTxFailure,
+			updateCENNZBalances,
+			setTxSuccess,
 		]
 	);
 

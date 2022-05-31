@@ -1,13 +1,13 @@
-import { VFC, useState, useEffect, useCallback } from "react";
-import { CENNZAssetBalance, ChainOption, IntrinsicElements } from "@/types";
+import { VFC } from "react";
+import { IntrinsicElements } from "@/types";
 import { css } from "@emotion/react";
-import { Theme } from "@mui/material";
+import { LinearProgress, Theme } from "@mui/material";
 import { useTransfer } from "@/providers/TransferProvider";
-import TransferAsset, { TransferAssetType } from "@/components/TransferAsset";
-import StandardButton from "@/components/shared/StandardButton";
+import TransferAsset from "@/components/TransferAsset";
 import AddressInput from "@/components/shared/AddressInput";
 import useAddressValidation from "@/hooks/useAddressValidation";
-import isEthereumAddress from "@/utils/isEthereumAddress";
+import { useSelectedAccount } from "@/hooks";
+import TransferAssetSelect from "@/components/TransferAssetSelect";
 
 interface TransferAssetsProps {}
 
@@ -15,154 +15,50 @@ const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 	props
 ) => {
 	const {
-		transferableAssets,
-		setTransferAssets,
 		setReceiveAddress,
 		receiveAddress,
+		addressType,
+		transferAssets,
+		transferableAssets,
 	} = useTransfer();
 
-	const [assetAmount, setAssetAmount] = useState<{
-		amount: number;
-		spliceIndex: number;
-	}>({
-		amount: 1,
-		spliceIndex: null,
-	});
-	const [selectedAssets, setSelectedAssets] = useState<TransferAssetType[]>([]);
-	const [dropDownTokens, setDropDownTokens] = useState<CENNZAssetBalance[][]>(
-		[]
-	);
-	const [addressType, setAddressType] = useState<ChainOption>("CENNZnet");
-	const [displayAssets, setDisplayAssets] = useState<CENNZAssetBalance[]>([]);
-
-	useEffect(() => {
-		console.info(assetAmount);
-		if (!assetAmount.spliceIndex) {
-			setDisplayAssets(transferableAssets?.slice(0, assetAmount.amount));
-		} else {
-			displayAssets.splice(assetAmount.spliceIndex, 1);
-			setDisplayAssets(displayAssets);
-		}
-	}, [assetAmount]);
-
-	useEffect(() => {
-		setAssetAmount({ amount: 1, spliceIndex: null });
-	}, [transferableAssets]);
-
-	const onTransferCENNZAddressChange = useCallback(
-		(event) => {
-			const address = event.target.value;
-			if (isEthereumAddress(address)) {
-				setAddressType("Ethereum");
-				setReceiveAddress(address);
-			} else {
-				setAddressType("CENNZnet");
-				setReceiveAddress(address);
-			}
-		},
-		[setReceiveAddress]
-	);
+	const selectedAccount = useSelectedAccount();
 
 	const { inputRef: cennzAddressInputRef } = useAddressValidation(
 		receiveAddress,
 		addressType
 	);
 
-	useEffect(() => {
-		if (!transferableAssets) return;
-		//remove all tokens that are selected from all other display token arrays
-		const selectedAssetIds = selectedAssets.map((asset) => asset.asset.assetId);
-		const displayTokenArr = selectedAssets.map((selectedAsset) => {
-			return transferableAssets
-				.filter((asset) => !selectedAssetIds.includes(asset.assetId))
-				.concat(selectedAsset.asset);
-		});
-		//add additional display token to prep for user adding asset
-		displayTokenArr.push(
-			transferableAssets.filter(
-				(asset) => !selectedAssetIds.includes(asset.assetId)
-			)
-		);
-		const transferAssets: CENNZAssetBalance[] = selectedAssets
-			.map((asset) => asset.asset)
-			.slice(0, assetAmount.amount);
-		setDropDownTokens(displayTokenArr.slice(0, assetAmount.amount));
-		setTransferAssets(transferAssets);
-	}, [selectedAssets, assetAmount]);
-
 	return (
 		<div {...props} css={styles.root}>
 			<div css={styles.formField}>
-				<label htmlFor="transferCENNZAddressInput">Transfer Address</label>
+				<label htmlFor="transferAddressInput">Transfer Address</label>
 				<AddressInput
 					placeholder={"Enter a CENNZnet or Ethereum address"}
 					addressType={addressType}
 					value={receiveAddress}
-					onChange={onTransferCENNZAddressChange}
-					id="transferCENNZAddressInput"
+					onChange={(e) => setReceiveAddress(e.target.value)}
+					id="transferAddressInput"
 					ref={cennzAddressInputRef}
 				/>
-				<label css={styles.assetsLabel}>Assets</label>
-				{displayAssets?.map((asset, index) => {
-					return (
-						<TransferAsset
-							key={index}
-							assetKey={index}
-							asset={
-								assetAmount.amount === 1 ? asset : dropDownTokens[index][0]
-							}
-							tokens={
-								dropDownTokens[index]
-									? dropDownTokens[index]
-									: transferableAssets
-							}
-							selectedAssets={selectedAssets}
-							setSelectedAssets={setSelectedAssets}
-							cancelCallback={() => {
-								setAssetAmount({
-									amount: assetAmount.amount - 1,
-									spliceIndex: index,
-								});
-							}}
-						/>
-					);
-				})}
+				{!!transferAssets?.length && (
+					<>
+						<label css={styles.assetsLabel}>Assets</label>
+						{transferAssets.map((asset) => (
+							<TransferAsset key={asset.assetId} asset={asset} />
+						))}
+					</>
+				)}
+				{!!selectedAccount && !transferAssets?.length && (
+					<LinearProgress css={styles.formInfoProgress} />
+				)}
 			</div>
-			<div css={styles.addRemoveAssets}>
-				<StandardButton
-					type="button"
-					disabled={
-						assetAmount.amount === transferableAssets?.length ||
-						!transferableAssets
-					}
-					onClick={() => {
-						if (assetAmount.amount < transferableAssets?.length)
-							setAssetAmount({
-								amount: assetAmount.amount + 1,
-								spliceIndex: null,
-							});
-					}}
-				>
-					Add Asset
-				</StandardButton>
-				<StandardButton
-					disabled={assetAmount.amount === 1}
-					type="button"
-					onClick={() => {
-						if (assetAmount.amount > 1) {
-							setSelectedAssets(
-								selectedAssets.slice(0, assetAmount.amount - 1)
-							);
-							setAssetAmount({
-								amount: assetAmount.amount - 1,
-								spliceIndex: null,
-							});
-						}
-					}}
-				>
-					Remove Asset
-				</StandardButton>
-			</div>
+
+			{transferAssets?.length < transferableAssets?.length && (
+				<div css={styles.transferAssetSelect}>
+					<TransferAssetSelect />
+				</div>
+			)}
 		</div>
 	);
 };
@@ -185,30 +81,46 @@ const styles = {
 		}
 	`,
 
-	formControl: (isConnected: boolean) => css`
-		margin-bottom: 1em;
-		margin-top: ${isConnected ? "1em" : "2em"};
-		text-align: center;
-	`,
-
-	tokenBalance: ({ palette }: Theme) => css`
-		margin-top: 0.25em;
-		font-weight: 500;
-		color: ${palette.grey["700"]};
-		font-size: 14px;
-
-		span {
-			font-family: "Roboto Mono", monospace;
-			font-weight: bold;
-			letter-spacing: -0.025em;
-		}
-	`,
-	addRemoveAssets: css`
+	transferAssetSelect: css`
+		margin-top: 1.5em;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
 	`,
+
 	assetsLabel: css`
 		margin-top: 25px;
+	`,
+
+	select: css`
+		min-width: 135px;
+	`,
+
+	selectItem: css`
+		display: flex;
+		align-items: center;
+		padding-top: 0.75em;
+		padding-bottom: 0.75em;
+
+		> img {
+			width: 2em;
+			height: 2em;
+			object-fit: contain;
+			margin-right: 0.5em;
+		}
+
+		> span {
+			font-size: 14px;
+			font-weight: bold;
+			flex: 1;
+		}
+	`,
+
+	formInfoProgress: css`
+		margin-top: 2em;
+		display: inline-block;
+		width: 25px;
+		border-radius: 10px;
+		opacity: 0.5;
 	`,
 };

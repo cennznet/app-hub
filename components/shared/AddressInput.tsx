@@ -1,11 +1,5 @@
-import { BridgeChain, IntrinsicElements } from "@/types";
-import {
-	css,
-	InputAdornment,
-	TextField,
-	TextFieldProps,
-	Theme,
-} from "@mui/material";
+import { ChainOption, IntrinsicElements } from "@/types";
+import { css, InputAdornment, TextField, TextFieldProps } from "@mui/material";
 import { useMemo, forwardRef } from "react";
 import Jazzicon, { jsNumberForAddress } from "react-jazzicon";
 import AccountIdenticon from "@/components/shared/AccountIdenticon";
@@ -13,14 +7,14 @@ import isEthereumAddress from "@/utils/isEthereumAddress";
 import isCENNZAddress from "@/utils/isCENNZAddress";
 
 interface AddressInputProps {
-	addressType: BridgeChain;
+	addressType: ChainOption;
 }
 
 const AddressInput = forwardRef<
 	HTMLInputElement,
 	IntrinsicElements["input"] & AddressInputProps & TextFieldProps
 >(({ addressType, value, ...props }, ref) => {
-	const topAdorment = useMemo(() => {
+	const topAdornment = useMemo(() => {
 		if (addressType === "Ethereum" && !isEthereumAddress(value as string))
 			return;
 		if (addressType === "CENNZnet" && !isCENNZAddress(value as string)) return;
@@ -48,8 +42,8 @@ const AddressInput = forwardRef<
 			required
 			InputProps={{
 				startAdornment: (
-					<InputAdornment position="start" css={styles.adorment}>
-						{topAdorment}
+					<InputAdornment position="start" css={styles.adornment}>
+						{topAdornment}
 					</InputAdornment>
 				),
 			}}
@@ -76,7 +70,7 @@ const styles = {
 		width: 26px;
 	`,
 
-	adorment: ({ palette }: Theme) => css`
+	adornment: css`
 		margin-right: 0;
 		> div {
 			margin-right: 0.5em !important;

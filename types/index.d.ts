@@ -12,7 +12,6 @@ import { u128 } from "@polkadot/types-codec";
 export { SubmittableExtrinsic } from "@cennznet/api/types";
 export { CENNZnetExtrinsic } from "@cennznet/types/interfaces/extrinsic";
 
-export type BridgeChain = "Ethereum" | "CENNZnet";
 export type BridgeAction = "Deposit" | "Withdraw";
 export type BridgeStatus = "Inactive" | "Active";
 
@@ -38,6 +37,8 @@ export interface CENNZAssetBalance extends CENNZAsset {
 	value: Balance;
 	rawValue?: u128;
 }
+
+export type CENNZAssetBalances = Array<CENNZAssetBalance>;
 
 export type SectionUri = "swap" | "pool" | "bridge" | "transfer";
 
@@ -125,3 +126,15 @@ export interface CENNZMetaMaskNetwork {
 export type WalletOption = "CENNZnet" | "MetaMask";
 
 export type ChainOption = "CENNZnet" | "Ethereum";
+
+export interface TransferAssetType {
+	assetKey: number;
+	asset: CENNZAssetBalance;
+}
+
+export type TransferAssets = Array<TransferAssetType>;
+
+export interface TransferDisplayAssets {
+	amount: number;
+	assets: CENNZAssetBalances;
+}

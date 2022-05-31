@@ -1,11 +1,4 @@
-import {
-	VFC,
-	useEffect,
-	useMemo,
-	Dispatch,
-	SetStateAction,
-	useState,
-} from "react";
+import { VFC, useEffect, useCallback } from "react";
 import { CENNZAssetBalance, IntrinsicElements } from "@/types";
 import TokenInput from "@/components/shared/TokenInput";
 import { css } from "@emotion/react";
@@ -13,70 +6,63 @@ import { Theme } from "@mui/material";
 import { useCENNZBalances, useBalanceValidation, useTokenInput } from "@/hooks";
 import { Balance } from "@/utils";
 import StandardButton from "@/components/shared/StandardButton";
+import { useTransfer } from "@/providers/TransferProvider";
 
 interface TransferAssetProps {
-	assetKey: number;
-	asset: CENNZAssetBalance;
-	tokens: CENNZAssetBalance[];
-	selectedAssets: TransferAssetType[];
-	setSelectedAssets: Dispatch<SetStateAction<TransferAssetType[]>>;
-	cancelCallback: Function;
-}
-
-export interface TransferAssetType {
-	assetKey: number;
 	asset: CENNZAssetBalance;
 }
 
 const TransferAsset: VFC<IntrinsicElements["div"] & TransferAssetProps> = ({
-	assetKey,
 	asset,
-	tokens,
-	selectedAssets,
-	setSelectedAssets,
-	cancelCallback,
 }) => {
-	const [selectedAsset, setSelectedAsset] = useState<CENNZAssetBalance>(asset);
+	const {
+		transferAssets,
+		setTransferAssets,
+		transferableAssets,
+		replaceFirstAsset,
+	} = useTransfer();
 	const [assetTokenSelect, assetTokenInput] = useTokenInput(asset.assetId);
-	const [assetBalance] = useCENNZBalances([selectedAsset]);
+
+	const [assetBalance] = useCENNZBalances([asset]);
 
 	useEffect(() => {
-		const currentAsset: CENNZAssetBalance = tokens.find(
-			(token) => token.assetId === assetTokenSelect.tokenId
-		);
-		const newTransferAsset: TransferAssetType = {
-			assetKey: assetKey,
-			asset: {
-				...currentAsset,
-			},
+		const newTransferAsset = {
+			...asset,
+			value: Balance.fromInput(assetTokenInput.value, asset),
 		};
-		newTransferAsset.asset.value = Balance.fromInput(
-			assetTokenInput.value,
-			selectedAsset
-		);
-		const selectedAssetClone = [...selectedAssets];
-		const currentAssetIdx = selectedAssetClone.findIndex(
-			(asset) => asset.assetKey === assetKey
-		);
-		if (currentAssetIdx !== -1) {
-			selectedAssetClone[currentAssetIdx] = newTransferAsset;
-		} else {
-			selectedAssetClone.push(newTransferAsset);
-		}
-		setSelectedAssets(selectedAssetClone);
-		setSelectedAsset(currentAsset);
-	}, [assetTokenInput.value, assetTokenSelect.tokenId, assetBalance]);
+		setTransferAssets((prevAssets) => {
+			const currentAssetIdx = prevAssets.findIndex(
+				(asset) => asset.assetId === assetTokenSelect.tokenId
+			);
+			if (currentAssetIdx !== -1) {
+				prevAssets[currentAssetIdx] = newTransferAsset;
+				return prevAssets;
+			}
+			return prevAssets.concat(newTransferAsset);
+		});
+	}, [
+		transferAssets,
+		setTransferAssets,
+		assetTokenInput.value,
+		assetTokenSelect.tokenId,
+		asset,
+	]);
 
-	const onAssetMaxRequest = useMemo(() => {
-		if (!selectedAsset) return;
-		const setAssetValue = assetTokenInput.setValue;
-		return () => setAssetValue(assetBalance.toBalance());
-	}, [assetBalance, assetTokenInput.setValue]);
+	const onAssetMaxRequest = useCallback(() => {
+		if (!assetTokenInput?.setValue || !assetBalance) return;
+		assetTokenInput.setValue(assetBalance.toBalance());
+	}, [assetBalance, assetTokenInput]);
 
 	const { inputRef: assetInputRef } = useBalanceValidation(
-		Balance.fromInput(assetTokenInput.value, selectedAsset),
+		Balance.fromInput(assetTokenInput.value, asset),
 		assetBalance
 	);
+
+	const onRemoveClick = useCallback(() => {
+		setTransferAssets((prevAssets) =>
+			prevAssets.filter((prevAsset) => prevAsset.assetId !== asset.assetId)
+		);
+	}, [asset.assetId, setTransferAssets]);
 
 	return (
 		<div css={styles.root}>
@@ -84,18 +70,20 @@ const TransferAsset: VFC<IntrinsicElements["div"] & TransferAssetProps> = ({
 				<TokenInput
 					onMaxValueRequest={onAssetMaxRequest}
 					selectedTokenId={assetTokenSelect.tokenId}
-					onTokenChange={assetTokenSelect.onTokenChange}
+					onTokenChange={(e) => replaceFirstAsset(Number(e.target.value))}
 					value={assetTokenInput.value}
 					onValueChange={assetTokenInput.onValueChange}
-					tokens={tokens}
+					tokens={transferAssets?.length === 1 ? transferableAssets : [asset]}
 					ref={assetInputRef}
 					required
-					scale={selectedAsset?.decimals}
-					min={Balance.fromString("1", selectedAsset).toInput()}
+					scale={asset.decimals}
+					min={Balance.fromString("1", asset).toInput()}
 				/>
-				<StandardButton onClick={() => cancelCallback()} variant={"secondary"}>
-					X
-				</StandardButton>
+				{transferAssets.length !== 1 && (
+					<StandardButton onClick={onRemoveClick} variant={"secondary"}>
+						X
+					</StandardButton>
+				)}
 			</div>
 			{!!assetBalance && (
 				<div css={styles.tokenBalance}>
@@ -113,6 +101,7 @@ const styles = {
 		margin-top: 10px;
 		margin-bottom: 10px;
 	`,
+
 	transferAssetContainer: css`
 		display: flex;
 		justify-content: space-between;
@@ -121,6 +110,7 @@ const styles = {
 			padding: 0.75em 1em;
 		}
 	`,
+
 	tokenBalance: ({ palette }: Theme) => css`
 		margin-top: 0.25em;
 		font-weight: 500;
