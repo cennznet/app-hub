@@ -1,6 +1,5 @@
 import {
 	createContext,
-	memo,
 	useContext,
 	useState,
 	SetStateAction,
@@ -96,6 +95,6 @@ const SwapProvider: FC<PropsWithChildren<SwapProviderProps>> = ({
 	);
 };
 
-export default memo(SwapProvider);
+export default SwapProvider;
 
 export const useSwap = (): SwapContextType => useContext(SwapContext);

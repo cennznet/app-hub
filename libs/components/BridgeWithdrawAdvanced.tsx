@@ -1,4 +1,4 @@
-import { useEffect, useState, FC, memo } from "react";
+import { useEffect, useState, FC } from "react";
 import { IntrinsicElements } from "@/libs/types";
 import { css } from "@emotion/react";
 import {
@@ -63,7 +63,7 @@ const BridgeWithdrawAdvanced: FC<
 	);
 };
 
-export default memo(BridgeWithdrawAdvanced);
+export default BridgeWithdrawAdvanced;
 
 const styles = {
 	root: css`

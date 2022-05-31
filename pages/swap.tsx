@@ -12,7 +12,7 @@ import {
 	SwapProgress,
 	MainPanel,
 } from "@components";
-import { memo, FC } from "react";
+import { FC } from "react";
 import { NextSeo } from "next-seo";
 
 export async function getStaticProps() {
@@ -46,4 +46,4 @@ const Swap: FC<SwapProps> = ({ supportedAssets }) => {
 	);
 };
 
-export default memo(Swap);
+export default Swap;

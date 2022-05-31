@@ -1,6 +1,5 @@
 import {
 	FC,
-	memo,
 	createContext,
 	useContext,
 	useEffect,
@@ -44,7 +43,7 @@ const UserAgentProvider: FC<PropsWithChildren<ProviderProps>> = ({
 	);
 };
 
-export default memo(UserAgentProvider);
+export default UserAgentProvider;
 
 export function useUserAgent(): AgentContext {
 	return useContext(UserAgentContext);

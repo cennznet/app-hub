@@ -2,7 +2,7 @@ import type { AppProps } from "next/app";
 import CssBaseline from "@mui/material/CssBaseline";
 import { API_URL, VERCEL_URL } from "@/libs/constants";
 import { useRouter } from "next/router";
-import { memo, useEffect } from "react";
+import { useEffect } from "react";
 import { trackPageView } from "@utils";
 import { DefaultSeo } from "next-seo";
 import UserAgentProvider from "@providers/UserAgentProvider";
@@ -86,4 +86,4 @@ function MyApp({ Component, pageProps }: MyAppProps) {
 	);
 }
 
-export default memo(MyApp);
+export default MyApp;

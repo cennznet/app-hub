@@ -1,6 +1,6 @@
 import { BridgeChain, IntrinsicElements } from "@/libs/types";
 import { css, InputAdornment, TextField, TextFieldProps } from "@mui/material";
-import { memo, useMemo, forwardRef } from "react";
+import { useMemo, forwardRef } from "react";
 import Jazzicon, { jsNumberForAddress } from "react-jazzicon";
 import { AccountIdenticon } from "@components";
 import { isCENNZAddress, isEthereumAddress } from "@utils";
@@ -53,7 +53,7 @@ const AddressInput = forwardRef<
 
 AddressInput.displayName = "AddressInput";
 
-export default memo(AddressInput);
+export default AddressInput;
 
 const styles = {
 	root: css`

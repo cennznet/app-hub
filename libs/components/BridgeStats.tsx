@@ -2,7 +2,7 @@ import { useBridgeGasFee, useBridgeVerificationFee } from "@hooks";
 import { useBridge } from "@providers/BridgeProvider";
 import { IntrinsicElements } from "@/libs/types";
 import { css, LinearProgress, Theme } from "@mui/material";
-import { FC, memo } from "react";
+import { FC } from "react";
 
 interface BridgeStatsProps {}
 
@@ -59,7 +59,7 @@ const BridgeStats: FC<IntrinsicElements["div"] & BridgeStatsProps> = (
 	);
 };
 
-export default memo(BridgeStats);
+export default BridgeStats;
 
 const styles = {
 	root: ({ palette }: Theme) => css`

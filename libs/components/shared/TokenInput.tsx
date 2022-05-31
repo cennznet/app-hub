@@ -6,7 +6,6 @@ import {
 	useEffect,
 	forwardRef,
 	useImperativeHandle,
-	memo,
 } from "react";
 import { css, SerializedStyles } from "@emotion/react";
 import { SelectChangeEvent, MenuItem, Theme } from "@mui/material";
@@ -115,7 +114,7 @@ const TokenInput = forwardRef<
 
 TokenInput.displayName = "TokenInput";
 
-export default memo(TokenInput);
+export default TokenInput;
 
 export const styles = {
 	root: ({ palette }: Theme) => css`

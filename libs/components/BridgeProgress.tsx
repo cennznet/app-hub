@@ -1,4 +1,4 @@
-import { ReactNode, FC, memo } from "react";
+import { ReactNode, FC } from "react";
 import { IntrinsicElements, RelayerConfirmingStatus } from "@/libs/types";
 import { css } from "@emotion/react";
 import { useBridge } from "@providers/BridgeProvider";
@@ -64,7 +64,7 @@ interface TxPendingProps {
 	relayerStatus: RelayerConfirmingStatus;
 }
 
-const TxPendingImpl: FC<IntrinsicElements["div"] & TxPendingProps> = ({
+const TxPending: FC<IntrinsicElements["div"] & TxPendingProps> = ({
 	relayerStatus,
 	...props
 }) => {
@@ -93,13 +93,11 @@ const TxPendingImpl: FC<IntrinsicElements["div"] & TxPendingProps> = ({
 	);
 };
 
-const TxPending = memo(TxPendingImpl);
-
 interface TxSuccessProps {
 	transferValue: Balance;
 }
 
-const TxSuccessImpl: FC<IntrinsicElements["div"] & TxSuccessProps> = ({
+const TxSuccess: FC<IntrinsicElements["div"] & TxSuccessProps> = ({
 	transferValue,
 }) => {
 	const { bridgeAction } = useBridge();
@@ -121,13 +119,11 @@ const TxSuccessImpl: FC<IntrinsicElements["div"] & TxSuccessProps> = ({
 	);
 };
 
-const TxSuccess = memo(TxSuccessImpl);
-
 interface TxFailureProps {
 	errorCode?: string;
 }
 
-const TxFailureImpl: FC<IntrinsicElements["div"] & TxFailureProps> = ({
+const TxFailure: FC<IntrinsicElements["div"] & TxFailureProps> = ({
 	errorCode,
 	...props
 }) => {
@@ -149,8 +145,6 @@ const TxFailureImpl: FC<IntrinsicElements["div"] & TxFailureProps> = ({
 		</div>
 	);
 };
-
-const TxFailure = memo(TxFailureImpl);
 
 const styles = {
 	statusSuccess: ({ palette }: Theme) => css`

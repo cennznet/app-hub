@@ -1,6 +1,5 @@
 import {
 	createContext,
-	memo,
 	FC,
 	SetStateAction,
 	Dispatch,
@@ -35,7 +34,7 @@ const MainPanelProvider: FC<PropsWithChildren<MainPanelProviderProps>> = ({
 	);
 };
 
-export default memo(MainPanelProvider);
+export default MainPanelProvider;
 
 export const useMainPanel = (): MainPanelContextType => {
 	return useContext(MainPanelContext);

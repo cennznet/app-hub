@@ -1,4 +1,4 @@
-import { FC, memo, PropsWithChildren } from "react";
+import { FC, PropsWithChildren } from "react";
 import { css } from "@emotion/react";
 import { Modal } from "@mui/material";
 import { ModalBackdrop } from "@components";
@@ -23,7 +23,7 @@ const WalletModal: FC<PropsWithChildren<WalletModalProps>> = ({ children }) => {
 	);
 };
 
-export default memo(WalletModal);
+export default WalletModal;
 
 export const styles = {
 	modalRoot: css`

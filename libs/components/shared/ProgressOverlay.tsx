@@ -1,7 +1,7 @@
 import { IntrinsicElements } from "@/libs/types";
 import { css } from "@emotion/react";
 import { Theme } from "@mui/material";
-import { FC, memo, useEffect } from "react";
+import { FC, useEffect } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 
 interface ProgressOverlayProps {
@@ -38,7 +38,7 @@ const ProgressOverlay: FC<ProgressOverlayProps & IntrinsicElements["div"]> = ({
 	);
 };
 
-export default memo(ProgressOverlay);
+export default ProgressOverlay;
 
 const styles = {
 	root:

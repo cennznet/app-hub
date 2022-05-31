@@ -4,7 +4,7 @@ import fetchPoolAssets from "@utils/fetchPoolAssets";
 import { API_URL } from "@/libs/constants";
 import generateGlobalProps from "@utils/generateGlobalProps";
 import PoolProvider from "@providers/PoolProvider";
-import { FC, memo } from "react";
+import { FC } from "react";
 import {
 	PoolForm,
 	PoolActionsPair,
@@ -48,4 +48,4 @@ const Pool: FC<PoolProps> = ({ supportedAssets }) => {
 	);
 };
 
-export default memo(Pool);
+export default Pool;

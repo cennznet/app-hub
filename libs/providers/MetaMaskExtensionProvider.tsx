@@ -1,6 +1,5 @@
 import {
 	createContext,
-	memo,
 	FC,
 	PropsWithChildren,
 	useCallback,
@@ -58,7 +57,7 @@ const MetaMaskExtensionProvider: FC<
 	);
 };
 
-export default memo(MetaMaskExtensionProvider);
+export default MetaMaskExtensionProvider;
 
 export function useMetaMaskExtension(): MetaMaskExtensionContextType {
 	return useContext(MetaMaskExtensionContext);

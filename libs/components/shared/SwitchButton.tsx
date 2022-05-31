@@ -1,4 +1,4 @@
-import { FC, ComponentProps, useState, useCallback, memo } from "react";
+import { FC, ComponentProps, useState, useCallback } from "react";
 import { css } from "@emotion/react";
 import SwapHoriz from "@mui/icons-material/SwapHoriz";
 import { Theme } from "@mui/material";
@@ -33,7 +33,7 @@ const SwapButton: FC<SwapButtonProps & ComponentProps<"button">> = ({
 	);
 };
 
-export default memo(SwapButton);
+export default SwapButton;
 
 const styles = {
 	root: css`

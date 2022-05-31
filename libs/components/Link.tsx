@@ -1,6 +1,6 @@
 import { IntrinsicElements } from "@/libs/types";
 import NextLink, { LinkProps as NextLinkProps } from "next/link";
-import { FC, memo } from "react";
+import { FC } from "react";
 
 /* eslint-disable react/jsx-no-target-blank */
 const Link: FC<IntrinsicElements["a"] & NextLinkProps> = ({
@@ -34,4 +34,4 @@ const Link: FC<IntrinsicElements["a"] & NextLinkProps> = ({
 	);
 };
 
-export default memo(Link);
+export default Link;

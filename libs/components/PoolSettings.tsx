@@ -1,4 +1,4 @@
-import { FC, memo } from "react";
+import { FC } from "react";
 import { IntrinsicElements } from "@/libs/types";
 import { css } from "@emotion/react";
 import {
@@ -52,7 +52,7 @@ const PoolSettings: FC<IntrinsicElements["div"] & PoolSettingsProps> = (
 	);
 };
 
-export default memo(PoolSettings);
+export default PoolSettings;
 
 const styles = {
 	root: css`

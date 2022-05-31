@@ -1,4 +1,4 @@
-import { ButtonHTMLAttributes, FC, memo, useCallback, useMemo } from "react";
+import { ButtonHTMLAttributes, FC, useCallback, useMemo } from "react";
 import { css } from "@emotion/react";
 import { Theme } from "@mui/material";
 import MetaMaskSVG from "@vectors/metamask.svg";
@@ -90,7 +90,7 @@ const SubmitButton: FC<
 	);
 };
 
-export default memo(SubmitButton);
+export default SubmitButton;
 
 const styles = {
 	root: ({ transitions }: Theme) => css`

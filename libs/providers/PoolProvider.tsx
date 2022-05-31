@@ -1,7 +1,6 @@
 import { CENNZAsset, PoolAction } from "@/libs/types";
 import {
 	createContext,
-	memo,
 	Dispatch,
 	FC,
 	SetStateAction,
@@ -119,7 +118,7 @@ const PoolProvider: FC<PropsWithChildren<PoolProviderProps>> = ({
 	);
 };
 
-export default memo(PoolProvider);
+export default PoolProvider;
 
 export const usePool = (): PoolContextType => {
 	return useContext(PoolContext);

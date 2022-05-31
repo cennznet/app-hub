@@ -1,4 +1,4 @@
-import { FC, memo, useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { css } from "@emotion/react";
 import dynamic from "next/dynamic";
 import type { IdentityProps } from "@polkadot/react-identicon/types";
@@ -29,7 +29,7 @@ const AccountIdenticon: FC<Props> = ({ value, fadeOnChange, ...props }) => {
 	);
 };
 
-export default memo(AccountIdenticon);
+export default AccountIdenticon;
 
 export const styles = {
 	iconContainer: (fadeOnChange: boolean, visible: boolean) => css`

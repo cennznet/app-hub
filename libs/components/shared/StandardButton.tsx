@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import { Theme } from "@mui/material";
-import { FC, memo } from "react";
+import { FC } from "react";
 import { IntrinsicElements } from "@/libs/types";
 
 interface StandardButtonProps {
@@ -18,7 +18,7 @@ const StandardButton: FC<IntrinsicElements["button"] & StandardButtonProps> = ({
 	);
 };
 
-export default memo(StandardButton);
+export default StandardButton;
 
 const styles = {
 	root: ({ transitions }: Theme) => css`

@@ -1,6 +1,6 @@
 import { IntrinsicElements } from "@/libs/types";
 import { css } from "@emotion/react";
-import { useCallback, useEffect, useState, FC, memo } from "react";
+import { useCallback, useEffect, useState, FC } from "react";
 import { MenuItem, Theme } from "@mui/material";
 import { usePool } from "@providers/PoolProvider";
 import { SwitchButton, SelectInput } from "@components";
@@ -122,7 +122,7 @@ const PoolActionsPair: FC<IntrinsicElements["div"] & PoolActionsPairProps> = (
 	);
 };
 
-export default memo(PoolActionsPair);
+export default PoolActionsPair;
 
 const styles = {
 	root: css`

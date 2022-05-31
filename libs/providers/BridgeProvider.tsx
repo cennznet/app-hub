@@ -16,7 +16,6 @@ import {
 import { Balance, fetchUnclaimedWithdrawals } from "@utils";
 import {
 	createContext,
-	memo,
 	Dispatch,
 	FC,
 	PropsWithChildren,
@@ -167,7 +166,7 @@ const BridgeProvider: FC<PropsWithChildren<BridgeProviderProps>> = ({
 	);
 };
 
-export default memo(BridgeProvider);
+export default BridgeProvider;
 
 export function useBridge(): BridgeContextType {
 	return useContext(BridgeContext);

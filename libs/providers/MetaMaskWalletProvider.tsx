@@ -2,7 +2,6 @@ import { useMetaMaskExtension } from "@providers/MetaMaskExtensionProvider";
 import {
 	createContext,
 	FC,
-	memo,
 	PropsWithChildren,
 	useCallback,
 	useContext,
@@ -94,7 +93,7 @@ const MetaMaskWalletProvider: FC<
 	);
 };
 
-export default memo(MetaMaskWalletProvider);
+export default MetaMaskWalletProvider;
 
 export function useMetaMaskWallet(): MetaMaskWalletContextType {
 	return useContext(MetaMaskWalletContext);

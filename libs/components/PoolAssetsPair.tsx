@@ -1,7 +1,7 @@
 import { usePool } from "@providers/PoolProvider";
 import { IntrinsicElements } from "@/libs/types";
 import { css } from "@emotion/react";
-import { FC, useMemo, useEffect, memo } from "react";
+import { FC, useMemo, useEffect } from "react";
 import { TokenInput } from "@components";
 import {
 	useCENNZBalances,
@@ -162,7 +162,7 @@ const PoolAssetsPair: FC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 	);
 };
 
-export default memo(PoolAssetsPair);
+export default PoolAssetsPair;
 
 const styles = {
 	root: css``,

@@ -1,7 +1,6 @@
 import { CENNZAssetBalance, ChainOption, WalletOption } from "@/libs/types";
 import {
 	createContext,
-	memo,
 	Dispatch,
 	FC,
 	SetStateAction,
@@ -89,7 +88,7 @@ const WalletProvider: FC<PropsWithChildren<WalletProviderProps>> = ({
 	);
 };
 
-export default memo(WalletProvider);
+export default WalletProvider;
 
 export function useWalletProvider(): WalletContextType {
 	return useContext(WalletContext);

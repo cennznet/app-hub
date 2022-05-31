@@ -1,4 +1,4 @@
-import { useEffect, FC, memo } from "react";
+import { useEffect, FC } from "react";
 import { IntrinsicElements } from "@/libs/types";
 import { LinearProgress, Tooltip, Theme } from "@mui/material";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
@@ -83,7 +83,7 @@ const SwapStats: FC<IntrinsicElements["div"] & SwapStatsProps> = (props) => {
 	);
 };
 
-export default memo(SwapStats);
+export default SwapStats;
 
 const styles = {
 	root: ({ palette }: Theme) => css`

@@ -1,6 +1,5 @@
 import {
 	createContext,
-	memo,
 	PropsWithChildren,
 	useCallback,
 	useContext,
@@ -72,7 +71,7 @@ function GlobalModalProvider({ children }: PropsWithChildren<ProviderProps>) {
 	);
 }
 
-export default memo(GlobalModalProvider);
+export default GlobalModalProvider;
 
 export function useGlobalModal(): GlobalModalContext {
 	return useContext(GlobalModalContext);

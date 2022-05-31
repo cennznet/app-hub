@@ -1,6 +1,6 @@
 import { BridgedEthereumToken, IntrinsicElements } from "@/libs/types";
 import { css } from "@emotion/react";
-import { memo, useCallback, useEffect, useMemo, FC } from "react";
+import { useCallback, useEffect, useMemo, FC } from "react";
 import { LinearProgress, Theme } from "@mui/material";
 import { useBridge } from "@providers/BridgeProvider";
 import { Balance } from "@/libs/utils";
@@ -170,7 +170,7 @@ const BridgeTokenDestination: FC<
 	);
 };
 
-export default memo(BridgeTokenDestination);
+export default BridgeTokenDestination;
 
 const styles = {
 	root: css``,

@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 import { css } from "@emotion/react";
 import { StandardButton, ModalBackdrop } from "@components";
-import { memo, FC } from "react";
+import { FC } from "react";
 
 interface GlobalModalProps {
 	isOpen: boolean;
@@ -54,7 +54,7 @@ const GlobalModal: FC<GlobalModalProps> = ({
 	);
 };
 
-export default memo(GlobalModal);
+export default GlobalModal;
 
 export const styles = {
 	root: css`

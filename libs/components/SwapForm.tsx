@@ -3,7 +3,7 @@ import {
 	IntrinsicElements,
 	SubmittableExtrinsic,
 } from "@/libs/types";
-import { FC, memo, useCallback } from "react";
+import { FC, useCallback } from "react";
 import { css } from "@emotion/react";
 import { Theme } from "@mui/material";
 import { SubmitButton } from "@components";
@@ -144,7 +144,7 @@ const SwapForm: FC<IntrinsicElements["form"] & SwapFormProps> = ({
 	);
 };
 
-export default memo(SwapForm);
+export default SwapForm;
 
 const styles = {
 	root: css`

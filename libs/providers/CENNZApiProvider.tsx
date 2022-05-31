@@ -1,7 +1,6 @@
 import {
 	FC,
 	createContext,
-	memo,
 	useState,
 	useEffect,
 	useContext,
@@ -47,7 +46,7 @@ const CENNZApiProvider: FC<PropsWithChildren<CENNZApiProviderProps>> = ({
 	);
 };
 
-export default memo(CENNZApiProvider);
+export default CENNZApiProvider;
 
 export function useCENNZApi(): CENNZApiContextType {
 	return useContext(CENNZApiContext);

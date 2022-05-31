@@ -4,7 +4,6 @@ import {
 } from "@polkadot/extension-inject/types";
 import {
 	createContext,
-	memo,
 	PropsWithChildren,
 	useContext,
 	useEffect,
@@ -115,7 +114,7 @@ function CENNZExtensionProvider({
 	);
 }
 
-export default memo(CENNZExtensionProvider);
+export default CENNZExtensionProvider;
 
 export function useCENNZExtension(): ExtensionContext {
 	return useContext(CENNZExtensionContext);

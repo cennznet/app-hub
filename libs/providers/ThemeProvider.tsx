@@ -1,4 +1,4 @@
-import { FC, memo, PropsWithChildren, useMemo } from "react";
+import { FC, PropsWithChildren, useMemo } from "react";
 import {
 	ThemeProvider as MuiThemeProvider,
 	createTheme,
@@ -132,4 +132,4 @@ const ThemeProvider: FC<PropsWithChildren<ThemeProviderProps>> = (props) => {
 	return <MuiThemeProvider {...props} theme={theme} />;
 };
 
-export default memo(ThemeProvider);
+export default ThemeProvider;

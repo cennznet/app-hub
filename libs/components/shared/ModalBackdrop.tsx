@@ -1,4 +1,4 @@
-import { FC, memo } from "react";
+import { FC } from "react";
 import { css } from "@emotion/react";
 import { Backdrop, BackdropProps } from "@mui/material";
 import { Theme } from "@mui/material";
@@ -7,7 +7,7 @@ const ModalBackdrop: FC<BackdropProps> = (props) => {
 	return <Backdrop {...props} css={styles.root} />;
 };
 
-export default memo(ModalBackdrop);
+export default ModalBackdrop;
 
 export const styles = {
 	root: ({ palette }: Theme) =>

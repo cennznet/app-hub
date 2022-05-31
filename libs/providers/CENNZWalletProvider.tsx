@@ -4,7 +4,6 @@ import {
 } from "@polkadot/extension-inject/types";
 import {
 	createContext,
-	memo,
 	PropsWithChildren,
 	useCallback,
 	useContext,
@@ -119,7 +118,7 @@ function CENNZWalletProvider({ children }: PropsWithChildren<ProviderProps>) {
 	);
 }
 
-export default memo(CENNZWalletProvider);
+export default CENNZWalletProvider;
 
 export function useCENNZWallet(): WalletContext {
 	return useContext(CENNZWalletContext);

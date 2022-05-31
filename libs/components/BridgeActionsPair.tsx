@@ -1,7 +1,7 @@
 import { useBridge } from "@providers/BridgeProvider";
 import { IntrinsicElements } from "@/libs/types";
 import { css } from "@mui/material";
-import { useCallback, useEffect, useState, FC, memo } from "react";
+import { useCallback, useEffect, useState, FC } from "react";
 import { SelectInput, SwitchButton } from "@components";
 import { MenuItem, Theme } from "@mui/material";
 import { useUpdateCENNZBalances } from "@hooks";
@@ -127,7 +127,7 @@ const BridgeActionsPair: FC<
 	);
 };
 
-export default memo(BridgeActionsPair);
+export default BridgeActionsPair;
 
 const styles = {
 	root: css`

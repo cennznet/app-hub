@@ -1,5 +1,5 @@
 import { Api } from "@cennznet/api";
-import { FC, memo } from "react";
+import { FC } from "react";
 import { API_URL } from "@/libs/constants";
 import { fetchBridgeTokens } from "@utils";
 import { BridgedEthereumToken, EthereumToken } from "@/libs/types";
@@ -49,4 +49,4 @@ const Bridge: FC<BridgeProps> = ({ depositTokens, withdrawTokens }) => {
 	);
 };
 
-export default memo(Bridge);
+export default Bridge;

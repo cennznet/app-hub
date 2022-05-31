@@ -1,6 +1,6 @@
 import { IntrinsicElements } from "@/libs/types";
 import { css } from "@emotion/react";
-import { FC, memo } from "react";
+import { FC } from "react";
 import { LinearProgress, Tooltip, Theme } from "@mui/material";
 import { usePool } from "@providers/PoolProvider";
 import { Balance } from "@utils";
@@ -154,7 +154,7 @@ const PoolStats: FC<IntrinsicElements["div"] & PoolStatsProps> = (props) => {
 	);
 };
 
-export default memo(PoolStats);
+export default PoolStats;
 
 const styles = {
 	root: ({ palette }: Theme) => css`

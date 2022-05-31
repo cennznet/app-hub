@@ -1,4 +1,4 @@
-import { memo, useEffect, useState, FC } from "react";
+import { useEffect, useState, FC } from "react";
 import { css } from "@emotion/react";
 import {
 	LinearProgress,
@@ -76,7 +76,7 @@ interface EntryCellProps {
 	withdrawClaim: WithdrawClaim;
 }
 
-const EntryCellImpl: FC<EntryCellProps> = ({ withdrawClaim }) => {
+const EntryCell: FC<EntryCellProps> = ({ withdrawClaim }) => {
 	const [expiry, setExpiry] = useState<string>("");
 	const [seconds, setSeconds] = useState<number>(0);
 	const {
@@ -125,8 +125,6 @@ const EntryCellImpl: FC<EntryCellProps> = ({ withdrawClaim }) => {
 		</TableCell>
 	);
 };
-
-const EntryCell = memo(EntryCellImpl);
 
 const styles = {
 	container: ({ palette }: Theme) => css`

@@ -1,4 +1,4 @@
-import { FC, useEffect, useCallback, useMemo, memo } from "react";
+import { FC, useEffect, useCallback, useMemo } from "react";
 import { IntrinsicElements } from "@/libs/types";
 import { css } from "@emotion/react";
 import { useSwap } from "@providers/SwapProvider";
@@ -154,7 +154,7 @@ const SwapAssetsPair: FC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
 	);
 };
 
-export default memo(SwapAssetsPair);
+export default SwapAssetsPair;
 
 const styles = {
 	root: css``,
