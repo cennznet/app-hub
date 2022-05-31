@@ -1,13 +1,13 @@
-import { VFC, useState, useEffect, useCallback } from "react";
-import { CENNZAssetBalance, IntrinsicElements } from "@/types";
+import { VFC } from "react";
+import { IntrinsicElements } from "@/types";
 import { css } from "@emotion/react";
-import { Theme } from "@mui/material";
+import { LinearProgress, Theme } from "@mui/material";
 import { useTransfer } from "@/providers/TransferProvider";
 import TransferAsset from "@/components/TransferAsset";
-import StandardButton from "@/components/shared/StandardButton";
 import AddressInput from "@/components/shared/AddressInput";
 import useAddressValidation from "@/hooks/useAddressValidation";
-import { useTransferableAssets } from "@/hooks";
+import { useSelectedAccount } from "@/hooks";
+import TransferAssetSelect from "@/components/TransferAssetSelect";
 
 interface TransferAssetsProps {}
 
@@ -15,107 +15,50 @@ const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 	props
 ) => {
 	const {
-		setTransferAssets,
 		setReceiveAddress,
 		receiveAddress,
 		addressType,
-		displayAssets,
-		addDisplayAsset,
-		removeDisplayAsset,
-		selectedAssets,
+		transferAssets,
+		transferableAssets,
 	} = useTransfer();
 
-	const [dropDownTokens, setDropDownTokens] = useState<CENNZAssetBalance[][]>(
-		[]
-	);
-	const transferableAssets = useTransferableAssets();
+	const selectedAccount = useSelectedAccount();
 
 	const { inputRef: cennzAddressInputRef } = useAddressValidation(
 		receiveAddress,
 		addressType
 	);
 
-	useEffect(() => {
-		if (!transferableAssets || !selectedAssets) return;
-		//remove all tokens that are selected from all other display token arrays
-		const selectedAssetIds = selectedAssets.map((asset) => asset.asset.assetId);
-		const displayTokenArr = selectedAssets.map((selectedAsset) => {
-			return transferableAssets
-				.filter((asset) => !selectedAssetIds.includes(asset.assetId))
-				.concat(selectedAsset.asset);
-		});
-		//add additional display token to prep for user adding asset
-		displayTokenArr.push(
-			transferableAssets.filter(
-				(asset) => !selectedAssetIds.includes(asset.assetId)
-			)
-		);
-
-		setDropDownTokens(displayTokenArr.slice(0, displayAssets?.amount));
-	}, [displayAssets?.amount, selectedAssets, transferableAssets]);
-
-	useEffect(() => {
-		if (!selectedAssets) return;
-
-		setTransferAssets(
-			selectedAssets.map((asset) => asset.asset).slice(0, displayAssets?.amount)
-		);
-	}, [selectedAssets, displayAssets?.amount, setTransferAssets]);
-
-	const onAddAssetClick = useCallback(() => {
-		if (displayAssets?.amount > transferableAssets?.length) return;
-
-		addDisplayAsset();
-	}, [addDisplayAsset, displayAssets?.amount, transferableAssets?.length]);
-
 	return (
 		<div {...props} css={styles.root}>
 			<div css={styles.formField}>
-				<label htmlFor="transferCENNZAddressInput">Transfer Address</label>
+				<label htmlFor="transferAddressInput">Transfer Address</label>
 				<AddressInput
 					placeholder={"Enter a CENNZnet or Ethereum address"}
 					addressType={addressType}
 					value={receiveAddress}
 					onChange={(e) => setReceiveAddress(e.target.value)}
-					id="transferCENNZAddressInput"
+					id="transferAddressInput"
 					ref={cennzAddressInputRef}
 				/>
-				<label css={styles.assetsLabel}>Assets</label>
-				{displayAssets?.assets?.map((asset, index) => (
-					<TransferAsset
-						key={index}
-						assetKey={index}
-						asset={
-							displayAssets?.amount !== 1 && dropDownTokens[index]
-								? dropDownTokens[index][0]
-								: asset
-						}
-						tokens={
-							dropDownTokens[index] ? dropDownTokens[index] : transferableAssets
-						}
-					/>
-				))}
+				{!!transferAssets?.length && (
+					<>
+						<label css={styles.assetsLabel}>Assets</label>
+						{transferAssets.map((asset) => (
+							<TransferAsset key={asset.assetId} asset={asset} />
+						))}
+					</>
+				)}
+				{!!selectedAccount && !transferAssets?.length && (
+					<LinearProgress css={styles.formInfoProgress} />
+				)}
 			</div>
-			<div css={styles.addRemoveAssets}>
-				<StandardButton
-					type="button"
-					disabled={
-						displayAssets?.amount === transferableAssets?.length ||
-						!transferableAssets ||
-						!displayAssets
-					}
-					onClick={onAddAssetClick}
-				>
-					Add Asset
-				</StandardButton>
-				<StandardButton
-					disabled={!displayAssets || displayAssets?.amount <= 1}
-					type="button"
-					onClick={() => removeDisplayAsset(-1)}
-				>
-					Remove Asset
-				</StandardButton>
-			</div>
+
+			{transferAssets?.length < transferableAssets?.length && (
+				<div css={styles.transferAssetSelect}>
+					<TransferAssetSelect />
+				</div>
+			)}
 		</div>
 	);
 };
@@ -138,7 +81,7 @@ const styles = {
 		}
 	`,
 
-	addRemoveAssets: css`
+	transferAssetSelect: css`
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
@@ -146,5 +89,37 @@ const styles = {
 
 	assetsLabel: css`
 		margin-top: 25px;
+	`,
+
+	select: css`
+		min-width: 135px;
+	`,
+
+	selectItem: css`
+		display: flex;
+		align-items: center;
+		padding-top: 0.75em;
+		padding-bottom: 0.75em;
+
+		> img {
+			width: 2em;
+			height: 2em;
+			object-fit: contain;
+			margin-right: 0.5em;
+		}
+
+		> span {
+			font-size: 14px;
+			font-weight: bold;
+			flex: 1;
+		}
+	`,
+
+	formInfoProgress: css`
+		margin-top: 2em;
+		display: inline-block;
+		width: 25px;
+		border-radius: 10px;
+		opacity: 0.5;
 	`,
 };

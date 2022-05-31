@@ -1,4 +1,11 @@
-import { Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState } from "react";
+import {
+	Dispatch,
+	SetStateAction,
+	useCallback,
+	useEffect,
+	useMemo,
+	useState,
+} from "react";
 import { useTransferableAssets } from "@/hooks";
 import { CENNZAssetBalances } from "@/types";
 
@@ -51,9 +58,14 @@ export default function useTransferAssets(): TransferAssetsHook {
 		[setTransferAssets]
 	);
 
-	const replaceFirstAsset = useCallback((assetId) => {
-		setTransferAssets([transferableAssets?.find((t) => t.assetId === assetId)])
-	}, [transferableAssets])
+	const replaceFirstAsset = useCallback(
+		(assetId) => {
+			setTransferAssets([
+				transferableAssets?.find((t) => t.assetId === assetId),
+			]);
+		},
+		[transferableAssets]
+	);
 
 	return {
 		transferAssets,

@@ -44,8 +44,8 @@ const TransferForm: FC<IntrinsicElements["form"] & TransferFormProps> = ({
 		setTxFailure,
 		receiveAddress,
 		transferAssets,
-		resetDisplayAssets,
 	} = useTransfer();
+
 	const onFormSubmit = useCallback(
 		async (event) => {
 			event.preventDefault();
@@ -102,7 +102,6 @@ const TransferForm: FC<IntrinsicElements["form"] & TransferFormProps> = ({
 						transferValues,
 						txHashLink: tx.getHashLink(),
 					});
-					resetDisplayAssets();
 				});
 			} catch (error) {
 				console.info(error);
@@ -123,7 +122,6 @@ const TransferForm: FC<IntrinsicElements["form"] & TransferFormProps> = ({
 			setTxFailure,
 			updateCENNZBalances,
 			setTxSuccess,
-			resetDisplayAssets,
 		]
 	);
 

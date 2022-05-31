@@ -7,24 +7,19 @@ import {
 	SetStateAction,
 	useMemo,
 } from "react";
+import { ChainOption } from "@/types";
 import {
-	CENNZAssetBalances,
-	ChainOption,
-	TransferAssets,
-} from "@/types";
-import { useTxStatus, TxStatusHook, useTransferDisplayAssets, TransferDisplayAssetsHook } from "@/hooks";
+	useTxStatus,
+	TxStatusHook,
+	TransferAssetsHook,
+	useTransferAssets,
+} from "@/hooks";
 import isEthereumAddress from "@/utils/isEthereumAddress";
 
-interface TransferContextType extends TxStatusHook, TransferDisplayAssetsHook {
-	receiveAddress: string;
+interface TransferContextType extends TxStatusHook, TransferAssetsHook {
 	addressType: ChainOption;
+	receiveAddress: string;
 	setReceiveAddress: Dispatch<SetStateAction<string>>;
-
-	selectedAssets: TransferAssets;
-	setSelectedAssets: Dispatch<SetStateAction<TransferAssets>>;
-
-	transferAssets: CENNZAssetBalances;
-	setTransferAssets: Dispatch<SetStateAction<CENNZAssetBalances>>;
 }
 
 const TransferContext = createContext<TransferContextType>(
@@ -35,9 +30,6 @@ interface TransferProviderProps {}
 
 const TransferProvider: FC<TransferProviderProps> = ({ children }) => {
 	const [receiveAddress, setReceiveAddress] = useState<string>();
-	const [transferAssets, setTransferAssets] = useState<CENNZAssetBalances>();
-	const [selectedAssets, setSelectedAssets] = useState<TransferAssets>();
-
 	const addressType = useMemo<ChainOption>(
 		() => (isEthereumAddress(receiveAddress) ? "Ethereum" : "CENNZnet"),
 		[receiveAddress]
@@ -46,17 +38,12 @@ const TransferProvider: FC<TransferProviderProps> = ({ children }) => {
 	return (
 		<TransferContext.Provider
 			value={{
-				receiveAddress,
 				addressType,
+				receiveAddress,
 				setReceiveAddress,
 
-				...useTransferDisplayAssets(),
+				...useTransferAssets(),
 
-				selectedAssets,
-				setSelectedAssets,
-
-				transferAssets,
-				setTransferAssets,
 				...useTxStatus(),
 			}}
 		>
