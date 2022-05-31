@@ -1,5 +1,5 @@
 import { VFC, useEffect, useCallback } from "react";
-import { CENNZAssetBalance, IntrinsicElements } from "@/types";
+import { CENNZAsset, CENNZAssetBalance, IntrinsicElements } from "@/types";
 import TokenInput from "@/components/shared/TokenInput";
 import { css } from "@emotion/react";
 import { Theme } from "@mui/material";
@@ -7,9 +7,10 @@ import { useCENNZBalances, useBalanceValidation, useTokenInput } from "@/hooks";
 import { Balance } from "@/utils";
 import StandardButton from "@/components/shared/StandardButton";
 import { useTransfer } from "@/providers/TransferProvider";
+import ClearRoundedIcon from "@mui/icons-material/ClearRounded";
 
 interface TransferAssetProps {
-	asset: CENNZAssetBalance;
+	asset: CENNZAsset | CENNZAssetBalance;
 }
 
 const TransferAsset: VFC<IntrinsicElements["div"] & TransferAssetProps> = ({
@@ -26,6 +27,8 @@ const TransferAsset: VFC<IntrinsicElements["div"] & TransferAssetProps> = ({
 	const [assetBalance] = useCENNZBalances([asset]);
 
 	useEffect(() => {
+		if (!transferAssets?.length) return;
+
 		const newTransferAsset = {
 			...asset,
 			value: Balance.fromInput(assetTokenInput.value, asset),
@@ -79,9 +82,9 @@ const TransferAsset: VFC<IntrinsicElements["div"] & TransferAssetProps> = ({
 					scale={asset.decimals}
 					min={Balance.fromString("1", asset).toInput()}
 				/>
-				{transferAssets.length !== 1 && (
+				{!!transferAssets?.length && transferAssets?.length !== 1 && (
 					<StandardButton onClick={onRemoveClick} variant={"secondary"}>
-						X
+						<ClearRoundedIcon css={styles.clearIcon} />
 					</StandardButton>
 				)}
 			</div>
@@ -98,8 +101,8 @@ export default TransferAsset;
 
 const styles = {
 	root: css`
-		margin-top: 10px;
-		margin-bottom: 10px;
+		margin-top: 0.5em;
+		margin-bottom: 1em;
 	`,
 
 	transferAssetContainer: css`
@@ -107,8 +110,13 @@ const styles = {
 		justify-content: space-between;
 		button {
 			margin-left: 5px;
-			padding: 0.75em 1em;
+			padding-right: 1em;
+			padding-left: 1em;
 		}
+	`,
+
+	clearIcon: css`
+		margin-top: 0.2em;
 	`,
 
 	tokenBalance: ({ palette }: Theme) => css`

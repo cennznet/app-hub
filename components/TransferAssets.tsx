@@ -20,6 +20,7 @@ const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 		addressType,
 		transferAssets,
 		transferableAssets,
+		supportedAssets,
 	} = useTransfer();
 
 	const selectedAccount = useSelectedAccount();
@@ -41,24 +42,20 @@ const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 					id="transferAddressInput"
 					ref={cennzAddressInputRef}
 				/>
-				{!!transferAssets?.length && (
-					<>
-						<label css={styles.assetsLabel}>Assets</label>
-						{transferAssets.map((asset) => (
-							<TransferAsset key={asset.assetId} asset={asset} />
-						))}
-					</>
-				)}
+				<label css={styles.assetsLabel}>Assets</label>
+				{(transferAssets || supportedAssets.slice(0, 1))?.map((asset) => (
+					<TransferAsset key={asset.assetId} asset={asset} />
+				))}
 				{!!selectedAccount && !transferAssets?.length && (
 					<LinearProgress css={styles.formInfoProgress} />
 				)}
 			</div>
 
 			{transferAssets?.length < transferableAssets?.length && (
-				<div css={styles.transferAssetSelect}>
-					<TransferAssetSelect />
-				</div>
-			)}
+					<div css={styles.transferAssetSelect}>
+						<TransferAssetSelect />
+					</div>
+				)}
 		</div>
 	);
 };
@@ -117,7 +114,6 @@ const styles = {
 	`,
 
 	formInfoProgress: css`
-		margin-top: 2em;
 		display: inline-block;
 		width: 25px;
 		border-radius: 10px;

@@ -25,6 +25,8 @@ export interface CENNZAsset extends GenericCoin {
 	assetId: number;
 }
 
+export type CENNZAssets = Array<CENNZAsset>;
+
 export interface EthereumToken extends GenericCoin {
 	address: string;
 }
