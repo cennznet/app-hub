@@ -10,6 +10,7 @@ import {
 } from "react";
 import { CENNZ_METAMASK_NETWORK, ETH_CHAIN_ID } from "@/constants";
 import { useMetaMaskExtension } from "@/providers/MetaMaskExtensionProvider";
+import store from "store";
 
 interface WalletContextType {
 	walletOpen: boolean;
@@ -36,6 +37,12 @@ const WalletProvider: FC<WalletProviderProps> = ({ children }) => {
 	const [selectedWallet, setSelectedWallet] = useState<WalletOption>();
 	const [connectedChain, setConnectedChain] = useState<ChainOption>();
 	const [cennzBalances, setCENNZBalances] = useState<CENNZAssetBalance[]>(null);
+
+	useEffect(() => {
+		if (!selectedWallet) return setSelectedWallet(store.get("SELECTED-WALLET"));
+
+		store.set("SELECTED-WALLET", selectedWallet);
+	}, [selectedWallet]);
 
 	const updateConnectedChain = (chainId: string) => {
 		if (chainId === CENNZ_METAMASK_NETWORK.chainId)
