@@ -19,7 +19,6 @@ const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 		receiveAddress,
 		addressType,
 		transferAssets,
-		transferableAssets,
 		supportedAssets,
 	} = useTransfer();
 
@@ -51,11 +50,9 @@ const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 				)}
 			</div>
 
-			{transferAssets?.length < transferableAssets?.length && (
-					<div css={styles.transferAssetSelect}>
-						<TransferAssetSelect />
-					</div>
-				)}
+			<div css={styles.transferAssetSelect}>
+				<TransferAssetSelect />
+			</div>
 		</div>
 	);
 };

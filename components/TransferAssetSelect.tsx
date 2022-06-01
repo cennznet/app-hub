@@ -1,18 +1,25 @@
 import { FC } from "react";
-import { css, MenuItem, Theme } from "@mui/material";
+import { css, FormControl, InputLabel, MenuItem, Theme } from "@mui/material";
 import getTokenLogo from "@/utils/getTokenLogo";
 import SelectInput from "@/components/shared/SelectInput";
 import { useTransfer } from "@/providers/TransferProvider";
 
 const TransferAssetSelect: FC = () => {
-	const { addTransferAsset, selectableAssets } = useTransfer();
+	const { transferAssets, addTransferAsset, selectableAssets } = useTransfer();
+
+	const readOnly = !transferAssets?.length || !selectableAssets?.length;
 
 	return (
-		<div css={styles.root}>
-			<label htmlFor="transferAssetSelect">Add Asset</label>
+		<FormControl css={styles.root(readOnly)}>
+			<InputLabel id="transferAssetSelect" shrink={false}>
+				Add Asset
+			</InputLabel>
 			<SelectInput
+				labelId="transferAssetSelect"
 				css={styles.select}
 				inputProps={{ sx: styles.selectItem as any }}
+				readOnly={readOnly}
+				renderValue={() => null}
 				onChange={(e) => addTransferAsset(e.target.value as number)}
 			>
 				{selectableAssets?.map((asset) => {
@@ -26,23 +33,27 @@ const TransferAssetSelect: FC = () => {
 					);
 				})}
 			</SelectInput>
-		</div>
+		</FormControl>
 	);
 };
 
 export default TransferAssetSelect;
 
 const styles = {
-	root: ({ palette }: Theme) => css`
-		label {
-			font-weight: bold;
-			font-size: 14px;
-			text-transform: uppercase;
-			margin-bottom: 0.5em;
-			display: block;
-			color: ${palette.primary.main};
-		}
-	`,
+	root:
+		(readOnly: boolean) =>
+		({ palette }: Theme) =>
+			css`
+				label {
+					font-weight: bold;
+					font-size: 14px;
+					text-transform: uppercase;
+					margin-top: -0.1em;
+					color: ${palette.primary.main};
+					padding-right: ${readOnly && "1em"};
+					padding-left: ${readOnly && "1em"};
+				}
+			`,
 
 	select: css`
 		min-width: 135px;
