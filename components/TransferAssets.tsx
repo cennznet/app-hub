@@ -1,12 +1,11 @@
 import { VFC } from "react";
 import { IntrinsicElements } from "@/types";
 import { css } from "@emotion/react";
-import { LinearProgress, Theme } from "@mui/material";
+import { Theme } from "@mui/material";
 import { useTransfer } from "@/providers/TransferProvider";
 import TransferAsset from "@/components/TransferAsset";
 import AddressInput from "@/components/shared/AddressInput";
 import useAddressValidation from "@/hooks/useAddressValidation";
-import { useSelectedAccount } from "@/hooks";
 import TransferAssetSelect from "@/components/TransferAssetSelect";
 
 interface TransferAssetsProps {}
@@ -21,8 +20,6 @@ const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 		transferAssets,
 		supportedAssets,
 	} = useTransfer();
-
-	const selectedAccount = useSelectedAccount();
 
 	const { inputRef: cennzAddressInputRef } = useAddressValidation(
 		receiveAddress,
@@ -45,9 +42,6 @@ const TransferAssets: VFC<IntrinsicElements["div"] & TransferAssetsProps> = (
 				{(transferAssets || supportedAssets.slice(0, 1))?.map((asset) => (
 					<TransferAsset key={asset.assetId} asset={asset} />
 				))}
-				{!!selectedAccount && !transferAssets?.length && (
-					<LinearProgress css={styles.formInfoProgress} />
-				)}
 			</div>
 
 			<div css={styles.transferAssetSelect}>
@@ -108,12 +102,5 @@ const styles = {
 			font-weight: bold;
 			flex: 1;
 		}
-	`,
-
-	formInfoProgress: css`
-		display: inline-block;
-		width: 25px;
-		border-radius: 10px;
-		opacity: 0.5;
 	`,
 };

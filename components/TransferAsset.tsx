@@ -2,8 +2,8 @@ import { VFC, useEffect, useCallback } from "react";
 import { CENNZAsset, CENNZAssetBalance, IntrinsicElements } from "@/types";
 import TokenInput from "@/components/shared/TokenInput";
 import { css } from "@emotion/react";
-import { Theme } from "@mui/material";
-import { useCENNZBalances, useBalanceValidation, useTokenInput } from "@/hooks";
+import { LinearProgress, Theme } from "@mui/material";
+import { useCENNZBalances, useBalanceValidation, useTokenInput, useSelectedAccount } from "@/hooks";
 import { Balance } from "@/utils";
 import StandardButton from "@/components/shared/StandardButton";
 import { useTransfer } from "@/providers/TransferProvider";
@@ -23,8 +23,8 @@ const TransferAsset: VFC<IntrinsicElements["div"] & TransferAssetProps> = ({
 		replaceFirstAsset,
 	} = useTransfer();
 	const [assetTokenSelect, assetTokenInput] = useTokenInput(asset.assetId);
-
 	const [assetBalance] = useCENNZBalances([asset]);
+	const selectedAccount = useSelectedAccount();
 
 	useEffect(() => {
 		if (!transferAssets?.length) return;
@@ -93,6 +93,9 @@ const TransferAsset: VFC<IntrinsicElements["div"] & TransferAssetProps> = ({
 					Balance: <span>{assetBalance.toBalance()}</span>
 				</div>
 			)}
+			{!!selectedAccount && !assetBalance && (
+				<LinearProgress css={styles.formInfoProgress} />
+			)}
 		</div>
 	);
 };
@@ -130,5 +133,12 @@ const styles = {
 			font-weight: bold;
 			letter-spacing: -0.025em;
 		}
+	`,
+
+	formInfoProgress: css`
+		display: inline-block;
+		width: 25px;
+		border-radius: 10px;
+		opacity: 0.5;
 	`,
 };
