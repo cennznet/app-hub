@@ -46,7 +46,7 @@ export default Switch;
 
 export const styles = {
 	container: ({ shadows }: Theme) => css`
-		width: 400px;
+		width: 30em;
 		display: flex;
 		flex-direction: row;
 		justify-content: center;
