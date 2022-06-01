@@ -49,7 +49,7 @@ const styles = {
 					font-size: 14px;
 					text-transform: uppercase;
 					margin-top: -0.1em;
-					color: ${palette.primary.main};
+					color: ${readOnly ? palette.text.primary : palette.primary.main};
 					padding-right: ${readOnly && "1em"};
 					padding-left: ${readOnly && "1em"};
 				}
