@@ -9,6 +9,8 @@ import {
 } from "react";
 import { ethers } from "ethers";
 import { MetaMaskAccount } from "@/types";
+import { useWalletProvider } from "@/providers/WalletProvider";
+import store from "store";
 
 interface MetaMaskWalletContextType {
 	connectWallet: (callback?: () => void) => Promise<void>;
@@ -26,6 +28,7 @@ const MetaMaskWalletProvider: FC<MetaMaskWalletProviderProps> = ({
 	children,
 }) => {
 	const { extension, promptInstallExtension } = useMetaMaskExtension();
+	const { setSelectedWallet } = useWalletProvider();
 	const [wallet, setWallet] =
 		useState<MetaMaskWalletContextType["wallet"]>(null);
 	const [selectedAccount, setSelectedAccount] =
@@ -71,8 +74,14 @@ const MetaMaskWalletProvider: FC<MetaMaskWalletProviderProps> = ({
 	useEffect(() => {
 		if (!selectedAccount?.address || !extension) return;
 
+		const clearWallet = () => {
+			store.remove("SELECTED-WALLET");
+			setSelectedWallet(null);
+			setSelectedAccount(null);
+		};
+
 		const onAccountsChanged = (accounts: string[]) => {
-			if (!accounts?.length) return setSelectedAccount(null);
+			if (!accounts?.length) return clearWallet();
 			setSelectedAccount({ address: accounts[0] });
 		};
 
@@ -81,7 +90,7 @@ const MetaMaskWalletProvider: FC<MetaMaskWalletProviderProps> = ({
 		return () => {
 			extension.removeListener("accountsChanged", onAccountsChanged);
 		};
-	}, [selectedAccount?.address, extension]);
+	}, [selectedAccount?.address, extension, setSelectedWallet]);
 
 	return (
 		<MetaMaskWalletContext.Provider
