@@ -1,23 +1,21 @@
 import { Api } from "@cennznet/api";
 import {
-	CENNZAssetBalance,
+	CENNZAssetBalances,
 	CENNZnetExtrinsic,
 	SubmittableExtrinsic,
 } from "@/types";
 
 export default function getBatchTransferAssetExtrinsic(
 	api: Api,
-	transferAssets: CENNZAssetBalance[],
+	transferAssets: CENNZAssetBalances,
 	recipient: string
 ): CENNZnetExtrinsic | SubmittableExtrinsic<"promise"> {
-	const transferTransactions = transferAssets.map((asset) => {
-		const transferValue =
-			parseFloat(asset.value.toBalance()) * asset.decimalsValue;
-		return api.tx.genericAsset.transfer(
+	const transferTransactions = transferAssets.map((asset) =>
+		api.tx.genericAsset.transfer(
 			asset.assetId,
 			recipient,
-			transferValue.toString()
-		);
-	});
+			asset.value.toFixed()
+		)
+	);
 	return api.tx.utility.batch(transferTransactions);
 }
