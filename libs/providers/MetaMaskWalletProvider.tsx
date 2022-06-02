@@ -1,15 +1,16 @@
-import { useMetaMaskExtension } from "@providers/MetaMaskExtensionProvider";
 import {
 	createContext,
 	FC,
-	PropsWithChildren,
 	useCallback,
 	useContext,
 	useEffect,
 	useState,
 } from "react";
 import { ethers } from "ethers";
-import { MetaMaskAccount } from "@/libs/types";
+import { MetaMaskAccount, PropsWithChildren } from "@/libs/types";
+import { useWalletProvider } from "@providers/WalletProvider";
+import { useMetaMaskExtension } from "@providers/MetaMaskExtensionProvider";
+import store from "store";
 
 interface MetaMaskWalletContextType {
 	connectWallet: (callback?: () => void) => Promise<void>;
@@ -21,12 +22,13 @@ const MetaMaskWalletContext = createContext<MetaMaskWalletContextType>(
 	{} as MetaMaskWalletContextType
 );
 
-interface MetaMaskWalletProviderProps {}
+interface MetaMaskWalletProviderProps extends PropsWithChildren {}
 
-const MetaMaskWalletProvider: FC<
-	PropsWithChildren<MetaMaskWalletProviderProps>
-> = ({ children }) => {
+const MetaMaskWalletProvider: FC<MetaMaskWalletProviderProps> = ({
+	children,
+}) => {
 	const { extension, promptInstallExtension } = useMetaMaskExtension();
+	const { setSelectedWallet } = useWalletProvider();
 	const [wallet, setWallet] =
 		useState<MetaMaskWalletContextType["wallet"]>(null);
 	const [selectedAccount, setSelectedAccount] =
@@ -72,8 +74,14 @@ const MetaMaskWalletProvider: FC<
 	useEffect(() => {
 		if (!selectedAccount?.address || !extension) return;
 
+		const clearWallet = () => {
+			store.remove("SELECTED-WALLET");
+			setSelectedWallet(null);
+			setSelectedAccount(null);
+		};
+
 		const onAccountsChanged = (accounts: string[]) => {
-			if (!accounts?.length) return setSelectedAccount(null);
+			if (!accounts?.length) return clearWallet();
 			setSelectedAccount({ address: accounts[0] });
 		};
 
@@ -82,7 +90,7 @@ const MetaMaskWalletProvider: FC<
 		return () => {
 			extension.removeListener("accountsChanged", onAccountsChanged);
 		};
-	}, [selectedAccount?.address, extension]);
+	}, [selectedAccount?.address, extension, setSelectedWallet]);
 
 	return (
 		<MetaMaskWalletContext.Provider

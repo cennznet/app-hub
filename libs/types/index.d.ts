@@ -6,13 +6,13 @@ import {
 	HTMLAttributes,
 	HTMLFormElement,
 	InputHTMLAttributes,
+	ReactNode,
 } from "react";
 import { u128 } from "@polkadot/types-codec";
 
 export { SubmittableExtrinsic } from "@cennznet/api/types";
 export { CENNZnetExtrinsic } from "@cennznet/types/interfaces/extrinsic";
 
-export type BridgeChain = "Ethereum" | "CENNZnet";
 export type BridgeAction = "Deposit" | "Withdraw";
 export type BridgeStatus = "Inactive" | "Active";
 
@@ -25,6 +25,8 @@ export interface GenericCoin {
 export interface CENNZAsset extends GenericCoin {
 	assetId: number;
 }
+
+export type CENNZAssets = Array<CENNZAsset>;
 
 export interface EthereumToken extends GenericCoin {
 	address: string;
@@ -39,7 +41,9 @@ export interface CENNZAssetBalance extends CENNZAsset {
 	rawValue?: u128;
 }
 
-export type SectionUri = "swap" | "pool" | "bridge";
+export type CENNZAssetBalances = Array<CENNZAssetBalance>;
+
+export type SectionUri = "swap" | "pool" | "bridge" | "transfer";
 
 export interface IntrinsicElements {
 	div: HTMLAttributes<HTMLDivElement>;
@@ -125,3 +129,19 @@ export interface CENNZMetaMaskNetwork {
 export type WalletOption = "CENNZnet" | "MetaMask";
 
 export type ChainOption = "CENNZnet" | "Ethereum";
+
+export interface TransferAssetType {
+	assetKey: number;
+	asset: CENNZAssetBalance;
+}
+
+export type TransferAssets = Array<TransferAssetType>;
+
+export interface TransferDisplayAssets {
+	amount: number;
+	assets: CENNZAssetBalances;
+}
+
+export interface PropsWithChildren {
+	children?: ReactNode;
+}

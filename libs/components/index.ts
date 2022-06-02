@@ -24,6 +24,11 @@ export { default as Wallet } from "@components/Wallet";
 export { default as WalletButton } from "@components/WalletButton";
 export { default as WalletModal } from "@components/WalletModal";
 export { default as WalletSelect } from "@components/WalletSelect";
+export { default as TransferAsset } from "@components/TransferAsset";
+export { default as TransferAssets } from "@components/TransferAssets";
+export { default as TransferForm } from "@components/TransferForm";
+export { default as TransferProgress } from "@components/TransferProgress";
+export { default as TransferAssetSelect } from "@components/TransferAssetSelect";
 
 export { default as AccountIdenticon } from "@components/shared/AccountIdenticon";
 export { default as AddressInput } from "@components/shared/AddressInput";

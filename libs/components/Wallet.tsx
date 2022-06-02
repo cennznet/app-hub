@@ -11,6 +11,7 @@ import { useWalletProvider } from "@providers/WalletProvider";
 import { useMetaMaskWallet } from "@providers/MetaMaskWalletProvider";
 import { useSelectedAccount, useUpdateCENNZBalances } from "@hooks";
 import { InjectedAccountWithMeta } from "@polkadot/extension-inject/types";
+import store from "store";
 
 const Wallet: FC = () => {
 	const {
@@ -28,6 +29,7 @@ const Wallet: FC = () => {
 
 	const onWalletDisconnect = useCallback(() => {
 		setWalletOpen(false);
+		store.remove("SELECTED-WALLET");
 		setSelectedWallet(null);
 
 		if (selectedWallet === "CENNZnet") disconnectWallet();
@@ -38,7 +40,7 @@ const Wallet: FC = () => {
 
 	useEffect(() => {
 		if (!walletOpen) return;
-		updateCENNZBalances?.();
+		void updateCENNZBalances?.();
 	}, [updateCENNZBalances, walletOpen]);
 
 	useEffect(() => {

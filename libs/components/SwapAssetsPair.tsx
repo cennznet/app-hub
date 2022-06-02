@@ -77,10 +77,10 @@ const SwapAssetsPair: FC<IntrinsicElements["div"] & SwapAssetsPairProps> = (
 		setReceiveValue(exchangeRate.toInput());
 	}, [exchangeRate, receiveInput.setValue]);
 
-	const [exchangeBalance, receiveBalance] = useCENNZBalances(
+	const [exchangeBalance, receiveBalance] = useCENNZBalances([
 		exchangeAsset,
-		receiveAsset
-	);
+		receiveAsset,
+	]);
 
 	const onExchangeMaxRequest = useMemo(() => {
 		if (!exchangeBalance) return;

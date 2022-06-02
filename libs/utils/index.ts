@@ -50,3 +50,4 @@ export {
 export { default as signViaEthWallet } from "@utils/signViaEthWallet";
 export { default as isCENNZAddress } from "@utils/isCENNZAddress";
 export { default as isEthereumAddress } from "@utils/isEthereumAddress";
+export { default as getBatchTransferAssetExtrinsic } from "@utils/getBatchTransferAssetExtrinsic";

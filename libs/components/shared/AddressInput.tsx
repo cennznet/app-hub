@@ -1,4 +1,4 @@
-import { BridgeChain, IntrinsicElements } from "@/libs/types";
+import { ChainOption, IntrinsicElements } from "@/types";
 import { css, InputAdornment, TextField, TextFieldProps } from "@mui/material";
 import { useMemo, forwardRef } from "react";
 import Jazzicon, { jsNumberForAddress } from "react-jazzicon";
@@ -6,7 +6,7 @@ import { AccountIdenticon } from "@components";
 import { isCENNZAddress, isEthereumAddress } from "@utils";
 
 interface AddressInputProps {
-	addressType: BridgeChain;
+	addressType: ChainOption;
 }
 
 const AddressInput = forwardRef<

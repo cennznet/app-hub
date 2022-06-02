@@ -4,32 +4,26 @@ import { useEffect, useState } from "react";
 import { useWalletProvider } from "@providers/WalletProvider";
 
 export default function useCENNZBalances(
-	asset1: CENNZAsset | BridgedEthereumToken,
-	asset2?: CENNZAsset | BridgedEthereumToken
-): [Balance, Balance] {
+	assets: CENNZAsset[] | BridgedEthereumToken[]
+): Balance[] {
 	const { cennzBalances } = useWalletProvider();
-
-	const [balance1, setBalance1] = useState<Balance>(null);
-	const [balance2, setBalance2] = useState<Balance>(null);
+	const [balances, setBalances] = useState<Balance[]>([]);
 
 	useEffect(() => {
 		if (!cennzBalances?.length) {
-			setBalance1(null);
-			setBalance2(null);
+			setBalances(new Array(assets.length).fill(null));
 			return;
 		}
+		const requestedBalanceAssetIds = assets.map((balance) => balance.assetId);
 
-		const balance1Value = cennzBalances.find(
-			(balance) => balance.assetId === asset1.assetId
+		const requestedCENNZBalances = requestedBalanceAssetIds.map((assetId) =>
+			cennzBalances.find((balance) => balance.assetId === assetId)
 		);
-
-		const balance2Value = cennzBalances.find(
-			(balance) => balance.assetId === asset2?.assetId
+		const requestedBalances = requestedCENNZBalances.map(
+			(balance) => balance?.value || null
 		);
+		setBalances(requestedBalances);
+	}, [assets, cennzBalances]);
 
-		setBalance1(balance1Value?.value || null);
-		setBalance2(balance2Value?.value || null);
-	}, [cennzBalances, asset1?.assetId, asset2?.assetId]);
-
-	return [balance1, balance2];
+	return balances;
 }
