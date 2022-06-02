@@ -21,7 +21,6 @@ import { useMetaMaskExtension } from "@/providers/MetaMaskExtensionProvider";
 import { useUpdateCENNZBalances } from "@/hooks";
 import getBatchTransferAssetExtrinsic from "@/utils/getBatchTransferAssetExtrinsic";
 import { useTransfer } from "@/providers/TransferProvider";
-import isEthereumAddress from "@/utils/isEthereumAddress";
 import { cvmToAddress } from "@cennznet/types/utils";
 
 interface TransferFormProps {}
@@ -44,6 +43,7 @@ const TransferForm: FC<IntrinsicElements["form"] & TransferFormProps> = ({
 		setTxFailure,
 		receiveAddress,
 		transferAssets,
+		addressType,
 	} = useTransfer();
 
 	const onFormSubmit = useCallback(
@@ -57,7 +57,7 @@ const TransferForm: FC<IntrinsicElements["form"] & TransferFormProps> = ({
 				const extrinsic = getBatchTransferAssetExtrinsic(
 					api,
 					transferAssets,
-					isEthereumAddress(receiveAddress)
+					addressType === "Ethereum"
 						? cvmToAddress(receiveAddress)
 						: receiveAddress
 				);
@@ -122,6 +122,7 @@ const TransferForm: FC<IntrinsicElements["form"] & TransferFormProps> = ({
 			setTxFailure,
 			updateCENNZBalances,
 			setTxSuccess,
+			addressType,
 		]
 	);
 
