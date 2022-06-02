@@ -1,14 +1,16 @@
+import type { PropsWithChildren } from "@/libs/types";
+
 import {
 	InjectedExtension,
 	InjectedAccountWithMeta,
 } from "@polkadot/extension-inject/types";
 import {
 	createContext,
-	PropsWithChildren,
 	useCallback,
 	useContext,
 	useEffect,
 	useState,
+	FC,
 } from "react";
 import store from "store";
 import { useCENNZExtension } from "@providers/CENNZExtensionProvider";
@@ -26,9 +28,9 @@ interface WalletContext {
 
 const CENNZWalletContext = createContext<WalletContext>({} as WalletContext);
 
-interface ProviderProps {}
+interface CENNZWalletProviderProps extends PropsWithChildren {}
 
-function CENNZWalletProvider({ children }: PropsWithChildren<ProviderProps>) {
+const CENNZWalletProvider: FC<CENNZWalletProviderProps> = ({ children }) => {
 	const { api } = useCENNZApi();
 	const { selectedWallet, setCENNZBalances } = useWalletProvider();
 	const { promptInstallExtension, getInstalledExtension, accounts } =
@@ -116,7 +118,7 @@ function CENNZWalletProvider({ children }: PropsWithChildren<ProviderProps>) {
 			{children}
 		</CENNZWalletContext.Provider>
 	);
-}
+};
 
 export default CENNZWalletProvider;
 

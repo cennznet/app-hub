@@ -1,15 +1,17 @@
+import type { PropsWithChildren } from "@/libs/types";
+
 import {
 	InjectedExtension,
 	InjectedAccountWithMeta,
 } from "@polkadot/extension-inject/types";
 import {
 	createContext,
-	PropsWithChildren,
 	useContext,
 	useEffect,
 	useState,
 	useCallback,
 	useMemo,
+	FC,
 } from "react";
 import type * as Extension from "@polkadot/extension-dapp";
 import { useUserAgent } from "@providers/UserAgentProvider";
@@ -25,11 +27,11 @@ const CENNZExtensionContext = createContext<ExtensionContext>(
 	{} as ExtensionContext
 );
 
-type ProviderProps = {};
+interface CENNZExtensionProviderProps extends PropsWithChildren {}
 
-function CENNZExtensionProvider({
+const CENNZExtensionProvider: FC<CENNZExtensionProviderProps> = ({
 	children,
-}: PropsWithChildren<ProviderProps>) {
+}) => {
 	const { browser, os } = useUserAgent();
 	const { selectedWallet } = useWalletProvider();
 	const [module, setModule] = useState<typeof Extension>();
@@ -112,7 +114,7 @@ function CENNZExtensionProvider({
 			{children}
 		</CENNZExtensionContext.Provider>
 	);
-}
+};
 
 export default CENNZExtensionProvider;
 

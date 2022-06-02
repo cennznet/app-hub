@@ -1,12 +1,7 @@
-import {
-	FC,
-	createContext,
-	useContext,
-	useEffect,
-	useState,
-	PropsWithChildren,
-} from "react";
+import type { PropsWithChildren } from "@/libs/types";
 import type { IBrowser, IOS, IDevice } from "ua-parser-js";
+
+import { FC, createContext, useContext, useEffect, useState } from "react";
 
 type AgentContext = {
 	browser: IBrowser;
@@ -15,14 +10,11 @@ type AgentContext = {
 };
 const UserAgentContext = createContext<AgentContext>({} as AgentContext);
 
-type ProviderProps = {
+interface ProviderProps extends PropsWithChildren {
 	value?: string;
-};
+}
 
-const UserAgentProvider: FC<PropsWithChildren<ProviderProps>> = ({
-	children,
-	value,
-}) => {
+const UserAgentProvider: FC<ProviderProps> = ({ children, value }) => {
 	const [userAgent, setUserAgent] = useState<AgentContext>({} as AgentContext);
 
 	useEffect(() => {

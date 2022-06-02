@@ -1,4 +1,9 @@
-import { CENNZAssetBalance, ChainOption, WalletOption } from "@/libs/types";
+import type {
+	CENNZAssetBalance,
+	ChainOption,
+	WalletOption,
+	PropsWithChildren,
+} from "@/libs/types";
 import {
 	createContext,
 	Dispatch,
@@ -7,7 +12,6 @@ import {
 	useContext,
 	useEffect,
 	useState,
-	PropsWithChildren,
 } from "react";
 import { CENNZ_METAMASK_NETWORK, ETH_CHAIN_ID } from "@/libs/constants";
 import { useMetaMaskExtension } from "@providers/MetaMaskExtensionProvider";
@@ -29,11 +33,9 @@ interface WalletContextType {
 
 const WalletContext = createContext<WalletContextType>({} as WalletContextType);
 
-interface WalletProviderProps {}
+interface WalletProviderProps extends PropsWithChildren {}
 
-const WalletProvider: FC<PropsWithChildren<WalletProviderProps>> = ({
-	children,
-}) => {
+const WalletProvider: FC<WalletProviderProps> = ({ children }) => {
 	const { extension } = useMetaMaskExtension();
 
 	const [walletOpen, setWalletOpen] = useState<boolean>(false);

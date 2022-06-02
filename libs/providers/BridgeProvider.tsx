@@ -1,3 +1,11 @@
+import type {
+	BridgeAction,
+	BridgedEthereumToken,
+	EthereumToken,
+	WithdrawClaim,
+	PropsWithChildren,
+} from "@/libs/types";
+
 import { ETH_TOKEN_ADDRESS } from "@/libs/constants";
 import {
 	useTokenInput,
@@ -7,18 +15,11 @@ import {
 	useSelectedAccount,
 	useEthereumBalances,
 } from "@hooks";
-import {
-	BridgeAction,
-	BridgedEthereumToken,
-	EthereumToken,
-	WithdrawClaim,
-} from "@/libs/types";
 import { Balance, fetchUnclaimedWithdrawals } from "@utils";
 import {
 	createContext,
 	Dispatch,
 	FC,
-	PropsWithChildren,
 	SetStateAction,
 	useCallback,
 	useContext,
@@ -61,12 +62,12 @@ interface BridgeContextType extends TxStatusHook {
 
 const BridgeContext = createContext<BridgeContextType>({} as BridgeContextType);
 
-interface BridgeProviderProps {
+interface BridgeProviderProps extends PropsWithChildren {
 	depositTokens: EthereumToken[];
 	withdrawTokens: BridgedEthereumToken[];
 }
 
-const BridgeProvider: FC<PropsWithChildren<BridgeProviderProps>> = ({
+const BridgeProvider: FC<BridgeProviderProps> = ({
 	depositTokens,
 	withdrawTokens,
 	children,

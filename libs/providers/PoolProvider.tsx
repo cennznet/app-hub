@@ -1,4 +1,5 @@
-import { CENNZAsset, PoolAction } from "@/libs/types";
+import type { CENNZAsset, PoolAction, PropsWithChildren } from "@/libs/types";
+
 import {
 	createContext,
 	Dispatch,
@@ -7,7 +8,6 @@ import {
 	useContext,
 	useState,
 	useEffect,
-	PropsWithChildren,
 } from "react";
 import {
 	useTokenInput,
@@ -46,14 +46,11 @@ interface PoolContextType
 
 const PoolContext = createContext<PoolContextType>({} as PoolContextType);
 
-interface PoolProviderProps {
+interface PoolProviderProps extends PropsWithChildren {
 	supportedAssets: CENNZAsset[];
 }
 
-const PoolProvider: FC<PropsWithChildren<PoolProviderProps>> = ({
-	supportedAssets,
-	children,
-}) => {
+const PoolProvider: FC<PoolProviderProps> = ({ supportedAssets, children }) => {
 	const [tradeAssets] = useState<CENNZAsset[]>(
 		supportedAssets.filter((asset) => asset.assetId !== CPAY_ASSET_ID)
 	);

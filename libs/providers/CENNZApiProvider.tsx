@@ -1,11 +1,6 @@
-import {
-	FC,
-	createContext,
-	useState,
-	useEffect,
-	useContext,
-	PropsWithChildren,
-} from "react";
+import type { PropsWithChildren } from "@/libs/types";
+
+import { FC, createContext, useState, useEffect, useContext } from "react";
 import { Api } from "@cennznet/api";
 
 type CENNZApiContextType = {
@@ -14,11 +9,11 @@ type CENNZApiContextType = {
 
 const CENNZApiContext = createContext<CENNZApiContextType>(null);
 
-interface CENNZApiProviderProps {
+interface CENNZApiProviderProps extends PropsWithChildren {
 	endpoint: string;
 }
 
-const CENNZApiProvider: FC<PropsWithChildren<CENNZApiProviderProps>> = ({
+const CENNZApiProvider: FC<CENNZApiProviderProps> = ({
 	children,
 	endpoint,
 }) => {

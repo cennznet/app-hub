@@ -1,3 +1,5 @@
+import type { MetaMaskAccount, PropsWithChildren } from "@/libs/types";
+
 import {
 	createContext,
 	FC,
@@ -7,7 +9,6 @@ import {
 	useState,
 } from "react";
 import { ethers } from "ethers";
-import { MetaMaskAccount, PropsWithChildren } from "@/libs/types";
 import { useWalletProvider } from "@providers/WalletProvider";
 import { useMetaMaskExtension } from "@providers/MetaMaskExtensionProvider";
 import store from "store";

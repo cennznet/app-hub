@@ -1,4 +1,6 @@
-import { FC, PropsWithChildren, useMemo } from "react";
+import type { PropsWithChildren } from "@/libs/types";
+
+import { FC, useMemo } from "react";
 import {
 	ThemeProvider as MuiThemeProvider,
 	createTheme,
@@ -87,9 +89,9 @@ const config = {
 	},
 } as Partial<Theme>;
 
-interface ThemeProviderProps {}
+interface ThemeProviderProps extends PropsWithChildren {}
 
-const ThemeProvider: FC<PropsWithChildren<ThemeProviderProps>> = (props) => {
+const ThemeProvider: FC<ThemeProviderProps> = (props) => {
 	const section = useSectionUri();
 	const theme = useMemo<Theme>(() => {
 		return createTheme({

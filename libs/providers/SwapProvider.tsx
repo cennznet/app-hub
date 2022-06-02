@@ -1,3 +1,5 @@
+import type { CENNZAsset, PropsWithChildren } from "@/libs/types";
+
 import {
 	createContext,
 	useContext,
@@ -5,9 +7,7 @@ import {
 	SetStateAction,
 	Dispatch,
 	FC,
-	PropsWithChildren,
 } from "react";
-import { CENNZAsset } from "@/libs/types";
 import { fetchSwapAssets } from "@utils";
 import { CENNZ_ASSET_ID, CPAY_ASSET_ID } from "@/libs/constants";
 import {
@@ -37,14 +37,11 @@ interface SwapContextType extends TxStatusHook {
 
 const SwapContext = createContext<SwapContextType>({} as SwapContextType);
 
-interface SwapProviderProps {
+interface SwapProviderProps extends PropsWithChildren {
 	supportedAssets: CENNZAsset[];
 }
 
-const SwapProvider: FC<PropsWithChildren<SwapProviderProps>> = ({
-	supportedAssets,
-	children,
-}) => {
+const SwapProvider: FC<SwapProviderProps> = ({ supportedAssets, children }) => {
 	const [exchangeAssets] = useTokensFetcher<CENNZAsset[]>(
 		fetchSwapAssets,
 		supportedAssets

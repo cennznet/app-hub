@@ -1,12 +1,14 @@
-import { FC, PropsWithChildren } from "react";
+import type { PropsWithChildren } from "@/libs/types";
+
+import { FC } from "react";
 import { css } from "@emotion/react";
 import { Modal } from "@mui/material";
 import { ModalBackdrop } from "@components";
 import { useWalletProvider } from "@providers/WalletProvider";
 
-interface WalletModalProps {}
+interface WalletModalProps extends PropsWithChildren {}
 
-const WalletModal: FC<PropsWithChildren<WalletModalProps>> = ({ children }) => {
+const WalletModal: FC<WalletModalProps> = ({ children }) => {
 	const { walletOpen, setWalletOpen } = useWalletProvider();
 
 	const closeWallet = () => setWalletOpen(false);

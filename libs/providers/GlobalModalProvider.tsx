@@ -1,10 +1,6 @@
-import {
-	createContext,
-	PropsWithChildren,
-	useCallback,
-	useContext,
-	useState,
-} from "react";
+import type { PropsWithChildren } from "@/libs/types";
+
+import { createContext, useCallback, useContext, useState, FC } from "react";
 import { GlobalModal } from "@components";
 
 type GlobalModalContent = {
@@ -27,9 +23,9 @@ const GlobalModalContext = createContext<GlobalModalContext>(
 	{} as GlobalModalContext
 );
 
-type ProviderProps = {};
+interface GlobalModalProviderProps extends PropsWithChildren {}
 
-function GlobalModalProvider({ children }: PropsWithChildren<ProviderProps>) {
+const GlobalModalProvider: FC<GlobalModalProviderProps> = ({ children }) => {
 	const [modalOpened, setModalOpened] = useState<{ resolve: () => void }>();
 	const onModalRequestClose = useCallback(() => {
 		setModalOpened((previous) => {
@@ -69,7 +65,7 @@ function GlobalModalProvider({ children }: PropsWithChildren<ProviderProps>) {
 			/>
 		</>
 	);
-}
+};
 
 export default GlobalModalProvider;
 

@@ -11,9 +11,9 @@ import { useTransfer } from "@providers/TransferProvider";
 
 interface TransferProgressProps {}
 
-const TransferProgress: FC<IntrinsicElements["div"] & TransferProgressProps> = (
-
-) => {
+const TransferProgress: FC<
+	IntrinsicElements["div"] & TransferProgressProps
+> = () => {
 	const { txStatus, setTxIdle } = useTransfer();
 	const { txHashLink, ...txProps } = txStatus?.props ?? {};
 	const dismissible =

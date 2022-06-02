@@ -1,3 +1,5 @@
+import type { PropsWithChildren } from "@/libs/types";
+
 import {
 	createContext,
 	FC,
@@ -5,7 +7,6 @@ import {
 	Dispatch,
 	useState,
 	useContext,
-	PropsWithChildren,
 } from "react";
 
 interface MainPanelContextType {
@@ -17,11 +18,11 @@ const MainPanelContext = createContext<MainPanelContextType>(
 	{} as MainPanelContextType
 );
 
-interface MainPanelProviderProps {
+interface MainPanelProviderProps extends PropsWithChildren {
 	defaultTitle: string;
 }
 
-const MainPanelProvider: FC<PropsWithChildren<MainPanelProviderProps>> = ({
+const MainPanelProvider: FC<MainPanelProviderProps> = ({
 	children,
 	defaultTitle,
 }) => {
