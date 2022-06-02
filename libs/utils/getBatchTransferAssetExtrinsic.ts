@@ -1,9 +1,10 @@
-import { Api } from "@cennznet/api";
-import {
+import type {
 	CENNZAssetBalances,
 	CENNZnetExtrinsic,
 	SubmittableExtrinsic,
-} from "@/types";
+} from "@/libs/types";
+
+import { Api } from "@cennznet/api";
 
 export default function getBatchTransferAssetExtrinsic(
 	api: Api,
