@@ -32,10 +32,10 @@ const PoolAssetsPair: VFC<IntrinsicElements["div"] & PoolAssetsPairProps> = (
 	const tradePoolBalance = userInfo?.tradeAssetBalance ?? null;
 	const corePoolBalance = userInfo?.coreAssetBalance ?? null;
 
-	const [tradeWalletBalance, coreWalletBalance] = useCENNZBalances(
+	const [tradeWalletBalance, coreWalletBalance] = useCENNZBalances([
 		tradeAsset,
-		coreAsset
-	);
+		coreAsset,
+	]);
 
 	const tradeBalance =
 		poolAction === "Remove" ? tradePoolBalance : tradeWalletBalance;

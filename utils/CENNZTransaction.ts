@@ -65,6 +65,20 @@ export default class CENNZTransaction extends Emittery<EmitEvents> {
 		return record?.event;
 	}
 
+	findEvents(
+		result: SubmittableResult,
+		eventSection: string,
+		eventMethod: string
+	): CENNZEvent[] {
+		const { events: records } = result;
+		return records
+			.filter((record) => {
+				const event: CENNZEvent = record.event;
+				return event?.section === eventSection && event?.method === eventMethod;
+			})
+			.map((record) => record?.event);
+	}
+
 	getHashLink(): string {
 		return `${CENNZ_EXPLORER_URL}/extrinsic/${this?.hash}`;
 	}
