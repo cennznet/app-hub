@@ -36,6 +36,8 @@ export interface BridgedEthereumToken extends EthereumToken {
 	assetId: CENNZAsset["assetId"];
 }
 
+export type BridgedEthereumTokens = Array<BridgedEthereumToken>;
+
 export interface CENNZAssetBalance extends CENNZAsset {
 	value: Balance;
 	rawValue?: u128;

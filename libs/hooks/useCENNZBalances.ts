@@ -1,29 +1,20 @@
-import { BridgedEthereumToken, CENNZAsset } from "@/libs/types";
+import { BridgedEthereumTokens, CENNZAssets } from "@/libs/types";
 import { Balance } from "@utils";
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import { useWalletProvider } from "@providers/WalletProvider";
 
 export default function useCENNZBalances(
-	assets: CENNZAsset[] | BridgedEthereumToken[]
+	assets: CENNZAssets | BridgedEthereumTokens
 ): Balance[] {
 	const { cennzBalances } = useWalletProvider();
-	const [balances, setBalances] = useState<Balance[]>([]);
 
-	useEffect(() => {
-		if (!cennzBalances?.length) {
-			setBalances(new Array(assets.length).fill(null));
-			return;
-		}
-		const requestedBalanceAssetIds = assets.map((balance) => balance.assetId);
+	return useMemo(() => {
+		if (!cennzBalances) return new Array(assets.length).fill(null);
 
-		const requestedCENNZBalances = requestedBalanceAssetIds.map((assetId) =>
-			cennzBalances.find((balance) => balance.assetId === assetId)
-		);
-		const requestedBalances = requestedCENNZBalances.map(
-			(balance) => balance?.value || null
-		);
-		setBalances(requestedBalances);
+		return assets
+			.map((asset) =>
+				cennzBalances.find((balance) => balance.assetId === asset.assetId)
+			)
+			.map((balance) => balance?.value || null);
 	}, [assets, cennzBalances]);
-
-	return balances;
 }
