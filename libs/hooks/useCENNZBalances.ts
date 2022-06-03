@@ -1,29 +1,24 @@
 import { BridgedEthereumToken, CENNZAsset } from "@/libs/types";
-import { Balance } from "@utils";
+import { Balance, fetchCENNZAssetBalances } from "@utils";
 import { useEffect, useState } from "react";
-import { useWalletProvider } from "@providers/WalletProvider";
+import { useCENNZApi } from "@providers/CENNZApiProvider";
+import { useSelectedAccount } from "@hooks";
 
 export default function useCENNZBalances(
 	assets: CENNZAsset[] | BridgedEthereumToken[]
 ): Balance[] {
-	const { cennzBalances } = useWalletProvider();
+	const { api } = useCENNZApi();
+	const selectedAccount = useSelectedAccount();
 	const [balances, setBalances] = useState<Balance[]>([]);
 
 	useEffect(() => {
-		if (!cennzBalances?.length) {
-			setBalances(new Array(assets.length).fill(null));
-			return;
-		}
-		const requestedBalanceAssetIds = assets.map((balance) => balance.assetId);
+		if (!api || !assets || !selectedAccount?.address) return;
 
-		const requestedCENNZBalances = requestedBalanceAssetIds.map((assetId) =>
-			cennzBalances.find((balance) => balance.assetId === assetId)
+		fetchCENNZAssetBalances(api, selectedAccount.address, assets).then(
+			(balances) =>
+				setBalances(balances.map((balance) => balance?.value || null))
 		);
-		const requestedBalances = requestedCENNZBalances.map(
-			(balance) => balance?.value || null
-		);
-		setBalances(requestedBalances);
-	}, [assets, cennzBalances]);
+	}, [api, assets, selectedAccount?.address]);
 
 	return balances;
 }

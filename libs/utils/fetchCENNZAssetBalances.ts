@@ -1,5 +1,9 @@
 import { Api } from "@cennznet/api";
-import { CENNZAssetBalances } from "@/libs/types";
+import {
+	BridgedEthereumToken,
+	CENNZAsset,
+	CENNZAssetBalances,
+} from "@/libs/types";
 import { Balance, fetchCENNZAssets } from "@utils";
 import { stringToHex, hexToBn } from "@polkadot/util";
 
@@ -8,13 +12,16 @@ import { stringToHex, hexToBn } from "@polkadot/util";
  *
  * @param {Api} api
  * @param {string} address
+ * @param {asset[]} selectedAssets
  * @return {Promise<CENNZAssetBalances>}
  */
 export default async function fetchCENNZAssetBalances(
 	api: Api,
-	address: string
+	address: string,
+	selectedAssets?: CENNZAsset[] | BridgedEthereumToken[]
 ): Promise<CENNZAssetBalances> {
-	const assets = await fetchCENNZAssets(api);
+	const assets = selectedAssets ? selectedAssets : await fetchCENNZAssets(api);
+
 	const [assetLocks, freeBalances] = await Promise.all([
 		(
 			await api.query.genericAsset.locks.multi(
