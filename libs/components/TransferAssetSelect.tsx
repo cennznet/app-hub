@@ -16,6 +16,8 @@ const TransferAssetSelect: FC = () => {
 			</InputLabel>
 			<SelectInput
 				labelId="transferAssetSelect"
+				value=""
+				defaultValue=""
 				css={styles.select}
 				inputProps={{ sx: styles.selectItem as any }}
 				readOnly={readOnly}
