@@ -6,8 +6,8 @@ const cennzAccount = global.getCENNZTestingAccount();
 const ethereumAccount = global.getEthereumTestingAccount();
 const { provider } = global.getWeb3MockForTest();
 
-jest.mock("@utils/getERC20PegContract");
-jest.mock("@utils/getERC20TokenContract");
+jest.mock("@/libs/utils/getERC20PegContract");
+jest.mock("@/libs/utils/getERC20TokenContract");
 
 describe("sendDepositRequest", () => {
 	it("sends request ETH", async () => {

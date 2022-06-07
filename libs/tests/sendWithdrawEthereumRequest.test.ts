@@ -8,8 +8,8 @@ const api = global.getCENNZApiForTest();
 const { ethAsset } = global.getEthereumAssetsForTest();
 const ethereumAccount = global.getEthereumTestingAccount();
 
-jest.mock("@utils/getERC20PegContract");
-jest.mock("@utils/getBridgeContract");
+jest.mock("@/libs/utils/getERC20PegContract");
+jest.mock("@/libs/utils/getBridgeContract");
 
 describe("sendWithdrawEthereumRequest", () => {
 	it("sends request", async () => {
