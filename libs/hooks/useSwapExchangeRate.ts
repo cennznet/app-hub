@@ -1,7 +1,7 @@
-import { useCENNZApi } from "@providers/CENNZApiProvider";
+import { useCENNZApi } from "@/libs/providers/CENNZApiProvider";
 import { useEffect, useState, useMemo, useCallback } from "react";
-import { Balance, fetchSellPrice } from "@utils";
-import { useSwap } from "@providers/SwapProvider";
+import { Balance, fetchSellPrice } from "@/libs/utils";
+import { useSwap } from "@/libs/providers/SwapProvider";
 import debounce from "lodash/debounce";
 import { CENNZAsset } from "@/libs/types";
 import { Api } from "@cennznet/api";

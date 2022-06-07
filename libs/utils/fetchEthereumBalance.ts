@@ -1,8 +1,8 @@
 import { ETH_TOKEN_ADDRESS } from "@/libs/constants";
 import { EthereumToken } from "@/libs/types";
-import { Balance } from "@utils";
+import { Balance } from "@/libs/utils";
 import { BigNumber, ethers } from "ethers";
-import GenericERC20TokenAbi from "@artifacts/GenericERC20Token.json";
+import GenericERC20TokenAbi from "@/libs/artifacts/GenericERC20Token.json";
 
 export default async function fetchEthereumBalance(
 	provider: ethers.providers.Web3Provider,

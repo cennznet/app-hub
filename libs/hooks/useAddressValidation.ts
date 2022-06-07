@@ -1,5 +1,5 @@
 import { ChainOption } from "@/libs/types";
-import { isCENNZAddress, isEthereumAddress } from "@utils";
+import { isCENNZAddress, isEthereumAddress } from "@/libs/utils";
 import { MutableRefObject, useEffect, useRef } from "react";
 
 interface AddressValidationHook {

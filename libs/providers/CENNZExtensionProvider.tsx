@@ -14,8 +14,8 @@ import {
 	FC,
 } from "react";
 import type * as Extension from "@polkadot/extension-dapp";
-import { useUserAgent } from "@providers/UserAgentProvider";
-import { useWalletProvider } from "@providers/WalletProvider";
+import { useUserAgent } from "@/libs/providers/UserAgentProvider";
+import { useWalletProvider } from "@/libs/providers/WalletProvider";
 
 interface ExtensionContext {
 	accounts: InjectedAccountWithMeta[];

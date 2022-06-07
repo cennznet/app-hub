@@ -1,5 +1,5 @@
 import { Api } from "@cennznet/api";
-import { Balance } from "@utils";
+import { Balance } from "@/libs/utils";
 import {
 	CENNZAsset,
 	CENNZnetExtrinsic,

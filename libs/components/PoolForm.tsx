@@ -5,10 +5,10 @@ import {
 } from "@/libs/types";
 import { css } from "@emotion/react";
 import { FC, useCallback, useEffect, useState, useMemo } from "react";
-import { SubmitButton } from "@components";
+import { SubmitButton } from "@/libs/components";
 import { Theme } from "@mui/material";
-import { usePool } from "@providers/PoolProvider";
-import { useCENNZApi } from "@providers/CENNZApiProvider";
+import { usePool } from "@/libs/providers/PoolProvider";
+import { useCENNZApi } from "@/libs/providers/CENNZApiProvider";
 import {
 	Balance,
 	CENNZTransaction,
@@ -17,11 +17,11 @@ import {
 	signAndSendTx,
 	signViaEthWallet,
 } from "@/libs/utils";
-import { useCENNZWallet } from "@providers/CENNZWalletProvider";
-import { useWalletProvider } from "@providers/WalletProvider";
-import { useMetaMaskWallet } from "@providers/MetaMaskWalletProvider";
-import { useMetaMaskExtension } from "@providers/MetaMaskExtensionProvider";
-import { useUpdateCENNZBalances } from "@hooks";
+import { useCENNZWallet } from "@/libs/providers/CENNZWalletProvider";
+import { useWalletProvider } from "@/libs/providers/WalletProvider";
+import { useMetaMaskWallet } from "@/libs/providers/MetaMaskWalletProvider";
+import { useMetaMaskExtension } from "@/libs/providers/MetaMaskExtensionProvider";
+import { useUpdateCENNZBalances } from "@/libs/hooks";
 
 interface PoolFormProps {}
 

@@ -1,6 +1,6 @@
 import { Api } from "@cennznet/api";
 import { CENNZAsset } from "@/libs/types";
-import { Balance } from "@utils";
+import { Balance } from "@/libs/utils";
 
 /**
  * Query `api.rpc.cennzx.sellPrice` to get a selling price from exchangeAsset -> receiveAsset

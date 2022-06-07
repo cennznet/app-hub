@@ -1,7 +1,7 @@
-import { useCENNZApi } from "@providers/CENNZApiProvider";
-import { Balance, fetchGasFee, getSellAssetExtrinsic } from "@utils";
+import { useCENNZApi } from "@/libs/providers/CENNZApiProvider";
+import { Balance, fetchGasFee, getSellAssetExtrinsic } from "@/libs/utils";
 import { useEffect, useState, useMemo, useCallback } from "react";
-import { useSwap } from "@providers/SwapProvider";
+import { useSwap } from "@/libs/providers/SwapProvider";
 import { SubmittableExtrinsic } from "@/libs/types";
 
 export default function useSwapGasFee(): {

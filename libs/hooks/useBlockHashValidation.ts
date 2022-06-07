@@ -1,5 +1,5 @@
 import { MutableRefObject, useEffect, useRef } from "react";
-import { isCENNZAddress } from "@utils";
+import { isCENNZAddress } from "@/libs/utils";
 
 interface BlockHashValidationHook {
 	inputRef: MutableRefObject<HTMLInputElement | HTMLTextAreaElement>;

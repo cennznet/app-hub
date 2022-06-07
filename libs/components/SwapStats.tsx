@@ -3,9 +3,9 @@ import { IntrinsicElements } from "@/libs/types";
 import { LinearProgress, Tooltip, Theme } from "@mui/material";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import { css } from "@emotion/react";
-import { Balance } from "@utils";
-import { useSwap } from "@providers/SwapProvider";
-import { useSwapExchangeRate, useSwapGasFee } from "@hooks";
+import { Balance } from "@/libs/utils";
+import { useSwap } from "@/libs/providers/SwapProvider";
+import { useSwapExchangeRate, useSwapGasFee } from "@/libs/hooks";
 
 interface SwapStatsProps {}
 

@@ -1,5 +1,5 @@
-import getAddLiquidityExtrinsic from "@utils/getAddLiquidityExtrinsic";
-import { Balance, fetchPoolExchangeInfo } from "@utils";
+import getAddLiquidityExtrinsic from "@/libs/utils/getAddLiquidityExtrinsic";
+import { Balance, fetchPoolExchangeInfo } from "@/libs/utils";
 
 const api = global.getCENNZApiForTest();
 const { cennzAsset, cpayAsset } = getCENNZCoreAssetsForTest();

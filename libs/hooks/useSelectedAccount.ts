@@ -1,8 +1,8 @@
 import { useMemo } from "react";
 import { cvmToAddress } from "@cennznet/types/utils";
-import { useCENNZWallet } from "@providers/CENNZWalletProvider";
-import { useMetaMaskWallet } from "@providers/MetaMaskWalletProvider";
-import { useWalletProvider } from "@providers/WalletProvider";
+import { useCENNZWallet } from "@/libs/providers/CENNZWalletProvider";
+import { useMetaMaskWallet } from "@/libs/providers/MetaMaskWalletProvider";
+import { useWalletProvider } from "@/libs/providers/WalletProvider";
 import { InjectedAccountWithMeta } from "@polkadot/extension-inject/types";
 
 export default function useSelectedAccount(): Pick<

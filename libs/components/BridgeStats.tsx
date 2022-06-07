@@ -1,5 +1,5 @@
-import { useBridgeGasFee, useBridgeVerificationFee } from "@hooks";
-import { useBridge } from "@providers/BridgeProvider";
+import { useBridgeGasFee, useBridgeVerificationFee } from "@/libs/hooks";
+import { useBridge } from "@/libs/providers/BridgeProvider";
 import { IntrinsicElements } from "@/libs/types";
 import { css, LinearProgress, Theme } from "@mui/material";
 import { FC } from "react";

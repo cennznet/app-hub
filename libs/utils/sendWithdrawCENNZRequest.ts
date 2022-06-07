@@ -11,7 +11,7 @@ import {
 	signAndSendTx,
 	CENNZTransaction,
 	signViaEthWallet,
-} from "@utils";
+} from "@/libs/utils";
 import { Signer } from "@cennznet/api/types";
 import { MetaMaskInpageProvider } from "@metamask/providers";
 

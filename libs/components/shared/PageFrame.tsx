@@ -2,7 +2,7 @@ import { FC } from "react";
 import { css } from "@emotion/react";
 import { Theme } from "@mui/material";
 import Link from "next/link";
-import CENNZLogoSVG from "@vectors/cennznet-logo.svg";
+import CENNZLogoSVG from "@/libs/assets/vectors/cennznet-logo.svg";
 
 const PageFrame: FC = () => {
 	return (

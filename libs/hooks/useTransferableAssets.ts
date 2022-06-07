@@ -1,9 +1,9 @@
 import type { CENNZAssetBalances } from "@/libs/types";
 
 import { useEffect, useState } from "react";
-import { useSelectedAccount } from "@hooks";
-import { fetchCENNZAssetBalances } from "@utils";
-import { useCENNZApi } from "@providers/CENNZApiProvider";
+import { useSelectedAccount } from "@/libs/hooks";
+import { fetchCENNZAssetBalances } from "@/libs/utils";
+import { useCENNZApi } from "@/libs/providers/CENNZApiProvider";
 
 export default function useTransferableAssets() {
 	const { api } = useCENNZApi();

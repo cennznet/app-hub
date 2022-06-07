@@ -4,10 +4,10 @@ import { css } from "@emotion/react";
 import { Theme, CircularProgress } from "@mui/material";
 import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
 import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
-import { Balance, selectMap } from "@utils";
-import { Link, StandardButton, ProgressOverlay } from "@components";
-import { useBeforeUnload } from "@hooks";
-import { useTransfer } from "@providers/TransferProvider";
+import { Balance, selectMap } from "@/libs/utils";
+import { Link, StandardButton, ProgressOverlay } from "@/libs/components";
+import { useBeforeUnload } from "@/libs/hooks";
+import { useTransfer } from "@/libs/providers/TransferProvider";
 
 interface TransferProgressProps {}
 

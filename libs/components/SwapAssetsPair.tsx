@@ -1,15 +1,15 @@
 import { FC, useEffect, useCallback, useMemo } from "react";
 import { IntrinsicElements } from "@/libs/types";
 import { css } from "@emotion/react";
-import { useSwap } from "@providers/SwapProvider";
-import { TokenInput, SwitchButton } from "@components";
+import { useSwap } from "@/libs/providers/SwapProvider";
+import { TokenInput, SwitchButton } from "@/libs/components";
 import { Theme } from "@mui/material";
 import {
 	useSwapExchangeRate,
 	useCENNZBalances,
 	useBalanceValidation,
-} from "@hooks";
-import { Balance } from "@utils";
+} from "@/libs/hooks";
+import { Balance } from "@/libs/utils";
 
 interface SwapAssetsPairProps {}
 

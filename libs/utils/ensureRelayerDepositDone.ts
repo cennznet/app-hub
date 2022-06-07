@@ -1,4 +1,4 @@
-import { fetchDepositRelayerStatus, waitUntil } from "@utils";
+import { fetchDepositRelayerStatus, waitUntil } from "@/libs/utils";
 import { RelayerStatus, RelayerConfirmingStatus } from "@/libs/types";
 
 type TimeoutReturn = Awaited<ReturnType<typeof waitUntil>>;

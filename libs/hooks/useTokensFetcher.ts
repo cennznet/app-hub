@@ -1,4 +1,4 @@
-import { useCENNZApi } from "@providers/CENNZApiProvider";
+import { useCENNZApi } from "@/libs/providers/CENNZApiProvider";
 import { Api } from "@cennznet/api";
 import { useEffect, useMemo, useState } from "react";
 

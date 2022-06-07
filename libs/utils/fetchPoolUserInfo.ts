@@ -1,6 +1,6 @@
 import { CENNZAsset } from "@/libs/types";
 import { Api } from "@cennznet/api";
-import { Balance } from "@utils";
+import { Balance } from "@/libs/utils";
 import { PoolUserInfo } from "@/libs/types";
 
 /**

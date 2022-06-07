@@ -1,8 +1,8 @@
-import { useMetaMaskWallet } from "@providers/MetaMaskWalletProvider";
+import { useMetaMaskWallet } from "@/libs/providers/MetaMaskWalletProvider";
 import { BridgedEthereumToken, EthereumToken } from "@/libs/types";
-import { Balance, fetchEthereumBalance } from "@utils";
+import { Balance, fetchEthereumBalance } from "@/libs/utils";
 import { useEffect, useMemo, useState } from "react";
-import { useWalletProvider } from "@providers/WalletProvider";
+import { useWalletProvider } from "@/libs/providers/WalletProvider";
 
 export default function useEthereumBalances(
 	token1: EthereumToken | BridgedEthereumToken,

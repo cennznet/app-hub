@@ -18,7 +18,7 @@ import {
 	PoolExchangeInfoHook,
 	PoolUserInfoHook,
 	TxStatusHook,
-} from "@hooks";
+} from "@/libs/hooks";
 import { CENNZ_ASSET_ID, CPAY_ASSET_ID } from "@/libs/constants";
 
 type CENNZAssetId = CENNZAsset["assetId"];

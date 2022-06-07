@@ -1,6 +1,6 @@
-import getBridgeContract from "@utils/getBridgeContract";
+import getBridgeContract from "@/libs/utils/getBridgeContract";
 import { ethers } from "ethers";
-import CENNZnetBridge from "@artifacts/CENNZnetBridge.json";
+import CENNZnetBridge from "@/libs/artifacts/CENNZnetBridge.json";
 import { KOVAN_BRIDGE_CONTRACT } from "@/libs/constants";
 
 const { provider } = global.getWeb3MockForTest();

@@ -1,16 +1,16 @@
-import { usePool } from "@providers/PoolProvider";
+import { usePool } from "@/libs/providers/PoolProvider";
 import { IntrinsicElements } from "@/libs/types";
 import { css } from "@emotion/react";
 import { FC, useMemo, useEffect } from "react";
-import { TokenInput } from "@components";
+import { TokenInput } from "@/libs/components";
 import {
 	useCENNZBalances,
 	usePoolCoreAssetValue,
 	useBalanceValidation,
-} from "@hooks";
+} from "@/libs/hooks";
 import { Theme, Tooltip } from "@mui/material";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-import { Balance } from "@utils";
+import { Balance } from "@/libs/utils";
 
 interface PoolAssetsPairProps {}
 

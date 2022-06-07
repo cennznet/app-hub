@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from "react";
 import { css } from "@emotion/react";
-import { useCENNZWallet } from "@providers/CENNZWalletProvider";
+import { useCENNZWallet } from "@/libs/providers/CENNZWalletProvider";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import { Theme } from "@mui/material";
 import {
@@ -8,9 +8,9 @@ import {
 	AccountIdenticon,
 	WalletSelect,
 	Wallet,
-} from "@components";
-import { useWalletProvider } from "@providers/WalletProvider";
-import { useMetaMaskWallet } from "@providers/MetaMaskWalletProvider";
+} from "@/libs/components";
+import { useWalletProvider } from "@/libs/providers/WalletProvider";
+import { useMetaMaskWallet } from "@/libs/providers/MetaMaskWalletProvider";
 import Jazzicon, { jsNumberForAddress } from "react-jazzicon";
 
 type WalletState = "Connected" | "Connecting" | "NotConnected";

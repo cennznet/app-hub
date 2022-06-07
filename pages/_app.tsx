@@ -3,17 +3,17 @@ import CssBaseline from "@mui/material/CssBaseline";
 import { API_URL, VERCEL_URL } from "@/libs/constants";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import { trackPageView } from "@utils";
+import { trackPageView } from "@/libs/utils";
 import { DefaultSeo } from "next-seo";
-import UserAgentProvider from "@providers/UserAgentProvider";
-import MetaMaskExtensionProvider from "@providers/MetaMaskExtensionProvider";
-import WalletProvider from "@providers/WalletProvider";
-import MetaMaskWalletProvider from "@providers/MetaMaskWalletProvider";
-import CENNZWalletProvider from "@providers/CENNZWalletProvider";
-import GlobalModalProvider from "@providers/GlobalModalProvider";
-import CENNZExtensionProvider from "@providers/CENNZExtensionProvider";
-import CENNZApiProvider from "@providers/CENNZApiProvider";
-import ThemeProvider from "@providers/ThemeProvider";
+import UserAgentProvider from "@/libs/providers/UserAgentProvider";
+import MetaMaskExtensionProvider from "@/libs/providers/MetaMaskExtensionProvider";
+import WalletProvider from "@/libs/providers/WalletProvider";
+import MetaMaskWalletProvider from "@/libs/providers/MetaMaskWalletProvider";
+import CENNZWalletProvider from "@/libs/providers/CENNZWalletProvider";
+import GlobalModalProvider from "@/libs/providers/GlobalModalProvider";
+import CENNZExtensionProvider from "@/libs/providers/CENNZExtensionProvider";
+import CENNZApiProvider from "@/libs/providers/CENNZApiProvider";
+import ThemeProvider from "@/libs/providers/ThemeProvider";
 import {
 	CssGlobal,
 	PageBackdrop,
@@ -21,8 +21,8 @@ import {
 	AppSwitch,
 	PageFooter,
 	PageFrame,
-} from "@components";
-import { GlobalProps } from "@utils/generateGlobalProps";
+} from "@/libs/components";
+import { GlobalProps } from "@/libs/utils/generateGlobalProps";
 
 type MyAppProps = Omit<AppProps, "pageProps"> & {
 	pageProps: {} & GlobalProps;

@@ -1,6 +1,6 @@
-import getERC20TokenContract from "@utils/getERC20TokenContract";
+import getERC20TokenContract from "@/libs/utils/getERC20TokenContract";
 import { ethers } from "ethers";
-import GenericERC20Token from "@artifacts/GenericERC20Token.json";
+import GenericERC20Token from "@/libs/artifacts/GenericERC20Token.json";
 
 const { cennzAsset } = global.getEthereumAssetsForTest();
 const { provider } = global.getWeb3MockForTest();

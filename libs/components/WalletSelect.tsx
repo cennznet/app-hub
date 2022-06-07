@@ -1,12 +1,12 @@
 import { useCallback, FC } from "react";
 import { css } from "@emotion/react";
 import { Theme } from "@mui/material";
-import { useWalletProvider } from "@providers/WalletProvider";
+import { useWalletProvider } from "@/libs/providers/WalletProvider";
 import CENNZIconSVG from "@vectors/cennznet-icon.svg";
-import MetaMaskIconSVG from "@vectors/metamask.svg";
+import MetaMaskIconSVG from "@/libs/assets/vectors/metamask.svg";
 import { WalletOption } from "@/libs/types";
-import { useMetaMaskWallet } from "@providers/MetaMaskWalletProvider";
-import { useCENNZWallet } from "@providers/CENNZWalletProvider";
+import { useMetaMaskWallet } from "@/libs/providers/MetaMaskWalletProvider";
+import { useCENNZWallet } from "@/libs/providers/CENNZWalletProvider";
 
 const WalletSelect: FC = () => {
 	const { setSelectedWallet } = useWalletProvider();

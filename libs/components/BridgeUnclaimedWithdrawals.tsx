@@ -10,9 +10,9 @@ import {
 	TableRow,
 	Theme,
 } from "@mui/material";
-import { useHistoricalWithdrawRequest } from "@hooks";
-import { getMinutesAndSeconds } from "@utils";
-import { useBridge } from "@providers/BridgeProvider";
+import { useHistoricalWithdrawRequest } from "@/libs/hooks";
+import { getMinutesAndSeconds } from "@/libs/utils";
+import { useBridge } from "@/libs/providers/BridgeProvider";
 import { WithdrawClaim } from "@/libs/types";
 
 const BridgeUnclaimedWithdrawals: FC = () => {

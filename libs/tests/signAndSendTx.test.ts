@@ -1,4 +1,4 @@
-import signAndSendTx from "@utils/signAndSendTx";
+import signAndSendTx from "@/libs/utils/signAndSendTx";
 import { Signer, SubmittableExtrinsic } from "@cennznet/api/types";
 
 const cennzAccount = global.getCENNZTestingAccount();

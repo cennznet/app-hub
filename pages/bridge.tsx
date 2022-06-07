@@ -1,10 +1,10 @@
 import { Api } from "@cennznet/api";
 import { FC } from "react";
 import { API_URL } from "@/libs/constants";
-import { fetchBridgeTokens } from "@utils";
+import { fetchBridgeTokens } from "@/libs/utils";
 import { BridgedEthereumToken, EthereumToken } from "@/libs/types";
 import { NextSeo } from "next-seo";
-import BridgeProvider from "@providers/BridgeProvider";
+import BridgeProvider from "@/libs/providers/BridgeProvider";
 import {
 	BridgeActionsPair,
 	BridgeForm,
@@ -12,7 +12,7 @@ import {
 	BridgeStats,
 	BridgeTokenDestination,
 	MainPanel,
-} from "@components";
+} from "@/libs/components";
 
 export async function getStaticProps() {
 	const api = await Api.create({ provider: API_URL });

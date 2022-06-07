@@ -4,7 +4,7 @@ import {
 	MAINNET_PEG_CONTRACT,
 	KOVAN_PEG_CONTRACT,
 } from "@/libs/constants";
-import ERC20Peg from "@artifacts/ERC20Peg.json";
+import ERC20Peg from "@/libs/artifacts/ERC20Peg.json";
 
 type ContractType = "ReadOnly" | "OnBehalf";
 

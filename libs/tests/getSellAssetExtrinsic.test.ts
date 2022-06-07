@@ -1,5 +1,5 @@
-import getSellAssetExtrinsic from "@utils/getSellAssetExtrinsic";
-import { Balance } from "@utils";
+import getSellAssetExtrinsic from "@/libs/utils/getSellAssetExtrinsic";
+import { Balance } from "@/libs/utils";
 
 const api = global.getCENNZApiForTest();
 const { cennzAsset, cpayAsset } = getCENNZCoreAssetsForTest();

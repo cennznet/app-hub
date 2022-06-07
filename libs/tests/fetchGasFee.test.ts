@@ -1,6 +1,6 @@
-import fetchGasFee from "@utils/fetchGasFee";
-import getSellAssetExtrinsic from "@utils/getSellAssetExtrinsic";
-import { Balance } from "@utils";
+import fetchGasFee from "@/libs/utils/fetchGasFee";
+import getSellAssetExtrinsic from "@/libs/utils/getSellAssetExtrinsic";
+import { Balance } from "@/libs/utils";
 import { SubmittableExtrinsic } from "@/libs/types";
 
 const api = global.getCENNZApiForTest();

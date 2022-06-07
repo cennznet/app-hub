@@ -6,7 +6,7 @@ import {
 	useMemo,
 	useState,
 } from "react";
-import { useTransferableAssets } from "@hooks";
+import { useTransferableAssets } from "@/libs/hooks";
 import { CENNZAssetBalances } from "@/libs/types";
 
 export interface TransferAssetsHook {

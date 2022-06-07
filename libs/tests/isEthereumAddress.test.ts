@@ -1,4 +1,4 @@
-import isEthereumAddress from "@utils/isEthereumAddress";
+import isEthereumAddress from "@/libs/utils/isEthereumAddress";
 
 const ethereumAccount = global.getEthereumTestingAccount();
 const cennzAccount = global.getCENNZTestingAccount();

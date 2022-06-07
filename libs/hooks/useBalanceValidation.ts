@@ -1,4 +1,4 @@
-import { Balance } from "@utils";
+import { Balance } from "@/libs/utils";
 import { MutableRefObject, useEffect, useRef } from "react";
 
 interface BalanceValidationHook {

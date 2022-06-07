@@ -13,10 +13,10 @@ import {
 	FC,
 } from "react";
 import store from "store";
-import { useCENNZExtension } from "@providers/CENNZExtensionProvider";
-import { useCENNZApi } from "@providers/CENNZApiProvider";
-import { useWalletProvider } from "@providers/WalletProvider";
-import { useUpdateCENNZBalances } from "@hooks";
+import { useCENNZExtension } from "@/libs/providers/CENNZExtensionProvider";
+import { useCENNZApi } from "@/libs/providers/CENNZApiProvider";
+import { useWalletProvider } from "@/libs/providers/WalletProvider";
+import { useUpdateCENNZBalances } from "@/libs/hooks";
 
 interface WalletContext {
 	selectedAccount: InjectedAccountWithMeta;

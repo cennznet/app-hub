@@ -1,4 +1,4 @@
-import { waitUntil } from "@utils";
+import { waitUntil } from "@/libs/utils";
 import { Api } from "@cennznet/api";
 import { EthEventProof } from "@cennznet/api/derives/ethBridge/types";
 import { EthyEventId } from "@cennznet/types";

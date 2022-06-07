@@ -1,7 +1,7 @@
 import { CENNZAsset } from "@/libs/types";
 import { Api } from "@cennznet/api";
 import { SubmittableExtrinsic } from "@cennznet/api/types";
-import { Balance } from "@utils";
+import { Balance } from "@/libs/utils";
 
 /**
  * Query `api.derive.fees.estimateFee` for a given extrinsic

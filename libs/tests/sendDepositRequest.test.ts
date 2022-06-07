@@ -1,5 +1,5 @@
-import sendDepositRequest from "@utils/sendDepositRequest";
-import { Balance, EthereumTransaction, waitUntil } from "@utils";
+import sendDepositRequest from "@/libs/utils/sendDepositRequest";
+import { Balance, EthereumTransaction, waitUntil } from "@/libs/utils";
 
 const { ethAsset, cennzAsset } = global.getEthereumAssetsForTest();
 const cennzAccount = global.getCENNZTestingAccount();

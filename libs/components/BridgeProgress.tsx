@@ -1,12 +1,12 @@
 import { ReactNode, FC } from "react";
 import { IntrinsicElements, RelayerConfirmingStatus } from "@/libs/types";
 import { css } from "@emotion/react";
-import { useBridge } from "@providers/BridgeProvider";
+import { useBridge } from "@/libs/providers/BridgeProvider";
 import { Theme, CircularProgress } from "@mui/material";
 import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
 import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
-import { StandardButton, ProgressOverlay, Link } from "@components";
-import { Balance, selectMap } from "@utils";
+import { StandardButton, ProgressOverlay, Link } from "@/libs/components";
+import { Balance, selectMap } from "@/libs/utils";
 import { useBeforeUnload } from "@/libs/hooks";
 
 interface BridgeProgressProps {}

@@ -1,5 +1,5 @@
-import fetchUnclaimedWithdrawals from "@utils/fetchUnclaimedWithdrawals";
-import { Balance, getDaysHoursMinutes } from "@utils";
+import fetchUnclaimedWithdrawals from "@/libs/utils/fetchUnclaimedWithdrawals";
+import { Balance, getDaysHoursMinutes } from "@/libs/utils";
 
 const api = global.getCENNZApiForTest();
 

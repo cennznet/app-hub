@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
-import { useCENNZApi } from "@providers/CENNZApiProvider";
+import { useCENNZApi } from "@/libs/providers/CENNZApiProvider";
 import debounce from "lodash/debounce";
-import { fetchPoolExchangeInfo } from "@utils";
+import { fetchPoolExchangeInfo } from "@/libs/utils";
 import { CENNZAsset, PoolExchangeInfo } from "@/libs/types";
 
 export interface PoolExchangeInfoHook {

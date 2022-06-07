@@ -1,13 +1,13 @@
 import { FC, ReactNode } from "react";
 import { IntrinsicElements } from "@/libs/types";
 import { css } from "@emotion/react";
-import { useSwap } from "@providers/SwapProvider";
+import { useSwap } from "@/libs/providers/SwapProvider";
 import { Theme, CircularProgress } from "@mui/material";
 import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
 import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
-import { Balance, selectMap } from "@utils";
-import { StandardButton, Link, ProgressOverlay } from "@components";
-import { useBeforeUnload } from "@hooks";
+import { Balance, selectMap } from "@/libs/utils";
+import { StandardButton, Link, ProgressOverlay } from "@/libs/components";
+import { useBeforeUnload } from "@/libs/hooks";
 
 interface SwapProgressProps {}
 

@@ -1,10 +1,10 @@
-import { useBridge } from "@providers/BridgeProvider";
+import { useBridge } from "@/libs/providers/BridgeProvider";
 import { IntrinsicElements } from "@/libs/types";
 import { css } from "@mui/material";
 import { useCallback, useEffect, useState, FC } from "react";
-import { SelectInput, SwitchButton } from "@components";
+import { SelectInput, SwitchButton } from "@/libs/components";
 import { MenuItem, Theme } from "@mui/material";
-import { useUpdateCENNZBalances } from "@hooks";
+import { useUpdateCENNZBalances } from "@/libs/hooks";
 
 interface BridgeActionsPairProps {}
 

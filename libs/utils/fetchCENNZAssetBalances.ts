@@ -1,6 +1,6 @@
 import { Api } from "@cennznet/api";
 import { CENNZAssetBalances } from "@/libs/types";
-import { Balance, fetchCENNZAssets } from "@utils";
+import { Balance, fetchCENNZAssets } from "@/libs/utils";
 import { stringToHex, hexToBn } from "@polkadot/util";
 
 /**

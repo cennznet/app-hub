@@ -1,7 +1,7 @@
 import type { PropsWithChildren } from "@/libs/types";
 
 import { createContext, useCallback, useContext, useState, FC } from "react";
-import { GlobalModal } from "@components";
+import { GlobalModal } from "@/libs/components";
 
 type GlobalModalContent = {
 	title: string;

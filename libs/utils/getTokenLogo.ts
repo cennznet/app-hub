@@ -1,5 +1,9 @@
 const path = require("path");
-const context = (require as any).context("@tokens", false, /\.svg$/);
+const context = (require as any).context(
+	"@/libs/assets/tokens",
+	false,
+	/\.svg$/
+);
 const tokenLogos = {};
 context.keys().forEach((key) => {
 	const basename = path.basename(key, ".svg");

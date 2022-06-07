@@ -9,8 +9,8 @@ import {
 	Theme,
 } from "@mui/material";
 import ExpandMore from "@mui/icons-material/ExpandMore";
-import { useBridge } from "@providers/BridgeProvider";
-import { BridgeUnclaimedWithdrawals } from "@components";
+import { useBridge } from "@/libs/providers/BridgeProvider";
+import { BridgeUnclaimedWithdrawals } from "@/libs/components";
 
 interface BridgeAdvancedProps {}
 

@@ -14,8 +14,8 @@ import {
 	TxStatusHook,
 	useSelectedAccount,
 	useEthereumBalances,
-} from "@hooks";
-import { Balance, fetchUnclaimedWithdrawals } from "@utils";
+} from "@/libs/hooks";
+import { Balance, fetchUnclaimedWithdrawals } from "@/libs/utils";
 import {
 	createContext,
 	Dispatch,
@@ -26,7 +26,7 @@ import {
 	useEffect,
 	useState,
 } from "react";
-import { useCENNZApi } from "@providers/CENNZApiProvider";
+import { useCENNZApi } from "@/libs/providers/CENNZApiProvider";
 
 type ERC20TokenAddress = EthereumToken["address"];
 

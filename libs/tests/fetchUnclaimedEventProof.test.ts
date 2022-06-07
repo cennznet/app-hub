@@ -1,4 +1,4 @@
-import { fetchUnclaimedEventProof } from "@utils";
+import { fetchUnclaimedEventProof } from "@/libs/utils";
 
 const mockProof = {
 	_id: "100",

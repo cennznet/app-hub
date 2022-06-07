@@ -8,7 +8,7 @@ import {
 	Dispatch,
 	FC,
 } from "react";
-import { fetchSwapAssets } from "@utils";
+import { fetchSwapAssets } from "@/libs/utils";
 import { CENNZ_ASSET_ID, CPAY_ASSET_ID } from "@/libs/constants";
 import {
 	useTokenInput,
@@ -16,7 +16,7 @@ import {
 	useTxStatus,
 	TokenInputHook,
 	TxStatusHook,
-} from "@hooks";
+} from "@/libs/hooks";
 
 type CENNZAssetId = CENNZAsset["assetId"];
 

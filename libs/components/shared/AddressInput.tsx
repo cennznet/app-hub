@@ -3,8 +3,8 @@ import type { ChainOption, IntrinsicElements } from "@/libs/types";
 import { css, InputAdornment, TextField, TextFieldProps } from "@mui/material";
 import { useMemo, forwardRef } from "react";
 import Jazzicon, { jsNumberForAddress } from "react-jazzicon";
-import { AccountIdenticon } from "@components";
-import { isCENNZAddress, isEthereumAddress } from "@utils";
+import { AccountIdenticon } from "@/libs/components";
+import { isCENNZAddress, isEthereumAddress } from "@/libs/utils";
 
 interface AddressInputProps {
 	addressType: ChainOption;

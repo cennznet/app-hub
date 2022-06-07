@@ -4,7 +4,7 @@ import {
 	EthereumTransaction,
 	getERC20PegContract,
 	getBridgeContract,
-} from "@utils";
+} from "@/libs/utils";
 import { Api } from "@cennznet/api";
 import { EthEventProof } from "@cennznet/api/derives/ethBridge/types";
 import { BigNumber, ethers } from "ethers";

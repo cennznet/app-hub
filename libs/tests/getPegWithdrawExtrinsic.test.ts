@@ -1,5 +1,5 @@
-import getPegWithdrawExtrinsic from "@utils/getPegWithdrawExtrinsic";
-import { Balance } from "@utils";
+import getPegWithdrawExtrinsic from "@/libs/utils/getPegWithdrawExtrinsic";
+import { Balance } from "@/libs/utils";
 
 const api = global.getCENNZApiForTest();
 const { cennzAsset } = global.getCENNZCoreAssetsForTest();

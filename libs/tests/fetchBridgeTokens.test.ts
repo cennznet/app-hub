@@ -1,4 +1,4 @@
-import fetchBridgeTokens from "@utils/fetchBridgeTokens";
+import fetchBridgeTokens from "@/libs/utils/fetchBridgeTokens";
 
 const api = global.getCENNZApiForTest();
 

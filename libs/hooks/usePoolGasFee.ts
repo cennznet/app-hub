@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useState, useMemo } from "react";
-import { useCENNZApi } from "@providers/CENNZApiProvider";
-import { usePool } from "@providers/PoolProvider";
+import { useCENNZApi } from "@/libs/providers/CENNZApiProvider";
+import { usePool } from "@/libs/providers/PoolProvider";
 import {
 	Balance,
 	fetchGasFee,
 	getAddLiquidityExtrinsic,
 	getRemoveLiquidityExtrinsic,
-} from "@utils";
+} from "@/libs/utils";
 import { SubmittableExtrinsic } from "@/libs/types";
 
 interface PoolGasFeeHook {

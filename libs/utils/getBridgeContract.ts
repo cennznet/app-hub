@@ -4,7 +4,7 @@ import {
 	MAINNET_BRIDGE_CONTRACT,
 	KOVAN_BRIDGE_CONTRACT,
 } from "@/libs/constants";
-import CENNZnetBridge from "@artifacts/CENNZnetBridge.json";
+import CENNZnetBridge from "@/libs/artifacts/CENNZnetBridge.json";
 
 type ContractType = "ReadOnly" | "OnBehalf";
 

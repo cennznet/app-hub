@@ -1,7 +1,7 @@
 import { BridgedEthereumTokens, CENNZAssets } from "@/libs/types";
-import { Balance } from "@utils";
+import { Balance } from "@/libs/utils";
 import { useMemo } from "react";
-import { useWalletProvider } from "@providers/WalletProvider";
+import { useWalletProvider } from "@/libs/providers/WalletProvider";
 
 export default function useCENNZBalances(
 	assets: CENNZAssets | BridgedEthereumTokens

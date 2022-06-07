@@ -2,11 +2,11 @@ import { FC, useCallback, useEffect, useState } from "react";
 import { IntrinsicElements } from "@/libs/types";
 import { css } from "@emotion/react";
 import { Theme } from "@mui/material";
-import { useBridge } from "@providers/BridgeProvider";
-import { useBridgeStatus } from "@hooks";
-import { SubmitButton, BridgeWithdrawAdvanced } from "@components";
+import { useBridge } from "@/libs/providers/BridgeProvider";
+import { useBridgeStatus } from "@/libs/hooks";
+import { SubmitButton, BridgeWithdrawAdvanced } from "@/libs/components";
 import { useDepositRequest, useWithdrawRequest } from "@/libs/hooks";
-import { useWalletProvider } from "@providers/WalletProvider";
+import { useWalletProvider } from "@/libs/providers/WalletProvider";
 import { ETH_CHAIN_ID } from "@/libs/constants";
 
 interface BridgeFormProps {}

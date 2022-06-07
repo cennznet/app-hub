@@ -14,7 +14,7 @@ import {
 	useState,
 } from "react";
 import { CENNZ_METAMASK_NETWORK, ETH_CHAIN_ID } from "@/libs/constants";
-import { useMetaMaskExtension } from "@providers/MetaMaskExtensionProvider";
+import { useMetaMaskExtension } from "@/libs/providers/MetaMaskExtensionProvider";
 import store from "store";
 
 interface WalletContextType {

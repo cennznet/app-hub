@@ -1,6 +1,6 @@
 import { IntrinsicElements } from "@/libs/types";
 import { FC } from "react";
-import MainPanelProvider from "@providers/MainPanelProvider";
+import MainPanelProvider from "@/libs/providers/MainPanelProvider";
 import { css } from "@emotion/react";
 import { Theme } from "@mui/material";
 

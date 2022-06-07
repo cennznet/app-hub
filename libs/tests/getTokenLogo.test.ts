@@ -1,4 +1,4 @@
-import getTokenLogo from "@utils/getTokenLogo";
+import getTokenLogo from "@/libs/utils/getTokenLogo";
 
 describe("getTokenLogo", () => {
 	it("returns expected value", () => {

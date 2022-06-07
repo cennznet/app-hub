@@ -1,18 +1,18 @@
-import { useBridge } from "@providers/BridgeProvider";
-import { useCENNZApi } from "@providers/CENNZApiProvider";
-import { useMetaMaskExtension } from "@providers/MetaMaskExtensionProvider";
-import { useMetaMaskWallet } from "@providers/MetaMaskWalletProvider";
+import { useBridge } from "@/libs/providers/BridgeProvider";
+import { useCENNZApi } from "@/libs/providers/CENNZApiProvider";
+import { useMetaMaskExtension } from "@/libs/providers/MetaMaskExtensionProvider";
+import { useMetaMaskWallet } from "@/libs/providers/MetaMaskWalletProvider";
 import {
 	Balance,
 	ensureBridgeDepositActive,
 	ensureEthereumChain,
 	ensureRelayerDepositDone,
 	sendDepositRequest,
-} from "@utils";
+} from "@/libs/utils";
 import { useCallback } from "react";
-import { useWalletProvider } from "@providers/WalletProvider";
+import { useWalletProvider } from "@/libs/providers/WalletProvider";
 import { cvmToAddress } from "@cennznet/types/utils";
-import { useUpdateCENNZBalances } from "@hooks";
+import { useUpdateCENNZBalances } from "@/libs/hooks";
 
 export default function useDepositRequest(): () => Promise<void> {
 	const { api } = useCENNZApi();

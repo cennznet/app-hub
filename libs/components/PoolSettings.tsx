@@ -10,7 +10,7 @@ import {
 	InputAdornment,
 } from "@mui/material";
 import ExpandMore from "@mui/icons-material/ExpandMore";
-import { usePool } from "@providers/PoolProvider";
+import { usePool } from "@/libs/providers/PoolProvider";
 
 interface PoolSettingsProps {}
 

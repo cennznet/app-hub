@@ -6,21 +6,21 @@ import {
 import { FC, useCallback } from "react";
 import { css } from "@emotion/react";
 import { Theme } from "@mui/material";
-import { SubmitButton } from "@components";
-import { useSwap } from "@providers/SwapProvider";
-import { useCENNZApi } from "@providers/CENNZApiProvider";
-import { useCENNZWallet } from "@providers/CENNZWalletProvider";
+import { SubmitButton } from "@/libs/components";
+import { useSwap } from "@/libs/providers/SwapProvider";
+import { useCENNZApi } from "@/libs/providers/CENNZApiProvider";
+import { useCENNZWallet } from "@/libs/providers/CENNZWalletProvider";
 import {
 	Balance,
 	CENNZTransaction,
 	getSellAssetExtrinsic,
 	signAndSendTx,
 	signViaEthWallet,
-} from "@utils";
-import { useWalletProvider } from "@providers/WalletProvider";
-import { useMetaMaskWallet } from "@providers/MetaMaskWalletProvider";
-import { useMetaMaskExtension } from "@providers/MetaMaskExtensionProvider";
-import { useUpdateCENNZBalances } from "@hooks";
+} from "@/libs/utils";
+import { useWalletProvider } from "@/libs/providers/WalletProvider";
+import { useMetaMaskWallet } from "@/libs/providers/MetaMaskWalletProvider";
+import { useMetaMaskExtension } from "@/libs/providers/MetaMaskExtensionProvider";
+import { useUpdateCENNZBalances } from "@/libs/hooks";
 
 interface SwapFormProps {}
 

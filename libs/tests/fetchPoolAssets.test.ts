@@ -1,4 +1,4 @@
-import fetchPoolAssets from "@utils/fetchPoolAssets";
+import fetchPoolAssets from "@/libs/utils/fetchPoolAssets";
 
 const api = global.getCENNZApiForTest();
 

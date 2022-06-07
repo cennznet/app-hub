@@ -1,4 +1,4 @@
-import { Balance } from "@utils";
+import { Balance } from "@/libs/utils";
 import { Api } from "@cennznet/api";
 import {
 	CENNZAsset,

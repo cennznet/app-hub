@@ -1,8 +1,8 @@
-import { useBridge } from "@providers/BridgeProvider";
-import { useMetaMaskWallet } from "@providers/MetaMaskWalletProvider";
-import { Balance } from "@utils";
+import { useBridge } from "@/libs/providers/BridgeProvider";
+import { useMetaMaskWallet } from "@/libs/providers/MetaMaskWalletProvider";
+import { Balance } from "@/libs/utils";
 import { useCallback, useEffect, useState } from "react";
-import { useWalletProvider } from "@providers/WalletProvider";
+import { useWalletProvider } from "@/libs/providers/WalletProvider";
 
 interface BridgeGasFeeHook {
 	gasFee: Balance;

@@ -2,17 +2,17 @@ import { BridgedEthereumToken, IntrinsicElements } from "@/libs/types";
 import { css } from "@emotion/react";
 import { useCallback, useEffect, useMemo, FC } from "react";
 import { LinearProgress, Theme } from "@mui/material";
-import { useBridge } from "@providers/BridgeProvider";
+import { useBridge } from "@/libs/providers/BridgeProvider";
 import { Balance } from "@/libs/utils";
-import { TokenInput, AddressInput } from "@components";
+import { TokenInput, AddressInput } from "@/libs/components";
 import {
 	useAddressValidation,
 	useBalanceValidation,
 	useCENNZBalances,
-} from "@hooks";
-import { useCENNZWallet } from "@providers/CENNZWalletProvider";
-import { useMetaMaskWallet } from "@providers/MetaMaskWalletProvider";
-import { useWalletProvider } from "@providers/WalletProvider";
+} from "@/libs/hooks";
+import { useCENNZWallet } from "@/libs/providers/CENNZWalletProvider";
+import { useMetaMaskWallet } from "@/libs/providers/MetaMaskWalletProvider";
+import { useWalletProvider } from "@/libs/providers/WalletProvider";
 
 interface BridgeTokenDestinationProps {}
 

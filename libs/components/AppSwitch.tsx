@@ -2,9 +2,9 @@ import { FC, useEffect } from "react";
 import { css } from "@emotion/react";
 import Link from "next/link";
 import { Theme } from "@mui/material";
-import { useSectionUri } from "@hooks";
-import { useMetaMaskExtension } from "@providers/MetaMaskExtensionProvider";
-import { ensureEthereumChain } from "@utils";
+import { useSectionUri } from "@/libs/hooks";
+import { useMetaMaskExtension } from "@/libs/providers/MetaMaskExtensionProvider";
+import { ensureEthereumChain } from "@/libs/utils";
 
 const Switch: FC = () => {
 	const section = useSectionUri();

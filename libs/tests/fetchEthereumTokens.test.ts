@@ -1,4 +1,4 @@
-import fetchEthereumTokens from "@utils/fetchEthereumTokens";
+import fetchEthereumTokens from "@/libs/utils/fetchEthereumTokens";
 
 describe("fetchCENNZnetAssets", () => {
 	it("returns expected result", () => {

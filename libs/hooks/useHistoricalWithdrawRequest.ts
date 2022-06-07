@@ -1,7 +1,7 @@
-import { useBridge } from "@providers/BridgeProvider";
-import { useCENNZApi } from "@providers/CENNZApiProvider";
-import { useMetaMaskExtension } from "@providers/MetaMaskExtensionProvider";
-import { useMetaMaskWallet } from "@providers/MetaMaskWalletProvider";
+import { useBridge } from "@/libs/providers/BridgeProvider";
+import { useCENNZApi } from "@/libs/providers/CENNZApiProvider";
+import { useMetaMaskExtension } from "@/libs/providers/MetaMaskExtensionProvider";
+import { useMetaMaskWallet } from "@/libs/providers/MetaMaskWalletProvider";
 import { WithdrawClaim } from "@/libs/types";
 import {
 	ensureBridgeWithdrawActive,
@@ -9,7 +9,7 @@ import {
 	sendWithdrawEthereumRequest,
 } from "@/libs/utils";
 import { useCallback } from "react";
-import { useUpdateCENNZBalances } from "@hooks";
+import { useUpdateCENNZBalances } from "@/libs/hooks";
 
 export default function useHistoricalWithdrawRequest(): (
 	unclaimed: WithdrawClaim

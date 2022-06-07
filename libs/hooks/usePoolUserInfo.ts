@@ -1,8 +1,8 @@
-import { useCENNZApi } from "@providers/CENNZApiProvider";
+import { useCENNZApi } from "@/libs/providers/CENNZApiProvider";
 import { useCallback, useEffect, useState } from "react";
-import { fetchPoolUserInfo } from "@utils";
+import { fetchPoolUserInfo } from "@/libs/utils";
 import { CENNZAsset, PoolUserInfo } from "@/libs/types";
-import { useSelectedAccount } from "@hooks";
+import { useSelectedAccount } from "@/libs/hooks";
 
 export interface PoolUserInfoHook {
 	userInfo: PoolUserInfo;

@@ -4,7 +4,7 @@ import {
 	getERC20TokenContract,
 	getERC20PegContract,
 	EthereumTransaction,
-} from "@utils";
+} from "@/libs/utils";
 import { ethers } from "ethers";
 import { ETH_TOKEN_ADDRESS } from "@/libs/constants";
 import { decodeAddress } from "@polkadot/keyring";

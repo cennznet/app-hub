@@ -1,4 +1,4 @@
-import fetchDepositRelayerStatus from "@utils/fetchDepositRelayerStatus";
+import fetchDepositRelayerStatus from "@/libs/utils/fetchDepositRelayerStatus";
 
 describe("fetchDepositRelayerStatus", () => {
 	beforeEach(() => {

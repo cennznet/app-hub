@@ -1,4 +1,4 @@
-import ensureRelayerDepositDone from "@utils/ensureRelayerDepositDone";
+import ensureRelayerDepositDone from "@/libs/utils/ensureRelayerDepositDone";
 
 const callback = jest.fn();
 

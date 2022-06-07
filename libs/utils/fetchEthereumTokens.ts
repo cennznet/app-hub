@@ -1,5 +1,5 @@
 import { EthereumToken } from "@/libs/types";
-import EthereumTokens from "@artifacts/EthereumTokens.json";
+import EthereumTokens from "@/libs/artifacts/EthereumTokens.json";
 
 export default function fetchEthereumTokens(chainId: number): EthereumToken[] {
 	return EthereumTokens.tokens

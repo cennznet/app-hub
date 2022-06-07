@@ -1,5 +1,5 @@
-import sendWithdrawEthereumRequest from "@utils/sendWithdrawEthereumRequest";
-import { Balance, EthereumTransaction, waitUntil } from "@utils";
+import sendWithdrawEthereumRequest from "@/libs/utils/sendWithdrawEthereumRequest";
+import { Balance, EthereumTransaction, waitUntil } from "@/libs/utils";
 import { EthEventProof } from "@cennznet/api/derives/ethBridge/types";
 import { Signer } from "ethers";
 import { HistoricalEventProof } from "@/libs/types";

@@ -1,9 +1,9 @@
 import { Api } from "@cennznet/api";
 import { CENNZAsset } from "@/libs/types";
-import fetchPoolAssets from "@utils/fetchPoolAssets";
+import fetchPoolAssets from "@/libs/utils/fetchPoolAssets";
 import { API_URL } from "@/libs/constants";
-import generateGlobalProps from "@utils/generateGlobalProps";
-import PoolProvider from "@providers/PoolProvider";
+import generateGlobalProps from "@/libs/utils/generateGlobalProps";
+import PoolProvider from "@/libs/providers/PoolProvider";
 import { FC } from "react";
 import {
 	PoolForm,

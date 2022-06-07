@@ -1,4 +1,4 @@
-import fetchCENNZAssetBalances from "@utils/fetchCENNZAssetBalances";
+import fetchCENNZAssetBalances from "@/libs/utils/fetchCENNZAssetBalances";
 import { u128 } from "@polkadot/types-codec";
 
 const testingAccount = global.getCENNZTestingAccount();

@@ -1,11 +1,11 @@
 import { FC, useEffect, useRef } from "react";
 import { css } from "@emotion/react";
-import { useSectionUri } from "@hooks";
+import { useSectionUri } from "@/libs/hooks";
 import { Theme } from "@mui/material";
-import BackdropSwapGraphicsSVG from "@vectors/backdrop-swap-graphics.svg";
-import BackdropPoolGraphicsSVG from "@vectors/backdrop-pool-graphics.svg";
-import BackdropBridgeGraphicsSVG from "@vectors/backdrop-bridge-graphics.svg";
-import BackdropSheerSVG from "@vectors/backdrop-sheer.svg";
+import BackdropSwapGraphicsSVG from "@/libs/assets/vectors/backdrop-swap-graphics.svg";
+import BackdropPoolGraphicsSVG from "@/libs/assets/vectors/backdrop-pool-graphics.svg";
+import BackdropBridgeGraphicsSVG from "@/libs/assets/vectors/backdrop-bridge-graphics.svg";
+import BackdropSheerSVG from "@/libs/assets/vectors/backdrop-sheer.svg";
 
 const PageBackdrop: FC = () => {
 	const section = useSectionUri();

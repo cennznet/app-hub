@@ -1,8 +1,8 @@
 import { FC } from "react";
 import { css, FormControl, InputLabel, MenuItem, Theme } from "@mui/material";
-import { getTokenLogo } from "@utils";
-import { SelectInput } from "@components";
-import { useTransfer } from "@providers/TransferProvider";
+import { getTokenLogo } from "@/libs/utils";
+import { SelectInput } from "@/libs/components";
+import { useTransfer } from "@/libs/providers/TransferProvider";
 
 const TransferAssetSelect: FC = () => {
 	const { transferAssets, addTransferAsset, selectableAssets } = useTransfer();

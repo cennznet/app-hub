@@ -6,7 +6,7 @@ import {
 	DialogActions,
 } from "@mui/material";
 import { css } from "@emotion/react";
-import { StandardButton, ModalBackdrop } from "@components";
+import { StandardButton, ModalBackdrop } from "@/libs/components";
 import { FC } from "react";
 
 interface GlobalModalProps {

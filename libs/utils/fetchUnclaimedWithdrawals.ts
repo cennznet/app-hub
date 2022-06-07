@@ -6,7 +6,7 @@ import {
 	fetchBridgeTokens,
 	fetchUnclaimedEventProof,
 	getDaysHoursMinutes,
-} from "@utils";
+} from "@/libs/utils";
 
 /**
  * Fetch unclaimed withdraws for the selected account

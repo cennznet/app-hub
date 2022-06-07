@@ -1,5 +1,5 @@
 import { Api, SubmittableResult } from "@cennznet/api";
-import { CENNZTransaction } from "@utils";
+import { CENNZTransaction } from "@/libs/utils";
 import { MetaMaskInpageProvider } from "@metamask/providers";
 import { CENNZnetExtrinsic } from "@/libs/types";
 

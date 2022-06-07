@@ -8,7 +8,7 @@ import {
 	useEffect,
 	useState,
 } from "react";
-import { useUserAgent } from "@providers/UserAgentProvider";
+import { useUserAgent } from "@/libs/providers/UserAgentProvider";
 import { MetaMaskInpageProvider } from "@metamask/providers";
 import detectEthereumProvider from "@metamask/detect-provider";
 

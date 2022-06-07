@@ -3,7 +3,7 @@ import {
 	CENNZnetExtrinsic,
 	SubmittableExtrinsic,
 } from "@/libs/types";
-import { Balance } from "@utils";
+import { Balance } from "@/libs/utils";
 import { Api } from "@cennznet/api";
 
 export default function getPegWithdrawExtrinsic(

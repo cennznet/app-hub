@@ -2,7 +2,7 @@ import {
 	getDaysHoursMinutes,
 	getMinutesAndSeconds,
 	getDistance,
-} from "@utils/getExpiryString";
+} from "@/libs/utils/getExpiryString";
 
 let expiresAt: number;
 beforeEach(() => {

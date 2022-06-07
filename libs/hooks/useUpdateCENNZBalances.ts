@@ -1,8 +1,8 @@
 import { useCallback } from "react";
-import { fetchCENNZAssetBalances } from "@utils";
-import { useCENNZApi } from "@providers/CENNZApiProvider";
-import { useWalletProvider } from "@providers/WalletProvider";
-import { useSelectedAccount } from "@hooks";
+import { fetchCENNZAssetBalances } from "@/libs/utils";
+import { useCENNZApi } from "@/libs/providers/CENNZApiProvider";
+import { useWalletProvider } from "@/libs/providers/WalletProvider";
+import { useSelectedAccount } from "@/libs/hooks";
 
 export default function useUpdateCENNZBalances(): () => Promise<void> {
 	const { api } = useCENNZApi();

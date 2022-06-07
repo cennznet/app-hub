@@ -3,9 +3,9 @@ import { css } from "@emotion/react";
 import { Theme } from "@mui/material";
 import MetaMaskSVG from "@vectors/metamask.svg";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
-import { useMetaMaskWallet } from "@providers/MetaMaskWalletProvider";
-import { useWalletProvider } from "@providers/WalletProvider";
-import { useSelectedAccount } from "@hooks";
+import { useMetaMaskWallet } from "@/libs/providers/MetaMaskWalletProvider";
+import { useWalletProvider } from "@/libs/providers/WalletProvider";
+import { useSelectedAccount } from "@/libs/hooks";
 
 interface SubmitButtonProps {
 	forceRequireMetaMask?: boolean;

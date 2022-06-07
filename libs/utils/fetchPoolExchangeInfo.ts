@@ -1,7 +1,7 @@
 import { CENNZAsset } from "@/libs/types";
 import { Api } from "@cennznet/api";
 import { PoolExchangeInfo } from "@/libs/types";
-import { Balance } from "@utils";
+import { Balance } from "@/libs/utils";
 
 /**
  * Fetch pool exchange info of a given `assetId``

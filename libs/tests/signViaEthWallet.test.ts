@@ -1,5 +1,5 @@
 import { Api } from "@cennznet/api";
-import { CENNZTransaction, signViaEthWallet } from "@utils";
+import { CENNZTransaction, signViaEthWallet } from "@/libs/utils";
 import { CENNZnetExtrinsic } from "@/libs/types";
 
 const ethereumAccount = global.getEthereumTestingAccount();

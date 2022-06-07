@@ -1,10 +1,13 @@
-import { useBridge } from "@providers/BridgeProvider";
-import { useCENNZApi } from "@providers/CENNZApiProvider";
-import { useMetaMaskWallet } from "@providers/MetaMaskWalletProvider";
+import { useBridge } from "@/libs/providers/BridgeProvider";
+import { useCENNZApi } from "@/libs/providers/CENNZApiProvider";
+import { useMetaMaskWallet } from "@/libs/providers/MetaMaskWalletProvider";
 import { BridgeStatus } from "@/libs/types";
-import { fetchBridgeDepositStatus, fetchBridgeWithdrawStatus } from "@utils";
+import {
+	fetchBridgeDepositStatus,
+	fetchBridgeWithdrawStatus,
+} from "@/libs/utils";
 import { useEffect, useState } from "react";
-import { useWalletProvider } from "@providers/WalletProvider";
+import { useWalletProvider } from "@/libs/providers/WalletProvider";
 
 export default function useBridgeStatus(): BridgeStatus {
 	const [bridgeStatus, setBridgeStatus] = useState<BridgeStatus>("Active");

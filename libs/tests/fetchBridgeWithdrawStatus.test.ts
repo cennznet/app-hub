@@ -1,8 +1,8 @@
 import fetchBridgeWithdrawStatus, {
 	ensureBridgeWithdrawActive,
-} from "@utils/fetchBridgeWithdrawStatus";
+} from "@/libs/utils/fetchBridgeWithdrawStatus";
 import { KOVAN_PEG_CONTRACT } from "@/libs/constants";
-import ERC20Peg from "@artifacts/ERC20Peg.json";
+import ERC20Peg from "@/libs/artifacts/ERC20Peg.json";
 import { Api } from "@cennznet/api";
 
 const { blockchain, provider, mock } = global.getWeb3MockForTest();

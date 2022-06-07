@@ -1,6 +1,6 @@
 import { Api } from "@cennznet/api";
 import { CENNZAsset } from "@/libs/types";
-import { fetchCENNZAssets } from "@utils";
+import { fetchCENNZAssets } from "@/libs/utils";
 
 /**
  * Fetch and returns array of CENNZAsset that

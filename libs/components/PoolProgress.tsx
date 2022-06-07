@@ -1,13 +1,13 @@
 import { FC, ReactNode } from "react";
 import { IntrinsicElements } from "@/libs/types";
 import { css } from "@emotion/react";
-import { usePool } from "@providers/PoolProvider";
+import { usePool } from "@/libs/providers/PoolProvider";
 import { Theme, CircularProgress } from "@mui/material";
 import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
 import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
-import { StandardButton, Link, ProgressOverlay } from "@components";
-import { Balance, selectMap } from "@utils";
-import { useBeforeUnload } from "@hooks";
+import { StandardButton, Link, ProgressOverlay } from "@/libs/components";
+import { Balance, selectMap } from "@/libs/utils";
+import { useBeforeUnload } from "@/libs/hooks";
 
 interface PoolProgressProps {}
 

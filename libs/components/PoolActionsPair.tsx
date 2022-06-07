@@ -2,8 +2,8 @@ import { IntrinsicElements } from "@/libs/types";
 import { css } from "@emotion/react";
 import { useCallback, useEffect, useState, FC } from "react";
 import { MenuItem, Theme } from "@mui/material";
-import { usePool } from "@providers/PoolProvider";
-import { SwitchButton, SelectInput } from "@components";
+import { usePool } from "@/libs/providers/PoolProvider";
+import { SwitchButton, SelectInput } from "@/libs/components";
 
 interface PoolActionsPairProps {}
 

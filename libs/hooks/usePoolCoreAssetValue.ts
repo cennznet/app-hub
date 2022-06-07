@@ -1,5 +1,5 @@
-import { usePool } from "@providers/PoolProvider";
-import { Balance } from "@utils";
+import { usePool } from "@/libs/providers/PoolProvider";
+import { Balance } from "@/libs/utils";
 import { useCallback, useEffect, useState } from "react";
 
 interface PoolCoreAssetValueHook {
@@ -14,8 +14,8 @@ interface PoolCoreAssetValueHook {
  * 2) setCoreAssetValueByLiquidity - If it's "Remove" action and user already has liquidity in
  * 3) setCoreAssetValueByInput - If there is zero liquidity in either the assets paire pool or user pool
  *
- * @param {string} tradeAssetValue The trade asset value
- * @return {PoolCoreAssetValueHook} The pool core asset value hook.
+ * @/libs/param {string} tradeAssetValue The trade asset value
+ * @/libs/return {PoolCoreAssetValueHook} The pool core asset value hook.
  */
 export default function usePoolCoreAssetValue(
 	tradeAssetValue: string

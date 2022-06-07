@@ -7,21 +7,21 @@ import type { Theme } from "@mui/material";
 
 import { FC, useCallback } from "react";
 import { css } from "@emotion/react";
-import { useCENNZApi } from "@providers/CENNZApiProvider";
-import { useCENNZWallet } from "@providers/CENNZWalletProvider";
+import { useCENNZApi } from "@/libs/providers/CENNZApiProvider";
+import { useCENNZWallet } from "@/libs/providers/CENNZWalletProvider";
 import {
 	Balance,
 	CENNZTransaction,
 	signAndSendTx,
 	signViaEthWallet,
 	getBatchTransferAssetExtrinsic,
-} from "@utils";
-import { useWalletProvider } from "@providers/WalletProvider";
-import { useMetaMaskWallet } from "@providers/MetaMaskWalletProvider";
-import { useMetaMaskExtension } from "@providers/MetaMaskExtensionProvider";
-import { useUpdateCENNZBalances } from "@hooks";
-import { SubmitButton } from "@components";
-import { useTransfer } from "@providers/TransferProvider";
+} from "@/libs/utils";
+import { useWalletProvider } from "@/libs/providers/WalletProvider";
+import { useMetaMaskWallet } from "@/libs/providers/MetaMaskWalletProvider";
+import { useMetaMaskExtension } from "@/libs/providers/MetaMaskExtensionProvider";
+import { useUpdateCENNZBalances } from "@/libs/hooks";
+import { SubmitButton } from "@/libs/components";
+import { useTransfer } from "@/libs/providers/TransferProvider";
 import { cvmToAddress } from "@cennznet/types/utils";
 
 interface TransferFormProps {}

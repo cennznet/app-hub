@@ -1,15 +1,15 @@
 import { useCallback, FC, useRef, useEffect, useState } from "react";
 import { css } from "@emotion/react";
 import { Divider, Theme, LinearProgress } from "@mui/material";
-import { useCENNZWallet } from "@providers/CENNZWalletProvider";
-import { AccountIdenticon } from "@components";
-import { useCENNZExtension } from "@providers/CENNZExtensionProvider";
+import { useCENNZWallet } from "@/libs/providers/CENNZWalletProvider";
+import { AccountIdenticon } from "@/libs/components";
+import { useCENNZExtension } from "@/libs/providers/CENNZExtensionProvider";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import { getTokenLogo } from "@utils";
+import { getTokenLogo } from "@/libs/utils";
 import { CENNZ_ASSET_ID, CPAY_ASSET_ID } from "@/libs/constants";
-import { useWalletProvider } from "@providers/WalletProvider";
-import { useMetaMaskWallet } from "@providers/MetaMaskWalletProvider";
-import { useSelectedAccount, useUpdateCENNZBalances } from "@hooks";
+import { useWalletProvider } from "@/libs/providers/WalletProvider";
+import { useMetaMaskWallet } from "@/libs/providers/MetaMaskWalletProvider";
+import { useSelectedAccount, useUpdateCENNZBalances } from "@/libs/hooks";
 import { InjectedAccountWithMeta } from "@polkadot/extension-inject/types";
 import store from "store";
 

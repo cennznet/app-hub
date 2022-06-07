@@ -10,9 +10,9 @@ import {
 import { css, SerializedStyles } from "@emotion/react";
 import { SelectChangeEvent, MenuItem, Theme } from "@mui/material";
 import { CENNZAsset, EthereumToken } from "@/libs/types";
-import { getTokenLogo } from "@utils";
+import { getTokenLogo } from "@/libs/utils";
 import { useIMask, IMask } from "react-imask";
-import { SelectInput } from "@components";
+import { SelectInput } from "@/libs/components";
 
 interface TokenInputProps {
 	tokens: Partial<CENNZAsset & EthereumToken>[];

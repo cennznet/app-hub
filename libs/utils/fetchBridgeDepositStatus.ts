@@ -1,5 +1,5 @@
 import { BridgeStatus } from "@/libs/types";
-import { getERC20PegContract } from "@utils";
+import { getERC20PegContract } from "@/libs/utils";
 import { Api } from "@cennznet/api";
 import { ethers } from "ethers";
 

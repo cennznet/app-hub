@@ -2,13 +2,13 @@ import { IntrinsicElements } from "@/libs/types";
 import { css } from "@emotion/react";
 import { FC } from "react";
 import { LinearProgress, Tooltip, Theme } from "@mui/material";
-import { usePool } from "@providers/PoolProvider";
-import { Balance } from "@utils";
+import { usePool } from "@/libs/providers/PoolProvider";
+import { Balance } from "@/libs/utils";
 import {
 	usePoolGasFee,
 	usePoolCoreAssetValue,
 	useSelectedAccount,
-} from "@hooks";
+} from "@/libs/hooks";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 
 interface PoolStatsProps {}

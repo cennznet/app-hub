@@ -1,4 +1,4 @@
-import fetchSwapAssets from "@utils/fetchSwapAssets";
+import fetchSwapAssets from "@/libs/utils/fetchSwapAssets";
 
 const api = global.getCENNZApiForTest();
 

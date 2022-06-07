@@ -1,4 +1,4 @@
-import Balance from "@utils/Balance";
+import Balance from "@/libs/utils/Balance";
 import { ethers } from "ethers";
 import BN from "bn.js";
 

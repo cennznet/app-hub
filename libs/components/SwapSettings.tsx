@@ -10,7 +10,7 @@ import {
 	InputAdornment,
 } from "@mui/material";
 import ExpandMore from "@mui/icons-material/ExpandMore";
-import { useSwap } from "@providers/SwapProvider";
+import { useSwap } from "@/libs/providers/SwapProvider";
 
 interface SwapSettingsProps {}
 

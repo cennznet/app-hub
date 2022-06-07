@@ -14,8 +14,8 @@ import {
 	TxStatusHook,
 	TransferAssetsHook,
 	useTransferAssets,
-} from "@hooks";
-import { isEthereumAddress } from "@utils";
+} from "@/libs/hooks";
+import { isEthereumAddress } from "@/libs/utils";
 
 interface TransferContextType extends TxStatusHook, TransferAssetsHook {
 	addressType: ChainOption;

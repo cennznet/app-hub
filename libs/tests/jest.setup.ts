@@ -7,9 +7,9 @@ import { Web3Provider } from "@ethersproject/providers";
 
 enableFetchMocks();
 
-jest.mock("@utils/getTokenLogo");
-jest.mock("@utils/CENNZTransaction");
-jest.mock("@utils/EthereumTransaction");
+jest.mock("@/libs/utils/getTokenLogo");
+jest.mock("@/libs/utils/CENNZTransaction");
+jest.mock("@/libs/utils/EthereumTransaction");
 jest.mock("@/libs/constants", () => ({
 	CENNZ_ASSET_ID: 16000,
 	CPAY_ASSET_ID: 16001,

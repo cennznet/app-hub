@@ -1,8 +1,8 @@
-import { useBridge } from "@providers/BridgeProvider";
-import { useCENNZApi } from "@providers/CENNZApiProvider";
-import { useCENNZWallet } from "@providers/CENNZWalletProvider";
-import { useMetaMaskExtension } from "@providers/MetaMaskExtensionProvider";
-import { useMetaMaskWallet } from "@providers/MetaMaskWalletProvider";
+import { useBridge } from "@/libs/providers/BridgeProvider";
+import { useCENNZApi } from "@/libs/providers/CENNZApiProvider";
+import { useCENNZWallet } from "@/libs/providers/CENNZWalletProvider";
+import { useMetaMaskExtension } from "@/libs/providers/MetaMaskExtensionProvider";
+import { useMetaMaskWallet } from "@/libs/providers/MetaMaskWalletProvider";
 import { BridgedEthereumToken } from "@/libs/types";
 import {
 	Balance,
@@ -11,11 +11,11 @@ import {
 	sendWithdrawCENNZRequest,
 	sendWithdrawEthereumRequest,
 	waitForEventProof,
-} from "@utils";
+} from "@/libs/utils";
 import { EthyEventId } from "@cennznet/types";
 import { useCallback } from "react";
-import { useWalletProvider } from "@providers/WalletProvider";
-import { useSelectedAccount, useUpdateCENNZBalances } from "@hooks";
+import { useWalletProvider } from "@/libs/providers/WalletProvider";
+import { useSelectedAccount, useUpdateCENNZBalances } from "@/libs/hooks";
 
 export default function useWithdrawRequest(): () => Promise<void> {
 	const {

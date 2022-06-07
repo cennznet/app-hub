@@ -1,6 +1,6 @@
-import getERC20PegContract from "@utils/getERC20PegContract";
+import getERC20PegContract from "@/libs/utils/getERC20PegContract";
 import { ethers } from "ethers";
-import ERC20Peg from "@artifacts/ERC20Peg.json";
+import ERC20Peg from "@/libs/artifacts/ERC20Peg.json";
 import { KOVAN_PEG_CONTRACT } from "@/libs/constants";
 
 const { provider } = global.getWeb3MockForTest();

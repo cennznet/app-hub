@@ -2,9 +2,13 @@ import type { IntrinsicElements } from "@/libs/types";
 import { FC } from "react";
 import { css } from "@emotion/react";
 import { Theme } from "@mui/material";
-import { useTransfer } from "@providers/TransferProvider";
-import { TransferAsset, AddressInput, TransferAssetSelect } from "@components";
-import { useAddressValidation } from "@hooks";
+import { useTransfer } from "@/libs/providers/TransferProvider";
+import {
+	TransferAsset,
+	AddressInput,
+	TransferAssetSelect,
+} from "@/libs/components";
+import { useAddressValidation } from "@/libs/hooks";
 
 interface TransferAssetsProps {}
 

@@ -12,10 +12,10 @@ import {
 	useBalanceValidation,
 	useTokenInput,
 	useSelectedAccount,
-} from "@hooks";
-import { Balance } from "@utils";
-import { TokenInput, StandardButton } from "@components";
-import { useTransfer } from "@providers/TransferProvider";
+} from "@/libs/hooks";
+import { Balance } from "@/libs/utils";
+import { TokenInput, StandardButton } from "@/libs/components";
+import { useTransfer } from "@/libs/providers/TransferProvider";
 import ClearRoundedIcon from "@mui/icons-material/ClearRounded";
 
 interface TransferAssetProps {

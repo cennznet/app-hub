@@ -4,7 +4,7 @@ import {
 	EthereumToken,
 } from "@/libs/types";
 import { AssetId, AssetInfoV41 as AssetInfo } from "@cennznet/types";
-import { fetchEthereumTokens } from "@utils";
+import { fetchEthereumTokens } from "@/libs/utils";
 import { ETH_CHAIN_ID } from "@/libs/constants";
 import { Api } from "@cennznet/api";
 import { hexToString } from "@polkadot/util";

@@ -9,8 +9,8 @@ import {
 	useState,
 } from "react";
 import { ethers } from "ethers";
-import { useWalletProvider } from "@providers/WalletProvider";
-import { useMetaMaskExtension } from "@providers/MetaMaskExtensionProvider";
+import { useWalletProvider } from "@/libs/providers/WalletProvider";
+import { useMetaMaskExtension } from "@/libs/providers/MetaMaskExtensionProvider";
 import store from "store";
 
 interface MetaMaskWalletContextType {

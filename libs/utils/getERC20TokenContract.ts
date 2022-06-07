@@ -1,6 +1,6 @@
 import { EthereumToken } from "@/libs/types";
 import { ethers } from "ethers";
-import GenericERC20Token from "@artifacts/GenericERC20Token.json";
+import GenericERC20Token from "@/libs/artifacts/GenericERC20Token.json";
 
 type ContractType = "ReadOnly" | "OnBehalf";
 

@@ -1,4 +1,4 @@
-import { CENNZTransaction } from "@utils";
+import { CENNZTransaction } from "@/libs/utils";
 import { SubmittableResult } from "@cennznet/api";
 import { Signer, SubmittableExtrinsic } from "@cennznet/api/types";
 

@@ -1,4 +1,4 @@
-import TransferProvider from "@providers/TransferProvider";
+import TransferProvider from "@/libs/providers/TransferProvider";
 import { FC } from "react";
 import { NextSeo } from "next-seo";
 import {
@@ -6,11 +6,11 @@ import {
 	TransferForm,
 	TransferAssets,
 	TransferProgress,
-} from "@components";
+} from "@/libs/components";
 import { Api } from "@cennznet/api";
 import { API_URL } from "@/libs/constants";
 
-import { fetchCENNZAssets, generateGlobalProps } from "@utils";
+import { fetchCENNZAssets, generateGlobalProps } from "@/libs/utils";
 import { CENNZAssets } from "@/libs/types";
 
 export async function getStaticProps() {

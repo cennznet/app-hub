@@ -1,7 +1,7 @@
-import fetchEthereumBalance from "@utils/fetchEthereumBalance";
+import fetchEthereumBalance from "@/libs/utils/fetchEthereumBalance";
 import { BigNumber } from "ethers";
-import GenericERC20Token from "@artifacts/GenericERC20Token.json";
-import { Balance } from "@utils";
+import GenericERC20Token from "@/libs/artifacts/GenericERC20Token.json";
+import { Balance } from "@/libs/utils";
 
 const { blockchain, provider, mock } = global.getWeb3MockForTest();
 const { cennzAsset, ethAsset } = global.getEthereumAssetsForTest();

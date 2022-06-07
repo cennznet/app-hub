@@ -1,6 +1,6 @@
 import { Api } from "@cennznet/api";
 import { CENNZAsset } from "@/libs/types";
-import { fetchCENNZAssets } from "@utils";
+import { fetchCENNZAssets } from "@/libs/utils";
 import { CPAY_ASSET_ID } from "@/libs/constants";
 
 /**
