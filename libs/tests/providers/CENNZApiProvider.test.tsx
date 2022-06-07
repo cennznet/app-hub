@@ -1,6 +1,6 @@
 import { Api } from "@cennznet/api";
 import { renderHook } from "@testing-library/react-hooks";
-import CENNZApiProvider, { useCENNZApi } from "@providers/CENNZApiProvider";
+import CENNZApiProvider, { useCENNZApi } from "@/libs/providers/CENNZApiProvider";
 
 test("should set expected `api` state", async () => {
 	const wrapper = ({ children }) => (
