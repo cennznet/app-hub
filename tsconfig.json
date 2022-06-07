@@ -31,7 +31,7 @@
     "custom.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "types/global.d.ts"
+    "libs/types/global.d.ts"
   ],
   "exclude": ["node_modules"]
 }

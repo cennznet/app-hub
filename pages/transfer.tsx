@@ -1,15 +1,17 @@
-import TransferProvider from "@/providers/TransferProvider";
-import MainPanel from "@/components/MainPanel";
-import { VFC } from "react";
+import TransferProvider from "@/libs/providers/TransferProvider";
+import { FC } from "react";
 import { NextSeo } from "next-seo";
-import TransferForm from "@/components/TransferForm";
-import TransferAssets from "@/components/TransferAssets";
-import TransferProgress from "@/components/TransferProgress";
+import {
+	MainPanel,
+	TransferForm,
+	TransferAssets,
+	TransferProgress,
+} from "@/libs/components";
 import { Api } from "@cennznet/api";
-import { API_URL } from "@/constants";
-import fetchCENNZAssets from "@/utils/fetchCENNZAssets";
-import generateGlobalProps from "@/utils/generateGlobalProps";
-import { CENNZAssets } from "@/types";
+import { API_URL } from "@/libs/constants";
+
+import { fetchCENNZAssets, generateGlobalProps } from "@/libs/utils";
+import { CENNZAssets } from "@/libs/types";
 
 export async function getStaticProps() {
 	const api = await Api.create({ provider: API_URL });
@@ -22,7 +24,7 @@ export async function getStaticProps() {
 	};
 }
 
-const Transfer: VFC<{ supportedAssets: CENNZAssets }> = ({
+const Transfer: FC<{ supportedAssets: CENNZAssets }> = ({
 	supportedAssets,
 }) => {
 	return (

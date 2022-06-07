@@ -1,5 +1,5 @@
 import Document, { Html, Head, Main, NextScript } from "next/document";
-import { GA_ID } from "@/constants";
+import { GA_ID } from "@/libs/constants";
 
 class MyDocument extends Document {
 	render() {
