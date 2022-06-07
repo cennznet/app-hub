@@ -7,7 +7,7 @@ import CENNZLogoSVG from "@/libs/assets/vectors/cennznet-logo.svg";
 const PageFrame: FC = () => {
 	return (
 		<div css={styles.container}>
-			<Link href="/pages">
+			<Link href="/">
 				<a css={styles.logo}>
 					<img src={CENNZLogoSVG.src} alt="CENNZnet" />
 				</a>
