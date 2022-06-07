@@ -1,5 +1,7 @@
 import { renderHook } from "@testing-library/react-hooks";
-import UserAgentProvider, { useUserAgent } from "@/libs/providers/UserAgentProvider";
+import UserAgentProvider, {
+	useUserAgent,
+} from "@/libs/providers/UserAgentProvider";
 
 test("should set expected `userAgent` state", async () => {
 	const wrapper = ({ children }) => (
