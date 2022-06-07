@@ -137,6 +137,13 @@
       "address": "0x7eCC3E93226a955b2c740F003B455Da6bfd49fac",
       "decimals": 4,
       "chainId": 42
+    },
+
+    {
+      "symbol": "SYLO",
+      "address": "0xa5A9BC81f10Eb2ec7f881e6730D5BD5a8a893eA6",
+      "decimals": 18,
+      "chainId": 3
     }
   ]
 }
