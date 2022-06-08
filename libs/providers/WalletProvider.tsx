@@ -52,7 +52,7 @@ const WalletProvider: FC<WalletProviderProps> = ({ children }) => {
 	const updateConnectedChain = (chainId: string) => {
 		if (chainId === CENNZ_METAMASK_NETWORK.chainId)
 			return setConnectedChain("CENNZnet");
-		if (chainId === (ETH_CHAIN_ID === 1 ? "0x1" : "0x2a"))
+		if (chainId === (ETH_CHAIN_ID === 1 ? "0x1" : "0x3"))
 			return setConnectedChain("Ethereum");
 		setConnectedChain(null);
 	};

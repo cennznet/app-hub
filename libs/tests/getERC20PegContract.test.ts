@@ -1,7 +1,7 @@
 import getERC20PegContract from "@/libs/utils/getERC20PegContract";
 import { ethers } from "ethers";
 import ERC20Peg from "@/libs/artifacts/ERC20Peg.json";
-import { KOVAN_PEG_CONTRACT } from "@/libs/constants";
+import { ROPSTEN_PEG_CONTRACT } from "@/libs/constants";
 
 const { provider } = global.getWeb3MockForTest();
 
@@ -10,7 +10,7 @@ describe("getERC20PegContract", () => {
 		const peg = await getERC20PegContract<"ReadOnly">(provider);
 
 		const expected = new ethers.Contract(
-			KOVAN_PEG_CONTRACT,
+			ROPSTEN_PEG_CONTRACT,
 			ERC20Peg,
 			provider
 		);
@@ -21,7 +21,11 @@ describe("getERC20PegContract", () => {
 		const signer = provider.getSigner();
 		const peg = await getERC20PegContract<"OnBehalf">(signer);
 
-		const expected = new ethers.Contract(KOVAN_PEG_CONTRACT, ERC20Peg, signer);
+		const expected = new ethers.Contract(
+			ROPSTEN_PEG_CONTRACT,
+			ERC20Peg,
+			signer
+		);
 
 		expect(JSON.stringify(peg)).toEqual(JSON.stringify(expected));
 	});

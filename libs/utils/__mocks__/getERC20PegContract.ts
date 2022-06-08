@@ -1,4 +1,4 @@
-import { KOVAN_PEG_CONTRACT } from "@/libs/constants";
+import { ROPSTEN_PEG_CONTRACT } from "@/libs/constants";
 import { BigNumber } from "ethers";
 
 const transaction = jest.fn(
@@ -15,7 +15,7 @@ const transaction = jest.fn(
 
 export default function getERC20PegContract<T>(_signer) {
 	return {
-		address: KOVAN_PEG_CONTRACT,
+		address: ROPSTEN_PEG_CONTRACT,
 		deposit: transaction,
 		withdraw: transaction,
 		estimateGas: {
