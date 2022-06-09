@@ -2,7 +2,7 @@ import { useCallback, FC } from "react";
 import { css } from "@emotion/react";
 import { Theme } from "@mui/material";
 import { useWalletProvider } from "@/libs/providers/WalletProvider";
-import CENNZIconSVG from "@vectors/cennznet-icon.svg";
+import CENNZIconSVG from "@/libs/assets/vectors/cennznet-icon.svg";
 import MetaMaskIconSVG from "@/libs/assets/vectors/metamask.svg";
 import { WalletOption } from "@/libs/types";
 import { useMetaMaskWallet } from "@/libs/providers/MetaMaskWalletProvider";

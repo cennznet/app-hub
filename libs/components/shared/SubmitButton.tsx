@@ -1,7 +1,7 @@
 import { ButtonHTMLAttributes, FC, useCallback, useMemo } from "react";
 import { css } from "@emotion/react";
 import { Theme } from "@mui/material";
-import MetaMaskSVG from "@vectors/metamask.svg";
+import MetaMaskSVG from "@/libs/assets/vectors/metamask.svg";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import { useMetaMaskWallet } from "@/libs/providers/MetaMaskWalletProvider";
 import { useWalletProvider } from "@/libs/providers/WalletProvider";
