@@ -1,5 +1,5 @@
 import { Api } from "@cennznet/api";
-import { renderHook } from "@testing-library/react-hooks";
+import { renderHook, waitFor } from "@testing-library/react";
 import CENNZApiProvider, {
 	useCENNZApi,
 } from "@/libs/providers/CENNZApiProvider";
@@ -11,11 +11,9 @@ test("should set expected `api` state", async () => {
 		</CENNZApiProvider>
 	);
 
-	const { result, waitForNextUpdate } = renderHook(() => useCENNZApi(), {
+	const { result } = renderHook(() => useCENNZApi(), {
 		wrapper,
 	});
 
-	await waitForNextUpdate({ timeout: 5000 });
-
-	expect(result.current.api).toBeInstanceOf(Api);
+	await waitFor(() => expect(result.current.api).toBeInstanceOf(Api),{ timeout: 5000 });
 });

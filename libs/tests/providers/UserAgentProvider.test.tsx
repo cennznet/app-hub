@@ -1,4 +1,4 @@
-import { renderHook } from "@testing-library/react-hooks";
+import { renderHook, waitFor } from "@testing-library/react";
 import UserAgentProvider, {
 	useUserAgent,
 } from "@/libs/providers/UserAgentProvider";
@@ -9,14 +9,16 @@ test("should set expected `userAgent` state", async () => {
 			{children}
 		</UserAgentProvider>
 	);
-	const { result, waitForNextUpdate } = renderHook(() => useUserAgent(), {
+	const { result } = renderHook(() => useUserAgent(), {
 		wrapper,
 	});
 
-	await waitForNextUpdate();
-
+	await waitFor(() => {
 	const { browser, os } = result.current;
 
 	expect(browser.name).toEqual("Chrome");
 	expect(os.name).toEqual("Mac OS");
+
+	});
+
 });
