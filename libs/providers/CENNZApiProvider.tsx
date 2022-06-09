@@ -19,20 +19,25 @@ const CENNZApiProvider: FC<CENNZApiProviderProps> = ({
 }) => {
 	const [api, setApi] = useState<Api>(null);
 
-	const initApi = async (endpoint: string) => {
-		const instance = await Api.create({
-			provider: endpoint,
-		});
-
-		window.onunload = async () => await instance.disconnect();
-
-		return () => {
-			void instance.disconnect();
-		};
-	};
-
 	useEffect(() => {
-		void initApi(endpoint);
+		const initApi = () => {
+			const instance = new Api({
+				provider: endpoint,
+			});
+
+			instance.isReady.then(() => {
+				setApi(instance);
+				window.onunload = () => instance.disconnect();
+			});
+
+			return instance;
+		};
+
+		const api = initApi();
+		
+		return () => {
+			void api.disconnect();
+		};
 	}, [endpoint]);
 
 	return (
