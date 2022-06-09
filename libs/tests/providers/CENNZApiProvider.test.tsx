@@ -15,5 +15,7 @@ test("should set expected `api` state", async () => {
 		wrapper,
 	});
 
-	await waitFor(() => expect(result.current.api).toBeInstanceOf(Api),{ timeout: 5000 });
+	await waitFor(() => expect(result.current.api).toBeInstanceOf(Api), {
+		timeout: 5000,
+	});
 });

@@ -14,11 +14,9 @@ test("should set expected `userAgent` state", async () => {
 	});
 
 	await waitFor(() => {
-	const { browser, os } = result.current;
+		const { browser, os } = result.current;
 
-	expect(browser.name).toEqual("Chrome");
-	expect(os.name).toEqual("Mac OS");
-
+		expect(browser.name).toEqual("Chrome");
+		expect(os.name).toEqual("Mac OS");
 	});
-
 });
