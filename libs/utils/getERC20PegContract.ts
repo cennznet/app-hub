@@ -1,9 +1,5 @@
 import { ethers } from "ethers";
-import {
-	ETH_CHAIN_ID,
-	MAINNET_PEG_CONTRACT,
-	KOVAN_PEG_CONTRACT,
-} from "@/libs/constants";
+import { ETHEREUM_NETWORK } from "@/libs/constants";
 import ERC20Peg from "@/libs/artifacts/ERC20Peg.json";
 
 type ContractType = "ReadOnly" | "OnBehalf";
@@ -17,8 +13,7 @@ type ContractSigner<T> = T extends "ReadOnly"
 export default function getERC20PegContract<T extends ContractType>(
 	signer: ContractSigner<T>
 ): ethers.Contract {
-	const address =
-		ETH_CHAIN_ID === 1 ? MAINNET_PEG_CONTRACT : KOVAN_PEG_CONTRACT;
+	const address = ETHEREUM_NETWORK.PegAddress;
 
 	return new ethers.Contract(address, ERC20Peg, signer);
 }

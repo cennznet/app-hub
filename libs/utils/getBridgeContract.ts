@@ -1,9 +1,5 @@
 import { ethers } from "ethers";
-import {
-	ETH_CHAIN_ID,
-	MAINNET_BRIDGE_CONTRACT,
-	KOVAN_BRIDGE_CONTRACT,
-} from "@/libs/constants";
+import { ETHEREUM_NETWORK } from "@/libs/constants";
 import CENNZnetBridge from "@/libs/artifacts/CENNZnetBridge.json";
 
 type ContractType = "ReadOnly" | "OnBehalf";
@@ -17,8 +13,7 @@ type ContractSigner<T> = T extends "ReadOnly"
 export default function getBridgeContract<T extends ContractType>(
 	signer: ContractSigner<T>
 ): ethers.Contract {
-	const address =
-		ETH_CHAIN_ID === 1 ? MAINNET_BRIDGE_CONTRACT : KOVAN_BRIDGE_CONTRACT;
+	const address = ETHEREUM_NETWORK.BridgeAddress;
 
 	return new ethers.Contract(address, CENNZnetBridge, signer);
 }

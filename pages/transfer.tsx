@@ -8,13 +8,13 @@ import {
 	TransferProgress,
 } from "@/libs/components";
 import { Api } from "@cennznet/api";
-import { API_URL } from "@/libs/constants";
+import { CENNZ_NETWORK } from "@/libs/constants";
 
 import { fetchCENNZAssets, generateGlobalProps } from "@/libs/utils";
 import { CENNZAssets } from "@/libs/types";
 
 export async function getStaticProps() {
-	const api = await Api.create({ provider: API_URL });
+	const api = await Api.create({ provider: CENNZ_NETWORK.ApiUrl.InWebSocket });
 
 	return {
 		props: {

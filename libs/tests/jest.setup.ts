@@ -14,10 +14,16 @@ jest.mock("@/libs/constants", () => ({
 	CENNZ_ASSET_ID: 16000,
 	CPAY_ASSET_ID: 16001,
 	ALLOWED_ASSET_IDS: [16000, 16001],
-	ETH_CHAIN_ID: 42,
-	KOVAN_PEG_CONTRACT: "0xa39E871e6e24f2d1Dd6AdA830538aBBE7b30F78F",
-	ETH_TOKEN_ADDRESS: "0x0000000000000000000000000000000000000000",
-	KOVAN_BRIDGE_CONTRACT: "0x6484A31Df401792c784cD93aAAb3E933B406DdB3",
+	ETHEREUM_NETWORK: {
+		ChainName: "Kovan Testnet",
+		ChainId: {
+			InDec: 42,
+			InHex: `0x${Number(42).toString(16)}`,
+		},
+		ExplorerUrl: "https://kovan.etherscan.io",
+		BridgeAddress: "0x6484A31Df401792c784cD93aAAb3E933B406DdB3",
+		PegAddress: "0xa39E871e6e24f2d1Dd6AdA830538aBBE7b30F78F",
+	},
 }));
 
 global.getCENNZTestingAccount = () =>

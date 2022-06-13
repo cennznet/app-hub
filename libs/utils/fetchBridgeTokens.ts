@@ -5,7 +5,7 @@ import {
 } from "@/libs/types";
 import { AssetId, AssetInfoV41 as AssetInfo } from "@cennznet/types";
 import { fetchEthereumTokens } from "@/libs/utils";
-import { ETH_CHAIN_ID } from "@/libs/constants";
+import { ETHEREUM_NETWORK } from "@/libs/constants";
 import { Api } from "@cennznet/api";
 import { hexToString } from "@polkadot/util";
 
@@ -20,9 +20,9 @@ export default async function fetchBridgeTokens<T extends BridgeAction>(
 	action: BridgeAction
 ): Promise<BridgeTokens<T>[]> {
 	if (action === "Deposit")
-		return (await Promise.resolve(fetchEthereumTokens(ETH_CHAIN_ID))).sort(
-			(a, b) => (a.symbol > b.symbol ? 1 : -1)
-		) as BridgeTokens<T>[];
+		return (
+			await Promise.resolve(fetchEthereumTokens(ETHEREUM_NETWORK.ChainId.InDec))
+		).sort((a, b) => (a.symbol > b.symbol ? 1 : -1)) as BridgeTokens<T>[];
 
 	const registeredAssets: [AssetId, AssetInfo][] =
 		await api.rpc.genericAsset.registeredAssets();

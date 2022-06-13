@@ -13,7 +13,7 @@ import {
 	useEffect,
 	useState,
 } from "react";
-import { CENNZ_METAMASK_NETWORK, ETH_CHAIN_ID } from "@/libs/constants";
+import { CENNZ_NETWORK, ETHEREUM_NETWORK } from "@/libs/constants";
 import { useMetaMaskExtension } from "@/libs/providers/MetaMaskExtensionProvider";
 import store from "store";
 
@@ -50,9 +50,9 @@ const WalletProvider: FC<WalletProviderProps> = ({ children }) => {
 	}, [selectedWallet]);
 
 	const updateConnectedChain = (chainId: string) => {
-		if (chainId === CENNZ_METAMASK_NETWORK.chainId)
+		if (chainId === CENNZ_NETWORK.ChainId.InHex)
 			return setConnectedChain("CENNZnet");
-		if (chainId === (ETH_CHAIN_ID === 1 ? "0x1" : "0x2a"))
+		if (chainId === ETHEREUM_NETWORK.ChainId.InHex)
 			return setConnectedChain("Ethereum");
 		setConnectedChain(null);
 	};

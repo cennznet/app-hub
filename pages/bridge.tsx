@@ -1,6 +1,6 @@
 import { Api } from "@cennznet/api";
 import { FC } from "react";
-import { API_URL } from "@/libs/constants";
+import { CENNZ_NETWORK } from "@/libs/constants";
 import { fetchBridgeTokens } from "@/libs/utils";
 import { BridgedEthereumToken, EthereumToken } from "@/libs/types";
 import { NextSeo } from "next-seo";
@@ -15,7 +15,7 @@ import {
 } from "@/libs/components";
 
 export async function getStaticProps() {
-	const api = await Api.create({ provider: API_URL });
+	const api = await Api.create({ provider: CENNZ_NETWORK.ApiUrl.InWebSocket });
 
 	return {
 		props: {

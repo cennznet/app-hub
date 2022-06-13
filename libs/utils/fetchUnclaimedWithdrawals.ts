@@ -1,6 +1,6 @@
 import { Api } from "@cennznet/api";
 import { BridgedEthereumToken, WithdrawClaim } from "@/libs/types";
-import { BRIDGE_RELAYER_URL } from "@/libs/constants";
+import { CENNZ_NETWORK } from "@/libs/constants";
 import {
 	Balance,
 	fetchBridgeTokens,
@@ -20,7 +20,7 @@ export default async function fetchUnclaimedWithdrawals(
 	api: Api
 ): Promise<WithdrawClaim[]> {
 	const unclaimedRaw = await fetch(
-		`${BRIDGE_RELAYER_URL}/withdrawals/${selectedAccount}`
+		`${CENNZ_NETWORK.ClaimRelayerUrl}/withdrawals/${selectedAccount}`
 	)
 		.then((response) => {
 			if (!response.ok) throw { message: "No UNclaimed withdrawals found" };
