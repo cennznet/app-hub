@@ -72,7 +72,7 @@ export default function useDepositRequest(): () => Promise<void> {
 			);
 
 			tx.on("txSucceeded", () => {
-				ensureRelayerDepositDone(tx.hash, 600000, (status) =>
+				ensureRelayerDepositDone(tx.hash, 60000, (status) =>
 					setTxPending({ relayerStatus: status, txHashLink: tx.getHashLink() })
 				)
 					.then(() => {
