@@ -29,6 +29,7 @@ export const CENNZ_NETWORK = {
 		},
 		ExplorerUrl: "https://rata.uncoverexplorer.com",
 		ClaimRelayerUrl: "https://bridge-contracts.rata.centrality.me",
+		LinkedEthChain: "ropsten",
 	},
 
 	nikau: {
@@ -42,6 +43,7 @@ export const CENNZ_NETWORK = {
 		},
 		ExplorerUrl: "https://nikau.uncoverexplorer.com",
 		ClaimRelayerUrl: "https://bridge-contracts.nikau.centrality.me",
+		LinkedEthChain: "kovan",
 	},
 
 	azalea: {
@@ -55,6 +57,7 @@ export const CENNZ_NETWORK = {
 		},
 		ExplorerUrl: "https://uncoverexplorer.com",
 		ClaimRelayerUrl: "https://bridge-contracts.centralityapp.com",
+		LinkedEthChain: "mainnet",
 	},
 }[process.env.NEXT_PUBLIC_CENNZ_NETWORK ?? "rata"];
 
@@ -90,4 +93,4 @@ export const ETHEREUM_NETWORK = {
 		BridgeAddress: "0xf7997B93437d5d2AC226f362EBF0573ce7a53930",
 		PegAddress: "0x76BAc85e1E82cd677faa2b3f00C4a2626C4c6E32",
 	},
-}[process.env.NEXT_PUBLIC_ETHEREUM_NETWORK ?? "ropsten"];
+}[process.env.NEXT_PUBLIC_ETHEREUM_NETWORK ?? CENNZ_NETWORK.LinkedEthChain];
