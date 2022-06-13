@@ -4,27 +4,15 @@ import { mock } from "@depay/web3-mock";
 import { enableFetchMocks } from "jest-fetch-mock";
 import { ethers } from "ethers";
 import { Web3Provider } from "@ethersproject/providers";
+import { loadEnvConfig } from "@next/env";
+
+loadEnvConfig(process.cwd());
 
 enableFetchMocks();
 
 jest.mock("@/libs/utils/getTokenLogo");
 jest.mock("@/libs/utils/CENNZTransaction");
 jest.mock("@/libs/utils/EthereumTransaction");
-jest.mock("@/libs/constants", () => ({
-	CENNZ_ASSET_ID: 16000,
-	CPAY_ASSET_ID: 16001,
-	ALLOWED_ASSET_IDS: [16000, 16001],
-	ETHEREUM_NETWORK: {
-		ChainName: "Kovan Testnet",
-		ChainId: {
-			InDec: 42,
-			InHex: `0x${Number(42).toString(16)}`,
-		},
-		ExplorerUrl: "https://kovan.etherscan.io",
-		BridgeAddress: "0x6484A31Df401792c784cD93aAAb3E933B406DdB3",
-		PegAddress: "0xa39E871e6e24f2d1Dd6AdA830538aBBE7b30F78F",
-	},
-}));
 
 global.getCENNZTestingAccount = () =>
 	"5FbMzsoEpd2mt8eyKpKUxwJ5S9W7nJVJkCer2Jk7tvSpB1vF";
