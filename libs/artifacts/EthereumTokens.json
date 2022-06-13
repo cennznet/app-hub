@@ -1,6 +1,7 @@
 {
   "chain": {
     "1": "Mainnet",
+    "3": "Ropsten",
     "42": "Kovan"
   },
 
@@ -10,6 +11,13 @@
       "address": "0x0000000000000000000000000000000000000000",
       "decimals": 18,
       "chainId": 1
+    },
+
+    {
+      "symbol": "ETH",
+      "address": "0x0000000000000000000000000000000000000000",
+      "decimals": 18,
+      "chainId": 3
     },
 
     {
@@ -31,6 +39,13 @@
       "address": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
       "decimals": 18,
       "chainId": 1
+    },
+
+    {
+      "symbol": "DAI",
+      "address": "0x31F42841c2db5173425b5223809CF3A38FEde360",
+      "decimals": 18,
+      "chainId": 3
     },
 
     {
@@ -112,9 +127,23 @@
 
     {
       "symbol": "wCENNZ",
+      "address": "0x673F0244bd0AEbd9918ef089f75C503Df9bfBb38",
+      "decimals": 4,
+      "chainId": 3
+    },
+
+    {
+      "symbol": "wCENNZ",
       "address": "0x7eCC3E93226a955b2c740F003B455Da6bfd49fac",
       "decimals": 4,
       "chainId": 42
+    },
+
+    {
+      "symbol": "SYLO",
+      "address": "0xa5A9BC81f10Eb2ec7f881e6730D5BD5a8a893eA6",
+      "decimals": 18,
+      "chainId": 3
     }
   ]
 }
