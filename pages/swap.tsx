@@ -2,7 +2,6 @@ import { Api } from "@cennznet/api";
 import { CENNZAsset } from "@/libs/types";
 import fetchSwapAssets from "@/libs/utils/fetchSwapAssets";
 import { CENNZ_NETWORK } from "@/libs/constants";
-import generateGlobalProps from "@/libs/utils/generateGlobalProps";
 import SwapProvider from "@/libs/providers/SwapProvider";
 import {
 	SwapForm,
@@ -21,7 +20,6 @@ export async function getStaticProps() {
 	return {
 		props: {
 			supportedAssets: await fetchSwapAssets(api),
-			...(await generateGlobalProps("swap")),
 		},
 	};
 }

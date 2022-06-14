@@ -10,7 +10,7 @@ import {
 import { Api } from "@cennznet/api";
 import { CENNZ_NETWORK } from "@/libs/constants";
 
-import { fetchCENNZAssets, generateGlobalProps } from "@/libs/utils";
+import { fetchCENNZAssets } from "@/libs/utils";
 import { CENNZAssets } from "@/libs/types";
 
 export async function getStaticProps() {
@@ -19,7 +19,6 @@ export async function getStaticProps() {
 	return {
 		props: {
 			supportedAssets: await fetchCENNZAssets(api),
-			...(await generateGlobalProps("transfer")),
 		},
 	};
 }

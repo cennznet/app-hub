@@ -2,7 +2,6 @@ import { Api } from "@cennznet/api";
 import { CENNZAsset } from "@/libs/types";
 import fetchPoolAssets from "@/libs/utils/fetchPoolAssets";
 import { CENNZ_NETWORK } from "@/libs/constants";
-import generateGlobalProps from "@/libs/utils/generateGlobalProps";
 import PoolProvider from "@/libs/providers/PoolProvider";
 import { FC } from "react";
 import {
@@ -22,7 +21,6 @@ export async function getStaticProps() {
 	return {
 		props: {
 			supportedAssets: await fetchPoolAssets(api),
-			...(await generateGlobalProps("pool")),
 		},
 	};
 }

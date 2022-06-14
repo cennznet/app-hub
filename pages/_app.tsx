@@ -22,10 +22,9 @@ import {
 	PageFooter,
 	PageFrame,
 } from "@/libs/components";
-import { GlobalProps } from "@/libs/utils/generateGlobalProps";
 
 type MyAppProps = Omit<AppProps, "pageProps"> & {
-	pageProps: {} & GlobalProps;
+	pageProps: {};
 };
 
 function MyApp({ Component, pageProps }: MyAppProps) {

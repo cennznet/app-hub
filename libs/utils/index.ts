@@ -4,7 +4,6 @@ export { default as fetchCENNZAssetBalances } from "@/libs/utils/fetchCENNZAsset
 export { default as fetchEthereumTokens } from "@/libs/utils/fetchEthereumTokens";
 export { default as fetchPoolAssets } from "@/libs/utils/fetchPoolAssets";
 export { default as fetchSwapAssets } from "@/libs/utils/fetchSwapAssets";
-export { default as generateGlobalProps } from "@/libs/utils/generateGlobalProps";
 export { default as getTokenLogo } from "@/libs/utils/getTokenLogo";
 export { default as fetchSellPrice } from "@/libs/utils/fetchSellPrice";
 export { default as fetchGasFee } from "@/libs/utils/fetchGasFee";
