@@ -120,14 +120,6 @@ export interface TxStatus {
 	props?: any;
 }
 
-export interface CENNZMetaMaskNetwork {
-	cennzTokenAddress: string;
-	chainId: string;
-	chainName: string;
-	explorerUrl: string;
-	rpcUrl: string;
-}
-
 export type WalletOption = "CENNZnet" | "MetaMask";
 
 export type ChainOption = "CENNZnet" | "Ethereum";

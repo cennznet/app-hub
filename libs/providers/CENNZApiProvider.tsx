@@ -36,7 +36,7 @@ const CENNZApiProvider: FC<CENNZApiProviderProps> = ({
 		const api = initApi();
 
 		return () => {
-			void api.disconnect();
+			if (api.isConnected) void api.disconnect();
 		};
 	}, [endpoint]);
 

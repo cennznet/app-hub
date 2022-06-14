@@ -1,6 +1,6 @@
 import { SubmittableResult } from "@cennznet/api";
 import Emittery from "emittery";
-import { CENNZ_EXPLORER_URL } from "@/libs/constants";
+import { CENNZ_NETWORK } from "@/libs/constants";
 import { CENNZEvent } from "@/libs/types";
 
 interface EmitEvents {
@@ -80,6 +80,6 @@ export default class CENNZTransaction extends Emittery<EmitEvents> {
 	}
 
 	getHashLink(): string {
-		return `${CENNZ_EXPLORER_URL}/extrinsic/${this?.hash}`;
+		return `${CENNZ_NETWORK.ExplorerUrl}/extrinsic/${this?.hash}`;
 	}
 }

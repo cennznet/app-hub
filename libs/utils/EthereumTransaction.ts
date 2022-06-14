@@ -1,5 +1,5 @@
 import Emittery from "emittery";
-import { ETH_EXPLORER_URL } from "@/libs/constants";
+import { ETHEREUM_NETWORK } from "@/libs/constants";
 
 interface EmitEvents {
 	txCreated: undefined;
@@ -37,6 +37,6 @@ export default class EthereumTransaction extends Emittery<EmitEvents> {
 	}
 
 	getHashLink(): string {
-		return this.hash ? `${ETH_EXPLORER_URL}/tx/${this.hash}` : null;
+		return this.hash ? `${ETHEREUM_NETWORK.ExplorerUrl}/tx/${this.hash}` : null;
 	}
 }

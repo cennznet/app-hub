@@ -1,8 +1,7 @@
 import { Api } from "@cennznet/api";
 import { CENNZAsset } from "@/libs/types";
 import fetchSwapAssets from "@/libs/utils/fetchSwapAssets";
-import { API_URL } from "@/libs/constants";
-import generateGlobalProps from "@/libs/utils/generateGlobalProps";
+import { CENNZ_NETWORK } from "@/libs/constants";
 import SwapProvider from "@/libs/providers/SwapProvider";
 import {
 	SwapForm,
@@ -16,12 +15,11 @@ import { FC } from "react";
 import { NextSeo } from "next-seo";
 
 export async function getStaticProps() {
-	const api = await Api.create({ provider: API_URL });
+	const api = await Api.create({ provider: CENNZ_NETWORK.ApiUrl.InWebSocket });
 
 	return {
 		props: {
 			supportedAssets: await fetchSwapAssets(api),
-			...(await generateGlobalProps("swap")),
 		},
 	};
 }

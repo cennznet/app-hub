@@ -1,8 +1,7 @@
 import { Api } from "@cennznet/api";
 import { CENNZAsset } from "@/libs/types";
 import fetchPoolAssets from "@/libs/utils/fetchPoolAssets";
-import { API_URL } from "@/libs/constants";
-import generateGlobalProps from "@/libs/utils/generateGlobalProps";
+import { CENNZ_NETWORK } from "@/libs/constants";
 import PoolProvider from "@/libs/providers/PoolProvider";
 import { FC } from "react";
 import {
@@ -17,12 +16,11 @@ import {
 import { NextSeo } from "next-seo";
 
 export async function getStaticProps() {
-	const api = await Api.create({ provider: API_URL });
+	const api = await Api.create({ provider: CENNZ_NETWORK.ApiUrl.InWebSocket });
 
 	return {
 		props: {
 			supportedAssets: await fetchPoolAssets(api),
-			...(await generateGlobalProps("pool")),
 		},
 	};
 }

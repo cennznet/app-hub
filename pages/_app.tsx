@@ -1,6 +1,6 @@
 import type { AppProps } from "next/app";
 import CssBaseline from "@mui/material/CssBaseline";
-import { API_URL, VERCEL_URL } from "@/libs/constants";
+import { CENNZ_NETWORK, VERCEL_URL } from "@/libs/constants";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { trackPageView } from "@/libs/utils";
@@ -22,10 +22,9 @@ import {
 	PageFooter,
 	PageFrame,
 } from "@/libs/components";
-import { GlobalProps } from "@/libs/utils/generateGlobalProps";
 
 type MyAppProps = Omit<AppProps, "pageProps"> & {
-	pageProps: {} & GlobalProps;
+	pageProps: {};
 };
 
 function MyApp({ Component, pageProps }: MyAppProps) {
@@ -63,7 +62,7 @@ function MyApp({ Component, pageProps }: MyAppProps) {
 					<MetaMaskExtensionProvider>
 						<WalletProvider>
 							<CENNZExtensionProvider>
-								<CENNZApiProvider endpoint={API_URL}>
+								<CENNZApiProvider endpoint={CENNZ_NETWORK.ApiUrl.InWebSocket}>
 									<MetaMaskWalletProvider>
 										<CENNZWalletProvider>
 											<GlobalModalProvider>
