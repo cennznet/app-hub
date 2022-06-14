@@ -20,14 +20,12 @@ const CENNZApiProvider: FC<CENNZApiProviderProps> = ({
 	const [api, setApi] = useState<Api>(null);
 
 	useEffect(() => {
-		let apiReady = false;
 		const initApi = () => {
 			const instance = new Api({
 				provider: endpoint,
 			});
 
 			instance.isReady.then(() => {
-				apiReady = true;
 				setApi(instance);
 				window.onunload = () => instance.disconnect();
 			});
@@ -38,7 +36,7 @@ const CENNZApiProvider: FC<CENNZApiProviderProps> = ({
 		const api = initApi();
 
 		return () => {
-			if (apiReady) void api.disconnect();
+			if (api.isConnected) void api.disconnect();
 		};
 	}, [endpoint]);
 
