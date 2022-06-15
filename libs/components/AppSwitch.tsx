@@ -33,11 +33,11 @@ const Switch: FC = () => {
 					<span>Bridge</span>
 				</a>
 			</Link>
-			<Link href="/transfer" passHref={true}>
+			{/*<Link href="/transfer" passHref={true}>
 				<a css={styles.navItem(section === "transfer")}>
 					<span>Transfer</span>
 				</a>
-			</Link>
+			</Link>*/}
 		</nav>
 	);
 };
@@ -46,7 +46,7 @@ export default Switch;
 
 export const styles = {
 	container: ({ shadows }: Theme) => css`
-		width: 30em;
+		width: 360px;
 		display: flex;
 		flex-direction: row;
 		justify-content: center;

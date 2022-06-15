@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [1.2.0] - 2022-06-16
+
+- Upgrade code-base to use React 18
+- Add MetaMask support
+
 ## [1.1.0] - 2022-04-28
 
 - Update UI when transaction is in progress [#156](https://github.com/cennznet/app-hub/pull/156)
