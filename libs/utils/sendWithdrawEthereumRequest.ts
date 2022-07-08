@@ -45,6 +45,7 @@ export default async function sendWithdrawEthereumRequest(
 		{ ...eventProof, validators: eventProof.validators ?? validators },
 		{ value: verificationFee }
 	);
+
 	const tx = new EthereumTransaction();
 	pegContract
 		.withdraw(
@@ -56,6 +57,7 @@ export default async function sendWithdrawEthereumRequest(
 		)
 		.then((pegTx: TransactionResponse) => {
 			tx.setHash(pegTx.hash);
+			console.log(pegTx.hash);
 			return pegTx.wait(2);
 		})
 		.then(() => {
@@ -66,6 +68,7 @@ export default async function sendWithdrawEthereumRequest(
 				tx.setCancel();
 				return;
 			}
+			console.log(error?.code);
 			tx.setFailure(error?.code);
 		});
 

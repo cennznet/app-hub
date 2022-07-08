@@ -60,12 +60,6 @@ const BridgeTokenDestination: FC<
 		[setTransferMetaMaskAddress]
 	);
 
-	const { inputRef: transferInputRef } = useBalanceValidation(
-		Balance.fromInput(transferInput.value, transferAsset),
-		transferBalance,
-		bridgeAction === "Withdraw" && advancedExpanded
-	);
-
 	const { inputRef: cennzAddressInputRef } = useAddressValidation(
 		transferCENNZAddress,
 		"CENNZnet"
@@ -102,8 +96,6 @@ const BridgeTokenDestination: FC<
 					onValueChange={transferInput.onValueChange}
 					tokens={ethereumTokens}
 					id="transferInput"
-					ref={transferInputRef}
-					required
 					scale={transferAsset.decimals}
 					min={Balance.fromString("1", transferAsset).toInput()}
 				/>

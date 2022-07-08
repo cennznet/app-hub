@@ -8,9 +8,7 @@ import {
 	Balance,
 	ensureBridgeWithdrawActive,
 	ensureEthereumChain,
-	sendWithdrawCENNZRequest,
 	sendWithdrawEthereumRequest,
-	waitForEventProof,
 } from "@/libs/utils";
 import { EthyEventId } from "@cennznet/types";
 import { useCallback } from "react";
@@ -39,109 +37,27 @@ export default function useWithdrawRequest(): () => Promise<void> {
 	const updateCENNZBalances = useUpdateCENNZBalances();
 
 	return useCallback(async () => {
-		const setTrValue = transferInput.setValue;
 		const transferAmount = Balance.fromInput(
 			transferInput.value,
 			transferAsset
 		);
 
 		try {
-			setTxPending();
 			await ensureEthereumChain(extension);
 			await ensureBridgeWithdrawActive(api, metaMaskWallet);
-			const tx = await sendWithdrawCENNZRequest(
+
+			const eventProof = await api.derive.ethBridge.eventProof(
+				433 as unknown as EthyEventId // Event proof id from user's withdrawal
+			);
+
+			await sendWithdrawEthereumRequest(
 				api,
+				eventProof,
 				transferAmount,
 				transferAsset as BridgedEthereumToken,
-				selectedAccount.address,
-				transferMetaMaskAddress,
-				cennzWallet?.signer,
-				selectedWallet,
-				extension
+				"0x8b7f8afef51534bb860900433ed69f282f070ef8", // User's ETH address
+				metaMaskWallet.getSigner()
 			);
-
-			tx.on("txCancelled", () => setTxIdle());
-
-			tx.on("txHashed", () => {
-				setTxPending({
-					relayerStatus: "CennznetConfirming",
-				});
-			});
-
-			tx.on("txFailed", (result) =>
-				setTxFailure({
-					errorCode: tx.decodeError(result),
-				})
-			);
-
-			tx.on("txSucceeded", (result) => {
-				const erc20WithdrawEvent = tx.findEvent(
-					result,
-					"erc20Peg",
-					"Erc20Withdraw"
-				);
-
-				const eventProofId =
-					erc20WithdrawEvent?.data?.[0].toJSON() as unknown as EthyEventId;
-
-				if (!eventProofId)
-					return setTxFailure({ errorCode: "erc20Peg.EventProofIdNotFound" });
-
-				waitForEventProof(api, eventProofId)
-					.then((eventProof) => {
-						setTxPending({
-							relayerStatus: "EthereumConfirming",
-						});
-
-						return sendWithdrawEthereumRequest(
-							api,
-							eventProof,
-							transferAmount,
-							transferAsset as BridgedEthereumToken,
-							transferMetaMaskAddress,
-							metaMaskWallet.getSigner()
-						);
-					})
-					.then((withdrawTx) => {
-						withdrawTx.on("txHashed", () => {
-							setTxPending({
-								relayerStatus: "EthereumConfirming",
-								txHashLink: withdrawTx.getHashLink(),
-							});
-						});
-
-						withdrawTx.on("txSucceeded", () => {
-							setTrValue("");
-							updateEthereumBalances();
-							updateCENNZBalances();
-							setTxSuccess({
-								transferValue: transferAmount,
-								txHashLink: withdrawTx.getHashLink(),
-							});
-						});
-
-						withdrawTx.on("txFailed", (errorCode) => {
-							updateUnclaimedWithdrawals();
-							return setTxFailure({
-								errorCode,
-								txHashLink: withdrawTx.getHashLink(),
-							});
-						});
-
-						withdrawTx.on("txCancelled", () => {
-							updateEthereumBalances();
-							updateCENNZBalances();
-							updateUnclaimedWithdrawals();
-							setTxIdle();
-						});
-					})
-					.catch((error) => {
-						console.info(error);
-						return setTxFailure({
-							errorCode: error?.code,
-						});
-					});
-			});
 		} catch (error) {
 			console.info(error);
 			return setTxFailure({
