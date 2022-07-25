@@ -8,12 +8,17 @@ import {
 	TransferProgress,
 } from "@/libs/components";
 import { Api } from "@cennznet/api";
-import { CENNZ_NETWORK } from "@/libs/constants";
+import { CENNZ_NETWORK, ENABLE_TRANSFERS_TAB } from "@/libs/constants";
 
 import { fetchCENNZAssets } from "@/libs/utils";
 import { CENNZAssets } from "@/libs/types";
 
 export async function getStaticProps() {
+	if (!ENABLE_TRANSFERS_TAB)
+		return {
+			notFound: true,
+		};
+
 	const api = await Api.create({ provider: CENNZ_NETWORK.ApiUrl.InWebSocket });
 
 	return {
