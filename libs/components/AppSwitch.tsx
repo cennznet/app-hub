@@ -5,6 +5,7 @@ import { Theme } from "@mui/material";
 import { useSectionUri } from "@/libs/hooks";
 import { useMetaMaskExtension } from "@/libs/providers/MetaMaskExtensionProvider";
 import { ensureEthereumChain } from "@/libs/utils";
+import { ENABLE_TRANSFERS_TAB } from "@/libs/constants";
 
 const Switch: FC = () => {
 	const section = useSectionUri();
@@ -33,11 +34,14 @@ const Switch: FC = () => {
 					<span>Bridge</span>
 				</a>
 			</Link>
-			{/*<Link href="/transfer" passHref={true}>
-				<a css={styles.navItem(section === "transfer")}>
-					<span>Transfer</span>
-				</a>
-			</Link>*/}
+
+			{ENABLE_TRANSFERS_TAB && (
+				<Link href="/transfer" passHref={true}>
+					<a css={styles.navItem(section === "transfer")}>
+						<span>Transfer</span>
+					</a>
+				</Link>
+			)}
 		</nav>
 	);
 };
@@ -46,7 +50,7 @@ export default Switch;
 
 export const styles = {
 	container: ({ shadows }: Theme) => css`
-		width: 360px;
+		width: ${ENABLE_TRANSFERS_TAB ? "30em" : "360px"};
 		display: flex;
 		flex-direction: row;
 		justify-content: center;

@@ -94,3 +94,6 @@ export const ETHEREUM_NETWORK = {
 		PegAddress: "0x76BAc85e1E82cd677faa2b3f00C4a2626C4c6E32",
 	},
 }[process.env.NEXT_PUBLIC_ETHEREUM_NETWORK ?? CENNZ_NETWORK.LinkedEthChain];
+
+export const ENABLE_TRANSFERS_TAB =
+	process.env.NEXT_PUBLIC_ENABLE_TRANSFERS_TAB === "1";
