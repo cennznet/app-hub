@@ -15,6 +15,7 @@ import detectEthereumProvider from "@metamask/detect-provider";
 interface MetaMaskExtensionContextType {
 	promptInstallExtension: () => void;
 	extension: MetaMaskInpageProvider;
+	setEthereumProvider: () => void;
 }
 
 const MetaMaskExtensionContext = createContext<MetaMaskExtensionContextType>(
@@ -45,13 +46,19 @@ const MetaMaskExtensionProvider: FC<MetaMaskExtensionProviderProps> = ({
 		window.open(url, "_blank");
 	}, [browser]);
 
-	useEffect(() => {
+	const setEthereumProvider = useCallback(() => {
+		setExtension(undefined);
+
 		detectEthereumProvider({ mustBeMetaMask: true }).then(setExtension);
+	}, []);
+
+	useEffect(() => {
+		setEthereumProvider();
 	}, []);
 
 	return (
 		<MetaMaskExtensionContext.Provider
-			value={{ extension, promptInstallExtension }}
+			value={{ extension, promptInstallExtension, setEthereumProvider }}
 		>
 			{children}
 		</MetaMaskExtensionContext.Provider>

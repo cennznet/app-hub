@@ -36,7 +36,7 @@ const WalletContext = createContext<WalletContextType>({} as WalletContextType);
 interface WalletProviderProps extends PropsWithChildren {}
 
 const WalletProvider: FC<WalletProviderProps> = ({ children }) => {
-	const { extension } = useMetaMaskExtension();
+	const { extension, setEthereumProvider } = useMetaMaskExtension();
 
 	const [walletOpen, setWalletOpen] = useState<boolean>(false);
 	const [selectedWallet, setSelectedWallet] = useState<WalletOption>();
@@ -59,11 +59,9 @@ const WalletProvider: FC<WalletProviderProps> = ({ children }) => {
 
 	useEffect(() => {
 		if (!extension) return;
+		if (!extension.isConnected()) return setEthereumProvider();
 
-		if (extension.isConnected())
-			updateConnectedChain(
-				`0x${Number(extension.networkVersion).toString(16)}`
-			);
+		updateConnectedChain(extension.chainId);
 
 		const onChainChanged = (chainId: string) => {
 			if (!chainId) return;
