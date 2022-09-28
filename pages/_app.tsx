@@ -1,11 +1,22 @@
 import { ethers, utils } from 'ethers';
 import React, { useEffect, useState } from 'react';
-import { Api } from '@cennznet/api';
+import {ApiPromise, WsProvider} from '@polkadot/api';
 import {cvmToAddress} from "@cennznet/types/utils";
 // import ethUtil from 'ethereumjs-util';
-import {hexToString, hexToU8a, stringToHex, stringToU8a, u8aToHex, u8aToString} from '@polkadot/util';
+import {
+	hexToString,
+	hexToU8a,
+	isNumber,
+	objectSpread,
+	stringToHex,
+	stringToU8a,
+	u8aToHex,
+	u8aToString
+} from '@polkadot/util';
 import {base64Decode, base64Encode, blake2AsHex} from '@polkadot/util-crypto';
-import {encodeAddress} from '@polkadot/keyring';
+import {encodeAddress, Keyring} from '@polkadot/keyring';
+import {ExtrinsicPayloadValue, GenericExtrinsicPayloadV4} from '@polkadot/types';
+import {IMMORTAL_ERA} from "@polkadot/types/extrinsic/constants";
 
 function App() {
 	let ethereum;
@@ -26,36 +37,45 @@ function App() {
 	// For this, you need the account signer...
 
 	useEffect(async () => {
-		const rpc = {
-			ethWallet: {
-				addressNonce: {
-					params: [
-						{
-							name: 'ethAddress',
-							type: '[u8; 20]'
-						}
-					],
-					type: 'u32'
-				}
-			}
-		};
-		let types = {
-			ethWalletCall: {
-				call: 'Call',
-				nonce: 'u32',
-			}
-		};
-
-		let cennznet_ = await Api
+		const provider = new WsProvider('ws://127.0.0.1:9944/');
+		let cennznet_ = await ApiPromise
 			.create({
-				provider: "ws://localhost:9944",//process.env.NEXT_PUBLIC_API_URL,
-				rpc,
+				provider,
+				// provider: process.env.NEXT_PUBLIC_API_URL,
+				rpc: {
+					ethy: {
+						getXrplTxProof: {
+							description: "Get event proof for event Id",
+							params: [
+								{
+									name: "EventId",
+									type: "EthyEventId",
+								},
+							],
+							type: "Json",
+						},
+					},
+				},
 				types: {
-					ethWalletCall: {
-						call: 'Call',
-						nonce: 'Index',
-					}
-				}
+					VersionedEventProof: {
+						_enum: {
+							sentinel: null,
+							EventProof: "EventProof",
+						},
+					},
+					EthyId: "[u8; 32]",
+					EthyEventId: "u64",
+					EthWalletCall: {
+						// call: 'Call',
+						nonce: 'u32',
+					},
+					AccountId: 'EthereumAccountId',
+					AccountId20: 'EthereumAccountId',
+					AccountId32: 'EthereumAccountId',
+					Address: 'AccountId',
+					LookupSource: 'AccountId',
+					Lookup0: 'AccountId',
+				},
 			});
 		await cennznet_.isReady;
 		setCennznet(cennznet_);
@@ -64,14 +84,14 @@ function App() {
 
 	useEffect(async () => {
 		if(!cennznetAddress) return;
-		let cpayBalance_ = await cennznet.query.genericAsset.freeBalance(16001, cennznetAddress);
-		let cennzBalance_ = await cennznet.query.genericAsset.freeBalance(16000, cennznetAddress);
-		let cb1 = cennzBalance_.toString().slice(0, -4);
-		let cb2 = cennzBalance_.toString().slice(-4);
-		setCennzBalance(`${cb1}.${cb2}`);
-		let cp1 = cpayBalance_.toString().slice(0, -4);
-		let cp2 = cpayBalance_.toString().slice(-4);
-		setCpayBalance(`${cp1}.${cp2}`);
+		// let cpayBalance_ = await cennznet.query.genericAsset.freeBalance(16001, cennznetAddress);
+		// let cennzBalance_ = await cennznet.query.genericAsset.freeBalance(16000, cennznetAddress);
+		// let cb1 = cennzBalance_.toString().slice(0, -4);
+		// let cb2 = cennzBalance_.toString().slice(-4);
+		// setCennzBalance(`${cb1}.${cb2}`);
+		// let cp1 = cpayBalance_.toString().slice(0, -4);
+		// let cp2 = cpayBalance_.toString().slice(-4);
+		// setCpayBalance(`${cp1}.${cp2}`);
 
 	}, [cennznetAddress]);
 
@@ -83,44 +103,87 @@ function App() {
 		})
 	}
 
+
+	function makeSignOptions(api, partialOptions, extras) {
+		const a = objectSpread({
+			blockHash: api.genesisHash,
+			genesisHash: api.genesisHash
+		}, partialOptions, extras, {
+			runtimeVersion: api.runtimeVersion,
+			signedExtensions: api.registry.signedExtensions,
+			version: api.extrinsicType
+		});
+		console.log('*****:::',a);
+		// console.log('*****:::',a.toJSON());
+		return a;
+	}
+
+	function makeEraOptions(api, partialOptions, _ref) {
+		let {
+			header,
+			mortalLength,
+			nonce
+		} = _ref;
+		console.log('header::::', header);
+		console.log('mortalLength:::::',mortalLength);
+		console.log('nonce:::',nonce);
+
+		if (!header) {
+			if (partialOptions.era && !partialOptions.blockHash) {
+				throw new Error('Expected blockHash to be passed alongside non-immortal era options');
+			}
+
+			if (isNumber(partialOptions.era)) {
+				// since we have no header, it is immortal, remove any option overrides
+				// so we only supply the genesisHash and no era to the construction
+				delete partialOptions.era;
+				delete partialOptions.blockHash;
+			}
+
+			return makeSignOptions(api, partialOptions, {
+				nonce
+			});
+		}
+
+		return makeSignOptions(api, partialOptions, {
+			blockHash: header.hash,
+			era: api.registry.createTypeUnsafe('ExtrinsicEra', [{
+				current: header.number,
+				period: partialOptions.era || mortalLength
+			}]),
+			nonce
+		});
+	}
+
 	const signMessage = async () => {
 		let address = account;
 		console.log(`got address: ${address}`);
-		const cennznetAddress = cvmToAddress(address);
-		console.log('cennznetaddress:',cennznetAddress);
-
-
-		let collectionName = 'global-example-collection';
-		let quantity = 100;
-		const collectionId = 0;
-		const metadataPath = {"Https": "example123.com/nft/metadata" }
-		if  (cennznet) {
-
-			// await cennznet.tx.nft.createCollection(
-			// 	collectionName,
-			// 	null,
-			// )
-			// await cennznet.tx.nft.mintSeries(collectionId,
-            //  quantity,
-            //  cennznetAddress,
-            //  metadataPath,
-            //  null
-			await cennznet.tx.nft.setSeriesName(collectionId,
-             0,
-             "FLUFFY"
-          ).signViaEthWallet(
-				address,
-				cennznet,
-				ethereum, async ({events, status}) => {
-					console.log('status:', status.toString());
-					if (status.isInBlock) {
-						console.log(events[0].event.method);
-						console.log(events[0].event.section);
-
-					}
-				}
-			);
-		}
+		const dest = '0xFf64d3F6efE2317EE2807d223a0Bdc4c0c49dfDB';
+		const call = await  cennznet.tx.balances.transfer(dest, 17);
+		const signingInfo = await cennznet.derive.tx.signingInfo(address, undefined, undefined);
+		const eraOptions = makeEraOptions(cennznet,  {}, signingInfo);
+		const { era, runtimeVersion: { specVersion, transactionVersion } } = eraOptions;
+		let payload = (new GenericExtrinsicPayloadV4(cennznet.registry, objectSpread<ExtrinsicPayloadValue>({}, eraOptions, {
+			era: era || IMMORTAL_ERA,
+			method: call.toHex(),
+			specVersion,
+			transactionVersion
+		})));
+		console.log('payload:::', payload.toHuman());
+		console.log('payload::',payload.toJSON());
+		const payloadU8 = payload.toU8a({ method: true });
+		console.log('payloadU8::',payloadU8);
+		// console.log('hex payload::', u8aToHex(payloadU8));
+		const hashed = (payloadU8.length > (256 + 1) * 2)
+			? blake2AsHex(payloadU8)
+			: u8aToHex(payloadU8);
+		// Request signature from ethereum wallet
+		// const signature = await ethereum.request({ method: 'eth_sign', params: [address, hashed] });
+		const signature = await ethereum.request({ method: 'personal_sign', params: [hashed, address] });
+		console.log('Signature::', signature);
+		call.addSignature(address, signature, payload);
+		console.log('Call now :::', call.toHuman());
+		call.send();
 
 	};
 

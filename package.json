@@ -20,7 +20,10 @@
     "@metamask/providers": "^8.1.1",
     "@mui/icons-material": "^5.5.0",
     "@mui/material": "^5.5.0",
+    "@polkadot/api": "^9.3.3",
     "@polkadot/react-identicon": "^1.2.1",
+    "@polkadot/types": "^9.3.3",
+    "@polkadot/util": "^10.1.8",
     "@types/lodash": "^4.14.179",
     "axios": "^0.26.1",
     "big.js": "^6.1.1",
@@ -39,8 +42,8 @@
     "store": "^2.0.12"
   },
   "resolutions": {
-    "@polkadot/util": "^8.4.1",
-    "@polkadot/util-crypto": "^8.4.1",
+    "@polkadot/util": "^10.1.8",
+    "@polkadot/util-crypto": "^10.1.8",
     "lodash": "^4.17.21"
   },
   "devDependencies": {
