@@ -241,7 +241,7 @@ function App() {
 				<p>Estimated gas (SYLO): {gasSYLO}</p>
 
 				<p>Actual gas (XRP): {gasXRP1}</p>
-				<p>Tx receipt: {txReceipt}</p>
+				{/*<p>Tx receipt: {txReceipt}</p>*/}
 
 				<button style={{ cursor: 'pointer', height: '3em', padding: '0.5em', margin: '0.2em' }} onClick={() => connectMetamask()}>Connect</button>
 				<button style={{ cursor: 'pointer', height: '3em', padding: '0.5em', margin: '0.2em' }}onClick={() => signMessage()}>Tranfer (fee preference)!</button>
