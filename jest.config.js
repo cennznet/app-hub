@@ -10,22 +10,18 @@ module.exports = {
 		"^.+\\.module\\.(css|sass|scss)$": "identity-obj-proxy",
 
 		// Handle CSS imports (without CSS modules)
-		"^.+\\.(css|sass|scss)$": "<rootDir>/__mocks__/styleMock.js",
+		"^.+\\.(css|sass|scss)$": "<rootDir>/libs/utils/__mocks__/styleMock.js",
 
 		// Handle image imports
 		// https://jestjs.io/docs/webpack#handling-static-assets
-		"^.+\\.(jpg|jpeg|png|gif|webp|avif|svg)$": `<rootDir>/__mocks__/fileMock.js`,
+		"^.+\\.(jpg|jpeg|png|gif|webp|avif|svg)$": `<rootDir>/libs/utils/__mocks__/fileMock.js`,
 
 		// Handle module aliases
 		"^@/(.*)$": "<rootDir>/$1",
 	},
 	// Add more setup options before each test is run
 	// setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
-	testPathIgnorePatterns: [
-		"<rootDir>/node_modules/",
-		"<rootDir>/.next/",
-		"<rootDir>/tests/bridge/",
-	],
+	testPathIgnorePatterns: ["<rootDir>/node_modules/", "<rootDir>/.next/"],
 	testEnvironment: "jsdom",
 	transform: {
 		// Use babel-jest to transpile tests with the next/babel preset
@@ -34,5 +30,5 @@ module.exports = {
 	},
 	transformIgnorePatterns: ["^.+\\.module\\.(css|sass|scss)$"],
 	testTimeout: 10000,
-	setupFiles: ["./tests/jest.setup.ts"],
+	setupFiles: ["<rootDir>/tests/jest.setup.ts"],
 };

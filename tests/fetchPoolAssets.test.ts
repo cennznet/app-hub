@@ -1,14 +1,6 @@
-import { Api } from "@cennznet/api";
-import fetchPoolAssets from "@/utils/fetchPoolAssets";
+import fetchPoolAssets from "@/libs/utils/fetchPoolAssets";
 
-let api: Api;
-beforeAll(async () => {
-	api = await Api.create({ provider: "wss://nikau.centrality.me/public/ws" });
-});
-
-afterAll(async () => {
-	await api.disconnect();
-});
+const api = global.getCENNZApiForTest();
 
 describe("fetchPoolAssets", () => {
 	it("returns expected result", async () => {

@@ -1,5 +1,5 @@
-import { Balance } from "@/utils";
-import fetchSellPrice from "@/utils/fetchSellPrice";
+import { Balance } from "@/libs/utils";
+import fetchSellPrice from "@/libs/utils/fetchSellPrice";
 
 const api = global.getCENNZApiForTest();
 const { cennzAsset, cpayAsset } = global.getCENNZCoreAssetsForTest();

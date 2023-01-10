@@ -1,19 +1,21 @@
 import { Api } from "@cennznet/api";
-import { VFC } from "react";
-import { API_URL } from "@/constants";
-import BridgeActionsPair from "@/components/BridgeActionsPair";
-import BridgeForm from "@/components/BridgeForm";
-import BridgeStats from "@/components/BridgeStats";
-import BridgeTokenDestination from "@/components/BridgeTokenDestination";
-import MainPanel from "@/components/MainPanel";
-import BridgeProvider from "@/providers/BridgeProvider";
-import { fetchBridgeTokens } from "@/utils";
-import { BridgedEthereumToken, EthereumToken } from "@/types";
-import BridgeProgress from "@/components/BridgeProgress";
+import { FC } from "react";
+import { CENNZ_NETWORK } from "@/libs/constants";
+import { fetchBridgeTokens } from "@/libs/utils";
+import { BridgedEthereumToken, EthereumToken } from "@/libs/types";
 import { NextSeo } from "next-seo";
+import BridgeProvider from "@/libs/providers/BridgeProvider";
+import {
+	BridgeActionsPair,
+	BridgeForm,
+	BridgeProgress,
+	BridgeStats,
+	BridgeTokenDestination,
+	MainPanel,
+} from "@/libs/components";
 
 export async function getStaticProps() {
-	const api = await Api.create({ provider: API_URL });
+	const api = await Api.create({ provider: CENNZ_NETWORK.ApiUrl.InWebSocket });
 
 	return {
 		props: {
@@ -23,10 +25,12 @@ export async function getStaticProps() {
 	};
 }
 
-const Bridge: VFC<{
+interface BridgeProps {
 	depositTokens: EthereumToken[];
 	withdrawTokens: BridgedEthereumToken[];
-}> = ({ depositTokens, withdrawTokens }) => {
+}
+
+const Bridge: FC<BridgeProps> = ({ depositTokens, withdrawTokens }) => {
 	return (
 		<BridgeProvider
 			depositTokens={depositTokens}
