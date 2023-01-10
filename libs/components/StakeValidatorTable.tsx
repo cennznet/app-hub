@@ -21,6 +21,7 @@ import {
 	Nominations,
 	Option,
 	StorageKey,
+	StakeAction,
 } from "@/libs/types";
 import { CENNZ_NETWORK } from "@/libs/constants";
 import AccountIdenticon from "@/libs/components/shared/AccountIdenticon";
@@ -30,7 +31,8 @@ import StakeValidatorStatus from "@/libs/components/StakeValidatorStatus";
 
 const StakeValidatorTable: VFC = () => {
 	const { api } = useCENNZApi();
-	const { electionInfo, stakingAsset, setExtrinsic } = useStake();
+	const { electionInfo, stakingAsset, setNominateExtrinsic, stakeAction } =
+		useStake();
 	const [openAccount, setOpenAccount] = useState<string>();
 	const [recentlyOnline, setRecentlyOnline] = useState<DeriveHeartbeats>();
 	const [nominatedBy, setNominatedBy] = useState<Result>();
@@ -141,7 +143,6 @@ const StakeValidatorTable: VFC = () => {
 	const stashAddress = "5DVHuiWPrWomw1GxgXx6XuDCURPdDcv6YjLchobf156kwnZx";
 
 	const [accountIdVec, setAccountIdVec] = useState<string[]>([]);
-	const [isValid, setIsValid] = useState<boolean>(false);
 
 	const _validatorSelected = (element: any): void => {
 		const accountSelected: string = element.target.value;
@@ -160,10 +161,7 @@ const StakeValidatorTable: VFC = () => {
 		setAccountIdVec(accounts);
 
 		if (accounts.length !== 0 && stashAddress !== null) {
-			setIsValid(true);
-			setExtrinsic(api.tx.staking.nominate(accounts));
-		} else {
-			setIsValid(false);
+			setNominateExtrinsic(api.tx.staking.nominate(accounts));
 		}
 	};
 
@@ -173,7 +171,7 @@ const StakeValidatorTable: VFC = () => {
 				<label htmlFor="validators">validators</label>
 				{!electionInfo && <LinearProgress css={[styles.infoProgress]} />}
 			</div>
-			<TableContainer css={[styles.container]}>
+			<TableContainer css={[styles.container(stakeAction)]}>
 				<Table>
 					<TableHead>
 						<TableRow>
@@ -243,12 +241,12 @@ const styles = {
 		transition: opacity 0.2s;
 	`,
 
-	container: css`
+	container: (stakeAction: StakeAction) => css`
 		border: 1px solid rgba(0, 0, 0, 0.1);
 		border-radius: 4px;
 		overflow-y: auto;
 		white-space: nowrap;
-		max-height: 25em;
+		max-height: ${stakeAction === "newStake" ? "30em" : "25em"};
 		min-width: 100%;
 	`,
 

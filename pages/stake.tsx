@@ -9,11 +9,13 @@ import { css } from "@emotion/react";
 import { NextSeo } from "next-seo";
 import StakeForm from "@/libs/components/StakeForm";
 import StakeAmountInput from "@/libs/components/StakeAmountInput";
-import StakeActionsPair from "@/libs/components/StakeActionsPair";
 import StakeOverview from "@/libs/components/StakeOverview";
 import StakeSummary from "@/libs/components/StakeSummary";
 import StakeValidatorTable from "@/libs/components/StakeValidatorTable";
-import StakeStashInput from "@/libs/components/StakeStashInput";
+import StakeActions from "@/libs/components/StakeActions";
+import StakeDestinationInput from "@/libs/components/StakeDestinationInput";
+import StakeView from "@/libs/components/StakeView";
+import StakeProgress from "@/libs/components/StakeProgress";
 
 export async function getStaticProps() {
 	const api = await Api.create({ provider: CENNZ_NETWORK.ApiUrl.InWebSocket });
@@ -32,10 +34,12 @@ const Pool: VFC<{ stakeAssets: StakeAssets }> = ({ stakeAssets }) => {
 				<NextSeo title="CENNZnet Staking" />
 				<MainPanel defaultTitle="Staking">
 					<StakeForm>
-						<StakeActionsPair />
-						<StakeStashInput />
+						<StakeActions />
+						<StakeDestinationInput />
 						<StakeAmountInput />
+						<StakeView />
 					</StakeForm>
+					<StakeProgress />
 				</MainPanel>
 				<MainPanel defaultTitle="Overview" css={styles.overview}>
 					<StakeOverview>

@@ -3,9 +3,9 @@ import { css } from "@emotion/react";
 import { IntrinsicElements } from "@/libs/types";
 import SubmitButton from "@/libs/components/shared/SubmitButton";
 import { Theme } from "@mui/material";
+import { STAKE_ACTIONS } from "@/libs/constants";
+import { useStakeActionRequest } from "@/libs/hooks";
 import { useStake } from "@/libs/providers/StakeProvider";
-import { useCENNZWallet } from "@/libs/providers/CENNZWalletProvider";
-import { signAndSendTx } from "@/libs/utils";
 
 interface StakeFormProps {}
 
@@ -13,28 +13,26 @@ const StakeForm: FC<IntrinsicElements["form"] & StakeFormProps> = ({
 	children,
 	...props
 }) => {
-	const { wallet, selectedAccount } = useCENNZWallet();
-	const { stakingAsset, stakeAction, extrinsic } = useStake();
-	const signer = wallet?.signer;
+	const { stakeAction } = useStake();
+
+	const processStakeActionRequest = useStakeActionRequest();
 
 	const onFormSubmit = useCallback(
 		async (event) => {
 			event.preventDefault();
-			if (!extrinsic || !selectedAccount || !signer) return;
 
-			await signAndSendTx(extrinsic, selectedAccount.address, signer);
+			if (!stakeAction) return;
+			await processStakeActionRequest();
 		},
-		[extrinsic, selectedAccount, signer]
+		[stakeAction, processStakeActionRequest]
 	);
 
 	return (
 		<form {...props} css={styles.root} onSubmit={onFormSubmit}>
-			{children}
+			<div css={styles.children}>{children}</div>
 
 			<div css={styles.formSubmit}>
-				<SubmitButton>
-					{stakeAction} {stakingAsset?.symbol}
-				</SubmitButton>
+				<SubmitButton>{STAKE_ACTIONS[stakeAction]}</SubmitButton>
 			</div>
 		</form>
 	);
@@ -47,6 +45,11 @@ const styles = {
 		width: 100%;
 		position: relative;
 	`,
+
+	children: css`
+		min-height: 25em;
+	`,
+
 	formSubmit: ({ palette }: Theme) => css`
 		text-align: center;
 		border-top: 1px solid ${palette.divider};

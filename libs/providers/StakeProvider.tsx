@@ -5,6 +5,7 @@ import {
 	SetStateAction,
 	useContext,
 	useEffect,
+	useMemo,
 	useState,
 } from "react";
 import {
@@ -15,17 +16,30 @@ import {
 	OverviewTable,
 	DeriveStakingQuery,
 	ElectedCandidate,
+	PropsWithChildren,
+	AccountLedger,
 } from "@/libs/types";
 import { useCENNZApi } from "@/libs/providers/CENNZApiProvider";
 import { SubmittableExtrinsic } from "@cennznet/api/types";
-import type { PropsWithChildren } from "@/libs/types";
+import {
+	TxStatusHook,
+	TokenInputHook,
+	useTokenInput,
+	useTxStatus,
+} from "@/libs/hooks";
+import { Balance } from "@/libs/utils";
+import { useCENNZWallet } from "@/libs/providers/CENNZWalletProvider";
 
-interface StakeContextType {
+import { IOption } from "@cennznet/types";
+
+interface StakeContextType extends TxStatusHook {
 	stakingAsset: CENNZAsset;
 	spendingAsset: CENNZAsset;
 
 	stakeAction: StakeAction;
 	setStakeAction: Dispatch<SetStateAction<StakeAction>>;
+
+	stakeAmountInput: TokenInputHook<string>[1];
 
 	electionInfo: {
 		elected: ElectedCandidate[];
@@ -35,11 +49,20 @@ interface StakeContextType {
 	tableView: OverviewTable;
 	setTableView: Dispatch<SetStateAction<OverviewTable>>;
 
-	extrinsic: SubmittableExtrinsic<"promise", any>;
-	setExtrinsic: Dispatch<SetStateAction<SubmittableExtrinsic<"promise", any>>>;
+	nominateExtrinsic: SubmittableExtrinsic<"promise", any>;
+	setNominateExtrinsic: Dispatch<
+		SetStateAction<SubmittableExtrinsic<"promise", any>>
+	>;
 
-	stashAddress: string;
-	setStashAddress: Dispatch<SetStateAction<string>>;
+	stakeRewardDestination: string;
+	setStakeRewardDestination: Dispatch<SetStateAction<string>>;
+	stakeControllerAccount: string;
+	setStakeControllerAccount: Dispatch<SetStateAction<string>>;
+
+	accountLedger: AccountLedger;
+	setAccountLedger: Dispatch<SetStateAction<AccountLedger>>;
+	stakedBalance: Balance;
+	unbondedBalance: Balance;
 }
 
 const StakeContext = createContext<StakeContextType>({} as StakeContextType);
@@ -50,13 +73,20 @@ interface StakeProviderProps extends PropsWithChildren {
 
 const StakeProvider: FC<StakeProviderProps> = ({ children, stakeAssets }) => {
 	const { api } = useCENNZApi();
+	const { selectedAccount } = useCENNZWallet();
 	const { stakingAsset, spendingAsset } = stakeAssets;
-	const [stakeAction, setStakeAction] = useState<StakeAction>();
+	const [stakeAction, setStakeAction] = useState<StakeAction>("newStake");
+	const [accountLedger, setAccountLedger] = useState<AccountLedger>();
 	const [electionInfo, setElectionInfo] = useState<ElectionInfo>();
 	const [tableView, setTableView] = useState<OverviewTable>("elected");
-	const [extrinsic, setExtrinsic] =
+	const [nominateExtrinsic, setNominateExtrinsic] =
 		useState<SubmittableExtrinsic<"promise", any>>();
-	const [stashAddress, setStashAddress] = useState<string>();
+	const [stakeRewardDestination, setStakeRewardDestination] =
+		useState<string>();
+	const [stakeControllerAccount, setStakeControllerAccount] =
+		useState<string>();
+
+	const [_, stakeAmountInput] = useTokenInput(stakingAsset.assetId);
 
 	const parseElectedInfo = (electedInfo: DeriveStakingQuery[]) => {
 		return electedInfo.map((info) => {
@@ -92,6 +122,31 @@ const StakeProvider: FC<StakeProviderProps> = ({ children, stakeAssets }) => {
 		);
 	}, [api]);
 
+	useEffect(() => {
+		if (!api || !selectedAccount) return;
+
+		const fetchAccountLedger = async () =>
+			await api.query.staking.ledger(selectedAccount.address);
+
+		fetchAccountLedger().then((ledgerOption: IOption<any>) => {
+			const ledger = ledgerOption.unwrapOrDefault();
+			setAccountLedger(ledger.toJSON());
+		});
+	}, [api, selectedAccount]);
+
+	const stakedBalance = useMemo(
+		() =>
+			accountLedger?.active && new Balance(accountLedger.active, stakingAsset),
+		[stakingAsset, accountLedger]
+	);
+
+	const unbondedBalance = useMemo(
+		() =>
+			!!accountLedger &&
+			new Balance(accountLedger.total - accountLedger.active, stakingAsset),
+		[stakingAsset, accountLedger]
+	);
+
 	return (
 		<StakeContext.Provider
 			value={{
@@ -101,16 +156,27 @@ const StakeProvider: FC<StakeProviderProps> = ({ children, stakeAssets }) => {
 				stakeAction,
 				setStakeAction,
 
+				stakeAmountInput,
+
 				electionInfo,
 
 				tableView,
 				setTableView,
 
-				extrinsic,
-				setExtrinsic,
+				nominateExtrinsic,
+				setNominateExtrinsic,
 
-				stashAddress,
-				setStashAddress,
+				stakeRewardDestination,
+				setStakeRewardDestination,
+				stakeControllerAccount,
+				setStakeControllerAccount,
+
+				accountLedger,
+				setAccountLedger,
+				stakedBalance,
+				unbondedBalance,
+
+				...useTxStatus(),
 			}}
 		>
 			{children}

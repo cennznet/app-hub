@@ -103,3 +103,16 @@ export const ETHEREUM_NETWORK = {
 
 export const ENABLE_TRANSFERS_TAB =
 	process.env.NEXT_PUBLIC_ENABLE_TRANSFERS_TAB === "1";
+
+export const STAKE_ACTIONS = {
+	addStake: "Add To Stake",
+	newStake: "New Stake",
+	chill: "Chill",
+	changeNominations: "Change Nominations",
+	cancelWithdrawal: "Cancel Withdrawal",
+	changeController: "Change Controller Account",
+	changeRewardDestination: "Change Reward Destination",
+	withdraw: "Withdraw",
+	unstake: "UNStake",
+	viewStake: "View Stake",
+};

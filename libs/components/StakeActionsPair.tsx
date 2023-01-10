@@ -62,7 +62,7 @@ const StakeActionsPair: VFC<
 	}, [fromOption, setOptionsPair]);
 
 	useEffect(() => {
-		if (fromOption === "account") return setStakeAction("stake");
+		if (fromOption === "account") return setStakeAction("newStake");
 		if (fromOption === "pool") return setStakeAction("unstake");
 	}, [fromOption, setStakeAction]);
 
