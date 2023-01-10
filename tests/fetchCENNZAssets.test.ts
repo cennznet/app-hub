@@ -1,4 +1,4 @@
-import fetchCENNZAssets from "@/utils/fetchCENNZAssets";
+import fetchCENNZAssets from "@/libs/utils/fetchCENNZAssets";
 
 const api = global.getCENNZApiForTest();
 const { cennzAsset, cpayAsset } = global.getCENNZCoreAssetsForTest();

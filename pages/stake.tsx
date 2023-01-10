@@ -1,28 +1,26 @@
 import { Api } from "@cennznet/api";
-import { StakeAssets } from "@/types";
-import fetchStakeAssets from "@/utils/fetchStakeAssets";
-import { API_URL } from "@/constants";
-import generateGlobalProps from "@/utils/generateGlobalProps";
-import MainPanel from "@/components/MainPanel";
-import StakeProvider from "@/providers/StakeProvider";
+import { StakeAssets } from "@/libs/types";
+import fetchStakeAssets from "@/libs/utils/fetchStakeAssets";
+import { CENNZ_NETWORK } from "@/libs/constants";
+import MainPanel from "@/libs/components/MainPanel";
+import StakeProvider from "@/libs/providers/StakeProvider";
 import { VFC } from "react";
 import { css } from "@emotion/react";
 import { NextSeo } from "next-seo";
-import StakeForm from "@/components/StakeForm";
-import StakeAmountInput from "@/components/StakeAmountInput";
-import StakeActionsPair from "@/components/StakeActionsPair";
-import StakeOverview from "@/components/StakeOverview";
-import StakeSummary from "@/components/StakeSummary";
-import StakeValidatorTable from "@/components/StakeValidatorTable";
-import StakeStashInput from "@/components/StakeStashInput";
+import StakeForm from "@/libs/components/StakeForm";
+import StakeAmountInput from "@/libs/components/StakeAmountInput";
+import StakeActionsPair from "@/libs/components/StakeActionsPair";
+import StakeOverview from "@/libs/components/StakeOverview";
+import StakeSummary from "@/libs/components/StakeSummary";
+import StakeValidatorTable from "@/libs/components/StakeValidatorTable";
+import StakeStashInput from "@/libs/components/StakeStashInput";
 
 export async function getStaticProps() {
-	const api = await Api.create({ provider: API_URL });
+	const api = await Api.create({ provider: CENNZ_NETWORK.ApiUrl.InWebSocket });
 
 	return {
 		props: {
 			stakeAssets: await fetchStakeAssets(api),
-			...(await generateGlobalProps("stake")),
 		},
 	};
 }

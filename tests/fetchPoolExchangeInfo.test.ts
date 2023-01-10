@@ -1,5 +1,5 @@
-import { Balance } from "@/utils";
-import fetchPoolExchangeInfo from "@/utils/fetchPoolExchangeInfo";
+import { Balance } from "@/libs/utils";
+import fetchPoolExchangeInfo from "@/libs/utils/fetchPoolExchangeInfo";
 
 const api = global.getCENNZApiForTest();
 
