@@ -24,6 +24,7 @@ export { default as useUpdateCENNZBalances } from "@/libs/hooks/useUpdateCENNZBa
 export { default as useEthereumBalances } from "@/libs/hooks/useEthereumBalances";
 export { default as useTransferableAssets } from "@/libs/hooks/useTransferableAssets";
 export { default as useTransferAssets } from "@/libs/hooks/useTransferAssets";
+export { default as useStakeActionRequest } from "@/libs/hooks/useStakeActionRequest";
 
 export type { TokenInputHook } from "@/libs/hooks/useTokenInput";
 export type { PoolExchangeInfoHook } from "@/libs/hooks/usePoolExchangeInfo";

@@ -50,3 +50,5 @@ export { default as signViaEthWallet } from "@/libs/utils/signViaEthWallet";
 export { default as isCENNZAddress } from "@/libs/utils/isCENNZAddress";
 export { default as isEthereumAddress } from "@/libs/utils/isEthereumAddress";
 export { default as getBatchTransferAssetExtrinsic } from "@/libs/utils/getBatchTransferAssetExtrinsic";
+export { default as numToPretty } from "@/libs/utils/numToPretty";
+export { default as extractNominators } from "@/libs/utils/extractNominators";

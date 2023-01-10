@@ -30,6 +30,8 @@ export const CENNZ_NETWORK = {
 		ExplorerUrl: "https://rata.uncoverexplorer.com",
 		ClaimRelayerUrl: "https://bridge-contracts.rata.centrality.me",
 		LinkedEthChain: "ropsten",
+		StakingAssetId: 16000,
+		SpendingAssetId: 16001,
 	},
 
 	nikau: {
@@ -44,6 +46,8 @@ export const CENNZ_NETWORK = {
 		ExplorerUrl: "https://nikau.uncoverexplorer.com",
 		ClaimRelayerUrl: "https://bridge-contracts.nikau.centrality.me",
 		LinkedEthChain: "kovan",
+		StakingAssetId: 16000,
+		SpendingAssetId: 16001,
 	},
 
 	azalea: {
@@ -58,6 +62,8 @@ export const CENNZ_NETWORK = {
 		ExplorerUrl: "https://uncoverexplorer.com",
 		ClaimRelayerUrl: "https://bridge-contracts.centralityapp.com",
 		LinkedEthChain: "mainnet",
+		StakingAssetId: 1,
+		SpendingAssetId: 2,
 	},
 }[process.env.NEXT_PUBLIC_CENNZ_NETWORK ?? "rata"];
 
@@ -97,3 +103,16 @@ export const ETHEREUM_NETWORK = {
 
 export const ENABLE_TRANSFERS_TAB =
 	process.env.NEXT_PUBLIC_ENABLE_TRANSFERS_TAB === "1";
+
+export const STAKE_ACTIONS = {
+	addStake: "Add To Stake",
+	newStake: "New Stake",
+	chill: "Chill",
+	changeNominations: "Change Nominations",
+	cancelWithdrawal: "Cancel Withdrawal",
+	changeController: "Change Controller Account",
+	changeRewardDestination: "Change Reward Destination",
+	withdraw: "Withdraw",
+	unstake: "UNStake",
+	viewStake: "View Stake",
+};

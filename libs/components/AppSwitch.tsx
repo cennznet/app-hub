@@ -34,7 +34,11 @@ const Switch: FC = () => {
 					<span>Bridge</span>
 				</a>
 			</Link>
-
+			<Link href="/stake" passHref={true}>
+				<a css={styles.navItem(section === "stake")}>
+					<span>Stake</span>
+				</a>
+			</Link>
 			{ENABLE_TRANSFERS_TAB && (
 				<Link href="/transfer" passHref={true}>
 					<a css={styles.navItem(section === "transfer")}>
