@@ -59,6 +59,10 @@ const PoolForm: FC<IntrinsicElements["form"] & PoolFormProps> = ({
 	const updateCENNZBalances = useUpdateCENNZBalances();
 
 	useEffect(() => {
+		updateCENNZBalances?.();
+	}, [updateCENNZBalances]);
+
+	useEffect(() => {
 		if (poolAction === "Add") return setButtonLabel("Add to Pool");
 		if (poolAction === "Remove") return setButtonLabel("Withdraw from Pool");
 	}, [poolAction]);

@@ -3,7 +3,7 @@ import {
 	IntrinsicElements,
 	SubmittableExtrinsic,
 } from "@/libs/types";
-import { FC, useCallback } from "react";
+import { FC, useCallback, useEffect } from "react";
 import { css } from "@emotion/react";
 import { Theme } from "@mui/material";
 import { SubmitButton } from "@/libs/components";
@@ -46,6 +46,10 @@ const SwapForm: FC<IntrinsicElements["form"] & SwapFormProps> = ({
 	const { extension } = useMetaMaskExtension();
 
 	const updateCENNZBalances = useUpdateCENNZBalances();
+
+	useEffect(() => {
+		updateCENNZBalances?.();
+	}, [updateCENNZBalances]);
 
 	const onFormSubmit = useCallback(
 		async (event) => {

@@ -5,7 +5,7 @@ import type {
 } from "@/libs/types";
 import type { Theme } from "@mui/material";
 
-import { FC, useCallback } from "react";
+import { FC, useCallback, useEffect } from "react";
 import { css } from "@emotion/react";
 import { useCENNZApi } from "@/libs/providers/CENNZApiProvider";
 import { useCENNZWallet } from "@/libs/providers/CENNZWalletProvider";
@@ -46,6 +46,10 @@ const TransferForm: FC<IntrinsicElements["form"] & TransferFormProps> = ({
 		transferAssets,
 		addressType,
 	} = useTransfer();
+
+	useEffect(() => {
+		updateCENNZBalances?.();
+	}, [updateCENNZBalances]);
 
 	const onFormSubmit = useCallback(
 		async (event) => {
