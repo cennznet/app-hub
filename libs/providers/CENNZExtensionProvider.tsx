@@ -1,26 +1,37 @@
 import type { PropsWithChildren } from "@/libs/types";
 
 import {
-	InjectedExtension,
-	InjectedAccountWithMeta,
-} from "@polkadot/extension-inject/types";
-import {
 	createContext,
 	useContext,
 	useEffect,
 	useState,
 	useCallback,
-	useMemo,
 	FC,
 } from "react";
 import type * as Extension from "@polkadot/extension-dapp";
 import { useUserAgent } from "@/libs/providers/UserAgentProvider";
 import { useWalletProvider } from "@/libs/providers/WalletProvider";
+import {
+	InjectedExtension,
+	InjectedAccountWithMeta,
+} from "@polkadot/extension-inject/types";
+
+type ExtensionDapp = typeof Extension;
+
+declare global {
+	interface Window {
+		injectedWeb3?: {
+			"cennznet-extension"?: {
+				enable: (name: string) => Promise<InjectedExtension>;
+			};
+		};
+	}
+}
 
 interface ExtensionContext {
 	accounts: InjectedAccountWithMeta[];
+	extension: InjectedExtension;
 	promptInstallExtension: () => void;
-	getInstalledExtension: () => Promise<InjectedExtension>;
 }
 
 const CENNZExtensionContext = createContext<ExtensionContext>(
@@ -34,8 +45,8 @@ const CENNZExtensionProvider: FC<CENNZExtensionProviderProps> = ({
 }) => {
 	const { browser, os } = useUserAgent();
 	const { selectedWallet } = useWalletProvider();
-	const [module, setModule] = useState<typeof Extension>();
 	const [accounts, setAccounts] = useState<Array<InjectedAccountWithMeta>>();
+	const [extension, setExtension] = useState<InjectedExtension>();
 
 	const promptInstallExtension = useCallback(() => {
 		if (
@@ -63,28 +74,31 @@ const CENNZExtensionProvider: FC<CENNZExtensionProviderProps> = ({
 	}, [browser, os]);
 
 	useEffect(() => {
-		import("@polkadot/extension-dapp").then(setModule);
+		const fetchExtension = async () => {
+			const intervalId = setInterval(async () => {
+				const { injectedWeb3 } = window;
+
+				if (injectedWeb3) clearInterval(intervalId);
+				const extension = await window.injectedWeb3[
+					"cennznet-extension"
+				].enable("CENNZnet App Hub");
+				setExtension(extension);
+			}, 500);
+		};
+
+		void fetchExtension();
 	}, []);
 
-	const getInstalledExtension = useMemo(() => {
-		if (!module) return;
-
-		return async () => {
-			const { web3Enable, web3FromSource } = module;
-			await web3Enable("CENNZnet App Hub");
-			return await web3FromSource("cennznet-extension").catch(() => null);
-		};
-	}, [module]);
-
 	useEffect(() => {
-		if (!module || selectedWallet !== "CENNZnet") return;
+		if (!extension || selectedWallet !== "CENNZnet") return;
 		let unsubscribe: () => void;
 
 		const fetchAccounts = async () => {
-			const { web3Enable, web3Accounts, web3AccountsSubscribe } = module;
+			const accounts = (await extension.accounts.get()).map((account) => ({
+				address: account.address,
+				meta: account,
+			})) as unknown as InjectedAccountWithMeta[];
 
-			await web3Enable("CENNZnet App Hub");
-			const accounts = (await web3Accounts()) || [];
 			if (!accounts.length)
 				return alert(
 					"Please create at least one account in CENNZnet extension to continue."
@@ -92,22 +106,26 @@ const CENNZExtensionProvider: FC<CENNZExtensionProviderProps> = ({
 
 			setAccounts(accounts);
 
-			unsubscribe = await web3AccountsSubscribe((accounts) => {
-				setAccounts([...accounts]);
+			unsubscribe = extension.accounts.subscribe((accounts) => {
+				setAccounts(
+					accounts.map((account) => ({
+						address: account.address,
+						meta: account,
+					})) as unknown as InjectedAccountWithMeta[]
+				);
 			});
 		};
 
 		void fetchAccounts();
 
 		return unsubscribe;
-	}, [module, selectedWallet]);
+	}, [extension, selectedWallet]);
 
 	return (
 		<CENNZExtensionContext.Provider
 			value={{
-				...module,
 				accounts,
-				getInstalledExtension,
+				extension,
 				promptInstallExtension,
 			}}
 		>

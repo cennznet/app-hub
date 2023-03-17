@@ -33,8 +33,7 @@ interface CENNZWalletProviderProps extends PropsWithChildren {}
 const CENNZWalletProvider: FC<CENNZWalletProviderProps> = ({ children }) => {
 	const { api } = useCENNZApi();
 	const { selectedWallet, setCENNZBalances } = useWalletProvider();
-	const { promptInstallExtension, getInstalledExtension, accounts } =
-		useCENNZExtension();
+	const { promptInstallExtension, accounts, extension } = useCENNZExtension();
 	const [wallet, setWallet] = useState<InjectedExtension>(null);
 	const [cennzAccount, setCENNZAccount] =
 		useState<InjectedAccountWithMeta>(null);
@@ -45,22 +44,17 @@ const CENNZWalletProvider: FC<CENNZWalletProviderProps> = ({ children }) => {
 		async (callback) => {
 			if (!api) return;
 
-			const extension = await getInstalledExtension?.();
-
 			if (!extension) {
 				callback?.();
 				return promptInstallExtension();
 			}
-
-			callback?.();
 			setWallet(extension);
-			store.set("CENNZNET-EXTENSION", extension);
+			return callback?.();
 		},
-		[api, getInstalledExtension, promptInstallExtension]
+		[api, extension, promptInstallExtension]
 	);
 
 	const disconnectWallet = useCallback(() => {
-		store.remove("CENNZNET-EXTENSION");
 		store.remove("CENNZNET-ACCOUNT");
 		setWallet(null);
 		setCENNZAccount(null);
@@ -74,15 +68,9 @@ const CENNZWalletProvider: FC<CENNZWalletProviderProps> = ({ children }) => {
 
 	// 1. Restore the wallet from the store if it exists
 	useEffect(() => {
-		async function restoreWallet() {
-			const storedWallet = store.get("CENNZNET-EXTENSION");
-			if (!storedWallet) return disconnectWallet();
-			const extension = await getInstalledExtension?.();
-			setWallet(extension);
-		}
-
-		void restoreWallet();
-	}, [disconnectWallet, getInstalledExtension]);
+		if (!extension) return disconnectWallet();
+		setWallet(extension);
+	}, [disconnectWallet, extension]);
 
 	// 2. Pick the right account once a `wallet` has been set
 	useEffect(() => {
